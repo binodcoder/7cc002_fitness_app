@@ -1,10 +1,10 @@
+import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:my_blog_bloc/resources/strings_manager.dart';
 import 'features/add_post/presentation/bloc/post_add_bloc.dart';
-import 'features/home/presentation/bloc/post_bloc.dart';
-import 'features/home/presentation/ui/post.dart';
+import 'features/home/presentation/bloc/routine_bloc.dart';
+import 'features/home/presentation/ui/routine.dart';
 import 'injection_container.dart';
 import 'injection_container.dart' as di;
 
@@ -21,8 +21,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<PostBloc>(
-          create: (BuildContext context) => sl<PostBloc>(),
+        BlocProvider<RoutineBloc>(
+          create: (BuildContext context) => sl<RoutineBloc>(),
         ),
         BlocProvider<PostAddBloc>(
           create: (BuildContext context) => sl<PostAddBloc>(),

@@ -1,21 +1,21 @@
 import 'package:dartz/dartz.dart';
-import 'package:my_blog_bloc/core/errors/failures.dart';
-import 'package:my_blog_bloc/core/model/post_model.dart';
 import '../../../../core/errors/exceptions.dart';
-import '../../domain/repositories/post_repositories.dart';
-import '../data_sources/posts_local_data_sources.dart';
+import '../../../../core/errors/failures.dart';
+import '../../../../core/model/routine_model.dart';
+import '../../domain/repositories/routine_repositories.dart';
+import '../data_sources/routines_local_data_sources.dart';
 
-class PostRepositoryImpl implements PostRepository {
-  final PostLocalDataSource postLocalDataSource;
+class PostRepositoryImpl implements RoutineRepository {
+  final RoutinesLocalDataSource postLocalDataSource;
 
   PostRepositoryImpl({
     required this.postLocalDataSource,
   });
 
   @override
-  Future<Either<Failure, List<PostModel>>> getPosts() async {
+  Future<Either<Failure, List<RoutineModel>>> getRoutines() async {
     try {
-      List<PostModel> postModelList = await postLocalDataSource.getPosts();
+      List<RoutineModel> postModelList = await postLocalDataSource.getRoutines();
       return Right(postModelList);
     } on CacheException {
       return Left(CacheFailure());

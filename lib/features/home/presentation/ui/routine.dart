@@ -1,14 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_blog_bloc/resources/colour_manager.dart';
-import 'package:my_blog_bloc/resources/strings_manager.dart';
 import '../../../../core/db/db_helper.dart';
-import '../bloc/post_bloc.dart';
-import '../bloc/post_event.dart';
-import '../bloc/post_state.dart';
+import '../../../../resources/colour_manager.dart';
+import '../../../../resources/strings_manager.dart';
+import '../bloc/routine_bloc.dart';
+import '../bloc/routine_event.dart';
+import '../bloc/routine_state.dart';
 import '../../../add_post/presentation/ui/post_add.dart';
-import 'post_details.dart';
+import 'routine_details.dart';
 import '../../../../injection_container.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -34,51 +34,56 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    postBloc.add(PostInitialEvent());
+    postBloc.add(RoutineInitialEvent());
     super.initState();
   }
 
-  PostBloc postBloc = sl<PostBloc>();
+  void refreshPage() {
+    postBloc.add(RoutineInitialEvent());
+  }
+
+  RoutineBloc postBloc = sl<RoutineBloc>();
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<PostBloc, PostState>(
+    return BlocConsumer<RoutineBloc, RoutineState>(
       bloc: postBloc,
-      listenWhen: (previous, current) => current is PostActionState,
-      buildWhen: (previous, current) => current is! PostActionState,
+      listenWhen: (previous, current) => current is RoutineActionState,
+      buildWhen: (previous, current) => current is! RoutineActionState,
       listener: (context, state) {
-        if (state is PostNavigateToAddPostActionState) {
+        if (state is RoutineNavigateToAddPostActionState) {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => const AddPost(),
               fullscreenDialog: true,
             ),
-          );
-        } else if (state is PostNavigateToDetailPageActionState) {
+          ).then((value) => refreshPage());
+        } else if (state is RoutineNavigateToDetailPageActionState) {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => AddPost(
-                postModel: state.postModel,
+                postModel: state.routineModel,
               ),
               fullscreenDialog: true,
             ),
-          );
-        } else if (state is PostNavigateToUpdatePageActionState) {
-        } else if (state is PostItemSelectedActionState) {
-        } else if (state is PostItemDeletedActionState) {
-        } else if (state is PostItemsDeletedActionState) {}
+          ).then((value) => refreshPage());
+        } else if (state is RoutineNavigateToUpdatePageActionState) {
+        } else if (state is RoutineItemSelectedActionState) {
+        } else if (state is RoutineItemDeletedActionState) {
+        } else if (state is RoutineItemsDeletedActionState) {}
       },
       builder: (context, state) {
         switch (state.runtimeType) {
-          case PostLoadingState:
+          case RoutineLoadingState:
             return const Scaffold(
-                body: Center(
-              child: CircularProgressIndicator(),
-            ));
-          case PostLoadedSuccessState:
-            final successState = state as PostLoadedSuccessState;
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          case RoutineLoadedSuccessState:
+            final successState = state as RoutineLoadedSuccessState;
             return Scaffold(
               floatingActionButton: FloatingActionButton(
                 backgroundColor: Colors.blue,
@@ -107,20 +112,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               body: ListView.builder(
-                itemCount: successState.postModelList.length,
+                itemCount: successState.routineModelList.length,
                 itemBuilder: (context, index) {
-                  var postModel = successState.postModelList[index];
+                  var postModel = successState.routineModelList[index];
                   return ListTile(
                     tileColor: postModel.isSelected == 0 ? ColorManager.white : ColorManager.grey,
                     onLongPress: () async {
-                      postBloc.add(PostTileLongPressEvent(postModel));
+                      postBloc.add(RoutineTileLongPressEvent(postModel));
                     },
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (BuildContext context) => PostDetailsPage(
-                            postModel: postModel,
+                          builder: (BuildContext context) => RoutineDetailsPage(
+                            routineModel: postModel,
                           ),
                         ),
                       );
@@ -136,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             TextButton(
                               onPressed: () {
-                                postBloc.add(PostTileNavigateEvent(postModel));
+                                postBloc.add(RoutineTileNavigateEvent(postModel));
                               },
                               child: const Text(AppStrings.edit),
                             ),
@@ -154,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             );
-          case PostErrorState:
+          case RoutineErrorState:
             return const Scaffold(body: Center(child: Text('Error')));
           default:
             return const SizedBox();

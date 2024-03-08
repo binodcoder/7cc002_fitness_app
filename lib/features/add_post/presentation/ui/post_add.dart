@@ -1,11 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_blog_bloc/features/home/presentation/ui/post.dart';
 import '../../../../core/db/db_helper.dart';
 import '../../../../injection_container.dart';
 import '../../../../resources/strings_manager.dart';
-import '../../../../core/model/post_model.dart';
+import '../../../../core/model/routine_model.dart';
 import '../bloc/post_add_bloc.dart';
 import '../bloc/post_add_event.dart';
 import '../bloc/post_add_state.dart';
@@ -16,7 +15,7 @@ class AddPost extends StatefulWidget {
     this.postModel,
   });
 
-  final PostModel? postModel;
+  final RoutineModel? postModel;
 
   @override
   State<AddPost> createState() => _AddPostState();
@@ -72,23 +71,10 @@ class _AddPostState extends State<AddPost> {
           titleController.clear();
           contentController.clear();
           Navigator.pop(context);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => const HomeScreen(),
-              fullscreenDialog: true,
-            ),
-          );
         } else if (state is AddPostUpdatedState) {
           titleController.clear();
           contentController.clear();
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => const HomeScreen(),
-              fullscreenDialog: true,
-            ),
-          );
+          Navigator.pop(context);
         }
       },
       builder: (context, state) {
@@ -130,7 +116,7 @@ class _AddPostState extends State<AddPost> {
                 var imagePath = state.imagePath;
                 if (title.isNotEmpty && content.isNotEmpty) {
                   if (widget.postModel != null) {
-                    var updatedPost = PostModel(
+                    var updatedPost = RoutineModel(
                       widget.postModel!.id,
                       titleController.text,
                       contentController.text,
@@ -139,7 +125,7 @@ class _AddPostState extends State<AddPost> {
                     );
                     postAddBloc.add(PostAddUpdateButtonPressEvent(updatedPost));
                   } else {
-                    var newPost = PostModel(
+                    var newPost = RoutineModel(
                       DateTime.now().toString(),
                       title,
                       content,

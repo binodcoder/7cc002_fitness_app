@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import '../model/post_model.dart';
+import '../model/routine_model.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -36,16 +36,16 @@ class DatabaseHelper {
     });
   }
 
-  Future<int> insertPost(PostModel post) async {
+  Future<int> insertPost(RoutineModel post) async {
     final db = await database;
     return await db!.insert('posts', post.toMap());
   }
 
-  Future<List<PostModel>> getPosts() async {
+  Future<List<RoutineModel>> getRoutines() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db!.query('posts');
     return List.generate(maps.length, (i) {
-      return PostModel(
+      return RoutineModel(
         maps[i]['id'],
         maps[i]['title'],
         maps[i]['content'],
@@ -55,7 +55,7 @@ class DatabaseHelper {
     });
   }
 
-  Future<int> updatePost(PostModel post) async {
+  Future<int> updatePost(RoutineModel post) async {
     final db = await database;
     return await db!.update(
       'posts',

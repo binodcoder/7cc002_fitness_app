@@ -1,8 +1,8 @@
-import 'package:my_blog_bloc/core/db/db_helper.dart';
-import 'package:my_blog_bloc/core/model/post_model.dart';
+import '../../../../core/db/db_helper.dart';
+import '../../../../core/model/routine_model.dart';
 
 abstract class UpdatePostLocalDataSources {
-  Future<int> updatePost(PostModel postModel);
+  Future<int> updatePost(RoutineModel postModel);
 }
 
 class UpdatePostLocalDataSourcesImpl implements UpdatePostLocalDataSources {
@@ -10,9 +10,9 @@ class UpdatePostLocalDataSourcesImpl implements UpdatePostLocalDataSources {
 
   UpdatePostLocalDataSourcesImpl();
   @override
-  Future<int> updatePost(PostModel postModel) => _updatePostToLocal(postModel);
+  Future<int> updatePost(RoutineModel postModel) => _updatePostToLocal(postModel);
 
-  Future<int> _updatePostToLocal(PostModel postModel) async {
+  Future<int> _updatePostToLocal(RoutineModel postModel) async {
     final int response = await databaseHelper.updatePost(postModel);
     return response;
   }

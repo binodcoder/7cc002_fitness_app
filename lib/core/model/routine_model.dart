@@ -1,7 +1,7 @@
-import 'package:my_blog_bloc/core/entities/post.dart';
+import '../entities/routine.dart';
 
-class PostModel extends Post {
-  PostModel(
+class RoutineModel extends Routine {
+  RoutineModel(
     String id,
     String title,
     String content,

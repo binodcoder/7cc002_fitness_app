@@ -1,4 +1,4 @@
-package com.example.my_blog_bloc
+package com.binodcoder.fitnessapp
 
 import io.flutter.embedding.android.FlutterActivity
 

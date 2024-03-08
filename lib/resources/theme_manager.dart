@@ -1,6 +1,6 @@
+import 'package:fitness_app/resources/styles_manager.dart';
+import 'package:fitness_app/resources/values_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:my_blog_bloc/resources/styles_manager.dart';
-import 'package:my_blog_bloc/resources/values_manager.dart';
 import 'colour_manager.dart';
 import 'font_manager.dart';
 

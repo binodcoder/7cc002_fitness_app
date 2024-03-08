@@ -1,22 +1,23 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:my_blog_bloc/core/model/post_model.dart';
+import '../../../../core/model/routine_model.dart';
 import '../../../../resources/colour_manager.dart';
 import '../../../../resources/font_manager.dart';
 import '../../../../resources/values_manager.dart';
 
-class PostDetailsPage extends StatefulWidget {
-  const PostDetailsPage({
+class RoutineDetailsPage extends StatefulWidget {
+  const RoutineDetailsPage({
     Key? key,
-    this.postModel,
+    this.routineModel,
   }) : super(key: key);
 
-  final PostModel? postModel;
+  final RoutineModel? routineModel;
 
   @override
-  State<PostDetailsPage> createState() => _PostDetailsPageState();
+  State<RoutineDetailsPage> createState() => _RoutineDetailsPageState();
 }
 
-class _PostDetailsPageState extends State<PostDetailsPage> {
+class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
   @override
   void initState() {
     super.initState();
@@ -36,7 +37,9 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
       backgroundColor: ColorManager.white,
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
           icon: Icon(
             Icons.arrow_back,
             color: ColorManager.primary,
@@ -45,7 +48,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
         backgroundColor: ColorManager.white,
         elevation: 0,
         title: Text(
-          'Post Details',
+          'Routine Details',
           style: TextStyle(
             color: ColorManager.primary,
             fontWeight: FontWeight.bold,
@@ -57,6 +60,14 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
         padding: const EdgeInsets.all(14.0),
         child: Column(
           children: [
+            Container(
+              width: 150,
+              height: 150,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+              ),
+              child: Image.file(File(widget.routineModel!.imagePath)),
+            ),
             SizedBox(
               height: AppHeight.h10,
             ),
@@ -65,13 +76,13 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
               contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
               tileColor: ColorManager.white,
               title: Text(
-                widget.postModel!.title,
+                widget.routineModel!.title,
                 style: const TextStyle(
                   fontSize: FontSize.s20,
                 ),
               ),
               subtitle: Text(
-                widget.postModel!.title,
+                widget.routineModel!.title,
                 style: const TextStyle(fontSize: FontSize.s14),
               ),
             ),
