@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:agora_uikit/agora_uikit.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
 class VideoCall extends StatefulWidget {
   const VideoCall({super.key, required this.channelName});
@@ -12,34 +12,43 @@ class VideoCall extends StatefulWidget {
 }
 
 class _VideoCallState extends State<VideoCall> {
-  late final AgoraClient _client;
   bool _loading = true;
-  String tempToken = "";
+  late final AgoraClient _client;
+  var rtmToken = '';
+
+  var appid = "be5ffb877e864250a3dd19f1aa6d8f2f";
+  var appcertificate = "4e6571e33b73479ebcb308b56972ac05";
 
   @override
   void initState() {
     getToken();
+    setAgoraClient();
     super.initState();
   }
 
-  Future<void> getToken() async {
-    String link = "https://agora-node-tokenserver-1.davidcaleb.repl.co/access_token?channelName=${widget.channelName}";
+  toggleLoading() {
+    _loading = !_loading;
+  }
 
-    Response response = await get(Uri.parse(link));
+  Future<void> getToken() async {
+    String link = "https://32788e4d-3d60-41c3-9a6e-d4fe828edf83-00-1icxzzm7wnepb.spock.replit.dev/rtm/test/?expiry=3600";
+    final response = await http.get(Uri.parse(link));
     Map data = jsonDecode(response.body);
-    setState(() {
-      tempToken = data["token"];
-    });
+    rtmToken = data["rtmToken"];
+    toggleLoading();
+  }
+
+  setAgoraClient() {
     _client = AgoraClient(
         agoraConnectionData: AgoraConnectionData(
-          appId: "843077704d2f4d19a7ed336afaa0c2ca",
-          tempToken: tempToken,
+          appId: appid,
+          tempRtmToken: rtmToken,
           channelName: widget.channelName,
         ),
-        enabledPermission: [Permission.camera, Permission.microphone]);
-    Future.delayed(const Duration(seconds: 1)).then(
-      (value) => setState(() => _loading = false),
-    );
+        enabledPermission: [
+          Permission.camera,
+          Permission.microphone,
+        ]);
   }
 
   @override
@@ -55,7 +64,9 @@ class _VideoCallState extends State<VideoCall> {
                   AgoraVideoViewer(
                     client: _client,
                   ),
-                  AgoraVideoButtons(client: _client)
+                  AgoraVideoButtons(
+                    client: _client,
+                  )
                 ],
               ),
       ),

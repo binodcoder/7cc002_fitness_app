@@ -68,7 +68,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               fullscreenDialog: true,
             ),
-          ).then((value) => refreshPage());
+          ).then(
+            (value) => refreshPage(),
+          );
         } else if (state is RoutineNavigateToUpdatePageActionState) {
         } else if (state is RoutineItemSelectedActionState) {
         } else if (state is RoutineItemDeletedActionState) {

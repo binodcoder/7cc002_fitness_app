@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class JoinCall extends StatelessWidget {
   JoinCall({super.key});
 
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController(text: "test");
 
   @override
   Widget build(BuildContext context) {
@@ -12,12 +12,15 @@ class JoinCall extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_sharp),
-              iconSize: 35,
-              onPressed: () {
-                Navigator.pop(context);
-              },
+            Align(
+              alignment: Alignment.topLeft,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_sharp),
+                iconSize: 35,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
             ),
             const SizedBox(height: 50),
             Image.network(

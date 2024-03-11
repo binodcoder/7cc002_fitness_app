@@ -1,5 +1,7 @@
 import 'package:fitness_app/features/call/video_call.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:uuid/uuid.dart';
 
 class NewMeeting extends StatefulWidget {
   const NewMeeting({Key? key}) : super(key: key);
@@ -13,8 +15,8 @@ class _NewMeetingState extends State<NewMeeting> {
 
   @override
   void initState() {
-    // var uuid = Uuid();
-    // _meetingCode = uuid.v1().substring(0, 8);
+    var uuid = const Uuid();
+    _meetingCode = uuid.v1().substring(0, 8);
     super.initState();
   }
 
@@ -70,7 +72,7 @@ class _NewMeetingState extends State<NewMeeting> {
             ),
             ElevatedButton.icon(
               onPressed: () {
-                //  Share.share("Meeting Code : $_meetingCode");
+                Share.share("Meeting Code : $_meetingCode");
               },
               icon: const Icon(Icons.arrow_drop_down),
               label: const Text("Share invite"),
