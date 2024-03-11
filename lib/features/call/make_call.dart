@@ -1,14 +1,16 @@
 import 'package:agora_uikit/agora_uikit.dart';
 import 'package:flutter/material.dart';
 
-class CallPage extends StatefulWidget {
-  const CallPage({super.key});
+class MakeCallPage extends StatefulWidget {
+  const MakeCallPage({super.key});
 
   @override
-  State<CallPage> createState() => _CallPageState();
+  State<MakeCallPage> createState() => _MakeCallPageState();
 }
 
-class _CallPageState extends State<CallPage> {
+var appid = "be5ffb877e864250a3dd19f1aa6d8f2f";
+
+class _MakeCallPageState extends State<MakeCallPage> {
   final AgoraClient client = AgoraClient(
     agoraConnectionData: AgoraConnectionData(
       appId: "be5ffb877e864250a3dd19f1aa6d8f2f",
@@ -19,6 +21,7 @@ class _CallPageState extends State<CallPage> {
       Permission.camera,
       Permission.microphone,
     ],
+    //agoraEventHandlers: AgoraEventHandlers(),
   );
 
   @override
@@ -42,7 +45,9 @@ class _CallPageState extends State<CallPage> {
               layoutType: Layout.floating,
               enableHostControls: true,
             ),
-            AgoraVideoButtons(client: client),
+            AgoraVideoButtons(
+              client: client,
+            ),
           ],
         ),
       ),
