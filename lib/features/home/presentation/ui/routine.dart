@@ -2,8 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/db/db_helper.dart';
+import '../../../../drawer.dart';
 import '../../../../resources/colour_manager.dart';
 import '../../../../resources/strings_manager.dart';
+import '../../../appointment/presentation/add_appointment.dart';
 import '../bloc/routine_bloc.dart';
 import '../bloc/routine_event.dart';
 import '../bloc/routine_state.dart';
@@ -55,10 +57,10 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => const AddPost(),
+              builder: (BuildContext context) => const AddAppointmentDialog(),
               fullscreenDialog: true,
             ),
-          ).then((value) => refreshPage());
+          );
         } else if (state is RoutineNavigateToDetailPageActionState) {
           Navigator.push(
             context,
@@ -87,6 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
           case RoutineLoadedSuccessState:
             final successState = state as RoutineLoadedSuccessState;
             return Scaffold(
+              drawer: const MyDrawer(),
               floatingActionButton: FloatingActionButton(
                 backgroundColor: Colors.blue,
                 child: const Icon(Icons.add),
