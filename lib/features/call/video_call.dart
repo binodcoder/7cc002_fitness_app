@@ -22,23 +22,17 @@ class _VideoCallState extends State<VideoCall> {
   @override
   void initState() {
     getToken();
-    setAgoraClient();
     super.initState();
-  }
-
-  toggleLoading() {
-    _loading = !_loading;
   }
 
   Future<void> getToken() async {
     String link = "https://32788e4d-3d60-41c3-9a6e-d4fe828edf83-00-1icxzzm7wnepb.spock.replit.dev/rtm/test/?expiry=3600";
     final response = await http.get(Uri.parse(link));
     Map data = jsonDecode(response.body);
-    rtmToken = data["rtmToken"];
-    toggleLoading();
-  }
+    setState(() {
+      rtmToken = data["rtmToken"];
+    });
 
-  setAgoraClient() {
     _client = AgoraClient(
         agoraConnectionData: AgoraConnectionData(
           appId: appid,
@@ -49,6 +43,7 @@ class _VideoCallState extends State<VideoCall> {
           Permission.camera,
           Permission.microphone,
         ]);
+    Future.delayed(const Duration(seconds: 1)).then((value) => setState(() => _loading = false));
   }
 
   @override

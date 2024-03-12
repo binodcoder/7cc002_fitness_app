@@ -1,9 +1,9 @@
+import 'package:fitness_app/features/call/call_test.dart';
 import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'features/add_post/presentation/bloc/post_add_bloc.dart';
-import 'features/call/call_page.dart';
 import 'features/home/presentation/bloc/routine_bloc.dart';
 import 'injection_container.dart';
 import 'injection_container.dart' as di;
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: AppStrings.titleLabel,
-          home: CallPage(),
+          home: CallTest(),
         ),
       ),
     );
