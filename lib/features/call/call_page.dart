@@ -14,13 +14,11 @@ class CallPage extends StatelessWidget {
       ),
       body: Column(
         children: [
+          const SizedBox(
+            height: 15,
+          ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(
-              20,
-              40,
-              0,
-              0,
-            ),
+            padding: const EdgeInsets.all(20),
             child: ElevatedButton.icon(
               onPressed: () {
                 Navigator.push(
@@ -44,16 +42,13 @@ class CallPage extends StatelessWidget {
           ),
           const Divider(
             thickness: 1,
-            height: 40,
+            height: 30,
             indent: 40,
             endIndent: 20,
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(
+            padding: const EdgeInsets.all(
               20,
-              40,
-              0,
-              0,
             ),
             child: OutlinedButton.icon(
               onPressed: () {

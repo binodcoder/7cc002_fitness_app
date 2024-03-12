@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -11,12 +10,13 @@ import 'package:permission_handler/permission_handler.dart';
 const appId = "be5ffb877e864250a3dd19f1aa6d8f2f";
 const appienew = "be5ffb877e864250a3dd19f1aa6d8f2f";
 const appcertificate = "4e6571e33b73479ebcb308b56972ac05";
-const channel = "test";
+//const channel = "test";
 const token =
-    "007eJxTYNjr4n3/Rt+0c33dVy7H+aQceW81M9f9PKf1jHmrzX/dKJupwJCUapqWlmRhbp5qYWZiZGqQaJySYmiZZpiYaJZikWaUpqH0PrUhkJEhffYBRkYGCATxWRhKUotLGBgAMq0idA==";
+    "007eJxTYNByn2k0MZ8h1cDHz/LMvm0X5U9/2xXDYxNpx7abKfWq734FhqRU07S0JAtz81QLMxMjU4NE45QUQ8s0w8REsxSLNKM0wfIPqQ2BjAx7pKKYGBkgEMRnYShJLS5hYAAArWsdrA==";
 
 class CallTest extends StatefulWidget {
-  const CallTest({Key? key}) : super(key: key);
+  const CallTest({super.key, required this.channel});
+  final String channel;
 
   @override
   State<CallTest> createState() => _CallTestState();
@@ -76,7 +76,7 @@ class _CallTestState extends State<CallTest> {
 
     await _engine.joinChannel(
       token: token,
-      channelId: channel,
+      channelId: widget.channel,
       uid: 0,
       options: const ChannelMediaOptions(),
     );
@@ -85,7 +85,6 @@ class _CallTestState extends State<CallTest> {
   @override
   void dispose() {
     super.dispose();
-
     _dispose();
   }
 
@@ -99,7 +98,7 @@ class _CallTestState extends State<CallTest> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Agora Video Call'),
+        title: const Text('Video Meeting'),
       ),
       body: Stack(
         children: [
@@ -135,7 +134,7 @@ class _CallTestState extends State<CallTest> {
         controller: VideoViewController.remote(
           rtcEngine: _engine,
           canvas: VideoCanvas(uid: _remoteUid),
-          connection: const RtcConnection(channelId: channel),
+          connection: RtcConnection(channelId: widget.channel),
         ),
       );
     } else {

@@ -1,5 +1,3 @@
-Here's a breakdown of the fitness application project requirements:
-
 **Core Functions**
 
 - **Fitness Content:** The app provides fitness routines either by pulling trusted content from online sources or having routines pre-loaded.

@@ -1,4 +1,4 @@
-import 'package:fitness_app/features/call/call_test.dart';
+import 'package:fitness_app/features/call/call_page.dart';
 import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: AppStrings.titleLabel,
-          home: CallTest(),
+          home: CallPage(),
         ),
       ),
     );

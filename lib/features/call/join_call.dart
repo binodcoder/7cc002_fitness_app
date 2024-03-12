@@ -1,4 +1,4 @@
-import 'package:fitness_app/features/call/video_call.dart';
+import 'package:fitness_app/features/call/call_test.dart';
 import 'package:flutter/material.dart';
 
 class JoinCall extends StatelessWidget {
@@ -55,8 +55,8 @@ class JoinCall extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => VideoCall(
-                      channelName: _controller.text.trim(),
+                    builder: (BuildContext context) => CallTest(
+                      channel: _controller.text.trim(),
                     ),
                     fullscreenDialog: true,
                   ),

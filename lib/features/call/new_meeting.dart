@@ -1,7 +1,6 @@
-import 'package:fitness_app/features/call/video_call.dart';
+import 'package:fitness_app/features/call/call_test.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:uuid/uuid.dart';
 
 class NewMeeting extends StatefulWidget {
   const NewMeeting({Key? key}) : super(key: key);
@@ -11,12 +10,12 @@ class NewMeeting extends StatefulWidget {
 }
 
 class _NewMeetingState extends State<NewMeeting> {
-  String _meetingCode = "abcdfgqw";
+  final String _meetingCode = "test";
 
   @override
   void initState() {
-    var uuid = const Uuid();
-    _meetingCode = uuid.v1().substring(0, 8);
+    // var uuid = const Uuid();
+    //  _meetingCode = uuid.v1().substring(0, 8);
     super.initState();
   }
 
@@ -48,7 +47,9 @@ class _NewMeetingState extends State<NewMeeting> {
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
+              padding: const EdgeInsets.all(
+                10,
+              ),
               child: Card(
                 color: Colors.grey[300],
                 shape: RoundedRectangleBorder(
@@ -66,44 +67,50 @@ class _NewMeetingState extends State<NewMeeting> {
             ),
             const Divider(
               thickness: 1,
-              height: 40,
+              height: 20,
               indent: 20,
               endIndent: 20,
             ),
-            ElevatedButton.icon(
-              onPressed: () {
-                Share.share("Meeting Code : $_meetingCode");
-              },
-              icon: const Icon(Icons.arrow_drop_down),
-              label: const Text("Share invite"),
-              style: ElevatedButton.styleFrom(
-                fixedSize: const Size(350, 30),
-                backgroundColor: Colors.indigo,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Share.share("Meeting Code : $_meetingCode");
+                },
+                icon: const Icon(Icons.arrow_drop_down),
+                label: const Text("Share invite"),
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(350, 30),
+                  backgroundColor: Colors.indigo,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                ),
               ),
             ),
             const SizedBox(height: 20),
-            OutlinedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => VideoCall(
-                      channelName: _meetingCode.trim(),
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => CallTest(
+                        channel: _meetingCode.trim(),
+                      ),
+                      fullscreenDialog: true,
                     ),
-                    fullscreenDialog: true,
+                  );
+                },
+                icon: const Icon(Icons.video_call),
+                label: const Text("start call"),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.indigo,
+                  side: const BorderSide(
+                    color: Colors.indigo,
                   ),
-                );
-              },
-              icon: const Icon(Icons.video_call),
-              label: const Text("start call"),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.indigo,
-                side: const BorderSide(
-                  color: Colors.indigo,
+                  fixedSize: const Size(350, 30),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                 ),
-                fixedSize: const Size(350, 30),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
               ),
             ),
           ],
