@@ -24,7 +24,6 @@ class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
     on<PostDeleteAllButtonClickedEvent>(postDeleteAllButtonClickedEvent);
     on<PostAddButtonClickedEvent>(postAddButtonClickedEvent);
     on<RoutineTileNavigateEvent>(postTileNavigateEvent);
-    on<RoutineTileLongPressEvent>(postTileLongPressEvent);
   }
 
   FutureOr<void> postInitialEvent(RoutineInitialEvent event, Emitter<RoutineState> emit) async {
@@ -33,13 +32,8 @@ class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
 
     postModelList!.fold((failure) {
       // emit(Error(message: _mapFailureToMessage(failure)));
-    }, (postModelList) {
-      for (var post in postModelList) {
-        if (post.isSelected == 1) {
-          selectedPosts.add(post);
-        }
-      }
-      emit(RoutineLoadedSuccessState(postModelList));
+    }, (routineModelList) {
+      emit(RoutineLoadedSuccessState(routineModelList));
     });
   }
 
@@ -47,8 +41,8 @@ class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
 
   FutureOr<void> postDeleteButtonClickedEvent(PostDeleteButtonClickedEvent event, Emitter<RoutineState> emit) async {
     await dbHelper.deletePost(event.postModel.id);
-    List<RoutineModel> postList = await dbHelper.getRoutines();
-    emit(RoutineLoadedSuccessState(postList));
+    List<RoutineModel> routineList = await dbHelper.getRoutines();
+    emit(RoutineLoadedSuccessState(routineList));
   }
 
   FutureOr<void> postDeleteAllButtonClickedEvent(PostDeleteAllButtonClickedEvent event, Emitter<RoutineState> emit) async {
@@ -65,23 +59,5 @@ class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
 
   FutureOr<void> postTileNavigateEvent(RoutineTileNavigateEvent event, Emitter<RoutineState> emit) {
     emit(RoutineNavigateToDetailPageActionState(event.routineModel));
-  }
-
-  FutureOr<void> postTileLongPressEvent(RoutineTileLongPressEvent event, Emitter<RoutineState> emit) async {
-    var updatedPost = event.routineModel;
-    if (updatedPost.isSelected == 0) {
-      updatedPost.isSelected = 1;
-      selectedPosts.add(updatedPost);
-    } else {
-      updatedPost.isSelected = 0;
-      selectedPosts.remove(updatedPost);
-    }
-    await updatePost(updatedPost);
-    final postList = await getRoutines(NoParams());
-    postList!.fold((failure) {
-      // emit(Error(message: _mapFailureToMessage(failure)));
-    }, (post) {
-      emit(RoutineLoadedSuccessState(post));
-    });
   }
 }

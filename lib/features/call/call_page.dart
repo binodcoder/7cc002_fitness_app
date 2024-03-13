@@ -72,7 +72,7 @@ class CallPage extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 150),
+          const SizedBox(height: 10),
           Image.network("https://user-images.githubusercontent.com/67534990/127524449-fa11a8eb-473a-4443-962a-07a3e41c71c0.png")
         ],
       ),

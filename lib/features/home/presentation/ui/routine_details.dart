@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../../../core/model/routine_model.dart';
 import '../../../../resources/colour_manager.dart';
@@ -60,14 +59,6 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
         padding: const EdgeInsets.all(14.0),
         child: Column(
           children: [
-            Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-              ),
-              child: Image.file(File(widget.routineModel!.imagePath)),
-            ),
             SizedBox(
               height: AppHeight.h10,
             ),
@@ -76,13 +67,13 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
               contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
               tileColor: ColorManager.white,
               title: Text(
-                widget.routineModel!.title,
+                widget.routineModel!.source,
                 style: const TextStyle(
                   fontSize: FontSize.s20,
                 ),
               ),
               subtitle: Text(
-                widget.routineModel!.title,
+                widget.routineModel!.description,
                 style: const TextStyle(fontSize: FontSize.s14),
               ),
             ),

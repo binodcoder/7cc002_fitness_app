@@ -20,7 +20,4 @@ class RoutineTileNavigateEvent extends RoutineEvent {
   RoutineTileNavigateEvent(this.routineModel);
 }
 
-class RoutineTileLongPressEvent extends RoutineEvent {
-  final RoutineModel routineModel;
-  RoutineTileLongPressEvent(this.routineModel);
-}
+ 

@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => AddPost(
-                postModel: state.routineModel,
+                routineModel: state.routineModel,
               ),
               fullscreenDialog: true,
             ),
@@ -119,40 +119,35 @@ class _HomeScreenState extends State<HomeScreen> {
               body: ListView.builder(
                 itemCount: successState.routineModelList.length,
                 itemBuilder: (context, index) {
-                  var postModel = successState.routineModelList[index];
+                  var routineModel = successState.routineModelList[index];
                   return ListTile(
-                    tileColor: postModel.isSelected == 0 ? ColorManager.white : ColorManager.grey,
-                    onLongPress: () async {
-                      postBloc.add(RoutineTileLongPressEvent(postModel));
-                    },
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) => RoutineDetailsPage(
-                            routineModel: postModel,
+                            routineModel: routineModel,
                           ),
                         ),
                       );
                     },
-                    title: Text(postModel.title),
+                    title: Text(routineModel.source),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(postModel.content),
-                        _imageDisplay(postModel.imagePath),
+                        Text(routineModel.description),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             TextButton(
                               onPressed: () {
-                                postBloc.add(RoutineTileNavigateEvent(postModel));
+                                postBloc.add(RoutineTileNavigateEvent(routineModel));
                               },
                               child: const Text(AppStrings.edit),
                             ),
                             TextButton(
                               onPressed: () {
-                                postBloc.add(PostDeleteButtonClickedEvent(postModel));
+                                postBloc.add(PostDeleteButtonClickedEvent(routineModel));
                               },
                               child: const Text(AppStrings.delete),
                             ),

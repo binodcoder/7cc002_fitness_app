@@ -1,9 +1,8 @@
 class Routine {
-  final String id;
-  String title;
-  String content;
-  String imagePath;
-  int isSelected;
+  int id;
+  int coachId;
+  String description;
+  String source;
 
-  Routine(this.id, this.title, this.content, this.imagePath, this.isSelected);
+  Routine(this.id, this.coachId, this.description, this.source);
 }

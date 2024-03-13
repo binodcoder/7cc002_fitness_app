@@ -12,46 +12,26 @@ import '../bloc/post_add_state.dart';
 class AddPost extends StatefulWidget {
   const AddPost({
     super.key,
-    this.postModel,
+    this.routineModel,
   });
 
-  final RoutineModel? postModel;
+  final RoutineModel? routineModel;
 
   @override
   State<AddPost> createState() => _AddPostState();
 }
 
 class _AddPostState extends State<AddPost> {
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController contentController = TextEditingController();
+  final TextEditingController sourceController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
   final DatabaseHelper dbHelper = DatabaseHelper();
-
-  Widget _imagePickerButtons(PostAddBloc postBloc) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        ElevatedButton(
-          onPressed: () {
-            postBloc.add(PostAddPickFromGalaryButtonPressEvent());
-          },
-          child: const Text('Pick from gallery'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            postBloc.add(PostAddPickFromCameraButtonPressEvent());
-          },
-          child: const Text('Pick from camera'),
-        ),
-      ],
-    );
-  }
 
   @override
   void initState() {
-    if (widget.postModel != null) {
-      titleController.text = widget.postModel!.title;
-      contentController.text = widget.postModel!.content;
-      postAddBloc.add(PostAddReadyToUpdateEvent(widget.postModel!));
+    if (widget.routineModel != null) {
+      sourceController.text = widget.routineModel!.source;
+      descriptionController.text = widget.routineModel!.description;
+      postAddBloc.add(PostAddReadyToUpdateEvent(widget.routineModel!));
     } else {
       postAddBloc.add(PostAddInitialEvent());
     }
@@ -68,12 +48,12 @@ class _AddPostState extends State<AddPost> {
       buildWhen: (previous, current) => current is! PostAddActionState,
       listener: (context, state) {
         if (state is AddPostSavedState) {
-          titleController.clear();
-          contentController.clear();
+          sourceController.clear();
+          descriptionController.clear();
           Navigator.pop(context);
         } else if (state is AddPostUpdatedState) {
-          titleController.clear();
-          contentController.clear();
+          sourceController.clear();
+          descriptionController.clear();
           Navigator.pop(context);
         }
       },
@@ -86,18 +66,17 @@ class _AddPostState extends State<AddPost> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
-                controller: titleController,
+                controller: sourceController,
                 decoration: const InputDecoration(labelText: AppStrings.title),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
-                controller: contentController,
+                controller: descriptionController,
                 decoration: const InputDecoration(labelText: AppStrings.content),
               ),
             ),
-            _imagePickerButtons(postAddBloc),
             const SizedBox(height: 20),
             state.imagePath == null
                 ? const Text('no image')
@@ -111,33 +90,30 @@ class _AddPostState extends State<AddPost> {
                   ),
             ElevatedButton(
               onPressed: () async {
-                var title = titleController.text;
-                var content = contentController.text;
-                var imagePath = state.imagePath;
-                if (title.isNotEmpty && content.isNotEmpty) {
-                  if (widget.postModel != null) {
+                var source = sourceController.text;
+                var description = descriptionController.text;
+                if (source.isNotEmpty && description.isNotEmpty) {
+                  if (widget.routineModel != null) {
                     var updatedPost = RoutineModel(
-                      widget.postModel!.id,
-                      titleController.text,
-                      contentController.text,
-                      imagePath!,
-                      0,
+                      id: widget.routineModel!.id,
+                      couchId: widget.routineModel!.coachId,
+                      description: descriptionController.text,
+                      source: sourceController.text,
                     );
                     postAddBloc.add(PostAddUpdateButtonPressEvent(updatedPost));
                   } else {
                     var newPost = RoutineModel(
-                      DateTime.now().toString(),
-                      title,
-                      content,
-                      imagePath!,
-                      0,
+                      id: 0,
+                      couchId: 0,
+                      description: descriptionController.text,
+                      source: sourceController.text,
                     );
                     postAddBloc.add(PostAddSaveButtonPressEvent(newPost));
                   }
                 }
               },
               child: Text(
-                widget.postModel == null ? AppStrings.addPost : AppStrings.updatePost,
+                widget.routineModel == null ? AppStrings.addPost : AppStrings.updatePost,
               ),
             ),
           ]),

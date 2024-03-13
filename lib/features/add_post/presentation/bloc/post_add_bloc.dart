@@ -82,6 +82,6 @@ class PostAddBloc extends Bloc<PostAddEvent, PostAddState> {
   }
 
   FutureOr<void> postAddReadyToUpdateEvent(PostAddReadyToUpdateEvent event, Emitter<PostAddState> emit) {
-    emit(PostAddReadyToUpdateState(event.postModel.imagePath));
+   // emit(PostAddReadyToUpdateState(event.postModel.imagePath));
   }
 }

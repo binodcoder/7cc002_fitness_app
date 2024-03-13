@@ -21,16 +21,15 @@ class DatabaseHelper {
 
   Future<Database> initDatabase() async {
     final databasesPath = await getDatabasesPath();
-    final path = join(databasesPath, 'blog.db');
+    final path = join(databasesPath, 'fitness.db');
 
     return await openDatabase(path, version: 1, onCreate: (Database db, int version) async {
       await db.execute('''
-          CREATE TABLE posts (
-            id TEXT PRIMARY KEY,
-            title TEXT,
-            content TEXT,
-            imagePath TEXT,
-            isSelected integer
+          CREATE TABLE routine (
+            id INTEGER PRIMARY KEY,
+            coachId INTEGER,
+            description TEXT,
+            source TEXT
           )
         ''');
     });
@@ -38,19 +37,18 @@ class DatabaseHelper {
 
   Future<int> insertPost(RoutineModel post) async {
     final db = await database;
-    return await db!.insert('posts', post.toMap());
+    return await db!.insert('routine', post.toJson());
   }
 
   Future<List<RoutineModel>> getRoutines() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db!.query('posts');
+    final List<Map<String, dynamic>> maps = await db!.query('routine');
     return List.generate(maps.length, (i) {
       return RoutineModel(
-        maps[i]['id'],
-        maps[i]['title'],
-        maps[i]['content'],
-        maps[i]['imagePath'],
-        maps[i]['isSelected'],
+        id: maps[i]['id'],
+        couchId: maps[i]['coachId'],
+        description: maps[i]['description'],
+        source: maps[i]['source'],
       );
     });
   }
@@ -58,15 +56,15 @@ class DatabaseHelper {
   Future<int> updatePost(RoutineModel post) async {
     final db = await database;
     return await db!.update(
-      'posts',
-      post.toMap(),
+      'routine',
+      post.toJson(),
       where: 'id = ?',
       whereArgs: [post.id],
     );
   }
 
-  Future<int> deletePost(String postId) async {
+  Future<int> deletePost(int postId) async {
     final db = await database;
-    return await db!.delete('posts', where: 'id = ?', whereArgs: [postId]);
+    return await db!.delete('routine', where: 'id = ?', whereArgs: [postId]);
   }
 }
