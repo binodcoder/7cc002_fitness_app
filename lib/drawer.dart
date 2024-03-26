@@ -1,11 +1,12 @@
-import 'package:fitness_app/features/calender/presentation/calender.dart';
-import 'package:fitness_app/features/call/call_page.dart';
+import 'package:fitness_app/layers/presentation_layer/call/call_page.dart';
 import 'package:fitness_app/resources/colour_manager.dart';
 import 'package:fitness_app/resources/font_manager.dart';
 import 'package:fitness_app/resources/styles_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+
+import 'layers/presentation_layer/calender/calender.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({Key? key}) : super(key: key);

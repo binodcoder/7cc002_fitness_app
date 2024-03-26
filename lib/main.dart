@@ -1,12 +1,12 @@
-import 'package:fitness_app/features/home/presentation/ui/routine.dart';
-import 'package:fitness_app/resources/strings_manager.dart';
+ import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'features/add_post/presentation/bloc/post_add_bloc.dart';
-import 'features/home/presentation/bloc/routine_bloc.dart';
-import 'injection_container.dart';
+ import 'injection_container.dart';
 import 'injection_container.dart' as di;
+import 'layers/presentation_layer/register/bloc/post_add_bloc.dart';
+import 'layers/presentation_layer/routine/bloc/routine_bloc.dart';
+import 'layers/presentation_layer/routine/ui/routine.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

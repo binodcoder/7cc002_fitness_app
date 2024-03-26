@@ -23,7 +23,8 @@ class DatabaseHelper {
     final databasesPath = await getDatabasesPath();
     final path = join(databasesPath, 'fitness.db');
 
-    return await openDatabase(path, version: 1, onCreate: (Database db, int version) async {
+    return await openDatabase(path, version: 1,
+        onCreate: (Database db, int version) async {
       await db.execute('''
           CREATE TABLE routine (
             id INTEGER PRIMARY KEY,
@@ -46,9 +47,11 @@ class DatabaseHelper {
     return List.generate(maps.length, (i) {
       return RoutineModel(
         id: maps[i]['id'],
-        couchId: maps[i]['coachId'],
         description: maps[i]['description'],
         source: maps[i]['source'],
+        name: '',
+        difficulty: '',
+        duration: 0,
       );
     });
   }

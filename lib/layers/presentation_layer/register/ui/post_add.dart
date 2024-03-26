@@ -74,7 +74,8 @@ class _AddPostState extends State<AddPost> {
               padding: const EdgeInsets.all(8.0),
               child: TextField(
                 controller: descriptionController,
-                decoration: const InputDecoration(labelText: AppStrings.content),
+                decoration:
+                    const InputDecoration(labelText: AppStrings.content),
               ),
             ),
             const SizedBox(height: 20),
@@ -96,24 +97,30 @@ class _AddPostState extends State<AddPost> {
                   if (widget.routineModel != null) {
                     var updatedPost = RoutineModel(
                       id: widget.routineModel!.id,
-                      couchId: widget.routineModel!.coachId,
                       description: descriptionController.text,
                       source: sourceController.text,
+                      name: '',
+                      difficulty: '',
+                      duration: 0,
                     );
                     postAddBloc.add(PostAddUpdateButtonPressEvent(updatedPost));
                   } else {
                     var newPost = RoutineModel(
                       id: 0,
-                      couchId: 0,
                       description: descriptionController.text,
                       source: sourceController.text,
+                      name: '',
+                      difficulty: '',
+                      duration: 0,
                     );
                     postAddBloc.add(PostAddSaveButtonPressEvent(newPost));
                   }
                 }
               },
               child: Text(
-                widget.routineModel == null ? AppStrings.addPost : AppStrings.updatePost,
+                widget.routineModel == null
+                    ? AppStrings.addPost
+                    : AppStrings.updatePost,
               ),
             ),
           ]),

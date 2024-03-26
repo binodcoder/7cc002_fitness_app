@@ -1,24 +1,25 @@
-import 'package:fitness_app/features/home/data/data_sources/routines_remote_data_source.dart';
-import 'package:get_it/get_it.dart';
+ import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/network/network_info.dart';
 import 'core/util/input_converter.dart';
-import 'features/add_post/data/datasources/post_posts_local_data_sources.dart';
-import 'features/add_post/data/datasources/update_posts_local_data_sources.dart';
-import 'features/add_post/data/repositories/post_posts_repositories_impl.dart';
-import 'features/add_post/data/repositories/update_post_repositories_impl.dart';
-import 'features/add_post/domain/repositories/post_posts_repositories.dart';
-import 'features/add_post/domain/repositories/update_post_repository.dart';
-import 'features/add_post/domain/usecases/post_post.dart';
-import 'features/add_post/domain/usecases/update_post.dart';
-import 'features/add_post/presentation/bloc/post_add_bloc.dart';
-import 'features/home/data/data_sources/routines_local_data_source.dart';
-import 'features/home/data/repositories/post_repository_impl.dart';
-import 'features/home/domain/repositories/routine_repositories.dart';
-import 'features/home/domain/usecases/get_routines.dart';
-import 'features/home/presentation/bloc/routine_bloc.dart';
-import 'package:http/http.dart' as http;
+import 'layers/data_layer/register/datasources/post_posts_local_data_sources.dart';
+import 'layers/data_layer/register/datasources/update_posts_local_data_sources.dart';
+import 'layers/data_layer/register/repositories/post_posts_repositories_impl.dart';
+import 'layers/data_layer/register/repositories/update_post_repositories_impl.dart';
+import 'layers/data_layer/routine/data_sources/routines_local_data_source.dart';
+import 'layers/data_layer/routine/data_sources/routines_remote_data_source.dart';
+import 'layers/data_layer/routine/repositories/post_repository_impl.dart';
+import 'layers/domain_layer/register/repositories/post_posts_repositories.dart';
+import 'layers/domain_layer/register/repositories/update_post_repository.dart';
+import 'layers/domain_layer/register/usecases/post_post.dart';
+import 'layers/domain_layer/register/usecases/update_post.dart';
+ import 'package:http/http.dart' as http;
+
+import 'layers/domain_layer/routine/repositories/routine_repositories.dart';
+import 'layers/domain_layer/routine/usecases/get_routines.dart';
+import 'layers/presentation_layer/register/bloc/post_add_bloc.dart';
+import 'layers/presentation_layer/routine/bloc/routine_bloc.dart';
 
 final sl = GetIt.instance;
 

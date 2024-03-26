@@ -1,6 +1,6 @@
-import 'package:fitness_app/features/call/join_call.dart';
-import 'package:fitness_app/features/call/new_meeting.dart';
 import 'package:flutter/material.dart';
+import 'join_call.dart';
+import 'new_meeting.dart';
 
 class CallPage extends StatelessWidget {
   const CallPage({super.key});

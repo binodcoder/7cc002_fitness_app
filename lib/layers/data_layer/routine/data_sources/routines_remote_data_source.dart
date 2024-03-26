@@ -23,5 +23,5 @@ class RoutineRemoteDataSourceImpl implements RoutineRemoteDataSource {
   }
 
   @override
-  Future<List<RoutineModel>> getRoutines() => _getRoutines("https://wlv-c4790072fbf0.herokuapp.com/api/v1/routine");
+  Future<List<RoutineModel>> getRoutines() => _getRoutines("https://wlv-c4790072fbf0.herokuapp.com/api/v1/routines");
 }

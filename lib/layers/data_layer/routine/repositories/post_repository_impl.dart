@@ -3,7 +3,7 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/model/routine_model.dart';
 import '../../../../core/network/network_info.dart';
-import '../../domain/repositories/routine_repositories.dart';
+ import '../../../domain_layer/routine/repositories/routine_repositories.dart';
 import '../data_sources/routines_local_data_source.dart';
 import '../data_sources/routines_remote_data_source.dart';
 

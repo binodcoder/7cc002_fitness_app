@@ -2,14 +2,15 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
+import 'package:fitness_app/layers/presentation_layer/register/bloc/post_add_event.dart';
+import 'package:fitness_app/layers/presentation_layer/register/bloc/post_add_state.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../../../core/db/db_helper.dart';
-import '../../../home/domain/usecases/get_routines.dart';
-import '../../domain/usecases/post_post.dart';
-import '../../domain/usecases/update_post.dart';
-import 'post_add_event.dart';
-import 'post_add_state.dart';
+ import '../../../domain_layer/register/usecases/post_post.dart';
+import '../../../domain_layer/register/usecases/update_post.dart';
+import '../../../domain_layer/routine/usecases/get_routines.dart';
+
 
 class PostAddBloc extends Bloc<PostAddEvent, PostAddState> {
   final PostPosts postPosts;

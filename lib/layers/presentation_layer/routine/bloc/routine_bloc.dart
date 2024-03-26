@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:fitness_app/layers/presentation_layer/routine/bloc/routine_event.dart';
+import 'package:fitness_app/layers/presentation_layer/routine/bloc/routine_state.dart';
+
 import '../../../../core/db/db_helper.dart';
 import '../../../../core/entities/routine.dart';
 import '../../../../core/model/routine_model.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../../../add_post/domain/usecases/update_post.dart';
-import '../../domain/usecases/get_routines.dart';
-import 'routine_event.dart';
-import 'routine_state.dart';
+ import '../../../domain_layer/register/usecases/update_post.dart';
+import '../../../domain_layer/routine/usecases/get_routines.dart';
+
 
 class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
   final GetRoutines getRoutines;

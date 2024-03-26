@@ -1,17 +1,16 @@
-import 'dart:io';
+ import 'package:fitness_app/layers/presentation_layer/routine/ui/routine_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/db/db_helper.dart';
 import '../../../../drawer.dart';
-import '../../../../resources/colour_manager.dart';
 import '../../../../resources/strings_manager.dart';
-import '../../../appointment/presentation/add_appointment.dart';
+import '../../appointment/add_appointment.dart';
+import '../../register/ui/post_add.dart';
 import '../bloc/routine_bloc.dart';
+
+import '../../../../injection_container.dart';
 import '../bloc/routine_event.dart';
 import '../bloc/routine_state.dart';
-import '../../../add_post/presentation/ui/post_add.dart';
-import 'routine_details.dart';
-import '../../../../injection_container.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,17 +21,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final DatabaseHelper dbHelper = DatabaseHelper();
-
-  Widget _imageDisplay(String imagePath) {
-    return Container(
-      width: 50,
-      height: 50,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-      ),
-      child: Image.file(File(imagePath)),
-    );
-  }
 
   @override
   void initState() {
@@ -98,23 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
               appBar: AppBar(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(AppStrings.titleLabel),
-                    TextButton(
-                      onPressed: () async {
-                        postBloc.add(PostDeleteAllButtonClickedEvent());
-                      },
-                      child: Text(
-                        'Delete',
-                        style: TextStyle(
-                          color: ColorManager.white,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+                title: const Text(AppStrings.titleLabel),
               ),
               body: ListView.builder(
                 itemCount: successState.routineModelList.length,
@@ -132,29 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                     title: Text(routineModel.source),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(routineModel.description),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                postBloc.add(RoutineTileNavigateEvent(routineModel));
-                              },
-                              child: const Text(AppStrings.edit),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                postBloc.add(PostDeleteButtonClickedEvent(routineModel));
-                              },
-                              child: const Text(AppStrings.delete),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                    subtitle: Text(routineModel.description),
                   );
                 },
               ),

@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/model/routine_model.dart';
-import '../../domain/repositories/post_posts_repositories.dart';
+import '../../../domain_layer/register/repositories/post_posts_repositories.dart';
 import '../datasources/post_posts_local_data_sources.dart';
 
 class PostPostsRepositoriesImpl implements PostPostsRepository {
