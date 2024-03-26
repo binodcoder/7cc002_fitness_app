@@ -5,7 +5,7 @@ import '../../../../core/db/db_helper.dart';
 import '../../../../drawer.dart';
 import '../../../../resources/strings_manager.dart';
 import '../../appointment/add_appointment.dart';
-import '../../register/ui/post_add.dart';
+import '../../register/ui/register_page.dart';
 import '../bloc/routine_bloc.dart';
 
 import '../../../../injection_container.dart';
@@ -53,7 +53,7 @@ class _RoutinePageState extends State<RoutinePage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => AddPost(
+              builder: (BuildContext context) => RegisterPage(
                 routineModel: state.routineModel,
               ),
               fullscreenDialog: true,

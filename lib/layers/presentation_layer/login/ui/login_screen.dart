@@ -1,3 +1,4 @@
+import 'package:fitness_app/layers/presentation_layer/register/ui/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
 
@@ -20,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
 
   bool _passwordVisible = false;
-  TextEditingController userNameController=TextEditingController();
+  TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   late BearLogInController bearLogInController;
   Offset? caretView;
@@ -235,11 +236,27 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                     ),
                                     onPressed: () {
-                                     // _onLogin(readLoginServiceProvider);
+                                      // _onLogin(readLoginServiceProvider);
                                     },
                                   ),
                                   SizedBox(
                                     height: AppHeight.h10,
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: TextButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const RegisterPage(),
+                                            ),
+                                          );
+                                        },
+                                        child: Text(
+                                          'Register',
+                                        )),
                                   ),
                                 ],
                               ),

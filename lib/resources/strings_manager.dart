@@ -4,8 +4,8 @@ class AppStrings {
   static const String title = "Title";
   static const String content = "Content";
   static const String imageURL = "Image URL";
-  static const String addPost = "Add Post";
-  static const String updatePost = "Update Post";
+   static const String register = "Register";
+  static const String updateUser = "Update";
   static const String error = "Error";
   static const String edit = "Edit";
   static const String delete = "Delete";
