@@ -12,14 +12,14 @@ import '../../../../injection_container.dart';
 import '../bloc/routine_event.dart';
 import '../bloc/routine_state.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class RoutinePage extends StatefulWidget {
+  const RoutinePage({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<RoutinePage> createState() => _RoutinePageState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _RoutinePageState extends State<RoutinePage> {
   final DatabaseHelper dbHelper = DatabaseHelper();
 
   @override
