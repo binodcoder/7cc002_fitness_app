@@ -2,26 +2,26 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/db/db_helper.dart';
+import '../../../../core/model/user_model.dart';
 import '../../../../injection_container.dart';
 import '../../../../resources/colour_manager.dart';
 import '../../../../resources/font_manager.dart';
 import '../../../../resources/strings_manager.dart';
-import '../../../../core/model/routine_model.dart';
 import '../../../../resources/styles_manager.dart';
 import '../../../../resources/values_manager.dart';
 import '../../login/ui/login_screen.dart';
 import '../../login/widgets/sign_in_button.dart';
-import '../bloc/post_add_bloc.dart';
-import '../bloc/post_add_event.dart';
-import '../bloc/post_add_state.dart';
+import '../bloc/user_add_bloc.dart';
+import '../bloc/user_add_event.dart';
+import '../bloc/user_add_state.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({
     super.key,
-    this.routineModel,
+    this.userModel,
   });
 
-  final RoutineModel? routineModel;
+  final UserModel? userModel;
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -35,6 +35,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController genderController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController conformPasswordController =
+      TextEditingController();
 
   final DatabaseHelper dbHelper = DatabaseHelper();
   bool _passwordVisible = false;
@@ -42,35 +44,35 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void initState() {
-    if (widget.routineModel != null) {
-      // userNameController.text=widget.routineModel!.name;
-      //   emailController.text=widget.routineModel.email;
-      // institutionEmailController.text=widget.routineModel.;
-      // genderController.text=widget.routineModel!.name;
-      // ageController .text=widget.routineModel!.name;
-      // passwordController.text=widget.routineModel!.name;
-      postAddBloc.add(PostAddReadyToUpdateEvent(widget.routineModel!));
+    if (widget.userModel != null) {
+      userNameController.text = widget.userModel!.name;
+      emailController.text = widget.userModel!.email;
+      institutionEmailController.text = widget.userModel!.institutionEmail;
+      genderController.text = widget.userModel!.gender;
+      ageController.text = widget.userModel!.age.toString();
+      passwordController.text = widget.userModel!.password;
+      userAddBloc.add(UserAddReadyToUpdateEvent(widget.userModel!));
     } else {
-      postAddBloc.add(PostAddInitialEvent());
+      userAddBloc.add(UserAddInitialEvent());
     }
     super.initState();
   }
 
-  final PostAddBloc postAddBloc = sl<PostAddBloc>();
+  final UserAddBloc userAddBloc = sl<UserAddBloc>();
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return BlocConsumer<PostAddBloc, PostAddState>(
-      bloc: postAddBloc,
-      listenWhen: (previous, current) => current is PostAddActionState,
-      buildWhen: (previous, current) => current is! PostAddActionState,
+    return BlocConsumer<UserAddBloc, UserAddState>(
+      bloc: userAddBloc,
+      listenWhen: (previous, current) => current is UserAddActionState,
+      buildWhen: (previous, current) => current is! UserAddActionState,
       listener: (context, state) {
-        if (state is AddPostSavedState) {
+        if (state is AddUserSavedState) {
           // sourceController.clear();
           // descriptionController.clear();
           Navigator.pop(context);
-        } else if (state is AddPostUpdatedState) {
+        } else if (state is AddUserUpdatedState) {
           // sourceController.clear();
           // descriptionController.clear();
           Navigator.pop(context);
@@ -408,7 +410,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: AppHeight.h10,
                     ),
                     TextFormField(
-                      controller:  passwordController,
+                      controller: conformPasswordController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return '*Required';
@@ -459,7 +461,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     SigninButton(
                       child: Text(
-                        widget.routineModel == null
+                        widget.userModel == null
                             ? AppStrings.register
                             : AppStrings.updateUser,
                         style: getRegularStyle(
@@ -468,32 +470,38 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       onPressed: () async {
-                        var source = userNameController.text;
-                        var description = emailController.text;
-                        if (source.isNotEmpty && description.isNotEmpty) {
-                          if (widget.routineModel != null) {
-                           // var updatedPost =
-                                //RoutineModel(
-                              // id: widget.routineModel!.id,
-                              // description: us.text,
-                              // source: sourceController.text,
-                              // name: '',
-                              // difficulty: '',
-                              // duration: 0,
-                          //  );
-                        //    postAddBloc.add(
-                               // PostAddUpdateButtonPressEvent(updatedPost));
+                        var username = userNameController.text;
+                        var email = emailController.text;
+                        var institutionEmail = institutionEmailController.text;
+                        var gender = genderController.text;
+                        var age = ageController.text;
+                        var password = passwordController.text;
+                        if (username.isNotEmpty && email.isNotEmpty) {
+                          if (widget.userModel != null) {
+                            var updatedUser = UserModel(
+                              age: int.parse(age),
+                              email:email,
+                              gender: gender,
+                              id: widget.userModel!.id,
+                              institutionEmail: institutionEmail,
+                              name: username,
+                              password: password,
+                            );
+                            userAddBloc.add(
+                                UserAddUpdateButtonPressEvent(updatedUser));
                           } else {
-                            // var newPost = RoutineModel(
-                            //   id: 0,
-                            //   description: descriptionController.text,
-                            //   source: sourceController.text,
-                            //   name: '',
-                            //   difficulty: '',
-                            //   duration: 0,
-                            // );
-                            // postAddBloc
-                            //     .add(PostAddSaveButtonPressEvent(newPost));
+                            var newUser = UserModel(
+                              age: int.parse(age),
+                              email:email,
+                              gender: gender,
+                              // id: widget.userModel!.id,
+                              institutionEmail: institutionEmail,
+                              name: username,
+                              password: password,
+                              
+                            );
+                            userAddBloc
+                                .add(UserAddSaveButtonPressEvent(newUser));
                           }
                         }
                       },

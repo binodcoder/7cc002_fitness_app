@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:fitness_app/core/model/user_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../model/routine_model.dart';
@@ -36,7 +37,7 @@ class DatabaseHelper {
     });
   }
 
-  Future<int> insertPost(RoutineModel post) async {
+  Future<int> insertUser(UserModel post) async {
     final db = await database;
     return await db!.insert('routine', post.toJson());
   }
@@ -56,7 +57,7 @@ class DatabaseHelper {
     });
   }
 
-  Future<int> updatePost(RoutineModel post) async {
+  Future<int> updatePost(UserModel post) async {
     final db = await database;
     return await db!.update(
       'routine',

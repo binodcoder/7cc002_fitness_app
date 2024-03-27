@@ -7,8 +7,8 @@ class RoutineInitialEvent extends RoutineEvent {}
 class PostEditButtonClickedEvent extends RoutineEvent {}
 
 class PostDeleteButtonClickedEvent extends RoutineEvent {
-  final RoutineModel postModel;
-  PostDeleteButtonClickedEvent(this.postModel);
+  final RoutineModel routineModel;
+  PostDeleteButtonClickedEvent(this.routineModel);
 }
 
 class PostDeleteAllButtonClickedEvent extends RoutineEvent {}

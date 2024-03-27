@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
  import 'injection_container.dart';
 import 'injection_container.dart' as di;
-import 'layers/presentation_layer/register/bloc/post_add_bloc.dart';
+import 'layers/presentation_layer/register/bloc/user_add_bloc.dart';
 import 'layers/presentation_layer/routine/bloc/routine_bloc.dart';
 import 'layers/presentation_layer/routine/ui/routine.dart';
 
@@ -27,8 +27,8 @@ class MyApp extends StatelessWidget {
         BlocProvider<RoutineBloc>(
           create: (BuildContext context) => sl<RoutineBloc>(),
         ),
-        BlocProvider<PostAddBloc>(
-          create: (BuildContext context) => sl<PostAddBloc>(),
+        BlocProvider<UserAddBloc>(
+          create: (BuildContext context) => sl<UserAddBloc>(),
         ),
       ],
       child: const ScreenUtilInit(

@@ -6,6 +6,7 @@ import '../../../../resources/colour_manager.dart';
 import '../../../../resources/font_manager.dart';
 import '../../../../resources/styles_manager.dart';
 import '../../../../resources/values_manager.dart';
+import '../../routine/ui/routine.dart';
 import '../widgets/bear_log_in_controller.dart';
 import '../widgets/sign_in_button.dart';
 import '../widgets/tracking_text_input.dart';
@@ -236,6 +237,13 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                     ),
                                     onPressed: () {
+                                      Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const RoutinePage(),
+                                        ),
+                                      );
+
                                       // _onLogin(readLoginServiceProvider);
                                     },
                                   ),

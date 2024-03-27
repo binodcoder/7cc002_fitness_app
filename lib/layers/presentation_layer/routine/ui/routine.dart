@@ -53,7 +53,7 @@ class _RoutinePageState extends State<RoutinePage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => RegisterPage(
+              builder: (BuildContext context) => RoutineDetailsPage(
                 routineModel: state.routineModel,
               ),
               fullscreenDialog: true,
