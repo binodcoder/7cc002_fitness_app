@@ -1,9 +1,12 @@
 
 import 'dart:convert';
 
-List<RoutineModel> routineModelFromJson(String str) => List<RoutineModel>.from(json.decode(str).map((x) => RoutineModel.fromJson(x)));
+List<RoutineModel> routineModelsFromJson(String str) => List<RoutineModel>.from(json.decode(str).map((x) => RoutineModel.fromJson(x)));
 
-String routineModelToJson(List<RoutineModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String routineModelsToJson(List<RoutineModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+RoutineModel routineModelFromJson(String str) => RoutineModel.fromJson(json.decode(str));
+
+String routineModelToJson(RoutineModel data) => json.encode(data.toJson());
 
 class RoutineModel {
   int id;

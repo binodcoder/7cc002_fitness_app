@@ -1,16 +1,16 @@
 import 'package:dartz/dartz.dart';
 import 'package:fitness_app/core/model/user_model.dart';
 import '../../../../core/errors/failures.dart';
- import '../../../../core/usecases/usecase.dart';
-import '../repositories/update_user_repository.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../repositories/user_repositories.dart';
 
 class UpdateUser implements UseCase<int, UserModel> {
-  UpdateUserRepository updateUserRepository;
+  UserRepository userRepository;
 
-  UpdateUser(this.updateUserRepository);
+  UpdateUser(this.userRepository);
 
   @override
   Future<Either<Failure, int>?> call(UserModel userModel) async {
-    return await updateUserRepository.updateUser(userModel);
+    return await userRepository.updateUser(userModel);
   }
 }

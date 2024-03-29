@@ -5,8 +5,8 @@ import '../../../../core/errors/failures.dart';
 import '../../../../core/model/routine_model.dart';
 import '../../../../core/model/sync_data_model.dart';
 import '../../../domain_layer/appointment/repositories/sync_repositories.dart';
-import '../../../domain_layer/register/repositories/add_user_repositories.dart';
-import '../datasources/sync_data_source.dart';
+import '../../../domain_layer/register/repositories/user_repositories.dart';
+import '../datasources/sync_remote_data_source.dart';
 
 class SyncRepositoryImpl implements SyncRepository {
   final SyncRemoteDataSource syncRemoteDataSource;

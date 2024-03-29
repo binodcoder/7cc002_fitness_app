@@ -2,10 +2,10 @@ import 'package:fitness_app/core/model/user_model.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import 'package:dartz/dartz.dart';
-import '../repositories/add_user_repositories.dart';
+import '../repositories/user_repositories.dart';
 
 class AddUser implements UseCase<int, UserModel> {
-  final AddUserRepository addUserRepository;
+  final UserRepository addUserRepository;
 
   AddUser(this.addUserRepository);
 

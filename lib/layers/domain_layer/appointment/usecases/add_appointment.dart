@@ -3,10 +3,10 @@ import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import 'package:dartz/dartz.dart';
 
-import '../repositories/add_appointment_repositories.dart';
+import '../repositories/appointment_repositories.dart';
 
 class AddAppointment implements UseCase<int, AppointmentModel> {
-  final AddAppointmentRepositories addAppointmentRepositories;
+  final  AppointmentRepositories addAppointmentRepositories;
 
   AddAppointment(this.addAppointmentRepositories);
 

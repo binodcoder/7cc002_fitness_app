@@ -5,7 +5,7 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/model/routine_model.dart';
 import '../../../domain_layer/login/repositories/login_repositories.dart';
-import '../../../domain_layer/register/repositories/add_user_repositories.dart';
+import '../../../domain_layer/register/repositories/user_repositories.dart';
 import '../datasources/login_remote_data_source.dart';
 
 class LoginRepositoryImpl implements LoginRepository {

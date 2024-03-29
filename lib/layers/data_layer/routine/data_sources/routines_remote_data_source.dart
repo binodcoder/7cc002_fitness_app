@@ -15,7 +15,7 @@ class RoutineRemoteDataSourceImpl implements RoutineRemoteDataSource {
   Future<List<RoutineModel>> _getRoutines(String url) async {
     final response = await client.get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
-      return routineModelFromJson(response.body);
+      return routineModelsFromJson(response.body);
       //   return RoutineModel.fromJson(json.decode(response.body));
     } else {
       throw ServerException();

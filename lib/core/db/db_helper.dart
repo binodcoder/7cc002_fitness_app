@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:fitness_app/core/model/user_model.dart';
+import 'package:fitness_app/core/model/walk_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../model/routine_model.dart';
@@ -53,6 +54,21 @@ class DatabaseHelper {
         name: '',
         difficulty: '',
         duration: 0,
+      );
+    });
+  }
+
+  Future<List<WalkModel>> getWalks() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db!.query('routine');
+    return List.generate(maps.length, (i) {
+      return WalkModel(
+        id: 1,
+        proposerId: 1,
+        routeData: '',
+        date: DateTime.now(),
+        startTime: '',
+        startLocation: '',
       );
     });
   }
