@@ -38,4 +38,26 @@ class AppointmentRepositoriesImpl implements AppointmentRepositories {
       return Left(CacheFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, int>>? deleteAppointment(int appointmentId) async {
+    try {
+      int response =
+          await appointmentRemoteDataSource.deleteAppointment(appointmentId);
+      return Right(response);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<AppointmentModel>>>? getAppointments() async {
+    try {
+      List<AppointmentModel> response =
+          await appointmentRemoteDataSource.getAppointments();
+      return Right(response);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
 }

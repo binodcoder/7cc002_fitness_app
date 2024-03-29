@@ -6,12 +6,12 @@ import 'package:dartz/dartz.dart';
 import '../repositories/walk_repositories.dart';
 
 class AddWalk implements UseCase<int, WalkModel> {
-  final WalkRepository addWalkRepository;
+  final WalkRepository walkRepository;
 
-  AddWalk(this.addWalkRepository);
+  AddWalk(this.walkRepository);
 
   @override
   Future<Either<Failure, int>?> call(WalkModel walkModel) async {
-    return await addWalkRepository.addWalk(walkModel);
+    return await walkRepository.addWalk(walkModel);
   }
 }

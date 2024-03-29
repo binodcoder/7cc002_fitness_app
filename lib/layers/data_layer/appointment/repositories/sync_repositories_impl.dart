@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
- import 'package:fitness_app/core/model/user_model.dart';
+import 'package:fitness_app/core/model/user_model.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/model/routine_model.dart';

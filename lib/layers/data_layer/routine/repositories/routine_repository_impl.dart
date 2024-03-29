@@ -38,4 +38,34 @@ class RoutineRepositoryImpl implements RoutineRepository {
       }
     }
   }
+
+  @override
+  Future<Either<Failure, int>>? addRoutine(RoutineModel routineModel) async {
+    try {
+      int response = await routineRemoteDataSource.addRoutine(routineModel);
+      return Right(response);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>>? deleteRoutine(int routineId) async {
+    try {
+      int response = await routineRemoteDataSource.deleteRoutine(routineId);
+      return Right(response);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>>? updateRoutine(RoutineModel routineModel) async {
+    try {
+      int response = await routineRemoteDataSource.updateRoutine(routineModel);
+      return Right(response);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
 }

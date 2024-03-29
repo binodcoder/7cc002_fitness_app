@@ -7,7 +7,7 @@ abstract class AppointmentRemoteDataSource {
   Future<int> addAppointment(AppointmentModel appointmentModel);
   Future<int> updateAppointment(AppointmentModel appointmentModel);
   Future<int> deleteAppointment(int appointmentId);
-  Future<List<AppointmentModel>> getAllAppointments();
+  Future<List<AppointmentModel>> getAppointments();
 }
 
 class AppointmentRemoteDataSourceImpl implements AppointmentRemoteDataSource {
@@ -87,12 +87,12 @@ class AppointmentRemoteDataSourceImpl implements AppointmentRemoteDataSource {
           appointmentModel);
 
   @override
-  Future<List<AppointmentModel>> getAllAppointments() => _getAppointments(
-      "https://wlv-c4790072fbf0.herokuapp.com/api/v1/appointments");
-
-  @override
   Future<int> deleteAppointment(int appointmentId) =>
       _deleteAppointmentFromRemote(
         "https://wlv-c4790072fbf0.herokuapp.com/api/v1/appointments/$appointmentId",
       );
+
+  @override
+  Future<List<AppointmentModel>> getAppointments() => _getAppointments(
+      "https://wlv-c4790072fbf0.herokuapp.com/api/v1/appointments");
 }

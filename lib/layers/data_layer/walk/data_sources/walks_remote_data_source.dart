@@ -1,11 +1,15 @@
 import 'package:http/http.dart' as http;
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/model/walk_model.dart';
+import '../../../../core/model/walk_participant_model.dart';
 
 abstract class WalkRemoteDataSource {
   Future<List<WalkModel>> getWalks();
   Future<int> addWalk(WalkModel walkModel);
   Future<int> updateWalk(WalkModel walkModel);
+  Future<int> deleteWalk(int userId);
+  Future<int> joinWalk(WalkParticipantModel walkParticipantModel);
+  Future<int> leaveWalk(WalkParticipantModel walkParticipantModel);
 }
 
 class WalkRemoteDataSourceImpl implements WalkRemoteDataSource {
@@ -50,6 +54,44 @@ class WalkRemoteDataSourceImpl implements WalkRemoteDataSource {
     }
   }
 
+  Future<int> _deleteWalk(String url) async {
+    final response = await client.delete(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+    );
+    if (response.statusCode == 201) {
+      return 1;
+    } else {
+      throw ServerException();
+    }
+  }
+
+  Future<int> _joinWalk(
+      String url, WalkParticipantModel walkParticipantModel) async {
+    final response = await client.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: walkParticipantModel.toJson(),
+    );
+    if (response.statusCode == 201) {
+      return 1;
+    } else {
+      throw ServerException();
+    }
+  }
+
+  Future<int> _leaveWalk(String url) async {
+    final response = await client.delete(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+    );
+    if (response.statusCode == 201) {
+      return 1;
+    } else {
+      throw ServerException();
+    }
+  }
+
   @override
   Future<List<WalkModel>> getWalks() =>
       _getWalks("https://wlv-c4790072fbf0.herokuapp.com/api/v1/walks");
@@ -65,4 +107,18 @@ class WalkRemoteDataSourceImpl implements WalkRemoteDataSource {
         "https://wlv-c4790072fbf0.herokuapp.com/api/v1/walks/${walkModel.id}",
         walkModel,
       );
+
+  @override
+  Future<int> deleteWalk(int userId) => _deleteWalk(
+      "https://wlv-c4790072fbf0.herokuapp.com/api/v1/walks/$userId");
+
+  @override
+  Future<int> joinWalk(WalkParticipantModel walkParticipantModel) => _joinWalk(
+        "https://wlv-c4790072fbf0.herokuapp.com/api/v1/walks",
+        walkParticipantModel,
+      );
+
+  @override
+  Future<int> leaveWalk(WalkParticipantModel walkParticipantModel) =>
+      _leaveWalk("https://wlv-c4790072fbf0.herokuapp.com/api/v1/walks");
 }
