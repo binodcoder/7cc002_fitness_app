@@ -5,13 +5,13 @@ import '../../../../core/usecases/usecase.dart';
 import 'package:dartz/dartz.dart';
 import '../repositories/login_repositories.dart';
 
-class Login implements UseCase<int, LoginModel> {
+class Login implements UseCase<UserModel, LoginModel> {
   final LoginRepository loginRepository;
 
   Login(this.loginRepository);
 
   @override
-  Future<Either<Failure, int>?> call(LoginModel loginModel) async {
+  Future<Either<Failure, UserModel>?> call(LoginModel loginModel) async {
     return await loginRepository.login(loginModel);
   }
 }

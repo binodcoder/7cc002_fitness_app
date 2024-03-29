@@ -4,5 +4,5 @@ import '../../../../core/errors/failures.dart';
 import '../../../../core/model/user_model.dart';
 
 abstract class LoginRepository {
-  Future<Either<Failure, int>>? login(LoginModel loginModel);
+  Future<Either<Failure, UserModel>>? login(LoginModel loginModel);
 }

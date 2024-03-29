@@ -8,7 +8,7 @@ import '../../../../core/db/db_helper.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../../domain_layer/appointment/usecases/add_appointment.dart';
 import '../../../domain_layer/appointment/usecases/update_appointment.dart';
-import '../../../domain_layer/login/usecases/sync.dart';
+import '../../../domain_layer/appointment/usecases/sync.dart';
 import '../../../domain_layer/routine/usecases/get_routines.dart';
 import 'appointment_add_event.dart';
 import 'appointment_add_state.dart';

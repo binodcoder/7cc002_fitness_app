@@ -15,9 +15,9 @@ class LoginRepositoryImpl implements LoginRepository {
   });
 
   @override
-  Future<Either<Failure, int>>? login(LoginModel loginModel) async {
+  Future<Either<Failure, UserModel>>? login(LoginModel loginModel) async {
     try {
-      int response = await loginRemoteDataSource.login(loginModel);
+      UserModel response = await loginRemoteDataSource.login(loginModel);
       return Right(response);
     } on CacheException {
       return Left(CacheFailure());

@@ -4,7 +4,7 @@ import '../../../../core/model/login_model.dart';
 import '../../../../core/model/user_model.dart';
 
 abstract class LoginRemoteDataSource {
-  Future<int> login(LoginModel loginModel);
+  Future<UserModel> login(LoginModel loginModel);
 }
 
 class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
@@ -12,7 +12,7 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
 
   LoginRemoteDataSourceImpl({required this.client});
 
-  Future<int> _login(String url, LoginModel loginModel) async {
+  Future<UserModel> _login(String url, LoginModel loginModel) async {
     final response = await client.post(
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
@@ -21,13 +21,13 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
       ),
     );
     if (response.statusCode == 200) {
-      return 1;
+      return userModelFromJson(response.body);
     } else {
       throw ServerException();
     }
   }
 
   @override
-  Future<int> login(LoginModel loginModel) => _login(
+  Future<UserModel> login(LoginModel loginModel) => _login(
       "https://wlv-c4790072fbf0.herokuapp.com/api/v1/users/login", loginModel);
 }

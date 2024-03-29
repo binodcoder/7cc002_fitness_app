@@ -22,7 +22,7 @@ class AddAppointmentToRemoteDataSourceImpl
         appointmentModel,
       ),
     );
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       return 1;
     } else {
       throw ServerException();

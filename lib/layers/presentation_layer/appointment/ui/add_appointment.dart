@@ -5,6 +5,7 @@ import 'package:fitness_app/layers/presentation_layer/login/bloc/login_bloc.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/model/sync_data_model.dart';
 import '../../../../global.dart';
 import '../../../../injection_container.dart';
@@ -28,6 +29,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
   final _formKey = GlobalKey<FormState>();
   bool focus = false;
   final AppointmentAddBloc appointmentAddBloc = sl<AppointmentAddBloc>();
+  final SharedPreferences sharedPreferences = sl<SharedPreferences>();
 
   @override
   void initState() {
@@ -518,11 +520,14 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                                       //         appointmentModel));
                                     } else {
                                       var appointmentModel = AppointmentModel(
+
                                         date: selectedDate,
                                         endTime: _timeController.text,
                                         startTime: _timeController.text,
-                                        trainerId: selectedTrainer?.id??1,
-                                        userId: 1,
+                                        trainerId: selectedTrainer?.id ?? 1,
+                                        userId: sharedPreferences
+                                                .getInt("user_id") ??
+                                            1,
                                       );
                                       appointmentAddBloc.add(
                                           AppointmentAddSaveButtonPressEvent(
