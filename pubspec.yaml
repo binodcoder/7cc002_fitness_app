@@ -56,6 +56,8 @@ dependencies:
   shared_preferences: ^2.2.2
   flare_flutter: ^3.0.2
   fluttertoast: ^8.0.9
+  intl: ^0.19.0
+  dropdown_button2: ^2.3.9
 
 dev_dependencies:
   flutter_test:

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/db/db_helper.dart';
 import '../../../../drawer.dart';
 import '../../../../resources/strings_manager.dart';
-import '../../appointment/add_appointment.dart';
+import '../../appointment/ui/add_appointment.dart';
 import '../../register/ui/register_page.dart';
 import '../bloc/routine_bloc.dart';
 
