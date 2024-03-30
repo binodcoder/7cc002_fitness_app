@@ -41,7 +41,7 @@ class _RoutinePageState extends State<RoutinePage> {
       listenWhen: (previous, current) => current is RoutineActionState,
       buildWhen: (previous, current) => current is! RoutineActionState,
       listener: (context, state) {
-        if (state is RoutineNavigateToAddPostActionState) {
+        if (state is RoutineNavigateToAddRoutineActionState) {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -82,7 +82,7 @@ class _RoutinePageState extends State<RoutinePage> {
                 backgroundColor: Colors.blue,
                 child: const Icon(Icons.add),
                 onPressed: () {
-                  postBloc.add(PostAddButtonClickedEvent());
+                  postBloc.add(RoutineAddButtonClickedEvent());
                 },
               ),
               appBar: AppBar(
