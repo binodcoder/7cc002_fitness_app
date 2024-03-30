@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import '../../../../core/model/routine_model.dart';
+ import '../../../../core/model/walk_media_model.dart';
 import '../../../../resources/colour_manager.dart';
 import '../../../../resources/font_manager.dart';
 import '../../../../resources/values_manager.dart';
 
-class RoutineDetailsPage extends StatefulWidget {
-  const RoutineDetailsPage({
+class WalkMediaDetailsPage extends StatefulWidget {
+  const WalkMediaDetailsPage({
     Key? key,
-    this.routineModel,
+    this.walkMediaModel,
   }) : super(key: key);
 
-  final RoutineModel? routineModel;
+  final WalkMediaModel? walkMediaModel;
 
   @override
-  State<RoutineDetailsPage> createState() => _RoutineDetailsPageState();
+  State<WalkMediaDetailsPage> createState() => _WalkMediaDetailsPageState();
 }
 
-class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
+class _WalkMediaDetailsPageState extends State<WalkMediaDetailsPage> {
   @override
   void initState() {
     super.initState();
@@ -47,7 +47,7 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
         backgroundColor: ColorManager.white,
         elevation: 0,
         title: Text(
-          'Routine Details',
+          'WalkMedia Details',
           style: TextStyle(
             color: ColorManager.primary,
             fontWeight: FontWeight.bold,
@@ -67,13 +67,13 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
               contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
               tileColor: ColorManager.white,
               title: Text(
-                widget.routineModel!.source,
+                widget.walkMediaModel!.mediaUrl,
                 style: const TextStyle(
                   fontSize: FontSize.s20,
                 ),
               ),
               subtitle: Text(
-                widget.routineModel!.description,
+                widget.walkMediaModel!.userId.toString(),
                 style: const TextStyle(fontSize: FontSize.s14),
               ),
             ),

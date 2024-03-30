@@ -4,16 +4,16 @@ abstract class RoutineEvent {}
 
 class RoutineInitialEvent extends RoutineEvent {}
 
-class PostEditButtonClickedEvent extends RoutineEvent {}
+class RoutineEditButtonClickedEvent extends RoutineEvent {}
 
-class PostDeleteButtonClickedEvent extends RoutineEvent {
+class RoutineDeleteButtonClickedEvent extends RoutineEvent {
   final RoutineModel routineModel;
-  PostDeleteButtonClickedEvent(this.routineModel);
+  RoutineDeleteButtonClickedEvent(this.routineModel);
 }
 
-class PostDeleteAllButtonClickedEvent extends RoutineEvent {}
+class RoutineDeleteAllButtonClickedEvent extends RoutineEvent {}
 
-class PostAddButtonClickedEvent extends RoutineEvent {}
+class RoutineAddButtonClickedEvent extends RoutineEvent {}
 
 class RoutineTileNavigateEvent extends RoutineEvent {
   final RoutineModel routineModel;

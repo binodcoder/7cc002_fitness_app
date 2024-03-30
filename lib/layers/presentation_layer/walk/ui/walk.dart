@@ -1,4 +1,4 @@
- import 'package:fitness_app/layers/presentation_layer/routine/ui/routine_details.dart';
+import 'package:fitness_app/layers/presentation_layer/walk/ui/walk_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/db/db_helper.dart';
@@ -6,42 +6,41 @@ import '../../../../drawer.dart';
 import '../../../../resources/strings_manager.dart';
 import '../../appointment/ui/add_appointment.dart';
 import '../../register/ui/register_page.dart';
-import '../bloc/routine_bloc.dart';
-
+import '../bloc/walk_bloc.dart';
 import '../../../../injection_container.dart';
-import '../bloc/routine_event.dart';
-import '../bloc/routine_state.dart';
+import '../bloc/walk_event.dart';
+import '../bloc/walk_state.dart';
 
-class RoutinePage extends StatefulWidget {
-  const RoutinePage({super.key});
+class WalkPage extends StatefulWidget {
+  const WalkPage({super.key});
 
   @override
-  State<RoutinePage> createState() => _RoutinePageState();
+  State<WalkPage> createState() => _WalkPageState();
 }
 
-class _RoutinePageState extends State<RoutinePage> {
+class _WalkPageState extends State<WalkPage> {
   final DatabaseHelper dbHelper = DatabaseHelper();
 
   @override
   void initState() {
-    postBloc.add(RoutineInitialEvent());
+    walkBloc.add(WalkInitialEvent());
     super.initState();
   }
 
   void refreshPage() {
-    postBloc.add(RoutineInitialEvent());
+    walkBloc.add(WalkInitialEvent());
   }
 
-  RoutineBloc postBloc = sl<RoutineBloc>();
+  WalkBloc walkBloc = sl<WalkBloc>();
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<RoutineBloc, RoutineState>(
-      bloc: postBloc,
-      listenWhen: (previous, current) => current is RoutineActionState,
-      buildWhen: (previous, current) => current is! RoutineActionState,
+    return BlocConsumer<WalkBloc, WalkState>(
+      bloc: walkBloc,
+      listenWhen: (previous, current) => current is WalkActionState,
+      buildWhen: (previous, current) => current is! WalkActionState,
       listener: (context, state) {
-        if (state is RoutineNavigateToAddPostActionState) {
+        if (state is WalkNavigateToAddWalkActionState) {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -49,67 +48,67 @@ class _RoutinePageState extends State<RoutinePage> {
               fullscreenDialog: true,
             ),
           );
-        } else if (state is RoutineNavigateToDetailPageActionState) {
+        } else if (state is WalkNavigateToDetailPageActionState) {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => RoutineDetailsPage(
-                routineModel: state.routineModel,
+              builder: (BuildContext context) => WalkDetailsPage(
+                walkModel: state.walkModel,
               ),
               fullscreenDialog: true,
             ),
           ).then(
             (value) => refreshPage(),
           );
-        } else if (state is RoutineNavigateToUpdatePageActionState) {
-        } else if (state is RoutineItemSelectedActionState) {
-        } else if (state is RoutineItemDeletedActionState) {
-        } else if (state is RoutineItemsDeletedActionState) {}
+        } else if (state is WalkNavigateToUpdatePageActionState) {
+        } else if (state is WalkItemSelectedActionState) {
+        } else if (state is WalkItemDeletedActionState) {
+        } else if (state is WalkItemsDeletedActionState) {}
       },
       builder: (context, state) {
         switch (state.runtimeType) {
-          case RoutineLoadingState:
+          case WalkLoadingState:
             return const Scaffold(
               body: Center(
                 child: CircularProgressIndicator(),
               ),
             );
-          case RoutineLoadedSuccessState:
-            final successState = state as RoutineLoadedSuccessState;
+          case WalkLoadedSuccessState:
+            final successState = state as WalkLoadedSuccessState;
             return Scaffold(
               drawer: const MyDrawer(),
               floatingActionButton: FloatingActionButton(
                 backgroundColor: Colors.blue,
                 child: const Icon(Icons.add),
                 onPressed: () {
-                  postBloc.add(PostAddButtonClickedEvent());
+                  walkBloc.add(WalkAddButtonClickedEvent());
                 },
               ),
               appBar: AppBar(
                 title: const Text(AppStrings.titleLabel),
               ),
               body: ListView.builder(
-                itemCount: successState.routineModelList.length,
+                itemCount: successState.walkModelList.length,
                 itemBuilder: (context, index) {
-                  var routineModel = successState.routineModelList[index];
+                  var walkModel = successState.walkModelList[index];
                   return ListTile(
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (BuildContext context) => RoutineDetailsPage(
-                            routineModel: routineModel,
+                          builder: (BuildContext context) => WalkDetailsPage(
+                            walkModel: walkModel,
                           ),
                         ),
                       );
                     },
-                    title: Text(routineModel.source),
-                    subtitle: Text(routineModel.description),
+                    title: Text(walkModel.startLocation),
+                    subtitle: Text(walkModel.date.toString()),
                   );
                 },
               ),
             );
-          case RoutineErrorState:
+          case WalkErrorState:
             return const Scaffold(body: Center(child: Text('Error')));
           default:
             return const SizedBox();

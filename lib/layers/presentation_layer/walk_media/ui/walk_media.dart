@@ -1,4 +1,4 @@
- import 'package:fitness_app/layers/presentation_layer/routine/ui/routine_details.dart';
+import 'package:fitness_app/layers/presentation_layer/walk_media/ui/walk_media_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/db/db_helper.dart';
@@ -6,42 +6,41 @@ import '../../../../drawer.dart';
 import '../../../../resources/strings_manager.dart';
 import '../../appointment/ui/add_appointment.dart';
 import '../../register/ui/register_page.dart';
-import '../bloc/routine_bloc.dart';
-
+import '../bloc/walk_mecia_bloc.dart';
 import '../../../../injection_container.dart';
-import '../bloc/routine_event.dart';
-import '../bloc/routine_state.dart';
+import '../bloc/walk_media_event.dart';
+import '../bloc/walk_media_state.dart';
 
-class RoutinePage extends StatefulWidget {
-  const RoutinePage({super.key});
+class WalkMediaPage extends StatefulWidget {
+  const WalkMediaPage({super.key});
 
   @override
-  State<RoutinePage> createState() => _RoutinePageState();
+  State<WalkMediaPage> createState() => _WalkMediaPageState();
 }
 
-class _RoutinePageState extends State<RoutinePage> {
+class _WalkMediaPageState extends State<WalkMediaPage> {
   final DatabaseHelper dbHelper = DatabaseHelper();
 
   @override
   void initState() {
-    postBloc.add(RoutineInitialEvent());
+    walkMediaBloc.add(WalkMediaInitialEvent());
     super.initState();
   }
 
   void refreshPage() {
-    postBloc.add(RoutineInitialEvent());
+    walkMediaBloc.add(WalkMediaInitialEvent());
   }
 
-  RoutineBloc postBloc = sl<RoutineBloc>();
+  WalkMediaBloc walkMediaBloc = sl<WalkMediaBloc>();
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<RoutineBloc, RoutineState>(
-      bloc: postBloc,
-      listenWhen: (previous, current) => current is RoutineActionState,
-      buildWhen: (previous, current) => current is! RoutineActionState,
+    return BlocConsumer<WalkMediaBloc, WalkMediaState>(
+      bloc: walkMediaBloc,
+      listenWhen: (previous, current) => current is WalkMediaActionState,
+      buildWhen: (previous, current) => current is! WalkMediaActionState,
       listener: (context, state) {
-        if (state is RoutineNavigateToAddPostActionState) {
+        if (state is WalkMediaNavigateToAddWalkMediaActionState) {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -49,67 +48,67 @@ class _RoutinePageState extends State<RoutinePage> {
               fullscreenDialog: true,
             ),
           );
-        } else if (state is RoutineNavigateToDetailPageActionState) {
+        } else if (state is WalkMediaNavigateToDetailPageActionState) {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => RoutineDetailsPage(
-                routineModel: state.routineModel,
+              builder: (BuildContext context) => WalkMediaDetailsPage(
+                walkMediaModel: state.walkMediaModel,
               ),
               fullscreenDialog: true,
             ),
           ).then(
             (value) => refreshPage(),
           );
-        } else if (state is RoutineNavigateToUpdatePageActionState) {
-        } else if (state is RoutineItemSelectedActionState) {
-        } else if (state is RoutineItemDeletedActionState) {
-        } else if (state is RoutineItemsDeletedActionState) {}
+        } else if (state is WalkMediaNavigateToUpdatePageActionState) {
+        } else if (state is WalkMediaItemSelectedActionState) {
+        } else if (state is WalkMediaItemDeletedActionState) {
+        } else if (state is WalkMediaItemsDeletedActionState) {}
       },
       builder: (context, state) {
         switch (state.runtimeType) {
-          case RoutineLoadingState:
+          case WalkMediaLoadingState:
             return const Scaffold(
               body: Center(
                 child: CircularProgressIndicator(),
               ),
             );
-          case RoutineLoadedSuccessState:
-            final successState = state as RoutineLoadedSuccessState;
+          case WalkMediaLoadedSuccessState:
+            final successState = state as WalkMediaLoadedSuccessState;
             return Scaffold(
               drawer: const MyDrawer(),
               floatingActionButton: FloatingActionButton(
                 backgroundColor: Colors.blue,
                 child: const Icon(Icons.add),
                 onPressed: () {
-                  postBloc.add(PostAddButtonClickedEvent());
+                  walkMediaBloc.add(WalkMediaAddButtonClickedEvent());
                 },
               ),
               appBar: AppBar(
                 title: const Text(AppStrings.titleLabel),
               ),
               body: ListView.builder(
-                itemCount: successState.routineModelList.length,
+                itemCount: successState.walkMediaModelList.length,
                 itemBuilder: (context, index) {
-                  var routineModel = successState.routineModelList[index];
+                  var walkMediaModel = successState.walkMediaModelList[index];
                   return ListTile(
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (BuildContext context) => RoutineDetailsPage(
-                            routineModel: routineModel,
+                          builder: (BuildContext context) => WalkMediaDetailsPage(
+                            walkMediaModel: walkMediaModel,
                           ),
                         ),
                       );
                     },
-                    title: Text(routineModel.source),
-                    subtitle: Text(routineModel.description),
+                    title: Text(walkMediaModel.mediaUrl),
+                    subtitle: Text(walkMediaModel.userId.toString()),
                   );
                 },
               ),
             );
-          case RoutineErrorState:
+          case WalkMediaErrorState:
             return const Scaffold(body: Center(child: Text('Error')));
           default:
             return const SizedBox();

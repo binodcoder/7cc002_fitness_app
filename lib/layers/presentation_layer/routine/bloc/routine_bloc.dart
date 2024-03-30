@@ -6,25 +6,24 @@ import '../../../../core/db/db_helper.dart';
 import '../../../../core/entities/routine.dart';
 import '../../../../core/model/routine_model.dart';
 import '../../../../core/usecases/usecase.dart';
- import '../../../domain_layer/register/usecases/update_user.dart';
+import '../../../domain_layer/register/usecases/update_user.dart';
 import '../../../domain_layer/routine/usecases/get_routines.dart';
-
 
 class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
   final GetRoutines getRoutines;
- // final UpdateRoutines updatePost;
+  // final UpdateRoutines updateRoutine;
   final DatabaseHelper dbHelper = DatabaseHelper();
   List<RoutineModel> selectedRoutines = [];
   RoutineBloc({
     required this.getRoutines,
-  //  required this.updatePost,
+    //  required this.updateRoutine,
   }) : super(RoutineInitialState()) {
     on<RoutineInitialEvent>(routineInitialEvent);
-    on<PostEditButtonClickedEvent>(postEditButtonClickedEvent);
-    on<PostDeleteButtonClickedEvent>(postDeleteButtonClickedEvent);
-    on<PostDeleteAllButtonClickedEvent>(postDeleteAllButtonClickedEvent);
-    on<PostAddButtonClickedEvent>(postAddButtonClickedEvent);
-    on<RoutineTileNavigateEvent>(postTileNavigateEvent);
+    on<RoutineEditButtonClickedEvent>(routineEditButtonClickedEvent);
+    on<RoutineDeleteButtonClickedEvent>(routineDeleteButtonClickedEvent);
+    on<RoutineDeleteAllButtonClickedEvent>(routineDeleteAllButtonClickedEvent);
+    on<RoutineAddButtonClickedEvent>(routineAddButtonClickedEvent);
+    on<RoutineTileNavigateEvent>(routineTileNavigateEvent);
   }
 
   FutureOr<void> routineInitialEvent(RoutineInitialEvent event, Emitter<RoutineState> emit) async {
@@ -38,27 +37,27 @@ class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
     });
   }
 
-  FutureOr<void> postEditButtonClickedEvent(PostEditButtonClickedEvent event, Emitter<RoutineState> emit) {}
+  FutureOr<void> routineEditButtonClickedEvent(RoutineEditButtonClickedEvent event, Emitter<RoutineState> emit) {}
 
-  FutureOr<void> postDeleteButtonClickedEvent(PostDeleteButtonClickedEvent event, Emitter<RoutineState> emit) async {
-    await dbHelper.deletePost(event.routineModel.id);
-    List<RoutineModel> routineList = await dbHelper.getRoutines();
-    emit(RoutineLoadedSuccessState(routineList));
+  FutureOr<void> routineDeleteButtonClickedEvent(RoutineDeleteButtonClickedEvent event, Emitter<RoutineState> emit) async {
+    // await dbHelper.deleteRoutine(event.routineModel.id);
+    // List<RoutineModel> routineList = await dbHelper.getRoutines();
+    // emit(RoutineLoadedSuccessState(routineList));
   }
 
-  FutureOr<void> postDeleteAllButtonClickedEvent(PostDeleteAllButtonClickedEvent event, Emitter<RoutineState> emit) async {
-    for (var element in selectedRoutines) {
-      await dbHelper.deletePost(element.id);
-    }
-    List<RoutineModel> postList = await dbHelper.getRoutines();
-    emit(RoutineLoadedSuccessState(postList));
+  FutureOr<void> routineDeleteAllButtonClickedEvent(RoutineDeleteAllButtonClickedEvent event, Emitter<RoutineState> emit) async {
+    // for (var element in selectedRoutines) {
+    //   await dbHelper.deleteRoutine(element.id);
+    // }
+    // List<RoutineModel> RoutineList = await dbHelper.getRoutines();
+    // emit(RoutineLoadedSuccessState(RoutineList));
   }
 
-  FutureOr<void> postAddButtonClickedEvent(PostAddButtonClickedEvent event, Emitter<RoutineState> emit) {
-    emit(RoutineNavigateToAddPostActionState());
+  FutureOr<void> routineAddButtonClickedEvent(RoutineAddButtonClickedEvent event, Emitter<RoutineState> emit) {
+    emit(RoutineNavigateToAddRoutineActionState());
   }
 
-  FutureOr<void> postTileNavigateEvent(RoutineTileNavigateEvent event, Emitter<RoutineState> emit) {
+  FutureOr<void> routineTileNavigateEvent(RoutineTileNavigateEvent event, Emitter<RoutineState> emit) {
     emit(RoutineNavigateToDetailPageActionState(event.routineModel));
   }
 }

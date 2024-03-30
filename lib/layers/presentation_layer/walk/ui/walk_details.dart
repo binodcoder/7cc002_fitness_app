@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import '../../../../core/model/routine_model.dart';
+import '../../../../core/model/walk_model.dart';
 import '../../../../resources/colour_manager.dart';
 import '../../../../resources/font_manager.dart';
 import '../../../../resources/values_manager.dart';
 
-class RoutineDetailsPage extends StatefulWidget {
-  const RoutineDetailsPage({
+class WalkDetailsPage extends StatefulWidget {
+  const WalkDetailsPage({
     Key? key,
-    this.routineModel,
+    this.walkModel,
   }) : super(key: key);
 
-  final RoutineModel? routineModel;
+  final WalkModel? walkModel;
 
   @override
-  State<RoutineDetailsPage> createState() => _RoutineDetailsPageState();
+  State<WalkDetailsPage> createState() => _WalkDetailsPageState();
 }
 
-class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
+class _WalkDetailsPageState extends State<WalkDetailsPage> {
   @override
   void initState() {
     super.initState();
@@ -47,7 +47,7 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
         backgroundColor: ColorManager.white,
         elevation: 0,
         title: Text(
-          'Routine Details',
+          'Walk Details',
           style: TextStyle(
             color: ColorManager.primary,
             fontWeight: FontWeight.bold,
@@ -67,13 +67,13 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
               contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
               tileColor: ColorManager.white,
               title: Text(
-                widget.routineModel!.source,
+                widget.walkModel!.startLocation,
                 style: const TextStyle(
                   fontSize: FontSize.s20,
                 ),
               ),
               subtitle: Text(
-                widget.routineModel!.description,
+                widget.walkModel!.date.toString(),
                 style: const TextStyle(fontSize: FontSize.s14),
               ),
             ),

@@ -19,7 +19,7 @@ class RoutineLoadedSuccessState extends RoutineState {
 
 class RoutineErrorState extends RoutineState {}
 
-class RoutineNavigateToAddPostActionState extends RoutineActionState {}
+class RoutineNavigateToAddRoutineActionState extends RoutineActionState {}
 
 class RoutineNavigateToDetailPageActionState extends RoutineActionState {
   final RoutineModel routineModel;
