@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
-import 'layers/presentation_layer/calender/ui/calender.dart';
+import 'layers/presentation_layer/appointment/get_appointments/ui/calender.dart';
+import 'layers/presentation_layer/walk/get_walks/ui/walk.dart';
+
+
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({Key? key}) : super(key: key);
@@ -91,6 +94,28 @@ class _MyDrawerState extends State<MyDrawer> {
                 context,
                 MaterialPageRoute(
                   builder: (BuildContext context) => const CalendarPage(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              CupertinoIcons.alarm,
+              color: ColorManager.darkGrey,
+            ),
+            title: Text(
+              "Walk",
+              textScaleFactor: 1.2,
+              style: getSemiBoldStyle(
+                color: ColorManager.darkGrey,
+                fontSize: FontSize.s14,
+              ),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => const WalkPage(),
                 ),
               );
             },

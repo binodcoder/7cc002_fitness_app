@@ -7,17 +7,19 @@ import 'package:fitness_app/layers/presentation_layer/register/bloc/user_add_sta
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../../../core/db/db_helper.dart';
- import '../../../domain_layer/register/usecases/add_user.dart';
+import '../../../domain_layer/register/usecases/add_user.dart';
 import '../../../domain_layer/register/usecases/update_user.dart';
 import '../../../domain_layer/routine/usecases/get_routines.dart';
-
 
 class UserAddBloc extends Bloc<UserAddEvent, UserAddState> {
   final AddUser addUser;
   final UpdateUser updateUser;
-  final GetRoutines getUser;
+
   final DatabaseHelper dbHelper = DatabaseHelper();
-  UserAddBloc({required this.addUser, required this.updateUser, required this.getUser}) : super(UserAddInitialState()) {
+  UserAddBloc({
+    required this.addUser,
+    required this.updateUser,
+  }) : super(UserAddInitialState()) {
     on<UserAddInitialEvent>(postAddInitialEvent);
     on<UserAddReadyToUpdateEvent>(postAddReadyToUpdateEvent);
     on<UserAddPickFromGalaryButtonPressEvent>(addPostPickFromGalaryButtonPressEvent);
@@ -83,6 +85,6 @@ class UserAddBloc extends Bloc<UserAddEvent, UserAddState> {
   }
 
   FutureOr<void> postAddReadyToUpdateEvent(UserAddReadyToUpdateEvent event, Emitter<UserAddState> emit) {
-   // emit(PostAddReadyToUpdateState(event.postModel.imagePath));
+    // emit(PostAddReadyToUpdateState(event.postModel.imagePath));
   }
 }

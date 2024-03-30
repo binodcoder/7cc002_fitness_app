@@ -4,7 +4,7 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/model/user_model.dart';
 
 abstract class SyncRemoteDataSource {
-  Future<SyncModel> sync();
+  Future<SyncModel> sync(String email);
 }
 
 class SyncRemoteDataSourceImpl implements SyncRemoteDataSource {
@@ -24,6 +24,6 @@ class SyncRemoteDataSourceImpl implements SyncRemoteDataSource {
   }
 
   @override
-  Future<SyncModel> sync() =>
-      _sync("https://wlv-c4790072fbf0.herokuapp.com/api/v1/sync");
+  Future<SyncModel> sync(String email) =>
+      _sync("https://wlv-c4790072fbf0.herokuapp.com/api/v1/sync/email/$email");
 }

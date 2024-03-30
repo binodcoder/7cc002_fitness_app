@@ -4,15 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import '../../../../core/model/login_model.dart';
 import '../../../../injection_container.dart';
 import '../../../../resources/colour_manager.dart';
 import '../../../../resources/font_manager.dart';
 import '../../../../resources/styles_manager.dart';
 import '../../../../resources/values_manager.dart';
-import '../../routine/ui/routine.dart';
-import '../bloc/login_bloc.dart';
+import '../../routine/get_routines/ui/routine.dart';
+ import '../bloc/login_bloc.dart';
 import '../bloc/login_state.dart';
 import '../widgets/bear_log_in_controller.dart';
 import '../widgets/sign_in_button.dart';

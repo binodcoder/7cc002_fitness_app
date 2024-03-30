@@ -15,9 +15,9 @@ class SyncRepositoryImpl implements SyncRepository {
   });
 
   @override
-  Future<Either<Failure, SyncModel>>? sync() async {
+  Future<Either<Failure, SyncModel>>? sync(String email) async {
     try {
-      SyncModel response = await syncRemoteDataSource.sync();
+      SyncModel response = await syncRemoteDataSource.sync(email);
       return Right(response);
     } on CacheException {
       return Left(CacheFailure());

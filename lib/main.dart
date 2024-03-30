@@ -6,8 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
  import 'injection_container.dart';
 import 'injection_container.dart' as di;
 import 'layers/presentation_layer/register/bloc/user_add_bloc.dart';
-import 'layers/presentation_layer/routine/bloc/routine_bloc.dart';
-import 'layers/presentation_layer/routine/ui/routine.dart';
+import 'layers/presentation_layer/routine/get_routines/bloc/routine_bloc.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
