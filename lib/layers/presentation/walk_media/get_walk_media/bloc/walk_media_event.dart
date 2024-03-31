@@ -16,7 +16,10 @@ class WalkMediaDeleteButtonClickedEvent extends WalkMediaEvent {
 
 class WalkMediaDeleteAllButtonClickedEvent extends WalkMediaEvent {}
 
-class WalkMediaAddButtonClickedEvent extends WalkMediaEvent {}
+class WalkMediaAddButtonClickedEvent extends WalkMediaEvent {
+  final int walkId;
+  WalkMediaAddButtonClickedEvent(this.walkId);
+}
 
 class WalkMediaTileNavigateEvent extends WalkMediaEvent {
   final WalkMediaModel walkMediaModel;

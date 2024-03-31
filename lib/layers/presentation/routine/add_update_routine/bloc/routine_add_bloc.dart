@@ -9,24 +9,25 @@ import 'package:path_provider/path_provider.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../domain/routine/usecases/add_routine.dart';
 import '../../../../domain/routine/usecases/update_routine.dart';
-
-
+import '../../get_routines/bloc/routine_state.dart';
 
 class RoutineAddBloc extends Bloc<RoutineAddEvent, RoutineAddState> {
   final AddRoutine addRoutine;
   final UpdateRoutine updateRoutine;
- // final GetRoutines getRoutine;
   final DatabaseHelper dbHelper = DatabaseHelper();
-  RoutineAddBloc({required this.addRoutine, required this.updateRoutine,  }) : super(RoutineAddInitialState()) {
-    on<RoutineAddInitialEvent>(postAddInitialEvent);
-    on<RoutineAddReadyToUpdateEvent>(postAddReadyToUpdateEvent);
-    on<RoutineAddPickFromGalaryButtonPressEvent>(addPostPickFromGalaryButtonPressEvent);
-    on<RoutineAddPickFromCameraButtonPressEvent>(addPostPickFromCameraButtonPressEvent);
+  RoutineAddBloc({
+    required this.addRoutine,
+    required this.updateRoutine,
+  }) : super(RoutineAddInitialState()) {
+    on<RoutineAddInitialEvent>(routineAddInitialEvent);
+    on<RoutineAddReadyToUpdateEvent>(routineAddReadyToUpdateEvent);
+    on<RoutineAddPickFromGalaryButtonPressEvent>(addRoutinePickFromGalaryButtonPressEvent);
+    on<RoutineAddPickFromCameraButtonPressEvent>(addRoutinePickFromCameraButtonPressEvent);
     on<RoutineAddSaveButtonPressEvent>(addRoutineSaveButtonPressEvent);
-    on<RoutineAddUpdateButtonPressEvent>(postAddUpdateButtonPressEvent);
+    on<RoutineAddUpdateButtonPressEvent>(routineAddUpdateButtonPressEvent);
   }
 
-  FutureOr<void> addPostPickFromGalaryButtonPressEvent(RoutineAddPickFromGalaryButtonPressEvent event, Emitter<RoutineAddState> emit) async {
+  FutureOr<void> addRoutinePickFromGalaryButtonPressEvent(RoutineAddPickFromGalaryButtonPressEvent event, Emitter<RoutineAddState> emit) async {
     ImagePicker picker = ImagePicker();
     XFile? pickedFile;
     final XFile? photo = await picker.pickImage(source: ImageSource.gallery);
@@ -55,7 +56,7 @@ class RoutineAddBloc extends Bloc<RoutineAddEvent, RoutineAddState> {
     return imagePath;
   }
 
-  FutureOr<void> addPostPickFromCameraButtonPressEvent(RoutineAddPickFromCameraButtonPressEvent event, Emitter<RoutineAddState> emit) async {
+  FutureOr<void> addRoutinePickFromCameraButtonPressEvent(RoutineAddPickFromCameraButtonPressEvent event, Emitter<RoutineAddState> emit) async {
     ImagePicker picker = ImagePicker();
     XFile? pickedFile;
     final XFile? photo = await picker.pickImage(source: ImageSource.camera);
@@ -69,20 +70,29 @@ class RoutineAddBloc extends Bloc<RoutineAddEvent, RoutineAddState> {
   }
 
   FutureOr<void> addRoutineSaveButtonPressEvent(RoutineAddSaveButtonPressEvent event, Emitter<RoutineAddState> emit) async {
-    await addRoutine(event.newRoutine);
-    emit(AddRoutineSavedState());
+    final result = await addRoutine(event.newRoutine);
+    result!.fold((failure) {
+      emit(AddRoutineErrorState());
+    }, (result) {
+      emit(AddRoutineSavedActionState());
+    });
   }
 
-  FutureOr<void> postAddInitialEvent(RoutineAddInitialEvent event, Emitter<RoutineAddState> emit) {
+  FutureOr<void> routineAddInitialEvent(RoutineAddInitialEvent event, Emitter<RoutineAddState> emit) {
     emit(RoutineAddInitialState());
   }
 
-  FutureOr<void> postAddUpdateButtonPressEvent(RoutineAddUpdateButtonPressEvent event, Emitter<RoutineAddState> emit) async {
-    await updateRoutine(event.updatedRoutine);
-    emit(AddRoutineUpdatedState());
+  FutureOr<void> routineAddUpdateButtonPressEvent(RoutineAddUpdateButtonPressEvent event, Emitter<RoutineAddState> emit) async {
+    final result = await updateRoutine(event.updatedRoutine);
+
+    result!.fold((failure) {
+      emit(AddRoutineErrorState());
+    }, (result) {
+      emit(AddRoutineUpdatedActionState());
+    });
   }
 
-  FutureOr<void> postAddReadyToUpdateEvent(RoutineAddReadyToUpdateEvent event, Emitter<RoutineAddState> emit) {
-   // emit(PostAddReadyToUpdateState(event.postModel.imagePath));
+  FutureOr<void> routineAddReadyToUpdateEvent(RoutineAddReadyToUpdateEvent event, Emitter<RoutineAddState> emit) {
+    // emit(RoutineAddReadyToUpdateState(event.RoutineModel.imagePath));
   }
 }

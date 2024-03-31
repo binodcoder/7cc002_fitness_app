@@ -6,6 +6,7 @@ import '../../../../../drawer.dart';
 import '../../../../../resources/strings_manager.dart';
 import '../../../appointment/add_update_appointment/ui/add_appointment.dart';
 import '../../../register/ui/register_page.dart';
+import '../../add__update_walk_media/ui/walk_media_add_page.dart';
 import '../bloc/walk_media_bloc.dart';
 import '../../../../../injection_container.dart';
 import '../bloc/walk_media_event.dart';
@@ -45,9 +46,13 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => const AddAppointmentDialog(),
+              builder: (BuildContext context) => WalkMediaAddPage(
+                walkId: state.walkId,
+              ),
               fullscreenDialog: true,
             ),
+          ).then(
+            (value) => refreshPage(),
           );
         } else if (state is WalkMediaNavigateToDetailPageActionState) {
           Navigator.push(
@@ -82,7 +87,7 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                 backgroundColor: Colors.blue,
                 child: const Icon(Icons.add),
                 onPressed: () {
-                  walkMediaBloc.add(WalkMediaAddButtonClickedEvent());
+                  walkMediaBloc.add(WalkMediaAddButtonClickedEvent(successState.walkMediaModelList.first.id!));
                 },
               ),
               appBar: AppBar(

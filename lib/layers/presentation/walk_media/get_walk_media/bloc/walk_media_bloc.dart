@@ -58,7 +58,7 @@ class WalkMediaBloc extends Bloc<WalkMediaEvent, WalkMediaState> {
   }
 
   FutureOr<void> walkMediaAddButtonClickedEvent(WalkMediaAddButtonClickedEvent event, Emitter<WalkMediaState> emit) {
-    emit(WalkMediaNavigateToAddWalkMediaActionState());
+    emit(WalkMediaNavigateToAddWalkMediaActionState(event.walkId));
   }
 
   FutureOr<void> walkMediaTileNavigateEvent(WalkMediaTileNavigateEvent event, Emitter<WalkMediaState> emit) {

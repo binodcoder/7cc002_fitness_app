@@ -27,33 +27,29 @@ class AddAppointmentDialog extends StatefulWidget {
 }
 
 class AddAppointmentDialogState extends State<AddAppointmentDialog> {
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _startTimeController = TextEditingController();
+  final TextEditingController _endTimeController = TextEditingController();
+  final TextEditingController _remarkController = TextEditingController();
+  final TextEditingController _trainerController = TextEditingController();
+  Trainer? selectedTrainer;
+  DateTime selectedDate = DateTime.now();
+  TimeOfDay selectedStartTime = const TimeOfDay(hour: 00, minute: 00);
+  TimeOfDay selectedEndTime = const TimeOfDay(hour: 00, minute: 00);
+  late String _hour, _minute, _second;
+  late double _height;
+  late double _width;
+  late String _setTime, _setDate;
   final _formKey = GlobalKey<FormState>();
   bool focus = false;
   final AppointmentAddBloc appointmentAddBloc = sl<AppointmentAddBloc>();
   final SharedPreferences sharedPreferences = sl<SharedPreferences>();
 
-  @override
-  void initState() {
-    setDateTime();
-    if (widget.appointmentModel != null) {
-      _remarkController.text = widget.appointmentModel!.date.toString();
-      appointmentAddBloc.add(AppointmentAddReadyToUpdateEvent(widget.appointmentModel!));
-    } else {
-      appointmentAddBloc.add(AppointmentAddInitialEvent());
-    }
-    super.initState();
-  }
-
   setDateTime() {
     _dateController.text = widget.focusedDay.toString();
-    _timeController.text = "00:00:00";
+    _startTimeController.text = "00:00:00";
+    _endTimeController.text = "00:00:00";
   }
-
-  Trainer? selectedTrainer;
-
-  DateTime selectedDate = DateTime.now();
-  TimeOfDay selectedTime = const TimeOfDay(hour: 00, minute: 00);
-  late String _hour, _minute, _second;
 
   void selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -70,10 +66,10 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
     }
   }
 
-  Future<void> _selectTime(BuildContext context) async {
+  Future<void> _selectStartTime(BuildContext context) async {
     final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
-        initialTime: selectedTime,
+        initialTime: selectedStartTime,
         builder: (BuildContext context, Widget? child) {
           return MediaQuery(
             data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
@@ -81,11 +77,29 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
           );
         });
 
-    if (pickedTime != null && pickedTime != selectedTime) {
+    if (pickedTime != null && pickedTime != selectedStartTime) {
       setState(() {
-        selectedTime = pickedTime;
+        selectedStartTime = pickedTime;
+        _startTimeController.text = formatTimeOfDay(selectedStartTime);
+      });
+    }
+  }
 
-        _timeController.text = formatTimeOfDay(selectedTime);
+  Future<void> _selectEndTime(BuildContext context) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: selectedEndTime,
+        builder: (BuildContext context, Widget? child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+            child: child!,
+          );
+        });
+
+    if (pickedTime != null && pickedTime != selectedEndTime) {
+      setState(() {
+        selectedEndTime = pickedTime;
+        _endTimeController.text = formatTimeOfDay(selectedEndTime);
       });
     }
   }
@@ -97,18 +111,28 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
     return '$hours:$minutes:$seconds';
   }
 
-  final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _timeController = TextEditingController();
-  final TextEditingController _remarkController = TextEditingController();
-  final TextEditingController _trainerController = TextEditingController();
-  late double _height;
-  late double _width;
-  late String _setTime, _setDate;
+  @override
+  void initState() {
+    setDateTime();
+    if (widget.appointmentModel != null) {
+      _dateController.text = widget.appointmentModel!.date.toString();
+      _startTimeController.text = widget.appointmentModel!.startTime;
+      _endTimeController.text = widget.appointmentModel!.endTime;
+
+      _remarkController.text = widget.appointmentModel!.remark.toString();
+
+      appointmentAddBloc.add(AppointmentAddReadyToUpdateEvent(widget.appointmentModel!));
+    } else {
+      appointmentAddBloc.add(AppointmentAddInitialEvent());
+    }
+    super.initState();
+  }
 
   @override
   void dispose() {
     _dateController.dispose();
-    _timeController.dispose();
+    _startTimeController.dispose();
+    _endTimeController.dispose();
     _remarkController.dispose();
     _trainerController.dispose();
     super.dispose();
@@ -153,6 +177,8 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
 
           case AppointmentAddLoadedSuccessState:
             final successState = state as AppointmentAddLoadedSuccessState;
+            _trainerController.text =
+                successState.syncModel.data.trainers.where((Trainer element) => element.id == widget.appointmentModel!.trainerId).first.name;
 
             return Scaffold(
               appBar: AppBar(
@@ -399,7 +425,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                         children: [
                           InkWell(
                             onTap: () {
-                              _selectTime(context);
+                              _selectStartTime(context);
                             },
                             child: Container(
                               width: _width * 0.45,
@@ -411,7 +437,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                                 textAlign: TextAlign.center,
                                 enabled: false,
                                 keyboardType: TextInputType.text,
-                                controller: _timeController,
+                                controller: _startTimeController,
                                 onSaved: (String? val) {
                                   _setDate = val!;
                                 },
@@ -422,7 +448,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                           ),
                           InkWell(
                             onTap: () {
-                              _selectTime(context);
+                              _selectEndTime(context);
                             },
                             child: Container(
                               width: _width * 0.45,
@@ -434,7 +460,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                                 textAlign: TextAlign.center,
                                 enabled: false,
                                 keyboardType: TextInputType.text,
-                                controller: _timeController,
+                                controller: _endTimeController,
                                 onSaved: (String? val) {
                                   _setTime = val!;
                                 },
@@ -487,22 +513,20 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
                                     if (widget.appointmentModel != null) {
-                                      // var appointmentModel = AppointmentModel(
-                                      //   date: date,
-                                      //   endTime: endTime,
-                                      //   id: id,
-                                      //   startTime: startTime,
-                                      //   trainerId: selectedTrainer!.id,
-                                      //   userId: 1,
-                                      // );
-                                      // appointmentAddBloc.add(
-                                      //     AppointmentAddUpdateButtonPressEvent(
-                                      //         appointmentModel));
+                                      var appointmentModel = AppointmentModel(
+                                        id: widget.appointmentModel!.id,
+                                        date: selectedDate,
+                                        endTime: _endTimeController.text,
+                                        startTime: _startTimeController.text,
+                                        trainerId: selectedTrainer!.id,
+                                        userId: sharedPreferences.getInt("user_id")!,
+                                      );
+                                      appointmentAddBloc.add(AppointmentAddUpdateButtonPressEvent(appointmentModel));
                                     } else {
                                       var appointmentModel = AppointmentModel(
                                         date: selectedDate,
-                                        endTime: _timeController.text,
-                                        startTime: _timeController.text,
+                                        endTime: _startTimeController.text,
+                                        startTime: _endTimeController.text,
                                         trainerId: selectedTrainer?.id ?? 1,
                                         userId: sharedPreferences.getInt("user_id") ?? 1,
                                       );
@@ -510,7 +534,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                                     }
                                   }
                                 },
-                                child: Text('Save'),
+                                child: const Text('Save'),
                               ),
                             ),
                           )

@@ -33,3 +33,7 @@ class WalkItemDeletedActionState extends WalkActionState {}
 class WalkItemSelectedActionState extends WalkActionState {}
 
 class WalkItemsDeletedActionState extends WalkActionState {}
+
+class WalkJoinedActionState extends WalkActionState {}
+
+class WalkLeftActionState extends WalkActionState {}

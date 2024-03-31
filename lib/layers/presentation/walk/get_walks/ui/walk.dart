@@ -1,6 +1,9 @@
+import 'package:fitness_app/core/model/walk_participant_model.dart';
+import 'package:fitness_app/layers/presentation/walk/add_update_walk/ui/walk_add_page.dart';
 import 'package:fitness_app/layers/presentation/walk/get_walks/ui/walk_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../../drawer.dart';
 import '../../../../../resources/strings_manager.dart';
@@ -32,6 +35,7 @@ class _WalkPageState extends State<WalkPage> {
   }
 
   WalkBloc walkBloc = sl<WalkBloc>();
+  SharedPreferences sharedPreferences = sl<SharedPreferences>();
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +48,11 @@ class _WalkPageState extends State<WalkPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => const AddAppointmentDialog(),
+              builder: (BuildContext context) => const AddWalkPage(),
               fullscreenDialog: true,
             ),
+          ).then(
+            (value) => refreshPage(),
           );
         } else if (state is WalkNavigateToDetailPageActionState) {
           Navigator.push(
@@ -63,7 +69,12 @@ class _WalkPageState extends State<WalkPage> {
         } else if (state is WalkNavigateToUpdatePageActionState) {
         } else if (state is WalkItemSelectedActionState) {
         } else if (state is WalkItemDeletedActionState) {
-        } else if (state is WalkItemsDeletedActionState) {}
+        } else if (state is WalkItemsDeletedActionState) {
+        } else if (state is WalkJoinedActionState) {
+          walkBloc.add(WalkInitialEvent());
+        } else if (state is WalkLeftActionState) {
+          walkBloc.add(WalkInitialEvent());
+        }
       },
       builder: (context, state) {
         switch (state.runtimeType) {
@@ -97,13 +108,29 @@ class _WalkPageState extends State<WalkPage> {
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) => WalkMediaPage(
-                            walkId: successState.walkModelList[index].id,
+                            walkId: successState.walkModelList[index].id!,
                           ),
                         ),
                       );
                     },
                     title: Text(walkModel.startLocation),
                     subtitle: Text(walkModel.date.toString()),
+                    trailing: TextButton(
+                      onPressed: () {
+                        WalkParticipantModel walkParticipantModel = WalkParticipantModel(
+                          userId: sharedPreferences.getInt("user_id")!,
+                          walkId: walkModel.id!,
+                        );
+                        if (walkModel.participants!.where((element) => element.id == sharedPreferences.getInt("user_id")).isNotEmpty) {
+                          walkBloc.add(WalkLeaveButtonClickedEvent(walkParticipantModel));
+                        } else {
+                          walkBloc.add(WalkJoinButtonClickedEvent(walkParticipantModel));
+                        }
+                      },
+                      child: Text(
+                        (walkModel.participants!.where((element) => element.id == sharedPreferences.getInt("user_id")).isNotEmpty) ? 'Leave' : 'Join',
+                      ),
+                    ),
                   );
                 },
               ),

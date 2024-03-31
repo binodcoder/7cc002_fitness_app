@@ -4,29 +4,33 @@
 
 import 'dart:convert';
 
-List<WalkModel> walkModelFromJson(String str) =>
-    List<WalkModel>.from(json.decode(str).map((x) => WalkModel.fromJson(x)));
+import 'package:intl/intl.dart';
 
-String walkModelToJson(List<WalkModel> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+List<WalkModel> walkModelsFromJson(String str) => List<WalkModel>.from(json.decode(str).map((x) => WalkModel.fromJson(x)));
+
+String walkModelsToJson(List<WalkModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+WalkModel walkModelFromJson(String str) => WalkModel.fromJson(json.decode(str));
+
+String walkModelToJson(WalkModel data) => json.encode(data.toJson());
 
 class WalkModel {
-  int id;
+  int? id;
   int proposerId;
   String routeData;
   DateTime date;
   String startTime;
   String startLocation;
-  List<Participant> participants;
+  List<Participant>? participants;
 
   WalkModel({
-    required this.id,
+    this.id,
     required this.proposerId,
     required this.routeData,
     required this.date,
     required this.startTime,
     required this.startLocation,
-    required this.participants,
+    this.participants,
   });
 
   factory WalkModel.fromJson(Map<String, dynamic> json) => WalkModel(
@@ -36,19 +40,18 @@ class WalkModel {
         date: DateTime.parse(json["date"]),
         startTime: json["startTime"],
         startLocation: json["startLocation"],
-        participants: List<Participant>.from(
-            json["participants"].map((x) => Participant.fromJson(x))),
+        participants: List<Participant>.from(json["participants"].map((x) => Participant.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "proposerId": proposerId,
         "routeData": routeData,
-        "date":
-            "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+        "date": DateFormat("yyyy-MM-dd").format(date),
+        // "date": "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
         "startTime": startTime,
         "startLocation": startLocation,
-        "participants": List<dynamic>.from(participants.map((x) => x.toJson())),
+        "participants": participants != null ? List<dynamic>.from(participants!.map((x) => x.toJson())) : [],
       };
 }
 

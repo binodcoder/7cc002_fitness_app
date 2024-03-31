@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/model/walk_media_model.dart';
@@ -30,6 +32,9 @@ class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
     if (response.statusCode == 200) {
       return walkMediaModelsFromJson(response.body);
       //   return WalkMediaModel.fromJson(json.decode(response.body));
+    } else if (response.statusCode == 404) {
+      List<WalkMediaModel> notFound = [];
+      return notFound;
     } else {
       throw ServerException();
     }
@@ -39,7 +44,7 @@ class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
     final response = await client.post(
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
-      body: walkMediaModel.toJson(),
+      body: walkMediaModelToJson(walkMediaModel),
     );
     if (response.statusCode == 201) {
       return 1;
@@ -74,11 +79,11 @@ class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
   }
 
   @override
-  Future<List<WalkMediaModel>> getWalkMedias() => _getWalkMedias("https://wlv-c4790072fbf0.herokuapp.com/api/v1/WalkMedias");
+  Future<List<WalkMediaModel>> getWalkMedias() => _getWalkMedias("https://wlv-c4790072fbf0.herokuapp.com/api/v1/walk-media");
 
   @override
   Future<int> addWalkMedia(WalkMediaModel walkMediaModel) => _addWalkMedia(
-        "https://wlv-c4790072fbf0.herokuapp.com/api/v1/WalkMedias",
+        "https://wlv-c4790072fbf0.herokuapp.com/api/v1/walk-media",
         walkMediaModel,
       );
 
@@ -89,9 +94,9 @@ class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
       );
 
   @override
-  Future<int> deleteWalkMedia(int userId) => _deleteWalkMedia("https://wlv-c4790072fbf0.herokuapp.com/api/v1/WalkMedias/$userId");
+  Future<int> deleteWalkMedia(int userId) => _deleteWalkMedia("https://wlv-c4790072fbf0.herokuapp.com/api/v1/walk-media/$userId");
 
   @override
   Future<List<WalkMediaModel>> getWalkMediaByWalkId(int walkId) =>
-      _getWalkMediaByWalkId("https://wlv-c4790072fbf0.herokuapp.com/api/v1/walk-media/walk-id/3");
+      _getWalkMediaByWalkId("https://wlv-c4790072fbf0.herokuapp.com/api/v1/walk-media/walk-id/$walkId");
 }

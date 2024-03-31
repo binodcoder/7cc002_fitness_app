@@ -107,7 +107,7 @@ Future<void> init() async {
   sl.registerLazySingleton<AppointmentRemoteDataSource>(() => AppointmentRemoteDataSourceImpl(client: sl()));
 
   //walk
-  sl.registerFactory(() => WalkBloc(getWalks: sl(), deleteWalk: sl()));
+  sl.registerFactory(() => WalkBloc(getWalks: sl(), deleteWalk: sl(), joinWalk: sl(), leaveWalk: sl()));
   sl.registerFactory(() => WalkAddBloc(addWalk: sl(), updateWalk: sl()));
 
   sl.registerLazySingleton(() => GetWalks(sl()));

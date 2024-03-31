@@ -18,7 +18,10 @@ class WalkMediaLoadedSuccessState extends WalkMediaState {
 
 class WalkMediaErrorState extends WalkMediaState {}
 
-class WalkMediaNavigateToAddWalkMediaActionState extends WalkMediaActionState {}
+class WalkMediaNavigateToAddWalkMediaActionState extends WalkMediaActionState {
+  final int walkId;
+  WalkMediaNavigateToAddWalkMediaActionState(this.walkId);
+}
 
 class WalkMediaNavigateToDetailPageActionState extends WalkMediaActionState {
   final WalkMediaModel walkMediaModel;

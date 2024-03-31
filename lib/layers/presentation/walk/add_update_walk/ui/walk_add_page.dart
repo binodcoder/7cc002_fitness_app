@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../../core/model/walk_model.dart';
 import '../../../../../injection_container.dart';
@@ -12,7 +14,7 @@ import '../../../../../resources/values_manager.dart';
 import '../../../login/ui/login_screen.dart';
 import '../../../login/widgets/sign_in_button.dart';
 import '../bloc/walk_add_bloc.dart';
-import '../../../add_walk/bloc/walk_add_event.dart';
+import '../bloc/walk_add_event.dart';
 import '../bloc/walk_add_state.dart';
 
 class AddWalkPage extends StatefulWidget {
@@ -28,27 +30,20 @@ class AddWalkPage extends StatefulWidget {
 }
 
 class _AddWalkPageState extends State<AddWalkPage> {
-  final TextEditingController walkNameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController institutionEmailController = TextEditingController();
-  final TextEditingController genderController = TextEditingController();
-  final TextEditingController ageController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController conformPasswordController = TextEditingController();
+  final TextEditingController routeDataController = TextEditingController();
+  final TextEditingController dateController = TextEditingController();
+  final TextEditingController startTimeController = TextEditingController();
+  final TextEditingController startLocationController = TextEditingController();
 
   final DatabaseHelper dbHelper = DatabaseHelper();
-  bool _passwordVisible = false;
-  bool _confirmPasswordVisible = false;
 
   @override
   void initState() {
     if (widget.walkModel != null) {
-      // walkNameController.text = widget.walkModel!.name;
-      // emailController.text = widget.WalkModel!.email;
-      // institutionEmailController.text = widget.WalkModel!.institutionEmail;
-      // genderController.text = widget.WalkModel!.gender;
-      // ageController.text = widget.WalkModel!.age.toString();
-      // passwordController.text = widget.WalkModel!.password;
+      routeDataController.text = widget.walkModel!.routeData;
+      dateController.text = widget.walkModel!.date.toString();
+      startTimeController.text = widget.walkModel!.startTime;
+      startLocationController.text = widget.walkModel!.startLocation;
       walkAddBloc.add(WalkAddReadyToUpdateEvent(widget.walkModel!));
     } else {
       walkAddBloc.add(WalkAddInitialEvent());
@@ -57,6 +52,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
   }
 
   final WalkAddBloc walkAddBloc = sl<WalkAddBloc>();
+  final SharedPreferences sharedPreferences = sl<SharedPreferences>();
 
   @override
   Widget build(BuildContext context) {
@@ -67,12 +63,8 @@ class _AddWalkPageState extends State<AddWalkPage> {
       buildWhen: (previous, current) => current is! WalkAddActionState,
       listener: (context, state) {
         if (state is AddWalkSavedState) {
-          // sourceController.clear();
-          // descriptionController.clear();
           Navigator.pop(context);
         } else if (state is AddWalkUpdatedState) {
-          // sourceController.clear();
-          // descriptionController.clear();
           Navigator.pop(context);
         }
       },
@@ -99,7 +91,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                       height: AppHeight.h40,
                     ),
                     Text(
-                      "WalkName",
+                      "Route Data",
                       style: getBoldStyle(
                         fontSize: FontSize.s15,
                         color: ColorManager.primary,
@@ -109,7 +101,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                       height: AppHeight.h10,
                     ),
                     TextFormField(
-                      controller: walkNameController,
+                      controller: routeDataController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return '*Required';
@@ -123,7 +115,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                         ),
                         fillColor: ColorManager.redWhite,
                         filled: true,
-                        hintText: 'Walk Name',
+                        hintText: 'Route Data',
                         suffixIcon: Icon(
                           Icons.person,
                           color: ColorManager.blue,
@@ -147,7 +139,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                       height: AppHeight.h10,
                     ),
                     Text(
-                      "Email",
+                      "Date",
                       style: getBoldStyle(
                         fontSize: FontSize.s15,
                         color: ColorManager.primary,
@@ -157,7 +149,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                       height: AppHeight.h10,
                     ),
                     TextFormField(
-                      controller: emailController,
+                      controller: dateController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return '*Required';
@@ -171,7 +163,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                         ),
                         fillColor: ColorManager.redWhite,
                         filled: true,
-                        hintText: 'Email',
+                        hintText: 'Date',
                         suffixIcon: Icon(
                           Icons.person,
                           color: ColorManager.blue,
@@ -195,7 +187,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                       height: AppHeight.h10,
                     ),
                     Text(
-                      "Institution Email",
+                      "Start Time",
                       style: getBoldStyle(
                         fontSize: FontSize.s15,
                         color: ColorManager.primary,
@@ -205,7 +197,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                       height: AppHeight.h10,
                     ),
                     TextFormField(
-                      controller: institutionEmailController,
+                      controller: startTimeController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return '*Required';
@@ -219,7 +211,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                         ),
                         fillColor: ColorManager.redWhite,
                         filled: true,
-                        hintText: 'Institution Email',
+                        hintText: 'Start Time',
                         suffixIcon: Icon(
                           Icons.person,
                           color: ColorManager.blue,
@@ -243,7 +235,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                       height: AppHeight.h10,
                     ),
                     Text(
-                      "Gender",
+                      "Start Location",
                       style: getBoldStyle(
                         fontSize: FontSize.s15,
                         color: ColorManager.primary,
@@ -253,7 +245,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                       height: AppHeight.h10,
                     ),
                     TextFormField(
-                      controller: genderController,
+                      controller: startLocationController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return '*Required';
@@ -267,7 +259,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                         ),
                         fillColor: ColorManager.redWhite,
                         filled: true,
-                        hintText: 'Gender',
+                        hintText: 'Start Location',
                         suffixIcon: Icon(
                           Icons.person,
                           color: ColorManager.blue,
@@ -288,169 +280,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                       ),
                     ),
                     SizedBox(
-                      height: AppHeight.h10,
-                    ),
-                    Text(
-                      "Age",
-                      style: getBoldStyle(
-                        fontSize: FontSize.s15,
-                        color: ColorManager.primary,
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h10,
-                    ),
-                    TextFormField(
-                      controller: ageController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '*Required';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        fillColor: ColorManager.redWhite,
-                        filled: true,
-                        hintText: 'Age',
-                        suffixIcon: Icon(
-                          Icons.person,
-                          color: ColorManager.blue,
-                          size: FontSize.s20,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorManager.blueGrey),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorManager.primary),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorManager.red),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h10,
-                    ),
-                    Text(
-                      "Password",
-                      style: getBoldStyle(
-                        fontSize: FontSize.s15,
-                        color: ColorManager.primary,
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h10,
-                    ),
-                    TextFormField(
-                      controller: passwordController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '*Required';
-                        }
-                        return null;
-                      },
-                      obscureText: !_passwordVisible,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        fillColor: ColorManager.redWhite,
-                        filled: true,
-                        hintText: 'Password',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                            color: ColorManager.blue,
-                          ),
-                          onPressed: () {
-                            setState(
-                              () {
-                                _passwordVisible = !_passwordVisible;
-                              },
-                            );
-                          },
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorManager.blueGrey),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorManager.primary),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorManager.red),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h10,
-                    ),
-                    Text(
-                      "Confirm Password",
-                      style: getBoldStyle(
-                        fontSize: FontSize.s15,
-                        color: ColorManager.primary,
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h10,
-                    ),
-                    TextFormField(
-                      controller: conformPasswordController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '*Required';
-                        }
-                        return null;
-                      },
-                      obscureText: !_confirmPasswordVisible,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        fillColor: ColorManager.redWhite,
-                        filled: true,
-                        hintText: 'Confirm Password',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _confirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                            color: ColorManager.blue,
-                          ),
-                          onPressed: () {
-                            setState(
-                              () {
-                                _confirmPasswordVisible = !_confirmPasswordVisible;
-                              },
-                            );
-                          },
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorManager.blueGrey),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorManager.primary),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorManager.red),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h30,
+                      height: AppHeight.h20,
                     ),
                     SigninButton(
                       child: Text(
@@ -461,33 +291,29 @@ class _AddWalkPageState extends State<AddWalkPage> {
                         ),
                       ),
                       onPressed: () async {
-                        var walkName = walkNameController.text;
-                        var email = emailController.text;
-                        var institutionEmail = institutionEmailController.text;
-                        var gender = genderController.text;
-                        var age = ageController.text;
-                        var password = passwordController.text;
-                        if (walkName.isNotEmpty && email.isNotEmpty) {
+                        var proposerId = sharedPreferences.getInt("user_id");
+                        var routeData = routeDataController.text;
+                        var date = dateController.text;
+                        var startTime = startTimeController.text;
+                        var startLocation = startLocationController.text;
+                        if (date.isNotEmpty && startLocation.isNotEmpty) {
                           if (widget.walkModel != null) {
                             var updatedWalk = WalkModel(
                               id: 0,
-                              proposerId: 0,
-                              routeData: '',
+                              proposerId: proposerId!,
+                              routeData: routeData,
                               date: DateTime.now(),
-                              startTime: '',
-                              startLocation: '',
-                              participants: [],
+                              startTime: startTime,
+                              startLocation: startLocation,
                             );
                             walkAddBloc.add(WalkAddUpdateButtonPressEvent(updatedWalk));
                           } else {
                             var newWalk = WalkModel(
-                              id: 0,
-                              proposerId: 0,
-                              routeData: '',
+                              proposerId: proposerId!,
+                              routeData: routeData,
                               date: DateTime.now(),
-                              startTime: '',
-                              startLocation: '',
-                              participants: [],
+                              startTime: startTime,
+                              startLocation: startLocation,
                             );
                             walkAddBloc.add(WalkAddSaveButtonPressEvent(newWalk));
                           }
@@ -496,29 +322,6 @@ class _AddWalkPageState extends State<AddWalkPage> {
                     ),
                     SizedBox(
                       height: AppHeight.h10,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                        );
-                      },
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          "Login",
-                          style: getBoldStyle(
-                            fontSize: FontSize.s16,
-                            color: ColorManager.primary,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h16,
                     ),
                   ],
                 ),

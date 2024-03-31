@@ -16,7 +16,6 @@ import '../bloc/routine_add_bloc.dart';
 import '../bloc/routine_add_event.dart';
 import '../bloc/routine_add_state.dart';
 
-
 class AddRoutinePage extends StatefulWidget {
   const AddRoutinePage({
     super.key,
@@ -31,26 +30,19 @@ class AddRoutinePage extends StatefulWidget {
 
 class _AddRoutinePageState extends State<AddRoutinePage> {
   final TextEditingController routineNameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController institutionEmailController = TextEditingController();
-  final TextEditingController genderController = TextEditingController();
-  final TextEditingController ageController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController conformPasswordController = TextEditingController();
-
-  final DatabaseHelper dbHelper = DatabaseHelper();
-  bool _passwordVisible = false;
-  bool _confirmPasswordVisible = false;
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController difficultyController = TextEditingController();
+  final TextEditingController durationController = TextEditingController();
+  final TextEditingController sourceController = TextEditingController();
 
   @override
   void initState() {
     if (widget.routineModel != null) {
       routineNameController.text = widget.routineModel!.name;
-      // emailController.text = widget.routineModel!.email;
-      // institutionEmailController.text = widget.RoutineModel!.institutionEmail;
-      // genderController.text = widget.RoutineModel!.gender;
-      // ageController.text = widget.RoutineModel!.age.toString();
-      // passwordController.text = widget.RoutineModel!.password;
+      descriptionController.text = widget.routineModel!.description;
+      difficultyController.text = widget.routineModel!.difficulty;
+      durationController.text = widget.routineModel!.duration.toString();
+      sourceController.text = widget.routineModel!.source;
       routineAddBloc.add(RoutineAddReadyToUpdateEvent(widget.routineModel!));
     } else {
       routineAddBloc.add(RoutineAddInitialEvent());
@@ -68,13 +60,9 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
       listenWhen: (previous, current) => current is RoutineAddActionState,
       buildWhen: (previous, current) => current is! RoutineAddActionState,
       listener: (context, state) {
-        if (state is AddRoutineSavedState) {
-          // sourceController.clear();
-          // descriptionController.clear();
+        if (state is AddRoutineSavedActionState) {
           Navigator.pop(context);
-        } else if (state is AddRoutineUpdatedState) {
-          // sourceController.clear();
-          // descriptionController.clear();
+        } else if (state is AddRoutineUpdatedActionState) {
           Navigator.pop(context);
         }
       },
@@ -149,7 +137,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                       height: AppHeight.h10,
                     ),
                     Text(
-                      "Email",
+                      "Description",
                       style: getBoldStyle(
                         fontSize: FontSize.s15,
                         color: ColorManager.primary,
@@ -159,7 +147,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                       height: AppHeight.h10,
                     ),
                     TextFormField(
-                      controller: emailController,
+                      controller: descriptionController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return '*Required';
@@ -173,7 +161,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                         ),
                         fillColor: ColorManager.redWhite,
                         filled: true,
-                        hintText: 'Email',
+                        hintText: 'Description',
                         suffixIcon: Icon(
                           Icons.person,
                           color: ColorManager.blue,
@@ -197,7 +185,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                       height: AppHeight.h10,
                     ),
                     Text(
-                      "Institution Email",
+                      "Difficulty",
                       style: getBoldStyle(
                         fontSize: FontSize.s15,
                         color: ColorManager.primary,
@@ -207,7 +195,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                       height: AppHeight.h10,
                     ),
                     TextFormField(
-                      controller: institutionEmailController,
+                      controller: difficultyController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return '*Required';
@@ -221,7 +209,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                         ),
                         fillColor: ColorManager.redWhite,
                         filled: true,
-                        hintText: 'Institution Email',
+                        hintText: 'Difficulty',
                         suffixIcon: Icon(
                           Icons.person,
                           color: ColorManager.blue,
@@ -245,7 +233,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                       height: AppHeight.h10,
                     ),
                     Text(
-                      "Gender",
+                      "Duration",
                       style: getBoldStyle(
                         fontSize: FontSize.s15,
                         color: ColorManager.primary,
@@ -255,7 +243,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                       height: AppHeight.h10,
                     ),
                     TextFormField(
-                      controller: genderController,
+                      controller: durationController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return '*Required';
@@ -269,7 +257,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                         ),
                         fillColor: ColorManager.redWhite,
                         filled: true,
-                        hintText: 'Gender',
+                        hintText: 'Duration',
                         suffixIcon: Icon(
                           Icons.person,
                           color: ColorManager.blue,
@@ -293,7 +281,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                       height: AppHeight.h10,
                     ),
                     Text(
-                      "Age",
+                      "Source",
                       style: getBoldStyle(
                         fontSize: FontSize.s15,
                         color: ColorManager.primary,
@@ -303,7 +291,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                       height: AppHeight.h10,
                     ),
                     TextFormField(
-                      controller: ageController,
+                      controller: sourceController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return '*Required';
@@ -317,7 +305,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                         ),
                         fillColor: ColorManager.redWhite,
                         filled: true,
-                        hintText: 'Age',
+                        hintText: 'Source',
                         suffixIcon: Icon(
                           Icons.person,
                           color: ColorManager.blue,
@@ -339,117 +327,6 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                     ),
                     SizedBox(
                       height: AppHeight.h10,
-                    ),
-                    Text(
-                      "Password",
-                      style: getBoldStyle(
-                        fontSize: FontSize.s15,
-                        color: ColorManager.primary,
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h10,
-                    ),
-                    TextFormField(
-                      controller: passwordController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '*Required';
-                        }
-                        return null;
-                      },
-                      obscureText: !_passwordVisible,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        fillColor: ColorManager.redWhite,
-                        filled: true,
-                        hintText: 'Password',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                            color: ColorManager.blue,
-                          ),
-                          onPressed: () {
-                            setState(
-                              () {
-                                _passwordVisible = !_passwordVisible;
-                              },
-                            );
-                          },
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorManager.blueGrey),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorManager.primary),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorManager.red),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h10,
-                    ),
-                    Text(
-                      "Confirm Password",
-                      style: getBoldStyle(
-                        fontSize: FontSize.s15,
-                        color: ColorManager.primary,
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h10,
-                    ),
-                    TextFormField(
-                      controller: conformPasswordController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '*Required';
-                        }
-                        return null;
-                      },
-                      obscureText: !_confirmPasswordVisible,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        fillColor: ColorManager.redWhite,
-                        filled: true,
-                        hintText: 'Confirm Password',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _confirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                            color: ColorManager.blue,
-                          ),
-                          onPressed: () {
-                            setState(
-                              () {
-                                _confirmPasswordVisible = !_confirmPasswordVisible;
-                              },
-                            );
-                          },
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorManager.blueGrey),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorManager.primary),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorManager.red),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                      ),
                     ),
                     SizedBox(
                       height: AppHeight.h30,
@@ -464,30 +341,28 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                       ),
                       onPressed: () async {
                         var routineName = routineNameController.text;
-                        var email = emailController.text;
-                        var institutionEmail = institutionEmailController.text;
-                        var gender = genderController.text;
-                        var age = ageController.text;
-                        var password = passwordController.text;
-                        if (routineName.isNotEmpty && email.isNotEmpty) {
+                        var description = descriptionController.text;
+                        var difficulty = difficultyController.text;
+                        var duration = durationController.text;
+                        var source = sourceController.text;
+                        if (routineName.isNotEmpty && duration.isNotEmpty) {
                           if (widget.routineModel != null) {
                             var updatedRoutine = RoutineModel(
-                              id: 0,
-                              name: '',
-                              description: '',
-                              difficulty: '',
-                              duration: 0,
-                              source: '',
+                              id: widget.routineModel!.id,
+                              name: routineName,
+                              description: description,
+                              difficulty: difficulty,
+                              duration: int.parse(duration),
+                              source: source,
                             );
                             routineAddBloc.add(RoutineAddUpdateButtonPressEvent(updatedRoutine));
                           } else {
                             var newRoutine = RoutineModel(
-                              id: 0,
-                              name: '',
-                              description: '',
-                              difficulty: '',
-                              duration: 0,
-                              source: '',
+                              name: routineName,
+                              description: description,
+                              difficulty: difficulty,
+                              duration: int.parse(duration),
+                              source: source,
                             );
                             routineAddBloc.add(RoutineAddSaveButtonPressEvent(newRoutine));
                           }
@@ -496,29 +371,6 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                     ),
                     SizedBox(
                       height: AppHeight.h10,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                        );
-                      },
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          "Login",
-                          style: getBoldStyle(
-                            fontSize: FontSize.s16,
-                            color: ColorManager.primary,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h16,
                     ),
                   ],
                 ),

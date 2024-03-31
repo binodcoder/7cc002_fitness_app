@@ -10,7 +10,6 @@ import '../../../../../core/db/db_helper.dart';
 import '../../../../domain/walk_media/usecases/add_walk_media.dart';
 import '../../../../domain/walk_media/usecases/update_walk_media.dart';
 
-
 class WalkMediaAddBloc extends Bloc<WalkMediaAddEvent, WalkMediaAddState> {
   final AddWalkMedia addWalkMedia;
   final UpdateWalkMedia updateWalkMedia;
@@ -71,8 +70,13 @@ class WalkMediaAddBloc extends Bloc<WalkMediaAddEvent, WalkMediaAddState> {
   }
 
   FutureOr<void> addWalkMediaSaveButtonPressEvent(WalkMediaAddSaveButtonPressEvent event, Emitter<WalkMediaAddState> emit) async {
-    await addWalkMedia(event.newWalkMedia);
-    emit(AddWalkMediaSavedState());
+    final result = await addWalkMedia(event.newWalkMedia);
+
+    result!.fold((failure) {
+      emit(AddWalkMediaErrorState());
+    }, (result) {
+      emit(AddWalkMediaSavedState());
+    });
   }
 
   FutureOr<void> walkMediaAddInitialEvent(WalkMediaAddInitialEvent event, Emitter<WalkMediaAddState> emit) {
@@ -80,8 +84,12 @@ class WalkMediaAddBloc extends Bloc<WalkMediaAddEvent, WalkMediaAddState> {
   }
 
   FutureOr<void> walkMediaAddUpdateButtonPressEvent(WalkMediaAddUpdateButtonPressEvent event, Emitter<WalkMediaAddState> emit) async {
-    await updateWalkMedia(event.updatedWalkMedia);
-    emit(AddWalkMediaUpdatedState());
+    final result = await updateWalkMedia(event.updatedWalkMedia);
+    result!.fold((failure) {
+      emit(AddWalkMediaErrorState());
+    }, (result) {
+      emit(AddWalkMediaUpdatedState());
+    });
   }
 
   FutureOr<void> walkMediaAddReadyToUpdateEvent(WalkMediaAddReadyToUpdateEvent event, Emitter<WalkMediaAddState> emit) {

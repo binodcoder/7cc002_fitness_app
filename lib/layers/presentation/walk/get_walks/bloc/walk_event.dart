@@ -1,3 +1,5 @@
+import 'package:fitness_app/core/model/walk_participant_model.dart';
+
 import '../../../../../core/model/walk_model.dart';
 
 abstract class WalkEvent {}
@@ -14,6 +16,16 @@ class WalkDeleteButtonClickedEvent extends WalkEvent {
 class WalkDeleteAllButtonClickedEvent extends WalkEvent {}
 
 class WalkAddButtonClickedEvent extends WalkEvent {}
+
+class WalkJoinButtonClickedEvent extends WalkEvent {
+  WalkParticipantModel walkParticipantModel;
+  WalkJoinButtonClickedEvent(this.walkParticipantModel);
+}
+
+class WalkLeaveButtonClickedEvent extends WalkEvent {
+  WalkParticipantModel walkParticipantModel;
+  WalkLeaveButtonClickedEvent(this.walkParticipantModel);
+}
 
 class WalkTileNavigateEvent extends WalkEvent {
   final WalkModel walkModel;

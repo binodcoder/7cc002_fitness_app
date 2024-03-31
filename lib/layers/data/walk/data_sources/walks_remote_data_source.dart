@@ -18,11 +18,9 @@ class WalkRemoteDataSourceImpl implements WalkRemoteDataSource {
   WalkRemoteDataSourceImpl({required this.client});
 
   Future<List<WalkModel>> _getWalks(String url) async {
-    final response = await client
-        .get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
+    final response = await client.get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
-      return walkModelFromJson(response.body);
-      //   return WalkModel.fromJson(json.decode(response.body));
+      return walkModelsFromJson(response.body);
     } else {
       throw ServerException();
     }
@@ -32,7 +30,7 @@ class WalkRemoteDataSourceImpl implements WalkRemoteDataSource {
     final response = await client.post(
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
-      body: walkModel.toJson(),
+      body: walkModelToJson(walkModel),
     );
     if (response.statusCode == 201) {
       return 1;
@@ -66,14 +64,12 @@ class WalkRemoteDataSourceImpl implements WalkRemoteDataSource {
     }
   }
 
-  Future<int> _joinWalk(
-      String url, WalkParticipantModel walkParticipantModel) async {
+  Future<int> _joinWalk(String url) async {
     final response = await client.post(
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
-      body: walkParticipantModel.toJson(),
     );
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       return 1;
     } else {
       throw ServerException();
@@ -85,7 +81,7 @@ class WalkRemoteDataSourceImpl implements WalkRemoteDataSource {
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
     );
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       return 1;
     } else {
       throw ServerException();
@@ -93,8 +89,7 @@ class WalkRemoteDataSourceImpl implements WalkRemoteDataSource {
   }
 
   @override
-  Future<List<WalkModel>> getWalks() =>
-      _getWalks("https://wlv-c4790072fbf0.herokuapp.com/api/v1/walks");
+  Future<List<WalkModel>> getWalks() => _getWalks("https://wlv-c4790072fbf0.herokuapp.com/api/v1/walks");
 
   @override
   Future<int> addWalk(WalkModel walkModel) => _addWalk(
@@ -109,16 +104,13 @@ class WalkRemoteDataSourceImpl implements WalkRemoteDataSource {
       );
 
   @override
-  Future<int> deleteWalk(int userId) => _deleteWalk(
-      "https://wlv-c4790072fbf0.herokuapp.com/api/v1/walks/$userId");
+  Future<int> deleteWalk(int userId) => _deleteWalk("https://wlv-c4790072fbf0.herokuapp.com/api/v1/walks/$userId");
 
   @override
   Future<int> joinWalk(WalkParticipantModel walkParticipantModel) => _joinWalk(
-        "https://wlv-c4790072fbf0.herokuapp.com/api/v1/walks",
-        walkParticipantModel,
-      );
+      "https://wlv-c4790072fbf0.herokuapp.com/api/v1/join-walk?user_id=${walkParticipantModel.userId}&walk_id=${walkParticipantModel.walkId}");
 
   @override
   Future<int> leaveWalk(WalkParticipantModel walkParticipantModel) =>
-      _leaveWalk("https://wlv-c4790072fbf0.herokuapp.com/api/v1/walks");
+      _leaveWalk("https://wlv-c4790072fbf0.herokuapp.com/api/v1/${walkParticipantModel.walkId}/leave/${walkParticipantModel.userId}");
 }

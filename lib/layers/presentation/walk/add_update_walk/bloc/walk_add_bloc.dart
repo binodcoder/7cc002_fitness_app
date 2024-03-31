@@ -13,7 +13,6 @@ import '../../../../domain/walk/usecases/update_walk.dart';
 class WalkAddBloc extends Bloc<WalkAddEvent, WalkAddState> {
   final AddWalk addWalk;
   final UpdateWalk updateWalk;
-  final DatabaseHelper dbHelper = DatabaseHelper();
   WalkAddBloc({required this.addWalk, required this.updateWalk}) : super(WalkAddInitialState()) {
     on<WalkAddInitialEvent>(walkAddInitialEvent);
     on<WalkAddReadyToUpdateEvent>(walkAddReadyToUpdateEvent);
@@ -66,8 +65,12 @@ class WalkAddBloc extends Bloc<WalkAddEvent, WalkAddState> {
   }
 
   FutureOr<void> addWalkSaveButtonPressEvent(WalkAddSaveButtonPressEvent event, Emitter<WalkAddState> emit) async {
-    await addWalk(event.newWalk);
-    emit(AddWalkSavedState());
+    final result = await addWalk(event.newWalk);
+    result!.fold((failure) {
+      emit(AddWalkErrorState());
+    }, (result) {
+      emit(AddWalkSavedState());
+    });
   }
 
   FutureOr<void> walkAddInitialEvent(WalkAddInitialEvent event, Emitter<WalkAddState> emit) {
@@ -75,8 +78,12 @@ class WalkAddBloc extends Bloc<WalkAddEvent, WalkAddState> {
   }
 
   FutureOr<void> walkAddUpdateButtonPressEvent(WalkAddUpdateButtonPressEvent event, Emitter<WalkAddState> emit) async {
-    await updateWalk(event.updatedWalk);
-    emit(AddWalkUpdatedState());
+    final result = await updateWalk(event.updatedWalk);
+    result!.fold((failure) {
+      emit(AddWalkErrorState());
+    }, (result) {
+      emit(AddWalkUpdatedState());
+    });
   }
 
   FutureOr<void> walkAddReadyToUpdateEvent(WalkAddReadyToUpdateEvent event, Emitter<WalkAddState> emit) {

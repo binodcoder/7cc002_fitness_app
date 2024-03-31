@@ -16,8 +16,7 @@ class RoutineRemoteDataSourceImpl implements RoutineRemoteDataSource {
   RoutineRemoteDataSourceImpl({required this.client});
 
   Future<List<RoutineModel>> _getRoutines(String url) async {
-    final response = await client
-        .get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
+    final response = await client.get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       return routineModelsFromJson(response.body);
       //   return RoutineModel.fromJson(json.decode(response.body));
@@ -32,9 +31,8 @@ class RoutineRemoteDataSourceImpl implements RoutineRemoteDataSource {
       headers: {'Content-Type': 'application/json'},
       body: routineModelToJson(routineModel),
     );
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       return 1;
-      //   return RoutineModel.fromJson(json.decode(response.body));
     } else {
       throw ServerException();
     }
@@ -55,8 +53,7 @@ class RoutineRemoteDataSourceImpl implements RoutineRemoteDataSource {
   }
 
   Future<int> _deleteRoutine(String url) async {
-    final response = await client
-        .delete(Uri.parse(url), headers: {'Content-Type': 'application/json'});
+    final response = await client.delete(Uri.parse(url), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       return 1;
     } else {
@@ -65,19 +62,15 @@ class RoutineRemoteDataSourceImpl implements RoutineRemoteDataSource {
   }
 
   @override
-  Future<List<RoutineModel>> getRoutines() =>
-      _getRoutines("https://wlv-c4790072fbf0.herokuapp.com/api/v1/routines");
+  Future<List<RoutineModel>> getRoutines() => _getRoutines("https://wlv-c4790072fbf0.herokuapp.com/api/v1/routines");
 
   @override
-  Future<int> addRoutine(RoutineModel routineModel) => _addRoutine(
-      "https://wlv-c4790072fbf0.herokuapp.com/api/v1/routines", routineModel);
+  Future<int> addRoutine(RoutineModel routineModel) => _addRoutine("https://wlv-c4790072fbf0.herokuapp.com/api/v1/routines", routineModel);
 
   @override
-  Future<int> deleteRoutine(int routineId) => _deleteRoutine(
-      "https://wlv-c4790072fbf0.herokuapp.com/api/v1/routines/$routineId");
+  Future<int> deleteRoutine(int routineId) => _deleteRoutine("https://wlv-c4790072fbf0.herokuapp.com/api/v1/routines/$routineId");
 
   @override
-  Future<int> updateRoutine(RoutineModel routineModel) => _updateRoutine(
-      "https://wlv-c4790072fbf0.herokuapp.com/api/v1/routines/${routineModel.id}",
-      routineModel);
+  Future<int> updateRoutine(RoutineModel routineModel) =>
+      _updateRoutine("https://wlv-c4790072fbf0.herokuapp.com/api/v1/routines/${routineModel.id}", routineModel);
 }

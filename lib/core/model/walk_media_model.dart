@@ -13,29 +13,29 @@ WalkMediaModel walkMediaModelFromJson(String str) => WalkMediaModel.fromJson(jso
 String walkMediaModelToJson(WalkMediaModel data) => json.encode(data.toJson());
 
 class WalkMediaModel {
-  int id;
+  int? id;
   int walkId;
   int userId;
   String mediaUrl;
 
   WalkMediaModel({
-    required this.id,
+    this.id,
     required this.walkId,
     required this.userId,
     required this.mediaUrl,
   });
 
   factory WalkMediaModel.fromJson(Map<String, dynamic> json) => WalkMediaModel(
-    id: json["id"],
-    walkId: json["walkId"],
-    userId: json["userId"],
-    mediaUrl: json["mediaUrl"],
-  );
+        id: json["id"],
+        walkId: json["walkId"],
+        userId: json["userId"],
+        mediaUrl: json["mediaUrl"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "walkId": walkId,
-    "userId": userId,
-    "mediaUrl": mediaUrl,
-  };
+        "id": id,
+        "walkId": walkId,
+        "userId": userId,
+        "mediaUrl": mediaUrl,
+      };
 }

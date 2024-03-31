@@ -4,10 +4,10 @@
 
 import 'dart:convert';
 
-
 import 'dart:convert';
 
-List<AppointmentModel> appointmentModelListFromJson(String str) => List<AppointmentModel>.from(json.decode(str).map((x) => AppointmentModel.fromJson(x)));
+List<AppointmentModel> appointmentModelListFromJson(String str) =>
+    List<AppointmentModel>.from(json.decode(str).map((x) => AppointmentModel.fromJson(x)));
 
 String appointmentModelListToJson(List<AppointmentModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
@@ -22,31 +22,35 @@ class AppointmentModel {
   String startTime;
   int trainerId;
   int userId;
+  String? remark;
 
   AppointmentModel({
     required this.date,
     required this.endTime,
-     this.id,
+    this.id,
     required this.startTime,
     required this.trainerId,
     required this.userId,
+    this.remark,
   });
 
   factory AppointmentModel.fromJson(Map<String, dynamic> json) => AppointmentModel(
-    date: DateTime.parse(json["date"]),
-    endTime: json["endTime"],
-    id: json["id"],
-    startTime: json["startTime"],
-    trainerId: json["trainerId"],
-    userId: json["userId"],
-  );
+        date: DateTime.parse(json["date"]),
+        endTime: json["endTime"],
+        id: json["id"],
+        startTime: json["startTime"],
+        trainerId: json["trainerId"],
+        userId: json["userId"],
+        remark: json["remark"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "date": "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
-    "endTime": endTime,
-    "id": id,
-    "startTime": startTime,
-    "trainerId": trainerId,
-    "userId": userId,
-  };
+        "date": "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+        "endTime": endTime,
+        "id": id,
+        "startTime": startTime,
+        "trainerId": trainerId,
+        "userId": userId,
+        "remark": remark,
+      };
 }
