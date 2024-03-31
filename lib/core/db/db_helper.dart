@@ -87,6 +87,19 @@ class DatabaseHelper {
     });
   }
 
+  Future<List<WalkMediaModel>> getWalkMediaByWalkId(walkId) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db!.query('routine');
+    return List.generate(maps.length, (i) {
+      return WalkMediaModel(
+        id: 1,
+        walkId: 0,
+        userId: 0,
+        mediaUrl: '',
+      );
+    });
+  }
+
   Future<int> updatePost(UserModel post) async {
     final db = await database;
     return await db!.update(

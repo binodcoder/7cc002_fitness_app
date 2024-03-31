@@ -1,6 +1,5 @@
 import 'package:fitness_app/core/model/appointment_model.dart';
-
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,18 +8,19 @@ import '../../../../../global.dart';
 import '../../../../../injection_container.dart';
 import '../../../../../resources/colour_manager.dart';
 import '../../../../../resources/values_manager.dart';
- import 'package:intl/intl.dart';
+import 'package:intl/intl.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-
 import '../bloc/appointment_add_bloc.dart';
 import '../bloc/appointment_add_event.dart';
 import '../bloc/appointment_add_state.dart';
 
 class AddAppointmentDialog extends StatefulWidget {
   final AppointmentModel? appointmentModel;
+  final DateTime? focusedDay;
   const AddAppointmentDialog({
     Key? key,
     this.appointmentModel,
+    this.focusedDay,
   }) : super(key: key);
   @override
   AddAppointmentDialogState createState() => AddAppointmentDialogState();
@@ -37,8 +37,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
     setDateTime();
     if (widget.appointmentModel != null) {
       _remarkController.text = widget.appointmentModel!.date.toString();
-      appointmentAddBloc
-          .add(AppointmentAddReadyToUpdateEvent(widget.appointmentModel!));
+      appointmentAddBloc.add(AppointmentAddReadyToUpdateEvent(widget.appointmentModel!));
     } else {
       appointmentAddBloc.add(AppointmentAddInitialEvent());
     }
@@ -46,7 +45,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
   }
 
   setDateTime() {
-    _dateController.text = DateFormat.yMd().format(DateTime.now());
+    _dateController.text = widget.focusedDay.toString();
     _timeController.text = "00:00:00";
   }
 
@@ -94,8 +93,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
   String formatTimeOfDay(TimeOfDay timeOfDay) {
     final hours = timeOfDay.hour.toString().padLeft(2, '0');
     final minutes = timeOfDay.minute.toString().padLeft(2, '0');
-    const seconds =
-        '00'; // TimeOfDay doesn't have seconds, so we assume it as 00
+    const seconds = '00'; // TimeOfDay doesn't have seconds, so we assume it as 00
     return '$hours:$minutes:$seconds';
   }
 
@@ -259,9 +257,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                                 ),
                               ),
                               searchMatchFn: (item, searchValue) {
-                                return item.value
-                                    .toString()
-                                    .contains(searchValue);
+                                return item.value.toString().contains(searchValue);
                               },
                             ),
                             //This to clear the search value when you close the menu
@@ -282,12 +278,9 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                         child: DropdownButtonFormField<Trainer>(
                           decoration: InputDecoration(
                             labelText: 'Trainers',
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: AppWidth.w4,
-                                vertical: AppHeight.h12),
+                            contentPadding: EdgeInsets.symmetric(horizontal: AppWidth.w4, vertical: AppHeight.h12),
                             border: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Colors.blue, width: 1.5),
+                              borderSide: const BorderSide(color: Colors.blue, width: 1.5),
                               borderRadius: BorderRadius.all(
                                 Radius.circular(AppRadius.r4),
                               ),
@@ -331,8 +324,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                           fillColor: Colors.grey[10],
                           filled: true,
                           labelText: '  Select Trainer',
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: AppWidth.w4, vertical: AppHeight.h12),
+                          contentPadding: EdgeInsets.symmetric(horizontal: AppWidth.w4, vertical: AppHeight.h12),
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
                             //BorderSide(color: ColorManager.white, width: 0, style: BorderStyle.none),
@@ -395,9 +387,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                               _setDate = val!;
                             },
                             decoration: const InputDecoration(
-                                disabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide.none),
-                                contentPadding: EdgeInsets.only(top: 0.0)),
+                                disabledBorder: UnderlineInputBorder(borderSide: BorderSide.none), contentPadding: EdgeInsets.only(top: 0.0)),
                           ),
                         ),
                       ),
@@ -415,8 +405,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                               width: _width * 0.45,
                               height: _height * 0.1,
                               alignment: Alignment.center,
-                              decoration:
-                                  BoxDecoration(color: Colors.grey[200]),
+                              decoration: BoxDecoration(color: Colors.grey[200]),
                               child: TextFormField(
                                 style: const TextStyle(fontSize: 20),
                                 textAlign: TextAlign.center,
@@ -427,9 +416,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                                   _setDate = val!;
                                 },
                                 decoration: const InputDecoration(
-                                    disabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide.none),
-                                    contentPadding: EdgeInsets.only(top: 0.0)),
+                                    disabledBorder: UnderlineInputBorder(borderSide: BorderSide.none), contentPadding: EdgeInsets.only(top: 0.0)),
                               ),
                             ),
                           ),
@@ -441,8 +428,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                               width: _width * 0.45,
                               height: _height * 0.1,
                               alignment: Alignment.center,
-                              decoration:
-                                  BoxDecoration(color: Colors.grey[200]),
+                              decoration: BoxDecoration(color: Colors.grey[200]),
                               child: TextFormField(
                                 style: const TextStyle(fontSize: 20),
                                 textAlign: TextAlign.center,
@@ -453,9 +439,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                                   _setTime = val!;
                                 },
                                 decoration: const InputDecoration(
-                                    disabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide.none),
-                                    contentPadding: EdgeInsets.only(top: 0.0)),
+                                    disabledBorder: UnderlineInputBorder(borderSide: BorderSide.none), contentPadding: EdgeInsets.only(top: 0.0)),
                               ),
                             ),
                           ),
@@ -472,11 +456,9 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                           controller: _remarkController,
                           textInputAction: TextInputAction.go,
                           decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 20.0, horizontal: 10.0),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
                             border: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  width: 1.5, color: Colors.blue),
+                              borderSide: const BorderSide(width: 1.5, color: Colors.blue),
                               borderRadius: BorderRadius.circular(AppRadius.r4),
                             ),
                             labelText: 'Remarks',
@@ -491,16 +473,13 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                         children: <Widget>[
                           Expanded(
                             child: ConstrainedBox(
-                              constraints: const BoxConstraints.tightFor(
-                                  width: 300, height: 50),
+                              constraints: const BoxConstraints.tightFor(width: 300, height: 50),
                               child: ElevatedButton(
                                 style: ButtonStyle(
-                                  shape: MaterialStateProperty.resolveWith<
-                                      OutlinedBorder>(
+                                  shape: MaterialStateProperty.resolveWith<OutlinedBorder>(
                                     (Set<MaterialState> states) {
                                       return RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(AppRadius.r4),
+                                        borderRadius: BorderRadius.circular(AppRadius.r4),
                                       );
                                     },
                                   ),
@@ -521,18 +500,13 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                                       //         appointmentModel));
                                     } else {
                                       var appointmentModel = AppointmentModel(
-
                                         date: selectedDate,
                                         endTime: _timeController.text,
                                         startTime: _timeController.text,
                                         trainerId: selectedTrainer?.id ?? 1,
-                                        userId: sharedPreferences
-                                                .getInt("user_id") ??
-                                            1,
+                                        userId: sharedPreferences.getInt("user_id") ?? 1,
                                       );
-                                      appointmentAddBloc.add(
-                                          AppointmentAddSaveButtonPressEvent(
-                                              appointmentModel));
+                                      appointmentAddBloc.add(AppointmentAddSaveButtonPressEvent(appointmentModel));
                                     }
                                   }
                                 },

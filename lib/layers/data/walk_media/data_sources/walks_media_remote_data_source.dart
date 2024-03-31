@@ -7,6 +7,7 @@ abstract class WalkMediaRemoteDataSource {
   Future<int> addWalkMedia(WalkMediaModel walkMediaModel);
   Future<int> updateWalkMedia(WalkMediaModel walkMediaModel);
   Future<int> deleteWalkMedia(int userId);
+  Future<List<WalkMediaModel>> getWalkMediaByWalkId(int walkId);
 }
 
 class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
@@ -15,6 +16,16 @@ class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
   WalkMediaRemoteDataSourceImpl({required this.client});
 
   Future<List<WalkMediaModel>> _getWalkMedias(String url) async {
+    final response = await client.get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
+    if (response.statusCode == 200) {
+      return walkMediaModelsFromJson(response.body);
+      //   return WalkMediaModel.fromJson(json.decode(response.body));
+    } else {
+      throw ServerException();
+    }
+  }
+
+  Future<List<WalkMediaModel>> _getWalkMediaByWalkId(String url) async {
     final response = await client.get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       return walkMediaModelsFromJson(response.body);
@@ -79,4 +90,8 @@ class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
 
   @override
   Future<int> deleteWalkMedia(int userId) => _deleteWalkMedia("https://wlv-c4790072fbf0.herokuapp.com/api/v1/WalkMedias/$userId");
+
+  @override
+  Future<List<WalkMediaModel>> getWalkMediaByWalkId(int walkId) =>
+      _getWalkMediaByWalkId("https://wlv-c4790072fbf0.herokuapp.com/api/v1/walk-media/walk-id/3");
 }

@@ -5,7 +5,7 @@ import '../../../../../core/db/db_helper.dart';
 import '../../../../../drawer.dart';
 import '../../../../../resources/strings_manager.dart';
 import '../../../appointment/add_update_appointment/ui/add_appointment.dart';
-import '../../../register/ui/register_page.dart';
+import '../../../walk_media/get_walk_media/ui/walk_media.dart';
 import '../bloc/walk_bloc.dart';
 import '../../../../../injection_container.dart';
 import '../bloc/walk_event.dart';
@@ -96,8 +96,8 @@ class _WalkPageState extends State<WalkPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (BuildContext context) => WalkDetailsPage(
-                            walkModel: walkModel,
+                          builder: (BuildContext context) => WalkMediaPage(
+                            walkId: successState.walkModelList[index].id,
                           ),
                         ),
                       );

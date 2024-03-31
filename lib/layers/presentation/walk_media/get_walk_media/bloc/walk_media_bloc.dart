@@ -7,16 +7,19 @@ import '../../../../../core/model/walk_media_model.dart';
 import '../../../../../core/usecases/usecase.dart';
 import '../../../../domain/walk_media/usecases/delete_walk_media.dart';
 import '../../../../domain/walk_media/usecases/get_walk_media.dart';
+import '../../../../domain/walk_media/usecases/get_walk_media_by_walk_id.dart';
 
 class WalkMediaBloc extends Bloc<WalkMediaEvent, WalkMediaState> {
   final GetWalkMedia getWalkMedia;
   final DeleteWalkMedia deleteWalkMedia;
+  final GetWalkMediaByWalkId getWalkMediaByWalkId;
   // final UpdateWalkMedias updateWalkMedia;
   final DatabaseHelper dbHelper = DatabaseHelper();
   List<WalkMediaModel> selectedWalkMedias = [];
   WalkMediaBloc({
     required this.getWalkMedia,
     required this.deleteWalkMedia,
+    required this.getWalkMediaByWalkId,
     //  required this.updateWalkMedia,
   }) : super(WalkMediaInitialState()) {
     on<WalkMediaInitialEvent>(walkMediaInitialEvent);
@@ -29,7 +32,7 @@ class WalkMediaBloc extends Bloc<WalkMediaEvent, WalkMediaState> {
 
   FutureOr<void> walkMediaInitialEvent(WalkMediaInitialEvent event, Emitter<WalkMediaState> emit) async {
     emit(WalkMediaLoadingState());
-    final walkMediaModelList = await getWalkMedia(NoParams());
+    final walkMediaModelList = await getWalkMediaByWalkId(event.walkId);
 
     walkMediaModelList!.fold((failure) {
       // emit(Error(message: _mapFailureToMessage(failure)));

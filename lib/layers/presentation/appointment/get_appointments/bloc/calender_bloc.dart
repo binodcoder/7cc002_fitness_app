@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:fitness_app/core/model/appointment_model.dart';
+import 'package:table_calendar/table_calendar.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../../core/usecases/usecase.dart';
 import '../../../../domain/appointment/usecases/delete_appointment.dart';
@@ -23,6 +24,7 @@ class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
     on<CalenderDeleteAllButtonClickedEvent>(calenderDeleteAllButtonClickedEvent);
     on<CalenderAddButtonClickedEvent>(calenderAddButtonClickedEvent);
     on<CalenderTileNavigateEvent>(calenderTileNavigateEvent);
+    on<CalenderDaySelectEvent>(calenderDaySelectEvent);
   }
 
   FutureOr<void> calenderInitialEvent(CalenderInitialEvent event, Emitter<CalenderState> emit) async {
@@ -53,10 +55,15 @@ class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
   }
 
   FutureOr<void> calenderAddButtonClickedEvent(CalenderAddButtonClickedEvent event, Emitter<CalenderState> emit) {
-    emit(CalenderNavigateToAddCalenderActionState());
+    emit(CalenderNavigateToAddCalenderActionState(event.selectedDay));
   }
 
   FutureOr<void> calenderTileNavigateEvent(CalenderTileNavigateEvent event, Emitter<CalenderState> emit) {
     emit(CalenderNavigateToDetailPageActionState(event.appointmentModel));
+  }
+
+  FutureOr<void> calenderDaySelectEvent(CalenderDaySelectEvent e, Emitter<CalenderState> emit) {
+    // emit(CalenderLoadedSuccessState(e.appointmentModels.where((event) => isSameDay(event.date, e.selectedDay)).toList()));
+    emit(CalenderDaySelectedState(e.appointmentModels.where((event) => isSameDay(event.date, e.selectedDay)).toList()));
   }
 }

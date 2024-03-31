@@ -2,7 +2,10 @@ import '../../../../../core/model/walk_media_model.dart';
 
 abstract class WalkMediaEvent {}
 
-class WalkMediaInitialEvent extends WalkMediaEvent {}
+class WalkMediaInitialEvent extends WalkMediaEvent {
+  int walkId;
+  WalkMediaInitialEvent(this.walkId);
+}
 
 class WalkMediaEditButtonClickedEvent extends WalkMediaEvent {}
 

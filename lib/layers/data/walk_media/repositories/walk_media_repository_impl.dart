@@ -8,7 +8,7 @@ import '../data_sources/walks_media_local_data_source.dart';
 import '../data_sources/walks_media_remote_data_source.dart';
 
 class WalkMediaRepositoryImpl implements WalkMediaRepository {
-  final WalkMediasLocalDataSource walkMediaLocalDataSource;
+  final WalkMediaLocalDataSource walkMediaLocalDataSource;
   final WalkMediaRemoteDataSource walkMediaRemoteDataSource;
   final NetworkInfo networkInfo;
 
@@ -64,6 +64,25 @@ class WalkMediaRepositoryImpl implements WalkMediaRepository {
       return Right(response);
     } on ServerException {
       return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<WalkMediaModel>>>? getWalkMediaByWalkId(int walkId) async {
+    if (await networkInfo.isConnected) {
+      try {
+        List<WalkMediaModel> walkMediaModelList = await walkMediaRemoteDataSource.getWalkMediaByWalkId(walkId);
+        return Right(walkMediaModelList);
+      } on ServerException {
+        return Left(ServerFailure());
+      }
+    } else {
+      try {
+        List<WalkMediaModel> walkMediaModelList = await walkMediaLocalDataSource.getWalkMediaByWalkId(walkId);
+        return Right(walkMediaModelList);
+      } on CacheException {
+        return Left(CacheFailure());
+      }
     }
   }
 }

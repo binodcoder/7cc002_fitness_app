@@ -12,7 +12,8 @@ import '../bloc/walk_media_event.dart';
 import '../bloc/walk_media_state.dart';
 
 class WalkMediaPage extends StatefulWidget {
-  const WalkMediaPage({super.key});
+  final int walkId;
+  const WalkMediaPage({super.key, required this.walkId});
 
   @override
   State<WalkMediaPage> createState() => _WalkMediaPageState();
@@ -23,12 +24,12 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
 
   @override
   void initState() {
-    walkMediaBloc.add(WalkMediaInitialEvent());
+    walkMediaBloc.add(WalkMediaInitialEvent(widget.walkId));
     super.initState();
   }
 
   void refreshPage() {
-    walkMediaBloc.add(WalkMediaInitialEvent());
+    walkMediaBloc.add(WalkMediaInitialEvent(widget.walkId));
   }
 
   WalkMediaBloc walkMediaBloc = sl<WalkMediaBloc>();

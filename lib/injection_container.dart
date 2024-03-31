@@ -1,3 +1,9 @@
+import 'package:fitness_app/layers/domain/walk_media/usecases/add_walk_media.dart';
+import 'package:fitness_app/layers/domain/walk_media/usecases/delete_walk_media.dart';
+import 'package:fitness_app/layers/domain/walk_media/usecases/get_walk_media.dart';
+import 'package:fitness_app/layers/domain/walk_media/usecases/get_walk_media_by_walk_id.dart';
+import 'package:fitness_app/layers/domain/walk_media/usecases/update_walk_media.dart';
+import 'package:fitness_app/layers/presentation/appointment/get_appointments/bloc/event_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +25,9 @@ import 'layers/data/routine/repositories/routine_repository_impl.dart';
 import 'layers/data/walk/data_sources/walks_local_data_source.dart';
 import 'layers/data/walk/data_sources/walks_remote_data_source.dart';
 import 'layers/data/walk/repositories/walk_repository_impl.dart';
+import 'layers/data/walk_media/data_sources/walks_media_local_data_source.dart';
+import 'layers/data/walk_media/data_sources/walks_media_remote_data_source.dart';
+import 'layers/data/walk_media/repositories/walk_media_repository_impl.dart';
 import 'layers/domain/appointment/repositories/appointment_repositories.dart';
 import 'layers/domain/appointment/repositories/sync_repositories.dart';
 import 'layers/domain/appointment/usecases/add_appointment.dart';
@@ -43,6 +52,7 @@ import 'layers/domain/walk/usecases/get_walks.dart';
 import 'layers/domain/walk/usecases/join_walk.dart';
 import 'layers/domain/walk/usecases/leave_walk.dart';
 import 'layers/domain/walk/usecases/update_walk.dart';
+import 'layers/domain/walk_media/repositories/walk_media_repositories.dart';
 import 'layers/presentation/appointment/add_update_appointment/bloc/appointment_add_bloc.dart';
 import 'layers/presentation/appointment/get_appointments/bloc/calender_bloc.dart';
 import 'layers/presentation/login/bloc/login_bloc.dart';
@@ -51,6 +61,8 @@ import 'layers/presentation/routine/add_update_routine/bloc/routine_add_bloc.dar
 import 'layers/presentation/routine/get_routines/bloc/routine_bloc.dart';
 import 'layers/presentation/walk/add_update_walk/bloc/walk_add_bloc.dart';
 import 'layers/presentation/walk/get_walks/bloc/walk_bloc.dart';
+import 'layers/presentation/walk_media/add__update_walk_media/bloc/walk_media_add_bloc.dart';
+import 'layers/presentation/walk_media/get_walk_media/bloc/walk_media_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -80,6 +92,7 @@ Future<void> init() async {
   //appointment
   sl.registerFactory(() => AppointmentAddBloc(addAppointment: sl(), updateAppointment: sl(), sync: sl()));
   sl.registerFactory(() => CalenderBloc(getAppointments: sl(), deleteAppointment: sl()));
+  sl.registerFactory(() => EventBloc(getAppointments: sl(), deleteAppointment: sl()));
 
   sl.registerLazySingleton(() => AddAppointment(sl()));
   sl.registerLazySingleton(() => UpdateAppointment(sl()));
@@ -113,6 +126,26 @@ Future<void> init() async {
 
   sl.registerLazySingleton<WalkRemoteDataSource>(() => WalkRemoteDataSourceImpl(client: sl()));
   sl.registerLazySingleton<WalksLocalDataSource>(() => WalksLocalDataSourceImpl());
+
+  //walk-media
+  sl.registerFactory(() => WalkMediaBloc(getWalkMedia: sl(), getWalkMediaByWalkId: sl(), deleteWalkMedia: sl()));
+  sl.registerFactory(() => WalkMediaAddBloc(addWalkMedia: sl(), updateWalkMedia: sl()));
+
+  sl.registerLazySingleton(() => GetWalkMedia(sl()));
+  sl.registerLazySingleton(() => DeleteWalkMedia(sl()));
+  sl.registerLazySingleton(() => UpdateWalkMedia(sl()));
+  sl.registerLazySingleton(() => AddWalkMedia(sl()));
+  sl.registerLazySingleton(() => GetWalkMediaByWalkId(sl()));
+  sl.registerLazySingleton<WalkMediaRepository>(
+    () => WalkMediaRepositoryImpl(
+      walkMediaLocalDataSource: sl(),
+      walkMediaRemoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<WalkMediaRemoteDataSource>(() => WalkMediaRemoteDataSourceImpl(client: sl()));
+  sl.registerLazySingleton<WalkMediaLocalDataSource>(() => WalkMediaLocalDataSourceImpl());
 
   //routines
   sl.registerFactory(() => RoutineAddBloc(addRoutine: sl(), updateRoutine: sl()));
