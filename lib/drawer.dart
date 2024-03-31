@@ -1,13 +1,15 @@
-import 'package:fitness_app/layers/presentation_layer/call/call_page.dart';
-import 'package:fitness_app/resources/colour_manager.dart';
+ import 'package:fitness_app/resources/colour_manager.dart';
 import 'package:fitness_app/resources/font_manager.dart';
 import 'package:fitness_app/resources/styles_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
-import 'layers/presentation_layer/appointment/get_appointments/ui/calender.dart';
-import 'layers/presentation_layer/walk/get_walks/ui/walk.dart';
+import 'layers/presentation/appointment/get_appointments/ui/calender.dart';
+import 'layers/presentation/call/call_page.dart';
+import 'layers/presentation/walk/get_walks/ui/walk.dart';
+
+
 
 
 
