@@ -26,7 +26,11 @@ class WalkNavigateToDetailPageActionState extends WalkActionState {
   WalkNavigateToDetailPageActionState(this.walkModel);
 }
 
-class WalkNavigateToUpdatePageActionState extends WalkActionState {}
+class WalkNavigateToUpdatePageActionState extends WalkActionState {
+  final WalkModel walkModel;
+
+  WalkNavigateToUpdatePageActionState(this.walkModel);
+}
 
 class WalkItemDeletedActionState extends WalkActionState {}
 

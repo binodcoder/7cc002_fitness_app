@@ -18,7 +18,11 @@ class EventLoadedSuccessState extends EventState {
 
 class EventErrorState extends EventState {}
 
-class EventNavigateToAddEventActionState extends EventActionState {}
+class EventNavigateToAddEventActionState extends EventActionState {
+  // final AppointmentModel appointmentModel;
+  // final DateTime focusedDay;
+  // EventNavigateToAddEventActionState(this.appointmentModel, this.focusedDay);
+}
 
 class EventNavigateToDetailPageActionState extends EventActionState {
   final AppointmentModel appointmentModel;
@@ -26,13 +30,16 @@ class EventNavigateToDetailPageActionState extends EventActionState {
   EventNavigateToDetailPageActionState(this.appointmentModel);
 }
 
-class EventNavigateToUpdatePageActionState extends EventActionState {}
+class EventNavigateToUpdatePageActionState extends EventActionState {
+  final AppointmentModel appointmentModel;
+  final DateTime focusedDay;
+  EventNavigateToUpdatePageActionState(this.appointmentModel, this.focusedDay);
+}
 
 class EventItemDeletedActionState extends EventActionState {}
 
 class EventDaySelectedState extends EventState {
   final List<AppointmentModel> appointmentModels;
-
   EventDaySelectedState(this.appointmentModels);
 }
 

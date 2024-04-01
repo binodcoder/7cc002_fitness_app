@@ -45,7 +45,9 @@ class WalkBloc extends Bloc<WalkEvent, WalkState> {
     });
   }
 
-  FutureOr<void> walkEditButtonClickedEvent(WalkEditButtonClickedEvent event, Emitter<WalkState> emit) {}
+  FutureOr<void> walkEditButtonClickedEvent(WalkEditButtonClickedEvent event, Emitter<WalkState> emit) {
+    emit(WalkNavigateToUpdatePageActionState(event.walkModel));
+  }
 
   FutureOr<void> walkDeleteButtonClickedEvent(WalkDeleteButtonClickedEvent event, Emitter<WalkState> emit) async {
     //await dbHelper.deleteWalk(event.walkModel.id);

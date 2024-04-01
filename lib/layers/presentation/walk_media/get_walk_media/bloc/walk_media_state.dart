@@ -29,7 +29,11 @@ class WalkMediaNavigateToDetailPageActionState extends WalkMediaActionState {
   WalkMediaNavigateToDetailPageActionState(this.walkMediaModel);
 }
 
-class WalkMediaNavigateToUpdatePageActionState extends WalkMediaActionState {}
+class WalkMediaNavigateToUpdatePageActionState extends WalkMediaActionState {
+  final WalkMediaModel walkMediaModel;
+
+  WalkMediaNavigateToUpdatePageActionState(this.walkMediaModel);
+}
 
 class WalkMediaItemDeletedActionState extends WalkMediaActionState {}
 

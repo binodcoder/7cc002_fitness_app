@@ -38,7 +38,9 @@ class EventBloc extends Bloc<EventEvent, EventState> {
     });
   }
 
-  FutureOr<void> eventEditButtonClickedEvent(EventEditButtonClickedEvent event, Emitter<EventState> emit) {}
+  FutureOr<void> eventEditButtonClickedEvent(EventEditButtonClickedEvent event, Emitter<EventState> emit) {
+    emit(EventNavigateToUpdatePageActionState(event.appointmentModel, event.focusedDay));
+  }
 
   FutureOr<void> eventDeleteButtonClickedEvent(EventDeleteButtonClickedEvent event, Emitter<EventState> emit) async {
     // await dbHelper.deleteEvent(event.EventModel.id);

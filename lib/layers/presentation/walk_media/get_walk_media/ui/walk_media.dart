@@ -1,6 +1,7 @@
 import 'package:fitness_app/layers/presentation/walk_media/get_walk_media/ui/walk_media_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../../drawer.dart';
 import '../../../../../resources/strings_manager.dart';
@@ -47,7 +48,7 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => WalkMediaAddPage(
-                walkId: state.walkId,
+                walkId: widget.walkId,
               ),
               fullscreenDialog: true,
             ),
@@ -67,6 +68,18 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
             (value) => refreshPage(),
           );
         } else if (state is WalkMediaNavigateToUpdatePageActionState) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => WalkMediaAddPage(
+                walkMediaModel: state.walkMediaModel,
+                walkId: widget.walkId,
+              ),
+              fullscreenDialog: true,
+            ),
+          ).then(
+            (value) => refreshPage(),
+          );
         } else if (state is WalkMediaItemSelectedActionState) {
         } else if (state is WalkMediaItemDeletedActionState) {
         } else if (state is WalkMediaItemsDeletedActionState) {}
@@ -97,19 +110,43 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                 itemCount: successState.walkMediaModelList.length,
                 itemBuilder: (context, index) {
                   var walkMediaModel = successState.walkMediaModelList[index];
-                  return ListTile(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => WalkMediaDetailsPage(
-                            walkMediaModel: walkMediaModel,
-                          ),
+                  return Slidable(
+                    endActionPane: ActionPane(
+                      extentRatio: 0.46,
+                      motion: const ScrollMotion(),
+                      children: [
+                        SlidableAction(
+                          onPressed: (context) {
+                            walkMediaBloc.add(WalkMediaEditButtonClickedEvent(walkMediaModel));
+                          },
+                          backgroundColor: const Color(0xFF21B7CA),
+                          foregroundColor: Colors.white,
+                          icon: Icons.edit,
+                          label: 'Edit',
                         ),
-                      );
-                    },
-                    title: Text(walkMediaModel.mediaUrl),
-                    subtitle: Text(walkMediaModel.userId.toString()),
+                        SlidableAction(
+                          onPressed: (context) {},
+                          backgroundColor: const Color(0xFF21B7CA),
+                          foregroundColor: Colors.white,
+                          icon: Icons.delete,
+                          label: 'Delete',
+                        )
+                      ],
+                    ),
+                    child: ListTile(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => WalkMediaDetailsPage(
+                              walkMediaModel: walkMediaModel,
+                            ),
+                          ),
+                        );
+                      },
+                      title: Text(walkMediaModel.mediaUrl),
+                      subtitle: Text(walkMediaModel.userId.toString()),
+                    ),
                   );
                 },
               ),

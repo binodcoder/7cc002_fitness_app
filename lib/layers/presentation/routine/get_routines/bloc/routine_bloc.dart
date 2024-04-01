@@ -37,7 +37,9 @@ class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
     });
   }
 
-  FutureOr<void> routineEditButtonClickedEvent(RoutineEditButtonClickedEvent event, Emitter<RoutineState> emit) {}
+  FutureOr<void> routineEditButtonClickedEvent(RoutineEditButtonClickedEvent event, Emitter<RoutineState> emit) {
+    emit(RoutineNavigateToUpdatePageActionState(event.routineModel));
+  }
 
   FutureOr<void> routineDeleteButtonClickedEvent(RoutineDeleteButtonClickedEvent event, Emitter<RoutineState> emit) async {
     // await dbHelper.deleteRoutine(event.routineModel.id);

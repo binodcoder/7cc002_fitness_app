@@ -43,9 +43,9 @@ class WalkRemoteDataSourceImpl implements WalkRemoteDataSource {
     final response = await client.put(
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
-      body: walkModel.toJson(),
+      body: walkModelToJson(walkModel),
     );
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       return 1;
     } else {
       throw ServerException();

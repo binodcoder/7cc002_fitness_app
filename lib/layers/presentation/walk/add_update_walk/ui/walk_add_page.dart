@@ -299,7 +299,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                         if (date.isNotEmpty && startLocation.isNotEmpty) {
                           if (widget.walkModel != null) {
                             var updatedWalk = WalkModel(
-                              id: 0,
+                              id: widget.walkModel!.id,
                               proposerId: proposerId!,
                               routeData: routeData,
                               date: DateTime.now(),

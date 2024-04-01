@@ -46,7 +46,8 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
   final SharedPreferences sharedPreferences = sl<SharedPreferences>();
 
   setDateTime() {
-    _dateController.text = widget.focusedDay.toString();
+    selectedDate = widget.focusedDay!;
+    _dateController.text = DateFormat('YYYY-MM-DD').format(widget.focusedDay!);
     _startTimeController.text = "00:00:00";
     _endTimeController.text = "00:00:00";
   }
@@ -115,13 +116,13 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
   void initState() {
     setDateTime();
     if (widget.appointmentModel != null) {
-      _dateController.text = widget.appointmentModel!.date.toString();
+      selectedDate = widget.appointmentModel!.date;
+      _dateController.text = DateFormat('yyyy-MM-dd').format(widget.appointmentModel!.date);
       _startTimeController.text = widget.appointmentModel!.startTime;
       _endTimeController.text = widget.appointmentModel!.endTime;
-
       _remarkController.text = widget.appointmentModel!.remark.toString();
-
-      appointmentAddBloc.add(AppointmentAddReadyToUpdateEvent(widget.appointmentModel!));
+      // appointmentAddBloc.add(AppointmentAddReadyToUpdateEvent(widget.appointmentModel!));
+      appointmentAddBloc.add(AppointmentAddInitialEvent());
     } else {
       appointmentAddBloc.add(AppointmentAddInitialEvent());
     }
@@ -177,8 +178,12 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
 
           case AppointmentAddLoadedSuccessState:
             final successState = state as AppointmentAddLoadedSuccessState;
-            _trainerController.text =
-                successState.syncModel.data.trainers.where((Trainer element) => element.id == widget.appointmentModel!.trainerId).first.name;
+            if (widget.appointmentModel != null) {
+              selectedTrainer =
+                  successState.syncModel.data.trainers.where((Trainer element) => element.id == widget.appointmentModel!.trainerId).first;
+              // _trainerController.text =
+              //     successState.syncModel.data.trainers.where((Trainer element) => element.id == widget.appointmentModel!.trainerId).first.name;
+            }
 
             return Scaffold(
               appBar: AppBar(
@@ -520,6 +525,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                                         startTime: _startTimeController.text,
                                         trainerId: selectedTrainer!.id,
                                         userId: sharedPreferences.getInt("user_id")!,
+                                        remark: _remarkController.text,
                                       );
                                       appointmentAddBloc.add(AppointmentAddUpdateButtonPressEvent(appointmentModel));
                                     } else {
@@ -529,6 +535,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                                         startTime: _endTimeController.text,
                                         trainerId: selectedTrainer?.id ?? 1,
                                         userId: sharedPreferences.getInt("user_id") ?? 1,
+                                        remark: _remarkController.text,
                                       );
                                       appointmentAddBloc.add(AppointmentAddSaveButtonPressEvent(appointmentModel));
                                     }

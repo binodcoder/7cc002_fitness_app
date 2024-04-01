@@ -7,7 +7,10 @@ class WalkMediaInitialEvent extends WalkMediaEvent {
   WalkMediaInitialEvent(this.walkId);
 }
 
-class WalkMediaEditButtonClickedEvent extends WalkMediaEvent {}
+class WalkMediaEditButtonClickedEvent extends WalkMediaEvent {
+  final WalkMediaModel walkMediaModel;
+  WalkMediaEditButtonClickedEvent(this.walkMediaModel);
+}
 
 class WalkMediaDeleteButtonClickedEvent extends WalkMediaEvent {
   final WalkMediaModel walkMediaModel;

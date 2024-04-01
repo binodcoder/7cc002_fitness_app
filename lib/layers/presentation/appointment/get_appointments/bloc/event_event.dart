@@ -4,7 +4,11 @@ abstract class EventEvent {}
 
 class EventInitialEvent extends EventEvent {}
 
-class EventEditButtonClickedEvent extends EventEvent {}
+class EventEditButtonClickedEvent extends EventEvent {
+  final DateTime focusedDay;
+  final AppointmentModel appointmentModel;
+  EventEditButtonClickedEvent(this.appointmentModel, this.focusedDay);
+}
 
 class EventDeleteButtonClickedEvent extends EventEvent {
   final AppointmentModel appointmentModel;

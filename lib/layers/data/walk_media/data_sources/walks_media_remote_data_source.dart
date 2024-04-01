@@ -59,7 +59,7 @@ class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
       headers: {'Content-Type': 'application/json'},
       body: walkMediaModelToJson(walkMediaModel),
     );
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       return 1;
     } else {
       throw ServerException();
@@ -89,7 +89,7 @@ class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
 
   @override
   Future<int> updateWalkMedia(WalkMediaModel walkMediaModel) => _updateWalkMedia(
-        "https://wlv-c4790072fbf0.herokuapp.com/api/v1/WalkMedias/${walkMediaModel.id}",
+        "https://wlv-c4790072fbf0.herokuapp.com/api/v1/walk-media/${walkMediaModel.id}",
         walkMediaModel,
       );
 

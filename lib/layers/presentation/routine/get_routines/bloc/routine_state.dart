@@ -1,4 +1,3 @@
-
 import '../../../../../core/model/routine_model.dart';
 
 abstract class RoutineState {}
@@ -27,7 +26,11 @@ class RoutineNavigateToDetailPageActionState extends RoutineActionState {
   RoutineNavigateToDetailPageActionState(this.routineModel);
 }
 
-class RoutineNavigateToUpdatePageActionState extends RoutineActionState {}
+class RoutineNavigateToUpdatePageActionState extends RoutineActionState {
+  final RoutineModel routineModel;
+
+  RoutineNavigateToUpdatePageActionState(this.routineModel);
+}
 
 class RoutineItemDeletedActionState extends RoutineActionState {}
 

@@ -6,6 +6,7 @@ import 'package:fitness_app/layers/presentation/appointment/get_appointments/blo
 import 'package:fitness_app/layers/presentation/appointment/get_appointments/bloc/event_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../../../../injection_container.dart';
 import '../../../../../resources/colour_manager.dart';
@@ -77,6 +78,8 @@ class _CalendarPageState extends State<CalendarPage> {
                         builder: (BuildContext context) => AddAppointmentDialog(focusedDay: state.focusedDay),
                         fullscreenDialog: true,
                       ),
+                    ).then(
+                      (value) => refreshPage(),
                     );
                   } else if (state is CalenderNavigateToDetailPageActionState) {
                     Navigator.push(
@@ -176,7 +179,20 @@ class _CalendarPageState extends State<CalendarPage> {
                 listenWhen: (previous, current) => current is EventActionState,
                 buildWhen: (previous, current) => current is! EventActionState,
                 listener: (context, state) {
-                  // TODO: implement listener
+                  if (state is EventNavigateToUpdatePageActionState) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => AddAppointmentDialog(
+                          focusedDay: state.focusedDay,
+                          appointmentModel: state.appointmentModel,
+                        ),
+                        fullscreenDialog: true,
+                      ),
+                    ).then(
+                      (value) => refreshPage(),
+                    );
+                  }
                 },
                 builder: (context, state) {
                   switch (state.runtimeType) {
@@ -193,19 +209,43 @@ class _CalendarPageState extends State<CalendarPage> {
                         itemCount: _selectedEvents.length,
                         itemBuilder: (context, index) {
                           var appointmentModel = _selectedEvents[index];
-                          return ListTile(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) => AppointmentDetailsPage(
-                                    appointmentModel: appointmentModel,
-                                  ),
+                          return Slidable(
+                            endActionPane: ActionPane(
+                              extentRatio: 0.46,
+                              motion: const ScrollMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) {
+                                    eventBloc.add(EventEditButtonClickedEvent(appointmentModel, _focusedDay));
+                                  },
+                                  backgroundColor: const Color(0xFF21B7CA),
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.edit,
+                                  label: 'Edit',
                                 ),
-                              );
-                            },
-                            title: Text(appointmentModel.startTime),
-                            subtitle: Text(appointmentModel.endTime),
+                                SlidableAction(
+                                  onPressed: (context) {},
+                                  backgroundColor: const Color(0xFF21B7CA),
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.delete,
+                                  label: 'Delete',
+                                )
+                              ],
+                            ),
+                            child: ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) => AppointmentDetailsPage(
+                                      appointmentModel: appointmentModel,
+                                    ),
+                                  ),
+                                );
+                              },
+                              title: Text(appointmentModel.startTime),
+                              subtitle: Text(appointmentModel.endTime),
+                            ),
                           );
                         },
                       );

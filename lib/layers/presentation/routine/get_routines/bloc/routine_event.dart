@@ -4,7 +4,10 @@ abstract class RoutineEvent {}
 
 class RoutineInitialEvent extends RoutineEvent {}
 
-class RoutineEditButtonClickedEvent extends RoutineEvent {}
+class RoutineEditButtonClickedEvent extends RoutineEvent {
+  final RoutineModel routineModel;
+  RoutineEditButtonClickedEvent(this.routineModel);
+}
 
 class RoutineDeleteButtonClickedEvent extends RoutineEvent {
   final RoutineModel routineModel;
@@ -19,5 +22,3 @@ class RoutineTileNavigateEvent extends RoutineEvent {
   final RoutineModel routineModel;
   RoutineTileNavigateEvent(this.routineModel);
 }
-
- 

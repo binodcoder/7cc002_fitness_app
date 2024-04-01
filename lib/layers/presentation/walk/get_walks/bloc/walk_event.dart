@@ -6,7 +6,10 @@ abstract class WalkEvent {}
 
 class WalkInitialEvent extends WalkEvent {}
 
-class WalkEditButtonClickedEvent extends WalkEvent {}
+class WalkEditButtonClickedEvent extends WalkEvent {
+  final WalkModel walkModel;
+  WalkEditButtonClickedEvent(this.walkModel);
+}
 
 class WalkDeleteButtonClickedEvent extends WalkEvent {
   final WalkModel walkModel;

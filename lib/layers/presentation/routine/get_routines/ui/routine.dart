@@ -2,6 +2,8 @@ import 'package:fitness_app/layers/presentation/routine/add_update_routine/ui/ad
 import 'package:fitness_app/layers/presentation/routine/get_routines/ui/routine_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:http/http.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../../drawer.dart';
 import '../../../../../resources/strings_manager.dart';
@@ -64,6 +66,17 @@ class _RoutinePageState extends State<RoutinePage> {
             (value) => refreshPage(),
           );
         } else if (state is RoutineNavigateToUpdatePageActionState) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => AddRoutinePage(
+                routineModel: state.routineModel,
+              ),
+              fullscreenDialog: true,
+            ),
+          ).then(
+            (value) => refreshPage(),
+          );
         } else if (state is RoutineItemSelectedActionState) {
         } else if (state is RoutineItemDeletedActionState) {
         } else if (state is RoutineItemsDeletedActionState) {}
@@ -94,19 +107,43 @@ class _RoutinePageState extends State<RoutinePage> {
                 itemCount: successState.routineModelList.length,
                 itemBuilder: (context, index) {
                   var routineModel = successState.routineModelList[index];
-                  return ListTile(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => RoutineDetailsPage(
-                            routineModel: routineModel,
-                          ),
+                  return Slidable(
+                    endActionPane: ActionPane(
+                      extentRatio: 0.46,
+                      motion: const ScrollMotion(),
+                      children: [
+                        SlidableAction(
+                          onPressed: (context) {
+                            postBloc.add(RoutineEditButtonClickedEvent(routineModel));
+                          },
+                          backgroundColor: const Color(0xFF21B7CA),
+                          foregroundColor: Colors.white,
+                          icon: Icons.edit,
+                          label: 'Edit',
                         ),
-                      );
-                    },
-                    title: Text(routineModel.source),
-                    subtitle: Text(routineModel.description),
+                        SlidableAction(
+                          onPressed: (context) {},
+                          backgroundColor: const Color(0xFF21B7CA),
+                          foregroundColor: Colors.white,
+                          icon: Icons.delete,
+                          label: 'Delete',
+                        )
+                      ],
+                    ),
+                    child: ListTile(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => RoutineDetailsPage(
+                              routineModel: routineModel,
+                            ),
+                          ),
+                        );
+                      },
+                      title: Text(routineModel.source),
+                      subtitle: Text(routineModel.description),
+                    ),
                   );
                 },
               ),
