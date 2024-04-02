@@ -4,6 +4,7 @@ import 'package:fitness_app/layers/domain/walk_media/usecases/get_walk_media.dar
 import 'package:fitness_app/layers/domain/walk_media/usecases/get_walk_media_by_walk_id.dart';
 import 'package:fitness_app/layers/domain/walk_media/usecases/update_walk_media.dart';
 import 'package:fitness_app/layers/presentation/appointment/get_appointments/bloc/event_bloc.dart';
+import 'package:fitness_app/layers/presentation/live_training/add_update_live_training/bloc/live_training_add_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +15,9 @@ import 'layers/data/appointment/datasources/appointment_remote_data_source.dart'
 import 'layers/data/appointment/datasources/sync_remote_data_source.dart';
 import 'layers/data/appointment/repositories/appointment_repositories_impl.dart';
 import 'layers/data/appointment/repositories/sync_repositories_impl.dart';
+import 'layers/data/live_trainings/data_sources/live_training_local_data_source.dart';
+import 'layers/data/live_trainings/data_sources/live_training_remote_data_source.dart';
+import 'layers/data/live_trainings/repositories/live_training_repository_impl.dart';
 import 'layers/data/login/datasources/login_remote_data_source.dart';
 import 'layers/data/login/repositories/login_repositories_impl.dart';
 import 'layers/data/register/datasources/user_local_data_sources.dart';
@@ -53,8 +57,14 @@ import 'layers/domain/walk/usecases/join_walk.dart';
 import 'layers/domain/walk/usecases/leave_walk.dart';
 import 'layers/domain/walk/usecases/update_walk.dart';
 import 'layers/domain/walk_media/repositories/walk_media_repositories.dart';
+import 'layers/live_training/repositories/live_training_repositories.dart';
+import 'layers/live_training/usecases/add_live_training.dart';
+import 'layers/live_training/usecases/delete_live_training.dart';
+import 'layers/live_training/usecases/get_live_trainings.dart';
+import 'layers/live_training/usecases/update_live_training.dart';
 import 'layers/presentation/appointment/add_update_appointment/bloc/appointment_add_bloc.dart';
 import 'layers/presentation/appointment/get_appointments/bloc/calender_bloc.dart';
+import 'layers/presentation/live_training/get_live_trainings/bloc/live_training_bloc.dart';
 import 'layers/presentation/login/bloc/login_bloc.dart';
 import 'layers/presentation/register/bloc/user_add_bloc.dart';
 import 'layers/presentation/routine/add_update_routine/bloc/routine_add_bloc.dart';
@@ -163,6 +173,24 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<RoutinesLocalDataSource>(() => RoutinesLocalDataSourceImpl());
   sl.registerLazySingleton<RoutineRemoteDataSource>(() => RoutineRemoteDataSourceImpl(client: sl()));
+
+  //live-training
+
+  sl.registerFactory(() => LiveTrainingAddBloc(addLiveTraining: sl(), updateLiveTraining: sl()));
+  sl.registerFactory(() => LiveTrainingBloc(getLiveTrainings: sl(), deleteLiveTraining: sl()));
+  sl.registerLazySingleton(() => GetLiveTrainings(sl()));
+  sl.registerLazySingleton(() => DeleteLiveTraining(sl()));
+  sl.registerLazySingleton(() => AddLiveTraining(sl()));
+  sl.registerLazySingleton(() => UpdateLiveTraining(sl()));
+  sl.registerLazySingleton<LiveTrainingRepository>(
+    () => LiveTrainingRepositoryImpl(
+      liveTrainingLocalDataSource: sl(),
+      liveTrainingRemoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+  sl.registerLazySingleton<LiveTrainingLocalDataSource>(() => LiveTrainingLocalDataSourceImpl());
+  sl.registerLazySingleton<LiveTrainingRemoteDataSource>(() => LiveTrainingRemoteDataSourceImpl(client: sl()));
 
   //register
   sl.registerFactory(() => UserAddBloc(

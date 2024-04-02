@@ -3,6 +3,7 @@ import 'package:fitness_app/core/model/user_model.dart';
 import 'package:fitness_app/core/model/walk_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import '../model/live_training_model.dart';
 import '../model/routine_model.dart';
 import '../model/walk_media_model.dart';
 
@@ -54,6 +55,21 @@ class DatabaseHelper {
         name: '',
         difficulty: '',
         duration: 0,
+      );
+    });
+  }
+
+  Future<List<LiveTrainingModel>> getLiveTraining() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db!.query('routine');
+    return List.generate(maps.length, (i) {
+      return LiveTrainingModel(
+        trainerId: 0,
+        title: '',
+        description: '',
+        trainingDate: DateTime.now(),
+        startTime: '',
+        endTime: '',
       );
     });
   }
