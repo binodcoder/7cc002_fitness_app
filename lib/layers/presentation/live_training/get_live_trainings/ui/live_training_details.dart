@@ -1,3 +1,4 @@
+import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/model/live_training_model.dart';
 import '../../../../../resources/colour_manager.dart';
@@ -39,19 +40,12 @@ class _LiveTrainingDetailsPageState extends State<LiveTrainingDetailsPage> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
-            color: ColorManager.primary,
           ),
         ),
-        backgroundColor: ColorManager.white,
-        elevation: 0,
-        title: Text(
-          'LiveTraining Details',
-          style: TextStyle(
-            color: ColorManager.primary,
-            fontWeight: FontWeight.bold,
-          ),
+        title: const Text(
+          AppStrings.titleLiveTrainingLabel,
         ),
         centerTitle: true,
       ),

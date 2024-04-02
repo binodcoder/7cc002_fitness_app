@@ -101,7 +101,7 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
                 },
               ),
               appBar: AppBar(
-                title: const Text(AppStrings.titleLabel),
+                title: const Text(AppStrings.titleLiveTrainingLabel),
               ),
               body: ListView.builder(
                 itemCount: successState.liveTrainingModels.length,

@@ -106,7 +106,7 @@ class _WalkPageState extends State<WalkPage> {
                 },
               ),
               appBar: AppBar(
-                title: const Text(AppStrings.titleLabel),
+                title: const Text(AppStrings.titleWalkLabel),
               ),
               body: ListView.builder(
                 itemCount: successState.walkModelList.length,

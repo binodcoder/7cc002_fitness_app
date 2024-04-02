@@ -70,6 +70,9 @@ class _AddWalkPageState extends State<AddWalkPage> {
       },
       builder: (context, state) {
         return Scaffold(
+          appBar: AppBar(
+            title: const Text(AppStrings.addWalk),
+          ),
           body: GestureDetector(
             onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());

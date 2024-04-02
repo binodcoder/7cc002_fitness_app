@@ -193,17 +193,6 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                     Navigator.pop(context);
                   },
                 ),
-                actions: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.check,
-                      color: ColorManager.white,
-                    ),
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {}
-                    },
-                  ),
-                ],
                 centerTitle: true,
                 title: const Text(
                   'New Appointment',

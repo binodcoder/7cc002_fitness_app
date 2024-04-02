@@ -1,5 +1,6 @@
+import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
- import '../../../../../core/model/walk_media_model.dart';
+import '../../../../../core/model/walk_media_model.dart';
 import '../../../../../resources/colour_manager.dart';
 import '../../../../../resources/font_manager.dart';
 import '../../../../../resources/values_manager.dart';
@@ -35,23 +36,8 @@ class _WalkMediaDetailsPageState extends State<WalkMediaDetailsPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       backgroundColor: ColorManager.white,
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            color: ColorManager.primary,
-          ),
-        ),
-        backgroundColor: ColorManager.white,
-        elevation: 0,
-        title: Text(
-          'WalkMedia Details',
-          style: TextStyle(
-            color: ColorManager.primary,
-            fontWeight: FontWeight.bold,
-          ),
+        title: const Text(
+          AppStrings.titleWalkMediaLabel,
         ),
         centerTitle: true,
       ),

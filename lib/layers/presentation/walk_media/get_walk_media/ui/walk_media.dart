@@ -96,7 +96,6 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
           case WalkMediaLoadedSuccessState:
             final successState = state as WalkMediaLoadedSuccessState;
             return Scaffold(
-              drawer: const MyDrawer(),
               floatingActionButton: FloatingActionButton(
                 backgroundColor: Colors.blue,
                 child: const Icon(Icons.add),
@@ -105,7 +104,7 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                 },
               ),
               appBar: AppBar(
-                title: const Text(AppStrings.titleLabel),
+                title: const Text(AppStrings.titleWalkMediaLabel),
               ),
               body: ListView.builder(
                 itemCount: successState.walkMediaModelList.length,

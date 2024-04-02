@@ -1,3 +1,4 @@
+import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/model/routine_model.dart';
 import '../../../../../resources/colour_manager.dart';
@@ -30,7 +31,6 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
   @override
   Widget build(BuildContext context) {
     // Size size = MediaQuery.of(context).size;
-
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       backgroundColor: ColorManager.white,
@@ -39,19 +39,12 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
-            color: ColorManager.primary,
           ),
         ),
-        backgroundColor: ColorManager.white,
-        elevation: 0,
-        title: Text(
-          'Routine Details',
-          style: TextStyle(
-            color: ColorManager.primary,
-            fontWeight: FontWeight.bold,
-          ),
+        title: const Text(
+          AppStrings.routineDetails,
         ),
         centerTitle: true,
       ),

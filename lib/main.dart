@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: AppStrings.titleLabel,
-          home: RoutinePage(),
+          home: LoginPage(),
         ),
       ),
     );

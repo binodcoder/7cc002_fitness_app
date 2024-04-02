@@ -1,3 +1,4 @@
+import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -177,20 +178,9 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                 Navigator.pop(context);
               },
             ),
-            actions: [
-              IconButton(
-                icon: Icon(
-                  Icons.check,
-                  color: ColorManager.white,
-                ),
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {}
-                },
-              ),
-            ],
             centerTitle: true,
             title: const Text(
-              'New LiveTraining',
+              AppStrings.addLiveTraining,
               style: TextStyle(fontSize: 16.0),
             ),
           ),

@@ -101,7 +101,7 @@ class _RoutinePageState extends State<RoutinePage> {
                 },
               ),
               appBar: AppBar(
-                title: const Text(AppStrings.titleLabel),
+                title: const Text(AppStrings.titleRoutineLabel),
               ),
               body: ListView.builder(
                 itemCount: successState.routineModelList.length,

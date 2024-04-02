@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../drawer.dart';
 import 'join_call.dart';
 import 'new_meeting.dart';
 
@@ -8,6 +9,7 @@ class CallPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const MyDrawer(),
       appBar: AppBar(
         title: const Text("Video Conference"),
         centerTitle: true,

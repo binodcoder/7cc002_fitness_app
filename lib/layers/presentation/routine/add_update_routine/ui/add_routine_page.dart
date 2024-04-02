@@ -68,6 +68,9 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
       },
       builder: (context, state) {
         return Scaffold(
+          appBar: AppBar(
+            title: const Text(AppStrings.addRoutine),
+          ),
           body: GestureDetector(
             onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());
@@ -86,7 +89,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: AppHeight.h40,
+                      height: AppHeight.h10,
                     ),
                     Text(
                       "RoutineName",

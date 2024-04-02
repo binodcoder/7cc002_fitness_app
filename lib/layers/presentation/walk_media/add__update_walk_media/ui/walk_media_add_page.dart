@@ -63,6 +63,9 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
       },
       builder: (context, state) {
         return Scaffold(
+          appBar: AppBar(
+            title: const Text(AppStrings.addWalkMedia),
+          ),
           body: GestureDetector(
             onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());

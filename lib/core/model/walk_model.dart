@@ -40,7 +40,7 @@ class WalkModel {
         date: DateTime.parse(json["date"]),
         startTime: json["startTime"],
         startLocation: json["startLocation"],
-        participants: List<Participant>.from(json["participants"].map((x) => Participant.fromJson(x))),
+        participants: json["participants"] != null ? List<Participant>.from(json["participants"].map((x) => Participant.fromJson(x))) : [],
       );
 
   Map<String, dynamic> toJson() => {

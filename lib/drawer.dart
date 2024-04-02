@@ -1,12 +1,14 @@
 import 'package:fitness_app/layers/presentation/live_training/get_live_trainings/ui/live_training.dart';
 import 'package:fitness_app/resources/colour_manager.dart';
 import 'package:fitness_app/resources/font_manager.dart';
+import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:fitness_app/resources/styles_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'layers/presentation/appointment/get_appointments/ui/calender.dart';
 import 'layers/presentation/call/call_page.dart';
+import 'layers/presentation/routine/get_routines/ui/routine.dart';
 import 'layers/presentation/walk/get_walks/ui/walk.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -76,11 +78,33 @@ class _MyDrawerState extends State<MyDrawer> {
           ),
           ListTile(
             leading: Icon(
+              CupertinoIcons.alarm,
+              color: ColorManager.darkGrey,
+            ),
+            title: Text(
+              AppStrings.titleRoutineLabel,
+              textScaleFactor: 1.2,
+              style: getSemiBoldStyle(
+                color: ColorManager.darkGrey,
+                fontSize: FontSize.s14,
+              ),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => const RoutinePage(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(
               CupertinoIcons.calendar,
               color: ColorManager.darkGrey,
             ),
             title: Text(
-              "Calendar",
+              AppStrings.titleAppointmentLabel,
               textScaleFactor: 1.2,
               style: getSemiBoldStyle(
                 color: ColorManager.darkGrey,

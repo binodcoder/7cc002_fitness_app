@@ -39,7 +39,7 @@ class AppointmentAddBloc extends Bloc<AppointmentAddEvent, AppointmentAddState> 
 
   FutureOr<void> appointmentAddInitialEvent(AppointmentAddInitialEvent event, Emitter<AppointmentAddState> emit) async {
     emit(AppointmentAddLoadingState());
-    final syncResult = await sync("test@wlv.ac.uk");
+    final syncResult = await sync("donotdeleteordublicate@wlv.ac.uk");
 
     syncResult!.fold((failure) {
       // emit(Error(message: _mapFailureToMessage(failure)));
