@@ -82,6 +82,7 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
           );
         } else if (state is WalkMediaItemSelectedActionState) {
         } else if (state is WalkMediaItemDeletedActionState) {
+          walkMediaBloc.add(WalkMediaInitialEvent(widget.walkId));
         } else if (state is WalkMediaItemsDeletedActionState) {}
       },
       builder: (context, state) {
@@ -125,7 +126,9 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                           label: 'Edit',
                         ),
                         SlidableAction(
-                          onPressed: (context) {},
+                          onPressed: (context) {
+                            walkMediaBloc.add(WalkMediaDeleteButtonClickedEvent(walkMediaModel));
+                          },
                           backgroundColor: const Color(0xFF21B7CA),
                           foregroundColor: Colors.white,
                           icon: Icons.delete,

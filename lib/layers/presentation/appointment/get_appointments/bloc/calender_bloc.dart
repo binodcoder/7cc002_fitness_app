@@ -41,6 +41,15 @@ class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
   FutureOr<void> calenderEditButtonClickedEvent(CalenderEditButtonClickedEvent event, Emitter<CalenderState> emit) {}
 
   FutureOr<void> calenderDeleteButtonClickedEvent(CalenderDeleteButtonClickedEvent event, Emitter<CalenderState> emit) async {
+    emit(CalenderLoadingState());
+    final result = await deleteAppointment(event.appointmentModel.id!);
+
+    result!.fold((failure) {
+      // emit(Error(message: _mapFailureToMessage(failure)));
+    }, (response) {
+      emit(CalenderItemDeletedActionState());
+    });
+
     // await dbHelper.deleteCalender(event.CalenderModel.id);
     // List<CalenderModel> CalenderList = await dbHelper.getCalenders();
     // emit(CalenderLoadedSuccessState(CalenderList));

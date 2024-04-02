@@ -46,9 +46,14 @@ class WalkMediaBloc extends Bloc<WalkMediaEvent, WalkMediaState> {
   }
 
   FutureOr<void> walkMediaDeleteButtonClickedEvent(WalkMediaDeleteButtonClickedEvent event, Emitter<WalkMediaState> emit) async {
-    // await dbHelper.deleteWalkMedia(event.walkMediaModel.id);
-    // List<WalkMediaModel> walkMediaList = await dbHelper.getWalkMedias();
-    // emit(WalkMediaLoadedSuccessState(walkMediaList));
+    emit(WalkMediaLoadingState());
+    final result = await deleteWalkMedia(event.walkMediaModel.id!);
+
+    result!.fold((failure) {
+      // emit(Error(message: _mapFailureToMessage(failure)));
+    }, (response) {
+      emit(WalkMediaItemDeletedActionState());
+    });
   }
 
   FutureOr<void> walkMediaDeleteAllButtonClickedEvent(WalkMediaDeleteAllButtonClickedEvent event, Emitter<WalkMediaState> emit) async {

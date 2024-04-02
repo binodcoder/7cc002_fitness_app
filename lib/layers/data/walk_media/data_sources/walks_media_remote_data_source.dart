@@ -71,7 +71,7 @@ class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
     );
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       return 1;
     } else {
       throw ServerException();

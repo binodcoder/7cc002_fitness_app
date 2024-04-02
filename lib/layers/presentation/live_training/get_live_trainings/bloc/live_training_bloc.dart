@@ -43,6 +43,15 @@ class LiveTrainingBloc extends Bloc<LiveTrainingEvent, LiveTrainingState> {
   }
 
   FutureOr<void> liveTrainingDeleteButtonClickedEvent(LiveTrainingDeleteButtonClickedEvent event, Emitter<LiveTrainingState> emit) async {
+    emit(LiveTrainingLoadingState());
+    final result = await deleteLiveTraining(event.liveTrainingModel.trainerId);
+
+    result!.fold((failure) {
+      // emit(Error(message: _mapFailureToMessage(failure)));
+    }, (response) {
+      emit(LiveTrainingItemDeletedActionState());
+    });
+
     // await dbHelper.deleteLiveTraining(event.LiveTrainingModel.id);
     // List<LiveTrainingModel> LiveTrainingList = await dbHelper.getLiveTrainings();
     // emit(LiveTrainingLoadedSuccessState(LiveTrainingList));

@@ -78,6 +78,7 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
             (value) => refreshPage(),
           );
         } else if (state is LiveTrainingItemDeletedActionState) {
+          liveTrainingBloc.add(LiveTrainingInitialEvent());
         } else if (state is LiveTrainingItemsDeletedActionState) {}
       },
       builder: (context, state) {
@@ -121,7 +122,9 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
                           label: 'Edit',
                         ),
                         SlidableAction(
-                          onPressed: (context) {},
+                          onPressed: (context) {
+                            liveTrainingBloc.add(LiveTrainingDeleteButtonClickedEvent(liveTrainingModel));
+                          },
                           backgroundColor: const Color(0xFF21B7CA),
                           foregroundColor: Colors.white,
                           icon: Icons.delete,

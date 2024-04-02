@@ -95,6 +95,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     );
                   } else if (state is CalenderNavigateToUpdatePageActionState) {
                   } else if (state is CalenderItemDeletedActionState) {
+                    calenderBloc.add(CalenderInitialEvent());
                   } else if (state is CalenderItemsDeletedActionState) {}
                 },
                 builder: (context, state) {
@@ -224,7 +225,9 @@ class _CalendarPageState extends State<CalendarPage> {
                                   label: 'Edit',
                                 ),
                                 SlidableAction(
-                                  onPressed: (context) {},
+                                  onPressed: (context) {
+                                    calenderBloc.add(CalenderDeleteButtonClickedEvent(appointmentModel));
+                                  },
                                   backgroundColor: const Color(0xFF21B7CA),
                                   foregroundColor: Colors.white,
                                   icon: Icons.delete,
