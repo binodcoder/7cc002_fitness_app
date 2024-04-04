@@ -1,7 +1,7 @@
 import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
 
-import '../layers/presentation_layer/routine/ui/routine.dart';
+import '../layers/presentation/routine/get_routines/ui/routine.dart';
 
 class Routes {
   static const String homeRoute = "/";

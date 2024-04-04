@@ -1,15 +1,9 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
 import 'package:fitness_app/core/model/user_model.dart';
-import 'package:fitness_app/global.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/db/db_helper.dart';
 import '../../../../core/model/sync_data_model.dart';
-import '../../../../core/usecases/usecase.dart';
 import '../../../../injection_container.dart';
 import '../../../domain/appointment/usecases/sync.dart';
 import '../../../domain/login/usecases/login.dart';

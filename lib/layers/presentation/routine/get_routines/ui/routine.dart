@@ -3,12 +3,10 @@ import 'package:fitness_app/layers/presentation/routine/get_routines/ui/routine_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:http/http.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../../drawer.dart';
+import '../../../../../resources/colour_manager.dart';
 import '../../../../../resources/strings_manager.dart';
-import '../../../appointment/add_update_appointment/ui/add_appointment.dart';
-import '../../../register/ui/register_page.dart';
 import '../bloc/routine_bloc.dart';
 import '../../../../../injection_container.dart';
 import '../bloc/routine_event.dart';
@@ -38,6 +36,8 @@ class _RoutinePageState extends State<RoutinePage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return BlocConsumer<RoutineBloc, RoutineState>(
       bloc: postBloc,
       listenWhen: (previous, current) => current is RoutineActionState,
@@ -92,6 +92,7 @@ class _RoutinePageState extends State<RoutinePage> {
           case RoutineLoadedSuccessState:
             final successState = state as RoutineLoadedSuccessState;
             return Scaffold(
+              backgroundColor: ColorManager.darkWhite,
               drawer: const MyDrawer(),
               floatingActionButton: FloatingActionButton(
                 backgroundColor: Colors.blue,
@@ -130,19 +131,23 @@ class _RoutinePageState extends State<RoutinePage> {
                         )
                       ],
                     ),
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => RoutineDetailsPage(
-                              routineModel: routineModel,
+                    child: Container(
+                      margin: EdgeInsets.all(size.width * 0.01),
+                      color: ColorManager.white,
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => RoutineDetailsPage(
+                                routineModel: routineModel,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      title: Text(routineModel.source),
-                      subtitle: Text(routineModel.description),
+                          );
+                        },
+                        title: Text(routineModel.source),
+                        subtitle: Text(routineModel.description),
+                      ),
                     ),
                   );
                 },
