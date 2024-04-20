@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../../drawer.dart';
+import '../../../../../resources/colour_manager.dart';
 import '../../../../../resources/strings_manager.dart';
 import '../../../appointment/add_update_appointment/ui/add_appointment.dart';
 import '../../../register/ui/register_page.dart';
@@ -38,6 +39,7 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return BlocConsumer<WalkMediaBloc, WalkMediaState>(
       bloc: walkMediaBloc,
       listenWhen: (previous, current) => current is WalkMediaActionState,
@@ -88,8 +90,9 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
       builder: (context, state) {
         switch (state.runtimeType) {
           case WalkMediaLoadingState:
-            return const Scaffold(
-              body: Center(
+            return Scaffold(
+              backgroundColor: ColorManager.darkWhite,
+              body: const Center(
                 child: CircularProgressIndicator(),
               ),
             );
@@ -135,19 +138,26 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                         )
                       ],
                     ),
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => WalkMediaDetailsPage(
-                              walkMediaModel: walkMediaModel,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: ColorManager.white,
+                      ),
+                      margin: EdgeInsets.all(size.width * 0.02),
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => WalkMediaDetailsPage(
+                                walkMediaModel: walkMediaModel,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      title: Text(walkMediaModel.mediaUrl),
-                      subtitle: Text(walkMediaModel.userId.toString()),
+                          );
+                        },
+                        title: Text(walkMediaModel.mediaUrl),
+                        subtitle: Text(walkMediaModel.userId.toString()),
+                      ),
                     ),
                   );
                 },

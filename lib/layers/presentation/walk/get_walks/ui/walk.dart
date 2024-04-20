@@ -4,9 +4,11 @@ import 'package:fitness_app/layers/presentation/walk/get_walks/ui/walk_details.d
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../../drawer.dart';
+import '../../../../../resources/colour_manager.dart';
 import '../../../../../resources/strings_manager.dart';
 import '../../../appointment/add_update_appointment/ui/add_appointment.dart';
 import '../../../walk_media/get_walk_media/ui/walk_media.dart';
@@ -40,6 +42,7 @@ class _WalkPageState extends State<WalkPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return BlocConsumer<WalkBloc, WalkState>(
       bloc: walkBloc,
       listenWhen: (previous, current) => current is WalkActionState,
@@ -97,6 +100,7 @@ class _WalkPageState extends State<WalkPage> {
           case WalkLoadedSuccessState:
             final successState = state as WalkLoadedSuccessState;
             return Scaffold(
+              backgroundColor: ColorManager.darkWhite,
               drawer: const MyDrawer(),
               floatingActionButton: FloatingActionButton(
                 backgroundColor: Colors.blue,
@@ -135,35 +139,42 @@ class _WalkPageState extends State<WalkPage> {
                         )
                       ],
                     ),
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => WalkMediaPage(
-                              walkId: successState.walkModelList[index].id!,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: ColorManager.white,
+                      ),
+                      margin: EdgeInsets.all(size.width * 0.02),
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => WalkMediaPage(
+                                walkId: successState.walkModelList[index].id!,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      title: Text(walkModel.startLocation),
-                      subtitle: Text(walkModel.date.toString()),
-                      trailing: TextButton(
-                        onPressed: () {
-                          WalkParticipantModel walkParticipantModel = WalkParticipantModel(
-                            userId: sharedPreferences.getInt("user_id")!,
-                            walkId: walkModel.id!,
                           );
-                          if (walkModel.participants!.where((element) => element.id == sharedPreferences.getInt("user_id")).isNotEmpty) {
-                            walkBloc.add(WalkLeaveButtonClickedEvent(walkParticipantModel));
-                          } else {
-                            walkBloc.add(WalkJoinButtonClickedEvent(walkParticipantModel));
-                          }
                         },
-                        child: Text(
-                          (walkModel.participants!.where((element) => element.id == sharedPreferences.getInt("user_id")).isNotEmpty)
-                              ? 'Leave'
-                              : 'Join',
+                        title: Text(walkModel.startLocation),
+                        subtitle: Text("${DateFormat("yMd").format(walkModel.date)} ${walkModel.startTime}"),
+                        trailing: TextButton(
+                          onPressed: () {
+                            WalkParticipantModel walkParticipantModel = WalkParticipantModel(
+                              userId: sharedPreferences.getInt("user_id")!,
+                              walkId: walkModel.id!,
+                            );
+                            if (walkModel.participants!.where((element) => element.id == sharedPreferences.getInt("user_id")).isNotEmpty) {
+                              walkBloc.add(WalkLeaveButtonClickedEvent(walkParticipantModel));
+                            } else {
+                              walkBloc.add(WalkJoinButtonClickedEvent(walkParticipantModel));
+                            }
+                          },
+                          child: Text(
+                            (walkModel.participants!.where((element) => element.id == sharedPreferences.getInt("user_id")).isNotEmpty)
+                                ? 'Leave'
+                                : 'Join',
+                          ),
                         ),
                       ),
                     ),

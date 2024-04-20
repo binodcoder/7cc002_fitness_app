@@ -44,9 +44,10 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+      backgroundColor: ColorManager.darkWhite,
       drawer: const MyDrawer(),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
@@ -104,63 +105,41 @@ class _CalendarPageState extends State<CalendarPage> {
                     final successState = state as CalenderLoadedSuccessState;
                     final List<AppointmentModel> allEvents = successState.appointmentModels;
                     eventBloc.add(EventDaySelectEvent(_focusedDay, allEvents));
-                    return TableCalendar(
-                      firstDay: DateTime.utc(2010, 10, 16),
-                      lastDay: DateTime.utc(2030, 3, 14),
-                      focusedDay: _focusedDay,
-                      // weekendDays: const [6],
-                      selectedDayPredicate: (day) {
-                        return isSameDay(_selectedDay, day);
-                      },
-                      onDaySelected: (selectedDay, focusedDay) {
-                        eventBloc.add(EventDaySelectEvent(selectedDay, allEvents));
-
-                        _selectedDay = selectedDay;
-                        _focusedDay = selectedDay;
-                        setState(() {});
-                      },
-                      onPageChanged: (focusedDay) {
-                        _focusedDay = focusedDay;
-                      },
-
-                      eventLoader: (day) {
-                        // Check if the 'day' matches the date of any event in your _events list
-                        return allEvents.where((event) => isSameDay(event.date, day)).toList();
-                      },
-                      // eventLoader: (day) {
-                      //   return _getEventsForDay(day, groupedEvents);
-                      // },
-                      calendarFormat: _calendarFormat,
-                      onFormatChanged: (format) {
-                        if (_calendarFormat != format) {
-                          // Call `setState()` when updating calendar format
-                          setState(() {
-                            _calendarFormat = format;
-                          });
-                        }
-                      },
-
-                      // headerStyle: HeaderStyle(
-                      //   headerPadding: EdgeInsets.zero,
-                      //   decoration: BoxDecoration(
-                      //     color: Colors.white,
-                      //     border: Border.all(color: Colors.green),
-                      //     borderRadius: BorderRadius.circular(5),
-                      //   ),
-                      //   headerMargin: const EdgeInsets.only(bottom: 8.0),
-                      //   titleTextStyle: TextStyle(color: Colors.blueGrey[900]),
-                      //   formatButtonDecoration: BoxDecoration(
-                      //     color: Colors.blue[100],
-                      //     // border: Border.all(color: Colors.blueGrey[900]),
-                      //     borderRadius: BorderRadius.circular(5),
-                      //   ),
-                      //   formatButtonTextStyle: TextStyle(color: Colors.blueGrey[900]),
-                      //   leftChevronIcon: Icon(
-                      //     Icons.chevron_left,
-                      //     color: Colors.blueGrey[900],
-                      //   ),
-                      // ),
-                      calendarStyle: const CalendarStyle(),
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: ColorManager.white,
+                      ),
+                      margin: EdgeInsets.all(size.width * 0.02),
+                      child: TableCalendar(
+                        firstDay: DateTime.utc(2010, 10, 16),
+                        lastDay: DateTime.utc(2030, 3, 14),
+                        focusedDay: _focusedDay,
+                        selectedDayPredicate: (day) {
+                          return isSameDay(_selectedDay, day);
+                        },
+                        onDaySelected: (selectedDay, focusedDay) {
+                          eventBloc.add(EventDaySelectEvent(selectedDay, allEvents));
+                          _selectedDay = selectedDay;
+                          _focusedDay = selectedDay;
+                          setState(() {});
+                        },
+                        onPageChanged: (focusedDay) {
+                          _focusedDay = focusedDay;
+                        },
+                        eventLoader: (day) {
+                          return allEvents.where((event) => isSameDay(event.date, day)).toList();
+                        },
+                        calendarFormat: _calendarFormat,
+                        onFormatChanged: (format) {
+                          if (_calendarFormat != format) {
+                            setState(() {
+                              _calendarFormat = format;
+                            });
+                          }
+                        },
+                        calendarStyle: const CalendarStyle(),
+                      ),
                     );
 
                   case CalenderErrorState:
@@ -204,7 +183,8 @@ class _CalendarPageState extends State<CalendarPage> {
                     return ListView.builder(
                       itemCount: _selectedEvents.length,
                       itemBuilder: (context, index) {
-                        var appointmentModel = _selectedEvents[index];
+                        AppointmentModel appointmentModel = _selectedEvents[index];
+                        String trainerName = "Binod Bhandari";
                         return Slidable(
                           endActionPane: ActionPane(
                             extentRatio: 0.46,
@@ -230,19 +210,26 @@ class _CalendarPageState extends State<CalendarPage> {
                               )
                             ],
                           ),
-                          child: ListTile(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) => AppointmentDetailsPage(
-                                    appointmentModel: appointmentModel,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: ColorManager.white,
+                            ),
+                            margin: EdgeInsets.all(size.width * 0.02),
+                            child: ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) => AppointmentDetailsPage(
+                                      appointmentModel: appointmentModel,
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            title: Text(appointmentModel.startTime),
-                            subtitle: Text(appointmentModel.endTime),
+                                );
+                              },
+                              title: Text(trainerName),
+                              subtitle: Text("${appointmentModel.startTime} to ${appointmentModel.endTime}"),
+                            ),
                           ),
                         );
                       },

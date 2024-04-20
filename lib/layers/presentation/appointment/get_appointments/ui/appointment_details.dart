@@ -1,5 +1,6 @@
 import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../../../../core/model/appointment_model.dart';
 import '../../../../../resources/colour_manager.dart';
 import '../../../../../resources/font_manager.dart';
@@ -60,27 +61,24 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
               contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
               tileColor: ColorManager.white,
               title: Text(
-                widget.appointmentModel!.date.toString(),
+                DateFormat("yMd").format(widget.appointmentModel!.date),
                 style: const TextStyle(
                   fontSize: FontSize.s20,
                 ),
               ),
               subtitle: Text(
-                widget.appointmentModel!.startTime,
+                "${widget.appointmentModel!.startTime} to ${widget.appointmentModel!.endTime}",
                 style: const TextStyle(fontSize: FontSize.s14),
               ),
             ),
             SizedBox(
               height: AppHeight.h20,
             ),
-            SizedBox(
-              height: AppHeight.h20,
-            ),
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                '',
-                style: TextStyle(fontSize: FontSize.s12),
+                widget.appointmentModel?.remark ?? "",
+                style: const TextStyle(fontSize: FontSize.s12),
               ),
             )
           ],

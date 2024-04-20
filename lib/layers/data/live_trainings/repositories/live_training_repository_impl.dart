@@ -3,7 +3,7 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/model/live_training_model.dart';
 import '../../../../core/network/network_info.dart';
-import '../../../live_training/repositories/live_training_repositories.dart';
+import '../../../domain/live_training/repositories/live_training_repositories.dart';
 import '../data_sources/live_training_local_data_source.dart';
 import '../data_sources/live_training_remote_data_source.dart';
 

@@ -23,11 +23,10 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
     if (response.statusCode == 200) {
       return userModelFromJson(response.body);
     } else {
-      throw ServerException();
+      throw LoginException();
     }
   }
 
   @override
-  Future<UserModel> login(LoginModel loginModel) => _login(
-      "https://wlv-c4790072fbf0.herokuapp.com/api/v1/users/login", loginModel);
+  Future<UserModel> login(LoginModel loginModel) => _login("https://wlv-c4790072fbf0.herokuapp.com/api/v1/users/login", loginModel);
 }

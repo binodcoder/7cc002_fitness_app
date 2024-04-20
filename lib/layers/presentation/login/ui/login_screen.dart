@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,7 +52,14 @@ class _LoginPageState extends State<LoginPage> {
       listenWhen: (previous, current) => current is LoginActionState,
       buildWhen: (previous, current) => current is! LoginActionState,
       listener: (context, state) {
-        if (state is LoggedState) {
+        if (state is LoginLoadingState) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const Center(child: CircularProgressIndicator());
+            },
+          );
+        } else if (state is LoggedState) {
           userNameController.clear();
           passwordController.clear();
           Navigator.of(context).pushReplacement(
@@ -62,9 +68,9 @@ class _LoginPageState extends State<LoginPage> {
             ),
           );
         } else if (state is LoginErrorState) {
-          Fluttertoast.cancel();
+          Navigator.pop(context);
           Fluttertoast.showToast(
-            msg: 'Username or Password is Incorrect.',
+            msg: state.message,
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: ColorManager.error,
@@ -75,34 +81,6 @@ class _LoginPageState extends State<LoginPage> {
         return WillPopScope(
           onWillPop: showExitPopup,
           child: Scaffold(
-            // bottomSheet: SizedBox(
-            //   width: double.infinity,
-            //   height: size.height * 0.035,
-            //   child: Container(
-            //     color: ColorManager.blackOpacity87,
-            //     padding: EdgeInsets.only(top: AppHeight.h4),
-            //     // height: size.height * 0.02,
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.center,
-            //       crossAxisAlignment: CrossAxisAlignment.center,
-            //       children: [
-            //         Text(
-            //           'Powered by:   ',
-            //           textAlign: TextAlign.center,
-            //           style: getRegularStyle(
-            //             fontSize: FontSize.s10,
-            //             color: ColorManager.white,
-            //           ),
-            //         ),
-            //         Image.asset(
-            //           'assets/images/logo.jpeg',
-            //           height: size.height * 0.03,
-            //           width: size.width * 0.15,
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
             body: GestureDetector(
               onTap: () {
                 FocusScope.of(context).requestFocus(FocusNode());
@@ -272,7 +250,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 ),
                                               );
                                             },
-                                            child: Text(
+                                            child: const Text(
                                               'Register',
                                             )),
                                       ),
@@ -298,10 +276,9 @@ class _LoginPageState extends State<LoginPage> {
   _onLogin(LoginBloc loginBloc) async {
     if (formKey.currentState!.validate()) {
       LoginModel loginModel = LoginModel(
-        email: userNameController!.text,
+        email: userNameController.text,
         password: passwordController.text,
       );
-
       loginBloc.add(LoginButtonPressEvent(loginModel));
     }
   }

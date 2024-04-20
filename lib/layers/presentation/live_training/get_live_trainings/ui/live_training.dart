@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../../drawer.dart';
+import '../../../../../resources/colour_manager.dart';
 import '../../../../../resources/strings_manager.dart';
 import '../../../appointment/add_update_appointment/ui/add_appointment.dart';
 import '../../../register/ui/register_page.dart';
@@ -38,6 +39,7 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return BlocConsumer<LiveTrainingBloc, LiveTrainingState>(
       bloc: liveTrainingBloc,
       listenWhen: (previous, current) => current is LiveTrainingActionState,
@@ -92,6 +94,7 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
           case LiveTrainingLoadedSuccessState:
             final successState = state as LiveTrainingLoadedSuccessState;
             return Scaffold(
+              backgroundColor: ColorManager.darkWhite,
               drawer: const MyDrawer(),
               floatingActionButton: FloatingActionButton(
                 backgroundColor: Colors.blue,
@@ -132,19 +135,26 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
                         )
                       ],
                     ),
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => LiveTrainingDetailsPage(
-                              liveTrainingModel: liveTrainingModel,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: ColorManager.white,
+                      ),
+                      margin: EdgeInsets.all(size.width * 0.02),
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => LiveTrainingDetailsPage(
+                                liveTrainingModel: liveTrainingModel,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      title: Text(liveTrainingModel.title),
-                      subtitle: Text(liveTrainingModel.description),
+                          );
+                        },
+                        title: Text(liveTrainingModel.title),
+                        subtitle: Text(liveTrainingModel.description),
+                      ),
                     ),
                   );
                 },

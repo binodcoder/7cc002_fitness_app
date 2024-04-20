@@ -132,8 +132,11 @@ class _RoutinePageState extends State<RoutinePage> {
                       ],
                     ),
                     child: Container(
-                      margin: EdgeInsets.all(size.width * 0.01),
-                      color: ColorManager.white,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: ColorManager.white,
+                      ),
+                      margin: EdgeInsets.all(size.width * 0.02),
                       child: ListTile(
                         onTap: () {
                           Navigator.push(
@@ -145,8 +148,10 @@ class _RoutinePageState extends State<RoutinePage> {
                             ),
                           );
                         },
-                        title: Text(routineModel.source),
+                        title: Text(routineModel.name),
                         subtitle: Text(routineModel.description),
+                        trailing: Text(routineModel.difficulty),
+                        isThreeLine: true,
                       ),
                     ),
                   );

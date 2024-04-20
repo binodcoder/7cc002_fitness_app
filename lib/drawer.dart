@@ -6,8 +6,11 @@ import 'package:fitness_app/resources/styles_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'injection_container.dart';
 import 'layers/presentation/appointment/get_appointments/ui/calender.dart';
 import 'layers/presentation/call/call_page.dart';
+import 'layers/presentation/login/ui/login_screen.dart';
 import 'layers/presentation/routine/get_routines/ui/routine.dart';
 import 'layers/presentation/walk/get_walks/ui/walk.dart';
 
@@ -35,6 +38,7 @@ class _MyDrawerState extends State<MyDrawer> {
     );
   }
 
+  final SharedPreferences sharedPreferences = sl<SharedPreferences>();
   void initial() async {}
 
   @override
@@ -193,7 +197,16 @@ class _MyDrawerState extends State<MyDrawer> {
                 color: Colors.black,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              sharedPreferences.clear();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => const LoginPage(),
+                  fullscreenDialog: true,
+                ),
+              );
+            },
           ),
           ListTile(
             leading: Icon(

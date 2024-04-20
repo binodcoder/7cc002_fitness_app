@@ -4,8 +4,8 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../../core/model/live_training_model.dart';
 import '../../../../../core/usecases/usecase.dart';
-import '../../../../live_training/usecases/delete_live_training.dart';
-import '../../../../live_training/usecases/get_live_trainings.dart';
+import '../../../../domain/live_training/usecases/delete_live_training.dart';
+import '../../../../domain/live_training/usecases/get_live_trainings.dart';
 import 'live_training_event.dart';
 import 'live_training_state.dart';
 

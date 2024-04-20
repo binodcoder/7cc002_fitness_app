@@ -1,5 +1,6 @@
 import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../../../../core/model/live_training_model.dart';
 import '../../../../../resources/colour_manager.dart';
 import '../../../../../resources/font_manager.dart';
@@ -61,7 +62,7 @@ class _LiveTrainingDetailsPageState extends State<LiveTrainingDetailsPage> {
               contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
               tileColor: ColorManager.white,
               title: Text(
-                widget.liveTrainingModel!.trainingDate.toString(),
+                DateFormat("yMd").format(widget.liveTrainingModel!.trainingDate),
                 style: const TextStyle(
                   fontSize: FontSize.s20,
                 ),

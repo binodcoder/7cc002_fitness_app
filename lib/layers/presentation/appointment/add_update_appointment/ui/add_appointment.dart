@@ -208,137 +208,135 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                       SizedBox(
                         height: size.height * 0.03,
                       ),
-                      Center(
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton2<Trainer>(
-                            isExpanded: true,
-                            hint: Text(
-                              'Select Trainer',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).hintColor,
-                              ),
-                            ),
-                            items: state.syncModel.data.trainers
-                                .map((item) => DropdownMenuItem(
-                                      value: item,
-                                      child: Text(
-                                        item.name ?? '',
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ))
-                                .toList(),
-                            value: selectedTrainer,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedTrainer = value;
-                              });
-                            },
-                            buttonStyleData: const ButtonStyleData(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              height: 40,
-                              width: 200,
-                            ),
-                            dropdownStyleData: const DropdownStyleData(
-                              maxHeight: 200,
-                            ),
-                            menuItemStyleData: const MenuItemStyleData(
-                              height: 40,
-                            ),
-                            dropdownSearchData: DropdownSearchData(
-                              searchController: _trainerController,
-                              searchInnerWidgetHeight: 50,
-                              searchInnerWidget: Container(
-                                height: 50,
-                                padding: const EdgeInsets.only(
-                                  top: 8,
-                                  bottom: 4,
-                                  right: 8,
-                                  left: 8,
-                                ),
-                                child: TextFormField(
-                                  expands: true,
-                                  maxLines: null,
-                                  controller: _trainerController,
-                                  decoration: InputDecoration(
-                                    isDense: true,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 8,
-                                    ),
-                                    hintText: 'Search for an item...',
-                                    hintStyle: const TextStyle(fontSize: 12),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              searchMatchFn: (item, searchValue) {
-                                return item.value.toString().contains(searchValue);
-                              },
-                            ),
-                            //This to clear the search value when you close the menu
-                            onMenuStateChange: (isOpen) {
-                              if (!isOpen) {
-                                _trainerController.clear();
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.03,
-                      ),
-                      Container(
-                        height: AppHeight.h50,
-                        margin: EdgeInsets.only(bottom: AppHeight.h10),
-                        child: DropdownButtonFormField<Trainer>(
-                          decoration: InputDecoration(
-                            labelText: 'Trainers',
-                            contentPadding: EdgeInsets.symmetric(horizontal: AppWidth.w4, vertical: AppHeight.h12),
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.blue, width: 1.5),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(AppRadius.r4),
-                              ),
-                            ),
-                          ),
-                          isExpanded: true,
-                          icon: const Icon(Icons.arrow_drop_down),
-                          iconEnabledColor: ColorManager.blue,
-                          iconSize: 30,
-                          items: state.syncModel.data.trainers.map((item) {
-                            return DropdownMenuItem<Trainer>(
-                              value: item,
-                              child: Container(
-                                margin: const EdgeInsets.only(left: 1),
-                                padding: const EdgeInsets.only(left: 10),
-                                height: 55,
-                                width: double.infinity,
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    item.name ?? '',
-                                    style: TextStyle(
-                                      color: Colors.blueGrey[900],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (newValue) {
-                            selectedTrainer = newValue;
-                          },
-                          value: selectedTrainer,
-                        ),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.03,
-                      ),
+                      // Center(
+                      //   child: DropdownButtonHideUnderline(
+                      //     child: DropdownButton2<Trainer>(
+                      //       isExpanded: true,
+                      //       hint: Text(
+                      //         'Select Trainer',
+                      //         style: TextStyle(
+                      //           fontSize: 14,
+                      //           color: Theme.of(context).hintColor,
+                      //         ),
+                      //       ),
+                      //       items: state.syncModel.data.trainers
+                      //           .map((item) => DropdownMenuItem(
+                      //                 value: item,
+                      //                 child: Text(
+                      //                   item.name ?? '',
+                      //                   style: const TextStyle(
+                      //                     fontSize: 14,
+                      //                   ),
+                      //                 ),
+                      //               ))
+                      //           .toList(),
+                      //       value: selectedTrainer,
+                      //       onChanged: (value) {
+                      //         setState(() {
+                      //           selectedTrainer = value;
+                      //         });
+                      //       },
+                      //       buttonStyleData: const ButtonStyleData(
+                      //         padding: EdgeInsets.symmetric(horizontal: 16),
+                      //         height: 40,
+                      //         width: 200,
+                      //       ),
+                      //       dropdownStyleData: const DropdownStyleData(
+                      //         maxHeight: 200,
+                      //       ),
+                      //       menuItemStyleData: const MenuItemStyleData(
+                      //         height: 40,
+                      //       ),
+                      //       dropdownSearchData: DropdownSearchData(
+                      //         searchController: _trainerController,
+                      //         searchInnerWidgetHeight: 50,
+                      //         searchInnerWidget: Container(
+                      //           height: 50,
+                      //           padding: const EdgeInsets.only(
+                      //             top: 8,
+                      //             bottom: 4,
+                      //             right: 8,
+                      //             left: 8,
+                      //           ),
+                      //           child: TextFormField(
+                      //             expands: true,
+                      //             maxLines: null,
+                      //             controller: _trainerController,
+                      //             decoration: InputDecoration(
+                      //               isDense: true,
+                      //               contentPadding: const EdgeInsets.symmetric(
+                      //                 horizontal: 10,
+                      //                 vertical: 8,
+                      //               ),
+                      //               hintText: 'Search for an item...',
+                      //               hintStyle: const TextStyle(fontSize: 12),
+                      //               border: OutlineInputBorder(
+                      //                 borderRadius: BorderRadius.circular(8),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ),
+                      //         searchMatchFn: (item, searchValue) {
+                      //           return item.value.toString().contains(searchValue);
+                      //         },
+                      //       ),
+                      //       //This to clear the search value when you close the menu
+                      //       onMenuStateChange: (isOpen) {
+                      //         if (!isOpen) {
+                      //           _trainerController.clear();
+                      //         }
+                      //       },
+                      //     ),
+                      //   ),
+                      // ),
+                      // SizedBox(
+                      //   height: size.height * 0.03,
+                      // ),
+                      // Container(
+                      //   height: AppHeight.h50,
+                      //   margin: EdgeInsets.only(bottom: AppHeight.h10),
+                      //   child: DropdownButtonFormField<Trainer>(
+                      //     decoration: InputDecoration(
+                      //       labelText: 'Trainers',
+                      //       contentPadding: EdgeInsets.symmetric(horizontal: AppWidth.w4, vertical: AppHeight.h12),
+                      //       border: OutlineInputBorder(
+                      //         borderSide: const BorderSide(color: Colors.blue, width: 1.5),
+                      //         borderRadius: BorderRadius.all(
+                      //           Radius.circular(AppRadius.r4),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     isExpanded: true,
+                      //     icon: const Icon(Icons.arrow_drop_down),
+                      //     iconEnabledColor: ColorManager.blue,
+                      //     iconSize: 30,
+                      //     items: state.syncModel.data.trainers.map((item) {
+                      //       return DropdownMenuItem<Trainer>(
+                      //         value: item,
+                      //         child: Container(
+                      //           margin: const EdgeInsets.only(left: 1),
+                      //           padding: const EdgeInsets.only(left: 10),
+                      //           height: 55,
+                      //           width: double.infinity,
+                      //           child: Align(
+                      //             alignment: Alignment.centerLeft,
+                      //             child: Text(
+                      //               item.name ?? '',
+                      //               style: TextStyle(
+                      //                 color: Colors.blueGrey[900],
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       );
+                      //     }).toList(),
+                      //     onChanged: (newValue) {
+                      //       selectedTrainer = newValue;
+                      //     },
+                      //     value: selectedTrainer,
+                      //   ),
+                      // ),
+
                       DropdownButtonFormField<Trainer>(
                         decoration: InputDecoration(
                           fillColor: Colors.grey[10],

@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import '../../../../core/errors/failures.dart';
-import '../../../core/model/live_training_model.dart';
+import '../../../../../core/errors/failures.dart';
+import '../../../../core/model/live_training_model.dart';
 
 abstract class LiveTrainingRepository {
   Future<Either<Failure, List<LiveTrainingModel>>>? getLiveTrainings();

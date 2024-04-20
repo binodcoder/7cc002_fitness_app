@@ -1,7 +1,9 @@
+import 'package:fitness_app/layers/presentation/routine/get_routines/ui/routine.dart';
 import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'injection_container.dart';
 import 'injection_container.dart' as di;
 import 'layers/presentation/login/ui/login_screen.dart';
@@ -12,12 +14,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
   runApp(
-    const MyApp(),
+    MyApp(),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+
+  final SharedPreferences sharedPreferences = sl<SharedPreferences>();
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +34,11 @@ class MyApp extends StatelessWidget {
           create: (BuildContext context) => sl<UserAddBloc>(),
         ),
       ],
-      child: const ScreenUtilInit(
+      child: ScreenUtilInit(
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: AppStrings.titleLabel,
-          home: LoginPage(),
+          home: sharedPreferences.getBool("login") == null ? const LoginPage() : const RoutinePage(),
         ),
       ),
     );

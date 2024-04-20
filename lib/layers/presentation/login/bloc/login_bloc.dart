@@ -3,8 +3,10 @@ import 'package:bloc/bloc.dart';
 import 'package:fitness_app/core/model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/db/db_helper.dart';
+import '../../../../core/errors/failures.dart';
 import '../../../../core/model/sync_data_model.dart';
 import '../../../../injection_container.dart';
+import '../../../../resources/strings_manager.dart';
 import '../../../domain/appointment/usecases/sync.dart';
 import '../../../domain/login/usecases/login.dart';
 import 'login_event.dart';
@@ -28,10 +30,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   FutureOr<void> loginButtonPressEvent(LoginButtonPressEvent event, Emitter<LoginState> emit) async {
+    emit(LoginLoadingState());
     final result = await login(event.loginModel);
-
     result!.fold((failure) {
-      emit(LoginErrorState());
+      emit(LoginErrorState(message: _mapFailureToMessage(failure)));
     }, (result) {
       emit(LoggedState());
       saveUserData(result);
@@ -42,5 +44,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     sharedPreferences.setBool('login', true);
     sharedPreferences.setInt('user_id', user.id ?? 1);
     sharedPreferences.setString('user_email', user.email);
+  }
+
+  String _mapFailureToMessage(Failure failure) {
+    switch (failure.runtimeType) {
+      case ServerFailure:
+        return AppStrings.serverFailureMessage;
+      case CacheFailure:
+        return AppStrings.cacheFailureMessage;
+      case LoginFailure:
+        return AppStrings.loginFailureMessage;
+      default:
+        return 'Unexpected error';
+    }
   }
 }
