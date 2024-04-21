@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/db/db_helper.dart';
@@ -30,13 +29,11 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController institutionEmailController =
-      TextEditingController();
+  final TextEditingController institutionEmailController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController conformPasswordController =
-      TextEditingController();
+  final TextEditingController conformPasswordController = TextEditingController();
 
   final DatabaseHelper dbHelper = DatabaseHelper();
   bool _passwordVisible = false;
@@ -369,9 +366,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         hintText: 'Password',
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _passwordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                            _passwordVisible ? Icons.visibility : Icons.visibility_off,
                             color: ColorManager.blue,
                           ),
                           onPressed: () {
@@ -428,16 +423,13 @@ class _RegisterPageState extends State<RegisterPage> {
                         hintText: 'Confirm Password',
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _confirmPasswordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
+                            _confirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
                             color: ColorManager.blue,
                           ),
                           onPressed: () {
                             setState(
                               () {
-                                _confirmPasswordVisible =
-                                    !_confirmPasswordVisible;
+                                _confirmPasswordVisible = !_confirmPasswordVisible;
                               },
                             );
                           },
@@ -461,9 +453,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     SigninButton(
                       child: Text(
-                        widget.userModel == null
-                            ? AppStrings.register
-                            : AppStrings.updateUser,
+                        widget.userModel == null ? AppStrings.register : AppStrings.updateUser,
                         style: getRegularStyle(
                           fontSize: FontSize.s16,
                           color: ColorManager.white,
@@ -480,28 +470,25 @@ class _RegisterPageState extends State<RegisterPage> {
                           if (widget.userModel != null) {
                             var updatedUser = UserModel(
                               age: int.parse(age),
-                              email:email,
+                              email: email,
                               gender: gender,
                               id: widget.userModel!.id,
                               institutionEmail: institutionEmail,
                               name: username,
                               password: password,
                             );
-                            userAddBloc.add(
-                                UserAddUpdateButtonPressEvent(updatedUser));
+                            userAddBloc.add(UserAddUpdateButtonPressEvent(updatedUser));
                           } else {
                             var newUser = UserModel(
                               age: int.parse(age),
-                              email:email,
+                              email: email,
                               gender: gender,
                               // id: widget.userModel!.id,
                               institutionEmail: institutionEmail,
                               name: username,
                               password: password,
-                              
                             );
-                            userAddBloc
-                                .add(UserAddSaveButtonPressEvent(newUser));
+                            userAddBloc.add(UserAddSaveButtonPressEvent(newUser));
                           }
                         }
                       },

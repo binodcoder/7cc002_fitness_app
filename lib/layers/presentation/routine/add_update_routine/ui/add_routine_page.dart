@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../core/db/db_helper.dart';
 import '../../../../../core/model/routine_model.dart';
 import '../../../../../injection_container.dart';
 import '../../../../../resources/colour_manager.dart';
@@ -9,9 +7,7 @@ import '../../../../../resources/font_manager.dart';
 import '../../../../../resources/strings_manager.dart';
 import '../../../../../resources/styles_manager.dart';
 import '../../../../../resources/values_manager.dart';
-import '../../../login/ui/login_screen.dart';
 import '../../../login/widgets/sign_in_button.dart';
-import '../bloc/routine_add_bloc.dart';
 import '../bloc/routine_add_bloc.dart';
 import '../bloc/routine_add_event.dart';
 import '../bloc/routine_add_state.dart';

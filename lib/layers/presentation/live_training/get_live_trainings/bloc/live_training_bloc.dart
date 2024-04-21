@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:table_calendar/table_calendar.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../../core/model/live_training_model.dart';
 import '../../../../../core/usecases/usecase.dart';

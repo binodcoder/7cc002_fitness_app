@@ -9,7 +9,6 @@ import 'package:path_provider/path_provider.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../domain/routine/usecases/add_routine.dart';
 import '../../../../domain/routine/usecases/update_routine.dart';
-import '../../get_routines/bloc/routine_state.dart';
 
 class RoutineAddBloc extends Bloc<RoutineAddEvent, RoutineAddState> {
   final AddRoutine addRoutine;

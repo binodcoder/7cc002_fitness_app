@@ -23,9 +23,9 @@ class CustomListTile extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       leading: leadingIcon != null
           ? Icon(
-        leadingIcon,
-        color: Theme.of(context).primaryColor,
-      )
+              leadingIcon,
+              color: Theme.of(context).primaryColor,
+            )
           : null,
       title: Text(
         title,
@@ -37,9 +37,9 @@ class CustomListTile extends StatelessWidget {
       subtitle: subtitle != null ? Text(subtitle) : null,
       trailing: trailingIcon != null
           ? Icon(
-        trailingIcon,
-        color: Theme.of(context).primaryColor,
-      )
+              trailingIcon,
+              color: Theme.of(context).primaryColor,
+            )
           : null,
     );
   }

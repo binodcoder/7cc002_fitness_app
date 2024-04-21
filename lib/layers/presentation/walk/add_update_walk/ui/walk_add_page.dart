@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../../core/model/walk_model.dart';
@@ -11,7 +9,6 @@ import '../../../../../resources/font_manager.dart';
 import '../../../../../resources/strings_manager.dart';
 import '../../../../../resources/styles_manager.dart';
 import '../../../../../resources/values_manager.dart';
-import '../../../login/ui/login_screen.dart';
 import '../../../login/widgets/sign_in_button.dart';
 import '../bloc/walk_add_bloc.dart';
 import '../bloc/walk_add_event.dart';

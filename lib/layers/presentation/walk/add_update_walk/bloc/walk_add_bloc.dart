@@ -6,7 +6,6 @@ import 'package:fitness_app/layers/presentation/walk/add_update_walk/bloc/walk_a
 import 'package:fitness_app/layers/presentation/walk/add_update_walk/bloc/walk_add_state.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import '../../../../../core/db/db_helper.dart';
 import '../../../../domain/walk/usecases/add_walk.dart';
 import '../../../../domain/walk/usecases/update_walk.dart';
 

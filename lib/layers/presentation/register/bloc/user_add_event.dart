@@ -1,4 +1,3 @@
-import '../../../../core/model/routine_model.dart';
 import '../../../../core/model/user_model.dart';
 
 abstract class UserAddEvent {}

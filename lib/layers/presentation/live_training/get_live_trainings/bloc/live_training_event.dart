@@ -1,5 +1,4 @@
 import '../../../../../core/model/live_training_model.dart';
-import '../../../../../core/model/live_training_model.dart';
 
 abstract class LiveTrainingEvent {}
 

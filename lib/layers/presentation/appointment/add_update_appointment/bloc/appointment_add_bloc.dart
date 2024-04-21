@@ -1,11 +1,6 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import '../../../../../core/db/db_helper.dart';
-import '../../../../../core/usecases/usecase.dart';
 import '../../../../domain/appointment/usecases/add_appointment.dart';
 import '../../../../domain/appointment/usecases/sync.dart';
 import '../../../../domain/appointment/usecases/update_appointment.dart';

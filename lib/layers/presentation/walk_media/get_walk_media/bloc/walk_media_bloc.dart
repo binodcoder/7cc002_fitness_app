@@ -4,7 +4,6 @@ import 'package:fitness_app/layers/presentation/walk_media/get_walk_media/bloc/w
 import 'package:fitness_app/layers/presentation/walk_media/get_walk_media/bloc/walk_media_state.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../../core/model/walk_media_model.dart';
-import '../../../../../core/usecases/usecase.dart';
 import '../../../../domain/walk_media/usecases/delete_walk_media.dart';
 import '../../../../domain/walk_media/usecases/get_walk_media.dart';
 import '../../../../domain/walk_media/usecases/get_walk_media_by_walk_id.dart';
