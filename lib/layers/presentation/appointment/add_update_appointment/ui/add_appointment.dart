@@ -185,6 +185,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
 
             return Scaffold(
               appBar: AppBar(
+                backgroundColor: ColorManager.primary,
                 leading: IconButton(
                   icon: const Icon(Icons.close),
                   onPressed: () {

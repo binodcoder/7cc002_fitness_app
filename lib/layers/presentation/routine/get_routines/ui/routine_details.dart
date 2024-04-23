@@ -36,6 +36,7 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
       backgroundColor: ColorManager.darkWhite,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       appBar: AppBar(
+        backgroundColor: ColorManager.primary,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);

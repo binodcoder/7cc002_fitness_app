@@ -68,6 +68,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
+            backgroundColor: ColorManager.primary,
             title: const Text(AppStrings.addWalk),
           ),
           body: GestureDetector(
@@ -116,11 +117,6 @@ class _AddWalkPageState extends State<AddWalkPage> {
                         fillColor: ColorManager.redWhite,
                         filled: true,
                         hintText: 'Route Data',
-                        suffixIcon: Icon(
-                          Icons.person,
-                          color: ColorManager.blue,
-                          size: FontSize.s20,
-                        ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: ColorManager.blueGrey),
                           borderRadius: BorderRadius.circular(AppRadius.r10),
@@ -164,11 +160,6 @@ class _AddWalkPageState extends State<AddWalkPage> {
                         fillColor: ColorManager.redWhite,
                         filled: true,
                         hintText: 'Date',
-                        suffixIcon: Icon(
-                          Icons.person,
-                          color: ColorManager.blue,
-                          size: FontSize.s20,
-                        ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: ColorManager.blueGrey),
                           borderRadius: BorderRadius.circular(AppRadius.r10),
@@ -212,11 +203,6 @@ class _AddWalkPageState extends State<AddWalkPage> {
                         fillColor: ColorManager.redWhite,
                         filled: true,
                         hintText: 'Start Time',
-                        suffixIcon: Icon(
-                          Icons.person,
-                          color: ColorManager.blue,
-                          size: FontSize.s20,
-                        ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: ColorManager.blueGrey),
                           borderRadius: BorderRadius.circular(AppRadius.r10),
@@ -260,11 +246,6 @@ class _AddWalkPageState extends State<AddWalkPage> {
                         fillColor: ColorManager.redWhite,
                         filled: true,
                         hintText: 'Start Location',
-                        suffixIcon: Icon(
-                          Icons.person,
-                          color: ColorManager.blue,
-                          size: FontSize.s20,
-                        ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: ColorManager.blueGrey),
                           borderRadius: BorderRadius.circular(AppRadius.r10),

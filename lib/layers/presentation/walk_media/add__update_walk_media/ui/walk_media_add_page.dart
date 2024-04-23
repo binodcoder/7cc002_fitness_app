@@ -61,6 +61,7 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
+            backgroundColor: ColorManager.primary,
             title: const Text(AppStrings.addWalkMedia),
           ),
           body: GestureDetector(

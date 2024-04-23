@@ -37,6 +37,7 @@ class _LiveTrainingDetailsPageState extends State<LiveTrainingDetailsPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       backgroundColor: ColorManager.white,
       appBar: AppBar(
+        backgroundColor: ColorManager.primary,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);

@@ -100,7 +100,7 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
               drawer: const MyDrawer(),
               floatingActionButton: sharedPreferences.getString('role') == "trainer"
                   ? FloatingActionButton(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: ColorManager.primary,
                       child: const Icon(Icons.add),
                       onPressed: () {
                         liveTrainingBloc.add(LiveTrainingAddButtonClickedEvent());
@@ -108,6 +108,7 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
                     )
                   : null,
               appBar: AppBar(
+                backgroundColor: ColorManager.primary,
                 title: const Text(AppStrings.titleLiveTrainingLabel),
               ),
               body: ListView.builder(

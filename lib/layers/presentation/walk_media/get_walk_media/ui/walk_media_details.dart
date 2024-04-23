@@ -36,6 +36,7 @@ class _WalkMediaDetailsPageState extends State<WalkMediaDetailsPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       backgroundColor: ColorManager.white,
       appBar: AppBar(
+        backgroundColor: ColorManager.primary,
         title: const Text(
           AppStrings.titleWalkMediaLabel,
         ),

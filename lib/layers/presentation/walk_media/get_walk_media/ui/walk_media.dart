@@ -97,13 +97,14 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
             final successState = state as WalkMediaLoadedSuccessState;
             return Scaffold(
               floatingActionButton: FloatingActionButton(
-                backgroundColor: Colors.blue,
+                backgroundColor: ColorManager.primary,
                 child: const Icon(Icons.add),
                 onPressed: () {
                   walkMediaBloc.add(WalkMediaAddButtonClickedEvent(successState.walkMediaModelList.first.id!));
                 },
               ),
               appBar: AppBar(
+                backgroundColor: ColorManager.primary,
                 title: const Text(AppStrings.titleWalkMediaLabel),
               ),
               body: ListView.builder(

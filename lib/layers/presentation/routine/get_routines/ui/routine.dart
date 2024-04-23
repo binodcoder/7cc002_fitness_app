@@ -1,6 +1,7 @@
 import 'package:fitness_app/layers/presentation/routine/add_update_routine/ui/add_routine_page.dart';
 import 'package:fitness_app/layers/presentation/routine/get_routines/ui/routine_details.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -93,73 +94,79 @@ class _RoutinePageState extends State<RoutinePage> {
             );
           case RoutineLoadedSuccessState:
             final successState = state as RoutineLoadedSuccessState;
-            return Scaffold(
-              backgroundColor: ColorManager.darkWhite,
-              drawer: const MyDrawer(),
-              floatingActionButton: sharedPreferences.getString('role') == "trainer"
-                  ? FloatingActionButton(
-                      backgroundColor: Colors.blue,
-                      child: const Icon(Icons.add),
-                      onPressed: () {
-                        postBloc.add(RoutineAddButtonClickedEvent());
-                      },
-                    )
-                  : null,
-              appBar: AppBar(
-                title: const Text(AppStrings.titleRoutineLabel),
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: const SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
               ),
-              body: ListView.builder(
-                itemCount: successState.routineModelList.length,
-                itemBuilder: (context, index) {
-                  var routineModel = successState.routineModelList[index];
-                  return Slidable(
-                    endActionPane: ActionPane(
-                      extentRatio: 0.46,
-                      motion: const ScrollMotion(),
-                      children: [
-                        SlidableAction(
-                          onPressed: (context) {
-                            postBloc.add(RoutineEditButtonClickedEvent(routineModel));
-                          },
-                          backgroundColor: const Color(0xFF21B7CA),
-                          foregroundColor: Colors.white,
-                          icon: Icons.edit,
-                          label: 'Edit',
-                        ),
-                        SlidableAction(
-                          onPressed: (context) {},
-                          backgroundColor: const Color(0xFF21B7CA),
-                          foregroundColor: Colors.white,
-                          icon: Icons.delete,
-                          label: 'Delete',
-                        )
-                      ],
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: ColorManager.white,
-                      ),
-                      margin: EdgeInsets.all(size.width * 0.02),
-                      child: ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => RoutineDetailsPage(
-                                routineModel: routineModel,
-                              ),
-                            ),
-                          );
+              child: Scaffold(
+                backgroundColor: ColorManager.darkWhite,
+                drawer: const MyDrawer(),
+                floatingActionButton: sharedPreferences.getString('role') == "trainer"
+                    ? FloatingActionButton(
+                        backgroundColor: ColorManager.primary,
+                        child: const Icon(Icons.add),
+                        onPressed: () {
+                          postBloc.add(RoutineAddButtonClickedEvent());
                         },
-                        title: Text(routineModel.name),
-                        subtitle: Text(routineModel.description),
-                        trailing: Text(routineModel.difficulty),
-                        isThreeLine: true,
+                      )
+                    : null,
+                appBar: AppBar(
+                  backgroundColor: ColorManager.primary,
+                  title: const Text(AppStrings.titleRoutineLabel),
+                ),
+                body: ListView.builder(
+                  itemCount: successState.routineModelList.length,
+                  itemBuilder: (context, index) {
+                    var routineModel = successState.routineModelList[index];
+                    return Slidable(
+                      endActionPane: ActionPane(
+                        extentRatio: 0.46,
+                        motion: const ScrollMotion(),
+                        children: [
+                          SlidableAction(
+                            onPressed: (context) {
+                              postBloc.add(RoutineEditButtonClickedEvent(routineModel));
+                            },
+                            backgroundColor: const Color(0xFF21B7CA),
+                            foregroundColor: Colors.white,
+                            icon: Icons.edit,
+                            label: 'Edit',
+                          ),
+                          SlidableAction(
+                            onPressed: (context) {},
+                            backgroundColor: const Color(0xFF21B7CA),
+                            foregroundColor: Colors.white,
+                            icon: Icons.delete,
+                            label: 'Delete',
+                          )
+                        ],
                       ),
-                    ),
-                  );
-                },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: ColorManager.white,
+                        ),
+                        margin: EdgeInsets.all(size.width * 0.02),
+                        child: ListTile(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) => RoutineDetailsPage(
+                                  routineModel: routineModel,
+                                ),
+                              ),
+                            );
+                          },
+                          title: Text(routineModel.name),
+                          subtitle: Text(routineModel.description),
+                          trailing: Text(routineModel.difficulty),
+                          isThreeLine: true,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             );
           case RoutineErrorState:

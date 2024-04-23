@@ -2,6 +2,7 @@ import 'package:fitness_app/core/model/walk_participant_model.dart';
 import 'package:fitness_app/layers/presentation/walk/add_update_walk/ui/walk_add_page.dart';
 import 'package:fitness_app/layers/presentation/walk/get_walks/ui/walk_details.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
@@ -98,87 +99,93 @@ class _WalkPageState extends State<WalkPage> {
             );
           case WalkLoadedSuccessState:
             final successState = state as WalkLoadedSuccessState;
-            return Scaffold(
-              backgroundColor: ColorManager.darkWhite,
-              drawer: const MyDrawer(),
-              floatingActionButton: FloatingActionButton(
-                backgroundColor: Colors.blue,
-                child: const Icon(Icons.add),
-                onPressed: () {
-                  walkBloc.add(WalkAddButtonClickedEvent());
-                },
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: const SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
               ),
-              appBar: AppBar(
-                title: const Text(AppStrings.titleWalkLabel),
-              ),
-              body: ListView.builder(
-                itemCount: successState.walkModelList.length,
-                itemBuilder: (context, index) {
-                  var walkModel = successState.walkModelList[index];
-                  return Slidable(
-                    endActionPane: ActionPane(
-                      extentRatio: 0.46,
-                      motion: const ScrollMotion(),
-                      children: [
-                        SlidableAction(
-                          onPressed: (context) {
-                            walkBloc.add(WalkEditButtonClickedEvent(walkModel));
-                          },
-                          backgroundColor: const Color(0xFF21B7CA),
-                          foregroundColor: Colors.white,
-                          icon: Icons.edit,
-                          label: 'Edit',
-                        ),
-                        SlidableAction(
-                          onPressed: (context) {},
-                          backgroundColor: const Color(0xFF21B7CA),
-                          foregroundColor: Colors.white,
-                          icon: Icons.delete,
-                          label: 'Delete',
-                        )
-                      ],
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: ColorManager.white,
+              child: Scaffold(
+                backgroundColor: ColorManager.darkWhite,
+                drawer: const MyDrawer(),
+                floatingActionButton: FloatingActionButton(
+                  backgroundColor: ColorManager.primary,
+                  child: const Icon(Icons.add),
+                  onPressed: () {
+                    walkBloc.add(WalkAddButtonClickedEvent());
+                  },
+                ),
+                appBar: AppBar(
+                  backgroundColor: ColorManager.primary,
+                  title: const Text(AppStrings.titleWalkLabel),
+                ),
+                body: ListView.builder(
+                  itemCount: successState.walkModelList.length,
+                  itemBuilder: (context, index) {
+                    var walkModel = successState.walkModelList[index];
+                    return Slidable(
+                      endActionPane: ActionPane(
+                        extentRatio: 0.46,
+                        motion: const ScrollMotion(),
+                        children: [
+                          SlidableAction(
+                            onPressed: (context) {
+                              walkBloc.add(WalkEditButtonClickedEvent(walkModel));
+                            },
+                            backgroundColor: const Color(0xFF21B7CA),
+                            foregroundColor: Colors.white,
+                            icon: Icons.edit,
+                            label: 'Edit',
+                          ),
+                          SlidableAction(
+                            onPressed: (context) {},
+                            backgroundColor: const Color(0xFF21B7CA),
+                            foregroundColor: Colors.white,
+                            icon: Icons.delete,
+                            label: 'Delete',
+                          )
+                        ],
                       ),
-                      margin: EdgeInsets.all(size.width * 0.02),
-                      child: ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) => WalkMediaPage(
-                                walkId: successState.walkModelList[index].id!,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: ColorManager.white,
+                        ),
+                        margin: EdgeInsets.all(size.width * 0.02),
+                        child: ListTile(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) => WalkMediaPage(
+                                  walkId: successState.walkModelList[index].id!,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        title: Text(walkModel.startLocation),
-                        subtitle: Text("${DateFormat("yMd").format(walkModel.date)} ${walkModel.startTime}"),
-                        trailing: TextButton(
-                          onPressed: () {
-                            WalkParticipantModel walkParticipantModel = WalkParticipantModel(
-                              userId: sharedPreferences.getInt("user_id")!,
-                              walkId: walkModel.id!,
                             );
-                            if (walkModel.participants!.where((element) => element.id == sharedPreferences.getInt("user_id")).isNotEmpty) {
-                              walkBloc.add(WalkLeaveButtonClickedEvent(walkParticipantModel));
-                            } else {
-                              walkBloc.add(WalkJoinButtonClickedEvent(walkParticipantModel));
-                            }
                           },
-                          child: Text(
-                            (walkModel.participants!.where((element) => element.id == sharedPreferences.getInt("user_id")).isNotEmpty)
-                                ? 'Leave'
-                                : 'Join',
+                          title: Text(walkModel.startLocation),
+                          subtitle: Text("${DateFormat("yMd").format(walkModel.date)} ${walkModel.startTime}"),
+                          trailing: TextButton(
+                            onPressed: () {
+                              WalkParticipantModel walkParticipantModel = WalkParticipantModel(
+                                userId: sharedPreferences.getInt("user_id")!,
+                                walkId: walkModel.id!,
+                              );
+                              if (walkModel.participants!.where((element) => element.id == sharedPreferences.getInt("user_id")).isNotEmpty) {
+                                walkBloc.add(WalkLeaveButtonClickedEvent(walkParticipantModel));
+                              } else {
+                                walkBloc.add(WalkJoinButtonClickedEvent(walkParticipantModel));
+                              }
+                            },
+                            child: Text(
+                              (walkModel.participants!.where((element) => element.id == sharedPreferences.getInt("user_id")).isNotEmpty)
+                                  ? 'Leave'
+                                  : 'Join',
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             );
           case WalkErrorState:

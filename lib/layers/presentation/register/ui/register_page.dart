@@ -56,6 +56,8 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   final UserAddBloc userAddBloc = sl<UserAddBloc>();
+  final List<String> role = <String>["trainer", "standard"];
+  String selectedRole = "standard";
 
   @override
   Widget build(BuildContext context) {
@@ -123,11 +125,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         fillColor: ColorManager.redWhite,
                         filled: true,
                         hintText: 'User Name',
-                        suffixIcon: Icon(
-                          Icons.person,
-                          color: ColorManager.blue,
-                          size: FontSize.s20,
-                        ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: ColorManager.blueGrey),
                           borderRadius: BorderRadius.circular(AppRadius.r10),
@@ -171,11 +168,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         fillColor: ColorManager.redWhite,
                         filled: true,
                         hintText: 'Email',
-                        suffixIcon: Icon(
-                          Icons.person,
-                          color: ColorManager.blue,
-                          size: FontSize.s20,
-                        ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: ColorManager.blueGrey),
                           borderRadius: BorderRadius.circular(AppRadius.r10),
@@ -194,6 +186,60 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: AppHeight.h10,
                     ),
                     Text(
+                      "Select Role",
+                      style: getBoldStyle(
+                        fontSize: FontSize.s15,
+                        color: ColorManager.primary,
+                      ),
+                    ),
+                    SizedBox(
+                      height: AppHeight.h10,
+                    ),
+                    DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        fillColor: Colors.grey[10],
+                        filled: true,
+                        contentPadding: EdgeInsets.symmetric(horizontal: AppWidth.w4, vertical: AppHeight.h12),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          //BorderSide(color: ColorManager.white, width: 0, style: BorderStyle.none),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(AppRadius.r10),
+                          ),
+                        ),
+                      ),
+                      isExpanded: true,
+                      icon: const Icon(Icons.arrow_drop_down),
+                      iconEnabledColor: ColorManager.blue,
+                      iconSize: 30,
+                      items: role.map((item) {
+                        return DropdownMenuItem<String>(
+                          value: item,
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 1),
+                            padding: const EdgeInsets.only(left: 10),
+                            height: 55,
+                            width: double.infinity,
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                item,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (newValue) {
+                        setState(() {
+                          selectedRole = newValue!;
+                        });
+                      },
+                      value: selectedRole,
+                    ),
+                    SizedBox(
+                      height: AppHeight.h10,
+                    ),
+                    Text(
                       "Institution Email",
                       style: getBoldStyle(
                         fontSize: FontSize.s15,
@@ -205,12 +251,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     TextFormField(
                       controller: institutionEmailController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '*Required';
-                        }
-                        return null;
-                      },
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
@@ -219,11 +259,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         fillColor: ColorManager.redWhite,
                         filled: true,
                         hintText: 'Institution Email',
-                        suffixIcon: Icon(
-                          Icons.person,
-                          color: ColorManager.blue,
-                          size: FontSize.s20,
-                        ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: ColorManager.blueGrey),
                           borderRadius: BorderRadius.circular(AppRadius.r10),
@@ -267,11 +302,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         fillColor: ColorManager.redWhite,
                         filled: true,
                         hintText: 'Gender',
-                        suffixIcon: Icon(
-                          Icons.person,
-                          color: ColorManager.blue,
-                          size: FontSize.s20,
-                        ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: ColorManager.blueGrey),
                           borderRadius: BorderRadius.circular(AppRadius.r10),
@@ -315,11 +345,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         fillColor: ColorManager.redWhite,
                         filled: true,
                         hintText: 'Age',
-                        suffixIcon: Icon(
-                          Icons.person,
-                          color: ColorManager.blue,
-                          size: FontSize.s20,
-                        ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: ColorManager.blueGrey),
                           borderRadius: BorderRadius.circular(AppRadius.r10),
@@ -466,7 +491,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         var gender = genderController.text;
                         var age = ageController.text;
                         var password = passwordController.text;
-                        var role = "standard";
+                        var role = selectedRole;
                         if (username.isNotEmpty && email.isNotEmpty) {
                           if (widget.userModel != null) {
                             var updatedUser = UserModel(

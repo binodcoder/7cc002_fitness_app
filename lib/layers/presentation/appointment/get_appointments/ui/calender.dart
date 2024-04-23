@@ -6,6 +6,7 @@ import 'package:fitness_app/layers/presentation/appointment/get_appointments/blo
 import 'package:fitness_app/layers/presentation/appointment/get_appointments/bloc/event_state.dart';
 import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,207 +49,213 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return Scaffold(
-      backgroundColor: ColorManager.darkWhite,
-      drawer: const MyDrawer(),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        child: const Icon(Icons.add),
-        onPressed: () {
-          calenderBloc.add(CalenderAddButtonClickedEvent(_focusedDay));
-        },
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
       ),
-      appBar: AppBar(
-        title: const Text(AppStrings.titleAppointmentLabel),
-        centerTitle: true,
-      ),
-      body: Column(
-        children: <Widget>[
-          BlocConsumer<CalenderBloc, CalenderState>(
-              bloc: calenderBloc,
-              listenWhen: (previous, current) => current is CalenderActionState,
-              buildWhen: (previous, current) => current is! CalenderActionState,
-              listener: (context, state) {
-                if (state is CalenderNavigateToAddCalenderActionState) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => AddAppointmentDialog(focusedDay: state.focusedDay),
-                      fullscreenDialog: true,
-                    ),
-                  ).then(
-                    (value) => refreshPage(),
-                  );
-                } else if (state is CalenderNavigateToDetailPageActionState) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => AppointmentDetailsPage(
-                        appointmentModel: state.appointmentModel,
+      child: Scaffold(
+        backgroundColor: ColorManager.darkWhite,
+        drawer: const MyDrawer(),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: ColorManager.primary,
+          child: const Icon(Icons.add),
+          onPressed: () {
+            calenderBloc.add(CalenderAddButtonClickedEvent(_focusedDay));
+          },
+        ),
+        appBar: AppBar(
+          backgroundColor: ColorManager.primary,
+          title: const Text(AppStrings.titleAppointmentLabel),
+          centerTitle: true,
+        ),
+        body: Column(
+          children: <Widget>[
+            BlocConsumer<CalenderBloc, CalenderState>(
+                bloc: calenderBloc,
+                listenWhen: (previous, current) => current is CalenderActionState,
+                buildWhen: (previous, current) => current is! CalenderActionState,
+                listener: (context, state) {
+                  if (state is CalenderNavigateToAddCalenderActionState) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => AddAppointmentDialog(focusedDay: state.focusedDay),
+                        fullscreenDialog: true,
                       ),
-                      fullscreenDialog: true,
-                    ),
-                  ).then(
-                    (value) => refreshPage(),
-                  );
-                } else if (state is CalenderNavigateToUpdatePageActionState) {
-                } else if (state is CalenderItemDeletedActionState) {
-                  calenderBloc.add(CalenderInitialEvent());
-                } else if (state is CalenderItemsDeletedActionState) {}
-              },
-              builder: (context, state) {
-                switch (state.runtimeType) {
-                  case CalenderLoadingState:
-                    return const Center(
-                      child: LinearProgressIndicator(),
+                    ).then(
+                      (value) => refreshPage(),
                     );
-
-                  case CalenderLoadedSuccessState:
-                    final successState = state as CalenderLoadedSuccessState;
-                    final List<AppointmentModel> allEvents = successState.appointmentModels;
-                    eventBloc.add(EventDaySelectEvent(_focusedDay, allEvents));
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: ColorManager.white,
+                  } else if (state is CalenderNavigateToDetailPageActionState) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => AppointmentDetailsPage(
+                          appointmentModel: state.appointmentModel,
+                        ),
+                        fullscreenDialog: true,
                       ),
-                      margin: EdgeInsets.all(size.width * 0.02),
-                      child: TableCalendar(
-                        firstDay: DateTime.utc(2010, 10, 16),
-                        lastDay: DateTime.utc(2030, 3, 14),
-                        focusedDay: _focusedDay,
-                        selectedDayPredicate: (day) {
-                          return isSameDay(_selectedDay, day);
-                        },
-                        onDaySelected: (selectedDay, focusedDay) {
-                          eventBloc.add(EventDaySelectEvent(selectedDay, allEvents));
-                          _selectedDay = selectedDay;
-                          _focusedDay = selectedDay;
-                          setState(() {});
-                        },
-                        onPageChanged: (focusedDay) {
-                          _focusedDay = focusedDay;
-                        },
-                        eventLoader: sharedPreferences.getString('role') == "trainer"
-                            ? (day) {
-                                return allEvents.where((event) => isSameDay(event.date, day)).toList();
-                              }
-                            : null,
-                        calendarFormat: _calendarFormat,
-                        onFormatChanged: (format) {
-                          if (_calendarFormat != format) {
-                            setState(() {
-                              _calendarFormat = format;
-                            });
-                          }
-                        },
-                        calendarStyle: const CalendarStyle(),
-                      ),
+                    ).then(
+                      (value) => refreshPage(),
                     );
+                  } else if (state is CalenderNavigateToUpdatePageActionState) {
+                  } else if (state is CalenderItemDeletedActionState) {
+                    calenderBloc.add(CalenderInitialEvent());
+                  } else if (state is CalenderItemsDeletedActionState) {}
+                },
+                builder: (context, state) {
+                  switch (state.runtimeType) {
+                    case CalenderLoadingState:
+                      return const Center(
+                        child: LinearProgressIndicator(),
+                      );
 
-                  case CalenderErrorState:
-                    return const Scaffold(body: Center(child: Text('Error')));
-                  default:
-                    return const SizedBox();
-                }
-              }),
-          sharedPreferences.getString('role') == "trainer"
-              ? Expanded(
-                  child: BlocConsumer<EventBloc, EventState>(
-                    bloc: eventBloc,
-                    listenWhen: (previous, current) => current is EventActionState,
-                    buildWhen: (previous, current) => current is! EventActionState,
-                    listener: (context, state) {
-                      if (state is EventNavigateToUpdatePageActionState) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => AddAppointmentDialog(
-                              focusedDay: state.focusedDay,
-                              appointmentModel: state.appointmentModel,
+                    case CalenderLoadedSuccessState:
+                      final successState = state as CalenderLoadedSuccessState;
+                      final List<AppointmentModel> allEvents = successState.appointmentModels;
+                      eventBloc.add(EventDaySelectEvent(_focusedDay, allEvents));
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: ColorManager.white,
+                        ),
+                        margin: EdgeInsets.all(size.width * 0.02),
+                        child: TableCalendar(
+                          firstDay: DateTime.utc(2010, 10, 16),
+                          lastDay: DateTime.utc(2030, 3, 14),
+                          focusedDay: _focusedDay,
+                          selectedDayPredicate: (day) {
+                            return isSameDay(_selectedDay, day);
+                          },
+                          onDaySelected: (selectedDay, focusedDay) {
+                            eventBloc.add(EventDaySelectEvent(selectedDay, allEvents));
+                            _selectedDay = selectedDay;
+                            _focusedDay = selectedDay;
+                            setState(() {});
+                          },
+                          onPageChanged: (focusedDay) {
+                            _focusedDay = focusedDay;
+                          },
+                          eventLoader: sharedPreferences.getString('role') == "trainer"
+                              ? (day) {
+                                  return allEvents.where((event) => isSameDay(event.date, day)).toList();
+                                }
+                              : null,
+                          calendarFormat: _calendarFormat,
+                          onFormatChanged: (format) {
+                            if (_calendarFormat != format) {
+                              setState(() {
+                                _calendarFormat = format;
+                              });
+                            }
+                          },
+                          calendarStyle: const CalendarStyle(),
+                        ),
+                      );
+
+                    case CalenderErrorState:
+                      return const Scaffold(body: Center(child: Text('Error')));
+                    default:
+                      return const SizedBox();
+                  }
+                }),
+            sharedPreferences.getString('role') == "trainer"
+                ? Expanded(
+                    child: BlocConsumer<EventBloc, EventState>(
+                      bloc: eventBloc,
+                      listenWhen: (previous, current) => current is EventActionState,
+                      buildWhen: (previous, current) => current is! EventActionState,
+                      listener: (context, state) {
+                        if (state is EventNavigateToUpdatePageActionState) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => AddAppointmentDialog(
+                                focusedDay: state.focusedDay,
+                                appointmentModel: state.appointmentModel,
+                              ),
+                              fullscreenDialog: true,
                             ),
-                            fullscreenDialog: true,
-                          ),
-                        ).then(
-                          (value) => refreshPage(),
-                        );
-                      }
-                    },
-                    builder: (context, state) {
-                      switch (state.runtimeType) {
-                        case EventLoadingState:
-                          return const Center(
-                            child: CircularProgressIndicator(),
+                          ).then(
+                            (value) => refreshPage(),
                           );
+                        }
+                      },
+                      builder: (context, state) {
+                        switch (state.runtimeType) {
+                          case EventLoadingState:
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
 
-                        case EventDaySelectedState:
-                          final successState = state as EventDaySelectedState;
-                          _selectedEvents = successState.appointmentModels;
+                          case EventDaySelectedState:
+                            final successState = state as EventDaySelectedState;
+                            _selectedEvents = successState.appointmentModels;
 
-                          return ListView.builder(
-                            itemCount: _selectedEvents.length,
-                            itemBuilder: (context, index) {
-                              AppointmentModel appointmentModel = _selectedEvents[index];
-                              String trainerName = "Binod Bhandari";
-                              return Slidable(
-                                endActionPane: ActionPane(
-                                  extentRatio: 0.46,
-                                  motion: const ScrollMotion(),
-                                  children: [
-                                    SlidableAction(
-                                      onPressed: (context) {
-                                        eventBloc.add(EventEditButtonClickedEvent(appointmentModel, _focusedDay));
-                                      },
-                                      backgroundColor: const Color(0xFF21B7CA),
-                                      foregroundColor: Colors.white,
-                                      icon: Icons.edit,
-                                      label: 'Edit',
+                            return ListView.builder(
+                              itemCount: _selectedEvents.length,
+                              itemBuilder: (context, index) {
+                                AppointmentModel appointmentModel = _selectedEvents[index];
+                                String trainerName = "Binod Bhandari";
+                                return Slidable(
+                                  endActionPane: ActionPane(
+                                    extentRatio: 0.46,
+                                    motion: const ScrollMotion(),
+                                    children: [
+                                      SlidableAction(
+                                        onPressed: (context) {
+                                          eventBloc.add(EventEditButtonClickedEvent(appointmentModel, _focusedDay));
+                                        },
+                                        backgroundColor: const Color(0xFF21B7CA),
+                                        foregroundColor: Colors.white,
+                                        icon: Icons.edit,
+                                        label: 'Edit',
+                                      ),
+                                      SlidableAction(
+                                        onPressed: (context) {
+                                          calenderBloc.add(CalenderDeleteButtonClickedEvent(appointmentModel));
+                                        },
+                                        backgroundColor: const Color(0xFF21B7CA),
+                                        foregroundColor: Colors.white,
+                                        icon: Icons.delete,
+                                        label: 'Delete',
+                                      )
+                                    ],
+                                  ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: ColorManager.white,
                                     ),
-                                    SlidableAction(
-                                      onPressed: (context) {
-                                        calenderBloc.add(CalenderDeleteButtonClickedEvent(appointmentModel));
-                                      },
-                                      backgroundColor: const Color(0xFF21B7CA),
-                                      foregroundColor: Colors.white,
-                                      icon: Icons.delete,
-                                      label: 'Delete',
-                                    )
-                                  ],
-                                ),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: ColorManager.white,
-                                  ),
-                                  margin: EdgeInsets.all(size.width * 0.02),
-                                  child: ListTile(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (BuildContext context) => AppointmentDetailsPage(
-                                            appointmentModel: appointmentModel,
+                                    margin: EdgeInsets.all(size.width * 0.02),
+                                    child: ListTile(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) => AppointmentDetailsPage(
+                                              appointmentModel: appointmentModel,
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                    title: Text(trainerName),
-                                    subtitle: Text("${appointmentModel.startTime} to ${appointmentModel.endTime}"),
+                                        );
+                                      },
+                                      title: Text(trainerName),
+                                      subtitle: Text("${appointmentModel.startTime} to ${appointmentModel.endTime}"),
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          );
-                        case CalenderErrorState:
-                          return const Scaffold(body: Center(child: Text('Error')));
-                        default:
-                          return const SizedBox();
-                      }
-                    },
-                  ),
-                )
-              : const SizedBox(),
-        ],
+                                );
+                              },
+                            );
+                          case CalenderErrorState:
+                            return const Scaffold(body: Center(child: Text('Error')));
+                          default:
+                            return const SizedBox();
+                        }
+                      },
+                    ),
+                  )
+                : const SizedBox(),
+          ],
+        ),
       ),
     );
   }

@@ -21,211 +21,199 @@ class MyDrawer extends StatefulWidget {
 }
 
 class _MyDrawerState extends State<MyDrawer> {
-  static SystemUiOverlayStyle overlayStyle = SystemUiOverlayStyle(
-    systemNavigationBarColor: ColorManager.darkGrey,
-    systemNavigationBarIconBrightness: Brightness.light,
-    statusBarColor: ColorManager.darkGrey.withOpacity(0.9),
-  );
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
-        SystemChrome.setSystemUIOverlayStyle(overlayStyle);
-        initial();
-      },
-    );
-  }
-
   final SharedPreferences sharedPreferences = sl<SharedPreferences>();
-  void initial() async {}
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(overlayStyle);
     // Size size = MediaQuery.of(context).size;
-    return Drawer(
-      child: ListView(
-        children: [
-          DrawerHeader(
-            padding: EdgeInsets.zero,
-            child: UserAccountsDrawerHeader(
-              accountEmail: Text(
-                'binodcoder@wlv.ac.uk',
-                style: getRegularStyle(
-                  color: ColorManager.white,
-                  fontSize: FontSize.s12,
-                ),
-              ),
-              margin: EdgeInsets.zero,
-              accountName: Text(
-                'Binod Bhandari',
-                maxLines: 2,
-                style: getBoldStyle(
-                  color: ColorManager.white,
-                  fontSize: FontSize.s12,
-                ),
-              ),
-              currentAccountPicture: const CircleAvatar(backgroundImage: AssetImage('assets/images/image.jpg')),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    ColorManager.darkGrey,
-                    ColorManager.darkGrey,
-                  ],
-                ),
-              ),
-            ),
-          ),
-          ListTile(
-            leading: Icon(
-              CupertinoIcons.alarm,
-              color: ColorManager.darkGrey,
-            ),
-            title: Text(
-              AppStrings.titleRoutineLabel,
-              textScaleFactor: 1.2,
-              style: getSemiBoldStyle(
-                color: ColorManager.darkGrey,
-                fontSize: FontSize.s14,
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => const RoutinePage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              CupertinoIcons.calendar,
-              color: ColorManager.darkGrey,
-            ),
-            title: Text(
-              AppStrings.titleAppointmentLabel,
-              textScaleFactor: 1.2,
-              style: getSemiBoldStyle(
-                color: ColorManager.darkGrey,
-                fontSize: FontSize.s14,
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => const CalendarPage(),
-                ),
-              );
-            },
-          ),
-          sharedPreferences.getString('institutionEmail') == null
-              ? const SizedBox()
-              : ListTile(
-                  leading: Icon(
-                    CupertinoIcons.alarm,
-                    color: ColorManager.darkGrey,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+      ),
+      child: Drawer(
+        backgroundColor: ColorManager.white,
+        child: ListView(
+          children: [
+            DrawerHeader(
+              padding: EdgeInsets.zero,
+              child: UserAccountsDrawerHeader(
+                accountEmail: Text(
+                  'binodcoder@wlv.ac.uk',
+                  style: getRegularStyle(
+                    color: ColorManager.white,
+                    fontSize: FontSize.s12,
                   ),
-                  title: Text(
-                    "Walk",
-                    textScaleFactor: 1.2,
-                    style: getSemiBoldStyle(
+                ),
+                margin: EdgeInsets.zero,
+                accountName: Text(
+                  'Binod Bhandari',
+                  maxLines: 2,
+                  style: getBoldStyle(
+                    color: ColorManager.white,
+                    fontSize: FontSize.s12,
+                  ),
+                ),
+                currentAccountPicture: const CircleAvatar(backgroundImage: AssetImage('assets/images/image.jpg')),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      ColorManager.white,
+                      ColorManager.primary,
+                      ColorManager.primary,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(
+                CupertinoIcons.alarm,
+                color: ColorManager.darkGrey,
+              ),
+              title: Text(
+                AppStrings.titleRoutineLabel,
+                textScaleFactor: 1.2,
+                style: getSemiBoldStyle(
+                  color: ColorManager.darkGrey,
+                  fontSize: FontSize.s14,
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const RoutinePage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                CupertinoIcons.calendar,
+                color: ColorManager.darkGrey,
+              ),
+              title: Text(
+                AppStrings.titleAppointmentLabel,
+                textScaleFactor: 1.2,
+                style: getSemiBoldStyle(
+                  color: ColorManager.darkGrey,
+                  fontSize: FontSize.s14,
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const CalendarPage(),
+                  ),
+                );
+              },
+            ),
+            sharedPreferences.getString('institutionEmail') == null || sharedPreferences.getString('institutionEmail') == ""
+                ? const SizedBox()
+                : ListTile(
+                    leading: Icon(
+                      CupertinoIcons.alarm,
                       color: ColorManager.darkGrey,
-                      fontSize: FontSize.s14,
                     ),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => const WalkPage(),
+                    title: Text(
+                      "Walk",
+                      textScaleFactor: 1.2,
+                      style: getSemiBoldStyle(
+                        color: ColorManager.darkGrey,
+                        fontSize: FontSize.s14,
                       ),
-                    );
-                  },
-                ),
-          ListTile(
-            leading: Icon(
-              CupertinoIcons.alarm,
-              color: ColorManager.darkGrey,
-            ),
-            title: Text(
-              "Live Trainings",
-              textScaleFactor: 1.2,
-              style: getSemiBoldStyle(
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => const WalkPage(),
+                        ),
+                      );
+                    },
+                  ),
+            ListTile(
+              leading: Icon(
+                CupertinoIcons.alarm,
                 color: ColorManager.darkGrey,
-                fontSize: FontSize.s14,
               ),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => const LiveTrainingPage(),
+              title: Text(
+                "Live Trainings",
+                textScaleFactor: 1.2,
+                style: getSemiBoldStyle(
+                  color: ColorManager.darkGrey,
+                  fontSize: FontSize.s14,
                 ),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              CupertinoIcons.video_camera,
-              color: ColorManager.darkGrey,
-            ),
-            title: const Text(
-              "Meeting",
-              style: TextStyle(color: Colors.black),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => CallPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.logout_outlined,
-              color: ColorManager.darkGrey,
-            ),
-            title: const Text(
-              "Log out",
-              style: TextStyle(
-                color: Colors.black,
               ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const LiveTrainingPage(),
+                  ),
+                );
+              },
             ),
-            onTap: () {
-              sharedPreferences.clear();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => const LoginPage(),
-                  fullscreenDialog: true,
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              CupertinoIcons.building_2_fill,
-              color: ColorManager.darkGrey,
-            ),
-            title: Text(
-              "About Us",
-              textScaleFactor: 1.2,
-              style: getSemiBoldStyle(
+            ListTile(
+              leading: Icon(
+                CupertinoIcons.video_camera,
                 color: ColorManager.darkGrey,
-                fontSize: FontSize.s14,
               ),
+              title: const Text(
+                "Meeting",
+                style: TextStyle(color: Colors.black),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => CallPage(),
+                  ),
+                );
+              },
             ),
-            onTap: () {},
-          ),
-        ],
+            ListTile(
+              leading: Icon(
+                Icons.logout_outlined,
+                color: ColorManager.darkGrey,
+              ),
+              title: const Text(
+                "Log out",
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
+              onTap: () {
+                sharedPreferences.clear();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const LoginPage(),
+                    fullscreenDialog: true,
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                CupertinoIcons.building_2_fill,
+                color: ColorManager.darkGrey,
+              ),
+              title: Text(
+                "About Us",
+                textScaleFactor: 1.2,
+                style: getSemiBoldStyle(
+                  color: ColorManager.darkGrey,
+                  fontSize: FontSize.s14,
+                ),
+              ),
+              onTap: () {},
+            ),
+          ],
+        ),
       ),
     );
   }

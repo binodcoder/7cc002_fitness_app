@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../drawer.dart';
 import '../../../injection_container.dart';
+import '../../../resources/colour_manager.dart';
 import 'join_call.dart';
 import 'new_meeting.dart';
 
@@ -15,6 +16,7 @@ class CallPage extends StatelessWidget {
     return Scaffold(
       drawer: const MyDrawer(),
       appBar: AppBar(
+        backgroundColor: ColorManager.primary,
         title: const Text("Video Conference"),
         centerTitle: true,
       ),
