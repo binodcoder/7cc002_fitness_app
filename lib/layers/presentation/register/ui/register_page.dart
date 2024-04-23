@@ -466,6 +466,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         var gender = genderController.text;
                         var age = ageController.text;
                         var password = passwordController.text;
+                        var role = "standard";
                         if (username.isNotEmpty && email.isNotEmpty) {
                           if (widget.userModel != null) {
                             var updatedUser = UserModel(
@@ -476,6 +477,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               institutionEmail: institutionEmail,
                               name: username,
                               password: password,
+                              role: role,
                             );
                             userAddBloc.add(UserAddUpdateButtonPressEvent(updatedUser));
                           } else {
@@ -487,6 +489,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               institutionEmail: institutionEmail,
                               name: username,
                               password: password,
+                              role: role,
                             );
                             userAddBloc.add(UserAddSaveButtonPressEvent(newUser));
                           }

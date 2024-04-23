@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../../drawer.dart';
 import '../../../../../resources/colour_manager.dart';
@@ -36,6 +37,7 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
   }
 
   LiveTrainingBloc liveTrainingBloc = sl<LiveTrainingBloc>();
+  final SharedPreferences sharedPreferences = sl<SharedPreferences>();
 
   @override
   Widget build(BuildContext context) {
@@ -96,13 +98,15 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
             return Scaffold(
               backgroundColor: ColorManager.darkWhite,
               drawer: const MyDrawer(),
-              floatingActionButton: FloatingActionButton(
-                backgroundColor: Colors.blue,
-                child: const Icon(Icons.add),
-                onPressed: () {
-                  liveTrainingBloc.add(LiveTrainingAddButtonClickedEvent());
-                },
-              ),
+              floatingActionButton: sharedPreferences.getString('role') == "trainer"
+                  ? FloatingActionButton(
+                      backgroundColor: Colors.blue,
+                      child: const Icon(Icons.add),
+                      onPressed: () {
+                        liveTrainingBloc.add(LiveTrainingAddButtonClickedEvent());
+                      },
+                    )
+                  : null,
               appBar: AppBar(
                 title: const Text(AppStrings.titleLiveTrainingLabel),
               ),

@@ -44,6 +44,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     sharedPreferences.setBool('login', true);
     sharedPreferences.setInt('user_id', user.id ?? 1);
     sharedPreferences.setString('user_email', user.email);
+    sharedPreferences.setString('role', user.role);
+    sharedPreferences.setString('institutionEmail', user.institutionEmail);
   }
 
   String _mapFailureToMessage(Failure failure) {

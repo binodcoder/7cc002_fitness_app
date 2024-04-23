@@ -8,6 +8,7 @@ import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../../../../drawer.dart';
 import '../../../../../injection_container.dart';
@@ -41,6 +42,7 @@ class _CalendarPageState extends State<CalendarPage> {
   DateTime? _selectedDay;
   DateTime _focusedDay = DateTime.now();
   List<AppointmentModel> _selectedEvents = [];
+  final SharedPreferences sharedPreferences = sl<SharedPreferences>();
 
   @override
   Widget build(BuildContext context) {
@@ -127,9 +129,11 @@ class _CalendarPageState extends State<CalendarPage> {
                         onPageChanged: (focusedDay) {
                           _focusedDay = focusedDay;
                         },
-                        eventLoader: (day) {
-                          return allEvents.where((event) => isSameDay(event.date, day)).toList();
-                        },
+                        eventLoader: sharedPreferences.getString('role') == "trainer"
+                            ? (day) {
+                                return allEvents.where((event) => isSameDay(event.date, day)).toList();
+                              }
+                            : null,
                         calendarFormat: _calendarFormat,
                         onFormatChanged: (format) {
                           if (_calendarFormat != format) {
@@ -148,100 +152,102 @@ class _CalendarPageState extends State<CalendarPage> {
                     return const SizedBox();
                 }
               }),
-          Expanded(
-            child: BlocConsumer<EventBloc, EventState>(
-              bloc: eventBloc,
-              listenWhen: (previous, current) => current is EventActionState,
-              buildWhen: (previous, current) => current is! EventActionState,
-              listener: (context, state) {
-                if (state is EventNavigateToUpdatePageActionState) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => AddAppointmentDialog(
-                        focusedDay: state.focusedDay,
-                        appointmentModel: state.appointmentModel,
-                      ),
-                      fullscreenDialog: true,
-                    ),
-                  ).then(
-                    (value) => refreshPage(),
-                  );
-                }
-              },
-              builder: (context, state) {
-                switch (state.runtimeType) {
-                  case EventLoadingState:
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-
-                  case EventDaySelectedState:
-                    final successState = state as EventDaySelectedState;
-                    _selectedEvents = successState.appointmentModels;
-
-                    return ListView.builder(
-                      itemCount: _selectedEvents.length,
-                      itemBuilder: (context, index) {
-                        AppointmentModel appointmentModel = _selectedEvents[index];
-                        String trainerName = "Binod Bhandari";
-                        return Slidable(
-                          endActionPane: ActionPane(
-                            extentRatio: 0.46,
-                            motion: const ScrollMotion(),
-                            children: [
-                              SlidableAction(
-                                onPressed: (context) {
-                                  eventBloc.add(EventEditButtonClickedEvent(appointmentModel, _focusedDay));
-                                },
-                                backgroundColor: const Color(0xFF21B7CA),
-                                foregroundColor: Colors.white,
-                                icon: Icons.edit,
-                                label: 'Edit',
-                              ),
-                              SlidableAction(
-                                onPressed: (context) {
-                                  calenderBloc.add(CalenderDeleteButtonClickedEvent(appointmentModel));
-                                },
-                                backgroundColor: const Color(0xFF21B7CA),
-                                foregroundColor: Colors.white,
-                                icon: Icons.delete,
-                                label: 'Delete',
-                              )
-                            ],
-                          ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: ColorManager.white,
+          sharedPreferences.getString('role') == "trainer"
+              ? Expanded(
+                  child: BlocConsumer<EventBloc, EventState>(
+                    bloc: eventBloc,
+                    listenWhen: (previous, current) => current is EventActionState,
+                    buildWhen: (previous, current) => current is! EventActionState,
+                    listener: (context, state) {
+                      if (state is EventNavigateToUpdatePageActionState) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => AddAppointmentDialog(
+                              focusedDay: state.focusedDay,
+                              appointmentModel: state.appointmentModel,
                             ),
-                            margin: EdgeInsets.all(size.width * 0.02),
-                            child: ListTile(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) => AppointmentDetailsPage(
-                                      appointmentModel: appointmentModel,
-                                    ),
-                                  ),
-                                );
-                              },
-                              title: Text(trainerName),
-                              subtitle: Text("${appointmentModel.startTime} to ${appointmentModel.endTime}"),
-                            ),
+                            fullscreenDialog: true,
                           ),
+                        ).then(
+                          (value) => refreshPage(),
                         );
-                      },
-                    );
-                  case CalenderErrorState:
-                    return const Scaffold(body: Center(child: Text('Error')));
-                  default:
-                    return const SizedBox();
-                }
-              },
-            ),
-          ),
+                      }
+                    },
+                    builder: (context, state) {
+                      switch (state.runtimeType) {
+                        case EventLoadingState:
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+
+                        case EventDaySelectedState:
+                          final successState = state as EventDaySelectedState;
+                          _selectedEvents = successState.appointmentModels;
+
+                          return ListView.builder(
+                            itemCount: _selectedEvents.length,
+                            itemBuilder: (context, index) {
+                              AppointmentModel appointmentModel = _selectedEvents[index];
+                              String trainerName = "Binod Bhandari";
+                              return Slidable(
+                                endActionPane: ActionPane(
+                                  extentRatio: 0.46,
+                                  motion: const ScrollMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      onPressed: (context) {
+                                        eventBloc.add(EventEditButtonClickedEvent(appointmentModel, _focusedDay));
+                                      },
+                                      backgroundColor: const Color(0xFF21B7CA),
+                                      foregroundColor: Colors.white,
+                                      icon: Icons.edit,
+                                      label: 'Edit',
+                                    ),
+                                    SlidableAction(
+                                      onPressed: (context) {
+                                        calenderBloc.add(CalenderDeleteButtonClickedEvent(appointmentModel));
+                                      },
+                                      backgroundColor: const Color(0xFF21B7CA),
+                                      foregroundColor: Colors.white,
+                                      icon: Icons.delete,
+                                      label: 'Delete',
+                                    )
+                                  ],
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: ColorManager.white,
+                                  ),
+                                  margin: EdgeInsets.all(size.width * 0.02),
+                                  child: ListTile(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (BuildContext context) => AppointmentDetailsPage(
+                                            appointmentModel: appointmentModel,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    title: Text(trainerName),
+                                    subtitle: Text("${appointmentModel.startTime} to ${appointmentModel.endTime}"),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        case CalenderErrorState:
+                          return const Scaffold(body: Center(child: Text('Error')));
+                        default:
+                          return const SizedBox();
+                      }
+                    },
+                  ),
+                )
+              : const SizedBox(),
         ],
       ),
     );

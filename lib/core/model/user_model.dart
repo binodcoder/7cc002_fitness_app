@@ -16,6 +16,7 @@ class UserModel {
   String institutionEmail;
   String name;
   String password;
+  String role;
 
   UserModel({
     required this.age,
@@ -25,6 +26,7 @@ class UserModel {
     required this.institutionEmail,
     required this.name,
     required this.password,
+    required this.role,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
@@ -35,6 +37,7 @@ class UserModel {
         institutionEmail: json["institutionEmail"],
         name: json["name"],
         password: json["password"],
+        role: json["role"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -45,5 +48,6 @@ class UserModel {
         "institutionEmail": institutionEmail,
         "name": name,
         "password": password,
+        "role": role,
       };
 }

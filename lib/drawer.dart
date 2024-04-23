@@ -124,28 +124,30 @@ class _MyDrawerState extends State<MyDrawer> {
               );
             },
           ),
-          ListTile(
-            leading: Icon(
-              CupertinoIcons.alarm,
-              color: ColorManager.darkGrey,
-            ),
-            title: Text(
-              "Walk",
-              textScaleFactor: 1.2,
-              style: getSemiBoldStyle(
-                color: ColorManager.darkGrey,
-                fontSize: FontSize.s14,
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => const WalkPage(),
+          sharedPreferences.getString('institutionEmail') == null
+              ? const SizedBox()
+              : ListTile(
+                  leading: Icon(
+                    CupertinoIcons.alarm,
+                    color: ColorManager.darkGrey,
+                  ),
+                  title: Text(
+                    "Walk",
+                    textScaleFactor: 1.2,
+                    style: getSemiBoldStyle(
+                      color: ColorManager.darkGrey,
+                      fontSize: FontSize.s14,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const WalkPage(),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
           ListTile(
             leading: Icon(
               CupertinoIcons.alarm,
@@ -181,7 +183,7 @@ class _MyDrawerState extends State<MyDrawer> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) => const CallPage(),
+                  builder: (BuildContext context) => CallPage(),
                 ),
               );
             },

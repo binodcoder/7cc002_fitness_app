@@ -3,6 +3,7 @@ import 'package:fitness_app/layers/presentation/routine/get_routines/ui/routine_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../../drawer.dart';
 import '../../../../../resources/colour_manager.dart';
@@ -33,6 +34,7 @@ class _RoutinePageState extends State<RoutinePage> {
   }
 
   RoutineBloc postBloc = sl<RoutineBloc>();
+  final SharedPreferences sharedPreferences = sl<SharedPreferences>();
 
   @override
   Widget build(BuildContext context) {
@@ -94,13 +96,15 @@ class _RoutinePageState extends State<RoutinePage> {
             return Scaffold(
               backgroundColor: ColorManager.darkWhite,
               drawer: const MyDrawer(),
-              floatingActionButton: FloatingActionButton(
-                backgroundColor: Colors.blue,
-                child: const Icon(Icons.add),
-                onPressed: () {
-                  postBloc.add(RoutineAddButtonClickedEvent());
-                },
-              ),
+              floatingActionButton: sharedPreferences.getString('role') == "trainer"
+                  ? FloatingActionButton(
+                      backgroundColor: Colors.blue,
+                      child: const Icon(Icons.add),
+                      onPressed: () {
+                        postBloc.add(RoutineAddButtonClickedEvent());
+                      },
+                    )
+                  : null,
               appBar: AppBar(
                 title: const Text(AppStrings.titleRoutineLabel),
               ),
