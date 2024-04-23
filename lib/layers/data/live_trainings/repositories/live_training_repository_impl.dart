@@ -42,8 +42,8 @@ class LiveTrainingRepositoryImpl implements LiveTrainingRepository {
     try {
       int response = await liveTrainingRemoteDataSource.addLiveTraining(liveTrainingModel);
       return Right(response);
-    } on CacheException {
-      return Left(CacheFailure());
+    } on ServerException {
+      return Left(ServerFailure());
     }
   }
 
@@ -52,8 +52,8 @@ class LiveTrainingRepositoryImpl implements LiveTrainingRepository {
     try {
       int response = await liveTrainingRemoteDataSource.deleteLiveTraining(liveTrainingId);
       return Right(response);
-    } on CacheException {
-      return Left(CacheFailure());
+    } on ServerException {
+      return Left(ServerFailure());
     }
   }
 
@@ -62,8 +62,8 @@ class LiveTrainingRepositoryImpl implements LiveTrainingRepository {
     try {
       int response = await liveTrainingRemoteDataSource.updateLiveTraining(liveTrainingModel);
       return Right(response);
-    } on CacheException {
-      return Left(CacheFailure());
+    } on ServerException {
+      return Left(ServerFailure());
     }
   }
 }

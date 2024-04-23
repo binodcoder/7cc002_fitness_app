@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:http/http.dart' as http;
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/model/walk_media_model.dart';
@@ -21,7 +20,6 @@ class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
     final response = await client.get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       return walkMediaModelsFromJson(response.body);
-      //   return WalkMediaModel.fromJson(json.decode(response.body));
     } else {
       throw ServerException();
     }
@@ -31,7 +29,6 @@ class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
     final response = await client.get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       return walkMediaModelsFromJson(response.body);
-      //   return WalkMediaModel.fromJson(json.decode(response.body));
     } else if (response.statusCode == 404) {
       List<WalkMediaModel> notFound = [];
       return notFound;

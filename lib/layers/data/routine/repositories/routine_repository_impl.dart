@@ -3,7 +3,7 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/model/routine_model.dart';
 import '../../../../core/network/network_info.dart';
- import '../../../domain/routine/repositories/routine_repositories.dart';
+import '../../../domain/routine/repositories/routine_repositories.dart';
 import '../data_sources/routines_local_data_source.dart';
 import '../data_sources/routines_remote_data_source.dart';
 
@@ -22,16 +22,14 @@ class RoutineRepositoryImpl implements RoutineRepository {
   Future<Either<Failure, List<RoutineModel>>> getRoutines() async {
     if (await networkInfo.isConnected) {
       try {
-        List<RoutineModel> routineModelList =
-            await routineRemoteDataSource.getRoutines();
+        List<RoutineModel> routineModelList = await routineRemoteDataSource.getRoutines();
         return Right(routineModelList);
       } on ServerException {
         return Left(ServerFailure());
       }
     } else {
       try {
-        List<RoutineModel> routineModelList =
-            await routineLocalDataSource.getRoutines();
+        List<RoutineModel> routineModelList = await routineLocalDataSource.getRoutines();
         return Right(routineModelList);
       } on CacheException {
         return Left(CacheFailure());
@@ -44,8 +42,8 @@ class RoutineRepositoryImpl implements RoutineRepository {
     try {
       int response = await routineRemoteDataSource.addRoutine(routineModel);
       return Right(response);
-    } on CacheException {
-      return Left(CacheFailure());
+    } on ServerException {
+      return Left(ServerFailure());
     }
   }
 
@@ -54,8 +52,8 @@ class RoutineRepositoryImpl implements RoutineRepository {
     try {
       int response = await routineRemoteDataSource.deleteRoutine(routineId);
       return Right(response);
-    } on CacheException {
-      return Left(CacheFailure());
+    } on ServerException {
+      return Left(ServerFailure());
     }
   }
 
@@ -64,8 +62,8 @@ class RoutineRepositoryImpl implements RoutineRepository {
     try {
       int response = await routineRemoteDataSource.updateRoutine(routineModel);
       return Right(response);
-    } on CacheException {
-      return Left(CacheFailure());
+    } on ServerException {
+      return Left(ServerFailure());
     }
   }
 }

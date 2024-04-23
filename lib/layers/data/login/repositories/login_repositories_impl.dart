@@ -3,7 +3,6 @@ import 'package:fitness_app/core/model/login_model.dart';
 import 'package:fitness_app/core/model/user_model.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
-import '../../../../core/model/routine_model.dart';
 import '../../../domain/login/repositories/login_repositories.dart';
 import '../datasources/login_remote_data_source.dart';
 

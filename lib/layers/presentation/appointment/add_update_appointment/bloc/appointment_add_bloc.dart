@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import '../../../../../core/db/db_helper.dart';
+import '../../../../../core/mappers/map_failure_to_message.dart';
 import '../../../../domain/appointment/usecases/add_appointment.dart';
 import '../../../../domain/appointment/usecases/sync.dart';
 import '../../../../domain/appointment/usecases/update_appointment.dart';
@@ -26,7 +27,7 @@ class AppointmentAddBloc extends Bloc<AppointmentAddEvent, AppointmentAddState> 
   FutureOr<void> addAppointmentSaveButtonPressEvent(AppointmentAddSaveButtonPressEvent event, Emitter<AppointmentAddState> emit) async {
     final result = await addAppointment(event.appointmentModel);
     result!.fold((failure) {
-      emit(AddAppointmentErrorState());
+      emit(AddAppointmentErrorState(message: mapFailureToMessage(failure)));
     }, (result) {
       emit(AddAppointmentSavedState());
     });
@@ -37,7 +38,7 @@ class AppointmentAddBloc extends Bloc<AppointmentAddEvent, AppointmentAddState> 
     final syncResult = await sync("donotdeleteordublicate@wlv.ac.uk");
 
     syncResult!.fold((failure) {
-      // emit(Error(message: _mapFailureToMessage(failure)));
+      emit(AddAppointmentErrorState(message: mapFailureToMessage(failure)));
     }, (syncData) {
       emit(AppointmentAddLoadedSuccessState(syncData));
     });

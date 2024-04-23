@@ -18,7 +18,6 @@ class LiveTrainingRemoteDataSourceImpl implements LiveTrainingRemoteDataSource {
     final response = await client.get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       return liveTrainingModelsFromJson(response.body);
-      //   return LiveTrainingModel.fromJson(json.decode(response.body));
     } else {
       throw ServerException();
     }
@@ -45,7 +44,6 @@ class LiveTrainingRemoteDataSourceImpl implements LiveTrainingRemoteDataSource {
     );
     if (response.statusCode == 200) {
       return 1;
-      //   return LiveTrainingModel.fromJson(json.decode(response.body));
     } else {
       throw ServerException();
     }

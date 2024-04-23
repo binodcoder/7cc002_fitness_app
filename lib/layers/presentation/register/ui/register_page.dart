@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../../../core/db/db_helper.dart';
 import '../../../../core/model/user_model.dart';
 import '../../../../injection_container.dart';
@@ -67,14 +68,33 @@ class _RegisterPageState extends State<RegisterPage> {
       listenWhen: (previous, current) => current is UserAddActionState,
       buildWhen: (previous, current) => current is! UserAddActionState,
       listener: (context, state) {
-        if (state is AddUserSavedState) {
-          // sourceController.clear();
-          // descriptionController.clear();
-          Navigator.pop(context);
+        if (state is AddUserLoadingState) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const Center(child: CircularProgressIndicator());
+            },
+          );
+        } else if (state is AddUserSavedState) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => const LoginPage(),
+              fullscreenDialog: true,
+            ),
+          );
         } else if (state is AddUserUpdatedState) {
           // sourceController.clear();
           // descriptionController.clear();
           Navigator.pop(context);
+        } else if (state is AddUserErrorState) {
+          Navigator.pop(context);
+          Fluttertoast.showToast(
+            msg: state.message,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: ColorManager.error,
+          );
         }
       },
       builder: (context, state) {
@@ -506,17 +526,15 @@ class _RegisterPageState extends State<RegisterPage> {
                             );
                             userAddBloc.add(UserAddUpdateButtonPressEvent(updatedUser));
                           } else {
-                            var newUser = UserModel(
-                              age: int.parse(age),
-                              email: email,
-                              gender: gender,
-                              // id: widget.userModel!.id,
-                              institutionEmail: institutionEmail,
-                              name: username,
-                              password: password,
-                              role: role,
-                            );
-                            userAddBloc.add(UserAddSaveButtonPressEvent(newUser));
+                            userAddBloc.add(UserAddSaveButtonPressEvent(
+                              age,
+                              email,
+                              gender,
+                              institutionEmail,
+                              username,
+                              password,
+                              role,
+                            ));
                           }
                         }
                       },

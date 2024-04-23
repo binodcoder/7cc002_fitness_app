@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:fitness_app/core/model/user_model.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
@@ -13,4 +14,13 @@ class AddUser implements UseCase<int, UserModel> {
   Future<Either<Failure, int>?> call(UserModel userModel) async {
     return await addUserRepository.addUser(userModel);
   }
+}
+
+class Params extends Equatable {
+  final int number;
+
+  const Params({required this.number});
+
+  @override
+  List<Object?> get props => [number];
 }

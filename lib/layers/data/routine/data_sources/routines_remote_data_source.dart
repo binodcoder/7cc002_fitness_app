@@ -1,6 +1,5 @@
 import 'package:fitness_app/core/model/routine_model.dart';
 import 'package:http/http.dart' as http;
-
 import '../../../../core/errors/exceptions.dart';
 
 abstract class RoutineRemoteDataSource {
@@ -19,7 +18,6 @@ class RoutineRemoteDataSourceImpl implements RoutineRemoteDataSource {
     final response = await client.get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       return routineModelsFromJson(response.body);
-      //   return RoutineModel.fromJson(json.decode(response.body));
     } else {
       throw ServerException();
     }
@@ -46,7 +44,6 @@ class RoutineRemoteDataSourceImpl implements RoutineRemoteDataSource {
     );
     if (response.statusCode == 200) {
       return 1;
-      //   return RoutineModel.fromJson(json.decode(response.body));
     } else {
       throw ServerException();
     }

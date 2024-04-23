@@ -433,7 +433,11 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                                   _setDate = val!;
                                 },
                                 decoration: const InputDecoration(
-                                    disabledBorder: UnderlineInputBorder(borderSide: BorderSide.none), contentPadding: EdgeInsets.only(top: 0.0)),
+                                  disabledBorder: UnderlineInputBorder(borderSide: BorderSide.none),
+                                  contentPadding: EdgeInsets.only(
+                                    top: 0.0,
+                                  ),
+                                ),
                               ),
                             ),
                           ),

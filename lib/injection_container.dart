@@ -196,6 +196,7 @@ Future<void> init() async {
   sl.registerFactory(() => UserAddBloc(
         addUser: sl(),
         updateUser: sl(),
+        inputConverter: sl(),
       ));
   sl.registerLazySingleton(() => AddUser(sl()));
   sl.registerLazySingleton<UserRepository>(

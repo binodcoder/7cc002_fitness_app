@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:fitness_app/core/model/appointment_model.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../repositories/appointment_repositories.dart';

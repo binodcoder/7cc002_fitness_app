@@ -19,8 +19,14 @@ class AddUserImagePickedFromCameraState extends UserAddState {
   AddUserImagePickedFromCameraState(imagePath) : super(imagePath: imagePath);
 }
 
+class AddUserLoadingState extends UserAddActionState {}
+
 class AddUserSavedState extends UserAddActionState {}
 
 class AddUserUpdatedState extends UserAddActionState {}
 
-class AddUserErrorState extends UserAddActionState {}
+class AddUserErrorState extends UserAddActionState {
+  final String message;
+
+  AddUserErrorState({required this.message});
+}

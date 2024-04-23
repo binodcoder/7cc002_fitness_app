@@ -3,10 +3,9 @@ import 'package:bloc/bloc.dart';
 import 'package:fitness_app/core/model/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/db/db_helper.dart';
-import '../../../../core/errors/failures.dart';
+import '../../../../core/mappers/map_failure_to_message.dart';
 import '../../../../core/model/sync_data_model.dart';
 import '../../../../injection_container.dart';
-import '../../../../resources/strings_manager.dart';
 import '../../../domain/appointment/usecases/sync.dart';
 import '../../../domain/login/usecases/login.dart';
 import 'login_event.dart';
@@ -33,7 +32,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(LoginLoadingState());
     final result = await login(event.loginModel);
     result!.fold((failure) {
-      emit(LoginErrorState(message: _mapFailureToMessage(failure)));
+      emit(LoginErrorState(message: mapFailureToMessage(failure)));
     }, (result) {
       emit(LoggedState());
       saveUserData(result);
@@ -46,18 +45,5 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     sharedPreferences.setString('user_email', user.email);
     sharedPreferences.setString('role', user.role);
     sharedPreferences.setString('institutionEmail', user.institutionEmail);
-  }
-
-  String _mapFailureToMessage(Failure failure) {
-    switch (failure.runtimeType) {
-      case ServerFailure:
-        return AppStrings.serverFailureMessage;
-      case CacheFailure:
-        return AppStrings.cacheFailureMessage;
-      case LoginFailure:
-        return AppStrings.loginFailureMessage;
-      default:
-        return 'Unexpected error';
-    }
   }
 }

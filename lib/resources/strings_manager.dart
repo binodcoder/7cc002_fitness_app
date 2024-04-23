@@ -31,5 +31,5 @@ class AppStrings {
   static const String serverFailureMessage = 'Server Failure';
   static const String cacheFailureMessage = 'Cache Failure';
   static const String loginFailureMessage = 'Invalid Username or Password';
-  static const String invalidInputFailureMessage = 'Invalid Input - The number must be a positive integer or zero.';
+  static const String invalidInputFailureMessage = 'Invalid Input - The number must be a positive integer.';
 }

@@ -1,4 +1,3 @@
-import 'package:fitness_app/core/model/user_model.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/model/sync_data_model.dart';
 import '../../../../core/usecases/usecase.dart';

@@ -55,7 +55,12 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
           ListTile(
             isThreeLine: true,
             dense: true,
-            contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0),
+            contentPadding: const EdgeInsets.only(
+              top: 8.0,
+              left: 8.0,
+              right: 8.0,
+              bottom: 8.0,
+            ),
             tileColor: ColorManager.white,
             title: Text(
               widget.routineModel!.name,

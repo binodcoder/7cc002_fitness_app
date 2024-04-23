@@ -2,29 +2,34 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
+import 'package:fitness_app/core/mappers/map_failure_to_message.dart';
 import 'package:fitness_app/layers/presentation/register/bloc/user_add_event.dart';
 import 'package:fitness_app/layers/presentation/register/bloc/user_add_state.dart';
- import 'package:image_picker/image_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../../../core/db/db_helper.dart';
+import '../../../../core/model/user_model.dart';
+import '../../../../core/util/input_converter.dart';
+import '../../../../resources/strings_manager.dart';
 import '../../../domain/register/usecases/add_user.dart';
 import '../../../domain/register/usecases/update_user.dart';
-
 
 class UserAddBloc extends Bloc<UserAddEvent, UserAddState> {
   final AddUser addUser;
   final UpdateUser updateUser;
+  final InputConverter inputConverter;
 
   final DatabaseHelper dbHelper = DatabaseHelper();
   UserAddBloc({
     required this.addUser,
     required this.updateUser,
+    required this.inputConverter,
   }) : super(UserAddInitialState()) {
     on<UserAddInitialEvent>(postAddInitialEvent);
     on<UserAddReadyToUpdateEvent>(postAddReadyToUpdateEvent);
     on<UserAddPickFromGalaryButtonPressEvent>(addPostPickFromGalaryButtonPressEvent);
     on<UserAddPickFromCameraButtonPressEvent>(addPostPickFromCameraButtonPressEvent);
-    on<UserAddSaveButtonPressEvent>(addUserSaveButtonPressEvent);
+    on<UserAddSaveButtonPressEvent>(userAddSaveButtonPressEvent);
     on<UserAddUpdateButtonPressEvent>(postAddUpdateButtonPressEvent);
   }
 
@@ -70,11 +75,6 @@ class UserAddBloc extends Bloc<UserAddEvent, UserAddState> {
     }
   }
 
-  FutureOr<void> addUserSaveButtonPressEvent(UserAddSaveButtonPressEvent event, Emitter<UserAddState> emit) async {
-    await addUser(event.newUser);
-    emit(AddUserSavedState());
-  }
-
   FutureOr<void> postAddInitialEvent(UserAddInitialEvent event, Emitter<UserAddState> emit) {
     emit(UserAddInitialState());
   }
@@ -86,5 +86,32 @@ class UserAddBloc extends Bloc<UserAddEvent, UserAddState> {
 
   FutureOr<void> postAddReadyToUpdateEvent(UserAddReadyToUpdateEvent event, Emitter<UserAddState> emit) {
     // emit(PostAddReadyToUpdateState(event.postModel.imagePath));
+  }
+
+  FutureOr<void> userAddSaveButtonPressEvent(UserAddSaveButtonPressEvent event, Emitter<UserAddState> emit) async {
+    final ageEither = inputConverter.stringToUnsignedInteger(event.age);
+    late int age;
+    ageEither.fold((failure) {
+      emit(AddUserErrorState(message: AppStrings.invalidInputFailureMessage));
+    }, (integer) {
+      age = integer;
+      emit(AddUserLoadingState());
+    });
+
+    UserModel newUser = UserModel(
+      age: age,
+      email: event.email,
+      gender: event.gender,
+      institutionEmail: event.institutionEmail,
+      name: event.name,
+      password: event.password,
+      role: event.role,
+    );
+    final failureOrSuccess = await addUser(newUser);
+    failureOrSuccess!.fold((failure) {
+      emit(AddUserErrorState(message: mapFailureToMessage(failure)));
+    }, (success) {
+      emit(AddUserSavedState());
+    });
   }
 }

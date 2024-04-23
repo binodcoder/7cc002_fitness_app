@@ -16,48 +16,42 @@ class AppointmentRepositoriesImpl implements AppointmentRepositories {
   });
 
   @override
-  Future<Either<Failure, int>>? addAppointment(
-      AppointmentModel appointmentModel) async {
+  Future<Either<Failure, int>>? addAppointment(AppointmentModel appointmentModel) async {
     try {
-      int response =
-          await appointmentRemoteDataSource.addAppointment(appointmentModel);
+      int response = await appointmentRemoteDataSource.addAppointment(appointmentModel);
       return Right(response);
-    } on CacheException {
-      return Left(CacheFailure());
+    } on ServerException {
+      return Left(ServerFailure());
     }
   }
 
   @override
-  Future<Either<Failure, int>>? updateAppointment(
-      AppointmentModel appointmentModel) async {
+  Future<Either<Failure, int>>? updateAppointment(AppointmentModel appointmentModel) async {
     try {
-      int response =
-          await appointmentRemoteDataSource.updateAppointment(appointmentModel);
+      int response = await appointmentRemoteDataSource.updateAppointment(appointmentModel);
       return Right(response);
-    } on CacheException {
-      return Left(CacheFailure());
+    } on ServerException {
+      return Left(ServerFailure());
     }
   }
 
   @override
   Future<Either<Failure, int>>? deleteAppointment(int appointmentId) async {
     try {
-      int response =
-          await appointmentRemoteDataSource.deleteAppointment(appointmentId);
+      int response = await appointmentRemoteDataSource.deleteAppointment(appointmentId);
       return Right(response);
-    } on CacheException {
-      return Left(CacheFailure());
+    } on ServerException {
+      return Left(ServerFailure());
     }
   }
 
   @override
   Future<Either<Failure, List<AppointmentModel>>>? getAppointments() async {
     try {
-      List<AppointmentModel> response =
-          await appointmentRemoteDataSource.getAppointments();
+      List<AppointmentModel> response = await appointmentRemoteDataSource.getAppointments();
       return Right(response);
-    } on CacheException {
-      return Left(CacheFailure());
+    } on ServerException {
+      return Left(ServerFailure());
     }
   }
 }

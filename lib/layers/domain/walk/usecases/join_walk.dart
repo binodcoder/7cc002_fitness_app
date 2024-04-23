@@ -1,5 +1,4 @@
 import '../../../../core/errors/failures.dart';
-import '../../../../core/model/walk_model.dart';
 import '../../../../core/model/walk_participant_model.dart';
 import '../../../../core/usecases/usecase.dart';
 import 'package:dartz/dartz.dart';
@@ -12,8 +11,7 @@ class JoinWalk implements UseCase<int, WalkParticipantModel> {
   JoinWalk(this.walkRepository);
 
   @override
-  Future<Either<Failure, int>?> call(
-      WalkParticipantModel walkParticipantModel) async {
+  Future<Either<Failure, int>?> call(WalkParticipantModel walkParticipantModel) async {
     return await walkRepository.joinWalk(walkParticipantModel);
   }
 }

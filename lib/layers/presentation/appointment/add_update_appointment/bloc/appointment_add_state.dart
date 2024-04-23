@@ -1,5 +1,3 @@
-
-
 import '../../../../../core/model/sync_data_model.dart';
 
 abstract class AppointmentAddState {}
@@ -24,4 +22,7 @@ class AddAppointmentSavedState extends AppointmentAddActionState {}
 
 class AddAppointmentUpdatedState extends AppointmentAddActionState {}
 
-class AddAppointmentErrorState extends AppointmentAddActionState {}
+class AddAppointmentErrorState extends AppointmentAddActionState {
+  final String message;
+  AddAppointmentErrorState({required this.message});
+}

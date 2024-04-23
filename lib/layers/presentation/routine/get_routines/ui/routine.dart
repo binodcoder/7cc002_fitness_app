@@ -146,7 +146,11 @@ class _RoutinePageState extends State<RoutinePage> {
                           borderRadius: BorderRadius.circular(10),
                           color: ColorManager.white,
                         ),
-                        margin: EdgeInsets.all(size.width * 0.02),
+                        margin: EdgeInsets.only(
+                          top: size.width * 0.04,
+                          left: size.width * 0.02,
+                          right: size.width * 0.02,
+                        ),
                         child: ListTile(
                           onTap: () {
                             Navigator.push(

@@ -2,7 +2,6 @@ import 'package:fitness_app/core/model/walk_media_model.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import 'package:dartz/dartz.dart';
-import '../../walk/repositories/walk_repositories.dart';
 import '../repositories/walk_media_repositories.dart';
 
 class GetWalkMediaByWalkId implements UseCase<List<WalkMediaModel>, int> {
