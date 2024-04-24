@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   late InputConverter inputConverter;
-
   setUp(() {
     inputConverter = InputConverter();
   });
@@ -12,16 +11,16 @@ void main() {
   group('stringToUnsignedInt', () {
     test('should return an integer when the string represents an unsigned integer', () async {
       //arrange
-      final str = '123';
+      const str = '123';
       //act
       final result = inputConverter.stringToUnsignedInteger(str);
       //assert
-      expect(result, equals(Right(123)));
+      expect(result, equals(const Right(123)));
     });
 
     test('should return a Failure when the string is not an integer', () async {
       //arrange
-      final str = 'abc';
+      const str = 'abc';
       //act
       final result = inputConverter.stringToUnsignedInteger(str);
       //assert
@@ -30,7 +29,7 @@ void main() {
 
     test('should return a Failure when the string is a negative integer', () async {
       //arrange
-      final str = '-123';
+      const str = '-123';
       //act
       final result = inputConverter.stringToUnsignedInteger(str);
       //assert

@@ -23,6 +23,7 @@ void main() {
     age: 0,
     gender: '',
     institutionEmail: '',
+    role: '',
   );
   LoginModel tLoginModel = LoginModel(email: "", password: "");
   test(
