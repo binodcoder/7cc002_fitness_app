@@ -1,58 +1,66 @@
 import 'dart:convert';
+import 'package:fitness_app/core/db/db_helper.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/core/model/routine_model.dart';
 import 'package:fitness_app/layers/data/routine/data_sources/routines_local_data_source.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import '../../../../fixtures/fixture_reader.dart';
 import 'routines_local_data_source_test.mocks.dart';
 
 @GenerateMocks([
-  SharedPreferences
+  DatabaseHelper
 ], customMocks: [
-  MockSpec<SharedPreferences>(as: #MockSharedPreferencesForTest, returnNullOnMissingStub: true),
+  MockSpec<DatabaseHelper>(as: #MockDatabaseHelperForTest, returnNullOnMissingStub: true),
 ])
 void main() {
   late RoutinesLocalDataSourceImpl dataSource;
-  late MockSharedPreferences mockSharedPreferences;
+  late MockDatabaseHelper mockDatabaseHelper;
 
   setUp(() {
-    mockSharedPreferences = MockSharedPreferences();
-    dataSource = RoutinesLocalDataSourceImpl(sharedPreferences: mockSharedPreferences);
+    mockDatabaseHelper = MockDatabaseHelper();
+    dataSource = RoutinesLocalDataSourceImpl(mockDatabaseHelper);
   });
 
-  group('getLastNumberTrivia', () {
-    final tNumberTriviaModel = RoutineModel.fromJson(json.decode(fixture('trivia_cached.json')));
+  group('getLastRoutine', () {
+    final tRoutineModel = RoutineModel.fromJson(json.decode(fixture('routine_cached.json')));
     test('should return NumberTrivia from SharedPreferences when there is one in the cache', () async {
       //arrange
-      when(mockSharedPreferences.getString(any)).thenReturn(fixture('trivia_cached.json'));
+      when(await mockDatabaseHelper.getRoutines()).thenReturn([tRoutineModel]);
       //act
-      final result = await dataSource.getLastNumberTrivia();
+      final result = await dataSource.getLastRoutines();
       //assert
-      verify(mockSharedPreferences.getString(CACHED_NUMBER_TRIVIA));
-      expect(result, equals(tNumberTriviaModel));
+      verify(mockDatabaseHelper.getRoutines());
+      expect(result, equals(tRoutineModel));
     });
 
     test('should throw a CacheException when there is not a cached value', () async {
       //arrange
-      when(mockSharedPreferences.getString(any)).thenReturn(null);
+      when(await mockDatabaseHelper.getRoutines()).thenReturn([tRoutineModel]);
       //act
-      final call = dataSource.getLastNumberTrivia;
+      final call = dataSource.getLastRoutines;
       //assert
-      expect(() => call(), throwsA(TypeMatcher<CacheException>()));
+      expect(() => call(), throwsA(const TypeMatcher<CacheException>()));
     });
   });
 
-  group('cacheNumberTrivia', () {
-    final tNumberTriviaModel = RoutineModel(number: 1, text: 'test trivia');
+  group('cacheRoutineModel', () {
+    final tRoutineModel = RoutineModel(
+      id: 37,
+      name: 'string',
+      description: 'This is for random',
+      difficulty: 'easy',
+      duration: 10,
+      source: 'pre_loaded',
+      exercises: [],
+    );
     test('should call SharedPreferences to cache the data', () async {
       //act
-      dataSource.cacheNumberTrivia(tNumberTriviaModel);
+      dataSource.cacheRoutine(tRoutineModel);
       //assert
-      final expectedJsonString = json.encode(tNumberTriviaModel.toJson());
-      verify(mockSharedPreferences.setString(CACHED_NUMBER_TRIVIA, expectedJsonString));
+      final expectedJsonString = json.encode(tRoutineModel.toJson());
+      verify(mockDatabaseHelper.insertRoutine(tRoutineModel));
     });
   });
 }

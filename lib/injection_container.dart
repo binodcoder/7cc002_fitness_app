@@ -1,3 +1,4 @@
+import 'package:fitness_app/core/db/db_helper.dart';
 import 'package:fitness_app/layers/domain/walk_media/usecases/add_walk_media.dart';
 import 'package:fitness_app/layers/domain/walk_media/usecases/delete_walk_media.dart';
 import 'package:fitness_app/layers/domain/walk_media/usecases/get_walk_media.dart';
@@ -171,7 +172,7 @@ Future<void> init() async {
       networkInfo: sl(),
     ),
   );
-  sl.registerLazySingleton<RoutinesLocalDataSource>(() => RoutinesLocalDataSourceImpl());
+  sl.registerLazySingleton<RoutinesLocalDataSource>(() => RoutinesLocalDataSourceImpl(sl()));
   sl.registerLazySingleton<RoutineRemoteDataSource>(() => RoutineRemoteDataSourceImpl(client: sl()));
 
   //live-training
@@ -215,6 +216,8 @@ Future<void> init() async {
 
   //! External
   final sharedPreferences = await SharedPreferences.getInstance();
+  final dbHelper = DatabaseHelper();
+  sl.registerLazySingleton(() => dbHelper);
   sl.registerLazySingleton(() => sharedPreferences);
   sl.registerLazySingleton(() => http.Client());
   sl.registerLazySingleton(() => InternetConnectionChecker());

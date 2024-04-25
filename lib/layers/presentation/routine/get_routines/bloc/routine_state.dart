@@ -16,7 +16,11 @@ class RoutineLoadedSuccessState extends RoutineState {
   }
 }
 
-class RoutineErrorState extends RoutineState {}
+class RoutineErrorState extends RoutineState {
+  final String message;
+
+  RoutineErrorState({required this.message});
+}
 
 class RoutineNavigateToAddRoutineActionState extends RoutineActionState {}
 

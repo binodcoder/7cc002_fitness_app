@@ -13,6 +13,8 @@ class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
   final DeleteRoutine deleteRoutine;
   final DatabaseHelper dbHelper = DatabaseHelper();
   List<RoutineModel> selectedRoutines = [];
+
+  RoutineState get initialState => RoutineInitialState();
   RoutineBloc({
     required this.getRoutines,
     required this.deleteRoutine,

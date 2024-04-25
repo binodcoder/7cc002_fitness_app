@@ -39,9 +39,9 @@ class DatabaseHelper {
     });
   }
 
-  Future<int> insertUser(UserModel post) async {
+  Future<int> insertRoutine(RoutineModel routineModel) async {
     final db = await database;
-    return await db!.insert('routine', post.toJson());
+    return await db!.insert('routine', routineModel.toJson());
   }
 
   Future<List<RoutineModel>> getRoutines() async {

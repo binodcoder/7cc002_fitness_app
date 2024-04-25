@@ -29,7 +29,7 @@ class RoutineRepositoryImpl implements RoutineRepository {
       }
     } else {
       try {
-        List<RoutineModel> routineModelList = await routineLocalDataSource.getRoutines();
+        List<RoutineModel> routineModelList = await routineLocalDataSource.getLastRoutines();
         return Right(routineModelList);
       } on CacheException {
         return Left(CacheFailure());
