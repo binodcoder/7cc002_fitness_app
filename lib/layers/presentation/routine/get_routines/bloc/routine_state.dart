@@ -1,6 +1,12 @@
+import 'package:equatable/equatable.dart';
 import '../../../../../core/model/routine_model.dart';
 
-abstract class RoutineState {}
+abstract class RoutineState extends Equatable {
+  const RoutineState();
+
+  @override
+  List<Object> get props => [];
+}
 
 abstract class RoutineActionState extends RoutineState {}
 
@@ -10,7 +16,7 @@ class RoutineLoadingState extends RoutineState {}
 
 class RoutineLoadedSuccessState extends RoutineState {
   final List<RoutineModel> routineModelList;
-  RoutineLoadedSuccessState(this.routineModelList);
+  const RoutineLoadedSuccessState(this.routineModelList);
   RoutineLoadedSuccessState copyWith({List<RoutineModel>? routineModelList}) {
     return RoutineLoadedSuccessState(routineModelList ?? this.routineModelList);
   }
@@ -19,7 +25,7 @@ class RoutineLoadedSuccessState extends RoutineState {
 class RoutineErrorState extends RoutineState {
   final String message;
 
-  RoutineErrorState({required this.message});
+  const RoutineErrorState({required this.message});
 }
 
 class RoutineNavigateToAddRoutineActionState extends RoutineActionState {}

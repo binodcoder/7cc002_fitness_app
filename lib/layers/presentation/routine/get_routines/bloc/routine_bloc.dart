@@ -15,6 +15,7 @@ class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
   List<RoutineModel> selectedRoutines = [];
 
   RoutineState get initialState => RoutineInitialState();
+
   RoutineBloc({
     required this.getRoutines,
     required this.deleteRoutine,

@@ -10,7 +10,6 @@ import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-
 import 'routine_bloc_test.mocks.dart';
 
 @GenerateMocks([GetRoutines])
