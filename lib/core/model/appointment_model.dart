@@ -4,7 +4,6 @@
 
 import 'dart:convert';
 
-import 'dart:convert';
 
 List<AppointmentModel> appointmentModelListFromJson(String str) =>
     List<AppointmentModel>.from(json.decode(str).map((x) => AppointmentModel.fromJson(x)));

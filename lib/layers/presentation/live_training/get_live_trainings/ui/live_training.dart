@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/db/db_helper.dart';
 import '../../../../../drawer.dart';
 import '../../../../../resources/colour_manager.dart';
 import '../../../../../resources/strings_manager.dart';
-import '../../../appointment/add_update_appointment/ui/add_appointment.dart';
-import '../../../register/ui/register_page.dart';
 import '../../../../../injection_container.dart';
 import '../../add_update_live_training/ui/add_live_training.dart';
 import '../bloc/live_training_bloc.dart';

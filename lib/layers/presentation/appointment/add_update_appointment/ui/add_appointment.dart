@@ -34,10 +34,9 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedStartTime = const TimeOfDay(hour: 00, minute: 00);
   TimeOfDay selectedEndTime = const TimeOfDay(hour: 00, minute: 00);
-  late String _hour, _minute, _second;
   late double _height;
   late double _width;
-  late String _setTime, _setDate;
+  // late String _setTime, _setDate;
   final _formKey = GlobalKey<FormState>();
   bool focus = false;
   final AppointmentAddBloc appointmentAddBloc = sl<AppointmentAddBloc>();
@@ -365,7 +364,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  item.name ?? '',
+                                  item.name,
                                   style: TextStyle(
                                     color: ColorManager.primary,
                                     fontWeight: FontWeight.bold,
@@ -401,7 +400,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                             keyboardType: TextInputType.text,
                             controller: _dateController,
                             onSaved: (String? val) {
-                              _setDate = val!;
+                              //  _setDate = val!;
                             },
                             decoration: const InputDecoration(
                                 disabledBorder: UnderlineInputBorder(borderSide: BorderSide.none), contentPadding: EdgeInsets.only(top: 0.0)),
@@ -430,7 +429,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                                 keyboardType: TextInputType.text,
                                 controller: _startTimeController,
                                 onSaved: (String? val) {
-                                  _setDate = val!;
+                                  // _setDate = val!;
                                 },
                                 decoration: const InputDecoration(
                                   disabledBorder: UnderlineInputBorder(borderSide: BorderSide.none),
@@ -457,7 +456,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                                 keyboardType: TextInputType.text,
                                 controller: _endTimeController,
                                 onSaved: (String? val) {
-                                  _setTime = val!;
+                                  //_setTime = val!;
                                 },
                                 decoration: const InputDecoration(
                                     disabledBorder: UnderlineInputBorder(borderSide: BorderSide.none), contentPadding: EdgeInsets.only(top: 0.0)),

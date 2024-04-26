@@ -2,11 +2,11 @@
 // in fitness_app/layers/data/routine/repositories/routine_repository_impl_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i4;
-import 'package:fitness_app/core/network/network_info.dart' as _i3;
-import 'package:fitness_app/layers/data/routine/data_sources/routines_remote_data_source.dart' as _i5;
-import 'package:fitness_app/core/model/routine_model.dart' as _i2;
-import 'package:mockito/mockito.dart' as _i1;
+import 'dart:async' as i4;
+import 'package:fitness_app/core/network/network_info.dart' as i3;
+import 'package:fitness_app/layers/data/routine/data_sources/routines_remote_data_source.dart' as i5;
+import 'package:fitness_app/core/model/routine_model.dart' as i2;
+import 'package:mockito/mockito.dart' as i1;
 
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: avoid_setters_without_getters
@@ -17,34 +17,34 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 
-class _FakeRoutineModel_0 extends _i1.Fake implements _i2.RoutineModel {}
+class _FakeRoutineModel_0 extends i1.Fake implements i2.RoutineModel {}
 
 /// A class which mocks [NetworkInfo].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockNetworkInfo extends _i1.Mock implements _i3.NetworkInfo {
+class MockNetworkInfo extends i1.Mock implements i3.NetworkInfo {
   MockNetworkInfo() {
-    _i1.throwOnMissingStub(this);
+    i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<bool> get isConnected => (super.noSuchMethod(Invocation.getter(#isConnected),
-      returnValue: Future<bool>.value(false), returnValueForMissingStub: Future<bool>.value(true)) as _i4.Future<bool>);
+  i4.Future<bool> get isConnected => (super.noSuchMethod(Invocation.getter(#isConnected),
+      returnValue: Future<bool>.value(false), returnValueForMissingStub: Future<bool>.value(true)) as i4.Future<bool>);
 }
 
 /// A class which mocks [RoutinesRemoteDataSource].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRoutinesRemoteDataSource extends _i1.Mock implements _i5.RoutineRemoteDataSource {
+class MockRoutinesRemoteDataSource extends i1.Mock implements i5.RoutineRemoteDataSource {
   MockRoutinesRemoteDataSource() {
-    _i1.throwOnMissingStub(this);
+    i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<List<_i2.RoutineModel>> getRoutines() => (super.noSuchMethod(Invocation.method(#ggetRoutines, []),
-      returnValue: Future<List<_i2.RoutineModel>>.value([_FakeRoutineModel_0()]),
-      returnValueForMissingStub: Future<List<_i2.RoutineModel>>.value([_FakeRoutineModel_0()])) as _i4.Future<List<_i2.RoutineModel>>);
+  i4.Future<List<i2.RoutineModel>> getRoutines() => (super.noSuchMethod(Invocation.method(#ggetRoutines, []),
+      returnValue: Future<List<i2.RoutineModel>>.value([_FakeRoutineModel_0()]),
+      returnValueForMissingStub: Future<List<i2.RoutineModel>>.value([_FakeRoutineModel_0()])) as i4.Future<List<i2.RoutineModel>>);
   @override
-  _i4.Future<int> deleteRoutine(int? number) => (super.noSuchMethod(Invocation.method(#deleteRoutine, [number]),
-      returnValue: Future<int>.value(1), returnValueForMissingStub: Future<int>.value(1)) as _i4.Future<int>);
+  i4.Future<int> deleteRoutine(int? number) => (super.noSuchMethod(Invocation.method(#deleteRoutine, [number]),
+      returnValue: Future<int>.value(1), returnValueForMissingStub: Future<int>.value(1)) as i4.Future<int>);
 }

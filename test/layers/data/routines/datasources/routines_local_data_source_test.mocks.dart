@@ -2,10 +2,8 @@
 // in fitness_app/test/layers/data/datasources/routines_local_data_soucre_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i3;
-
-import 'package:mockito/mockito.dart' as _i1;
-import 'package:fitness_app/core/db/db_helper.dart' as _i2;
+import 'package:mockito/mockito.dart' as i1;
+import 'package:fitness_app/core/db/db_helper.dart' as i2;
 
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: avoid_setters_without_getters
@@ -19,8 +17,8 @@ import 'package:fitness_app/core/db/db_helper.dart' as _i2;
 /// A class which mocks [DatabaseHelper].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockDatabaseHelper extends _i1.Mock implements _i2.DatabaseHelper {
+class MockDatabaseHelper extends i1.Mock implements i2.DatabaseHelper {
   MockDatabaseHelper() {
-    _i1.throwOnMissingStub(this);
+    i1.throwOnMissingStub(this);
   }
 }

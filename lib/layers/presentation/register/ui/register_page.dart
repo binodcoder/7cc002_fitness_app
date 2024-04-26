@@ -62,7 +62,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+   // var size = MediaQuery.of(context).size;
     return BlocConsumer<UserAddBloc, UserAddState>(
       bloc: userAddBloc,
       listenWhen: (previous, current) => current is UserAddActionState,

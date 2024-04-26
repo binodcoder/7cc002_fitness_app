@@ -15,7 +15,6 @@ class WalkBloc extends Bloc<WalkEvent, WalkState> {
   final DeleteWalk deleteWalk;
   final JoinWalk joinWalk;
   final LeaveWalk leaveWalk;
-  // final UpdateWalks updateWalk;
   final DatabaseHelper dbHelper = DatabaseHelper();
   List<WalkModel> selectedWalks = [];
   WalkBloc({
@@ -49,19 +48,9 @@ class WalkBloc extends Bloc<WalkEvent, WalkState> {
     emit(WalkNavigateToUpdatePageActionState(event.walkModel));
   }
 
-  FutureOr<void> walkDeleteButtonClickedEvent(WalkDeleteButtonClickedEvent event, Emitter<WalkState> emit) async {
-    //await dbHelper.deleteWalk(event.walkModel.id);
-    // List<WalkModel> walkList = await  deleteWalk();
-    // emit(WalkLoadedSuccessState(walkList));
-  }
+  FutureOr<void> walkDeleteButtonClickedEvent(WalkDeleteButtonClickedEvent event, Emitter<WalkState> emit) async {}
 
-  FutureOr<void> walkDeleteAllButtonClickedEvent(WalkDeleteAllButtonClickedEvent event, Emitter<WalkState> emit) async {
-    for (var element in selectedWalks) {
-      // await dbHelper.deleteWalk(element.id);
-    }
-    // List<WalkModel> walkList = await dbHelper.getWalks();
-    // emit(WalkLoadedSuccessState(walkList));
-  }
+  FutureOr<void> walkDeleteAllButtonClickedEvent(WalkDeleteAllButtonClickedEvent event, Emitter<WalkState> emit) async {}
 
   FutureOr<void> walkAddButtonClickedEvent(WalkAddButtonClickedEvent event, Emitter<WalkState> emit) {
     emit(WalkNavigateToAddWalkActionState());

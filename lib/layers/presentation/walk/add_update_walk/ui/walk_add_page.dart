@@ -53,7 +53,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+   // var size = MediaQuery.of(context).size;
     return BlocConsumer<WalkAddBloc, WalkAddState>(
       bloc: walkAddBloc,
       listenWhen: (previous, current) => current is WalkAddActionState,

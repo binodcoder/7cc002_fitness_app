@@ -4,6 +4,5 @@
   "description": "This is for random",
   "difficulty": "easy",
   "duration": 10,
-  "source": "pre_loaded",
-  "exercises": []
+  "source": "pre_loaded"
 }

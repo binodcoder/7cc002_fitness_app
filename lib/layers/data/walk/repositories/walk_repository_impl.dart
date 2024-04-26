@@ -7,7 +7,6 @@ import '../../../../core/network/network_info.dart';
 import '../../../domain/walk/repositories/walk_repositories.dart';
 import '../data_sources/walks_local_data_source.dart';
 import '../data_sources/walks_remote_data_source.dart';
-import '../data_sources/walks_remote_data_source.dart';
 
 class WalkRepositoryImpl implements WalkRepository {
   final WalksLocalDataSource walkLocalDataSource;

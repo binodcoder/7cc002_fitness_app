@@ -18,7 +18,7 @@ class MockRoutinesLocalDataSource extends Mock implements RoutinesLocalDataSourc
 @GenerateMocks([
   RoutineRemoteDataSource
 ], customMocks: [
-  MockSpec<RoutineRemoteDataSource>(as: #MockRoutinesRemoteDataSourceForTest, returnNullOnMissingStub: true),
+  MockSpec<RoutineRemoteDataSource>(as: #MockRoutinesRemoteDataSourceForTest, onMissingStub: OnMissingStub.returnDefault),
 ])
 void main() {
   late RoutineRepositoryImpl repository;
@@ -46,17 +46,7 @@ void main() {
     });
   }
 
-  void runTestsOffline(Function body) {
-    group('device is offline', () {
-      setUp(() {
-        when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
-      });
-      body();
-    });
-  }
-
-  group('getConcreteNumberTrivia', () {
-    const tNumber = 1;
+  group('getRoutines', () {
     final tRoutineModel = [
       RoutineModel(
         id: 37,
@@ -68,7 +58,7 @@ void main() {
         exercises: [],
       )
     ];
-    // final RoutineModel tNumberTrivia = tRoutineModel;
+
     test('should check if the device is online', () async {
       //arrange
       when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);

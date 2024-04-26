@@ -12,7 +12,7 @@ import 'routines_local_data_source_test.mocks.dart';
 @GenerateMocks([
   DatabaseHelper
 ], customMocks: [
-  MockSpec<DatabaseHelper>(as: #MockDatabaseHelperForTest, returnNullOnMissingStub: true),
+  MockSpec<DatabaseHelper>(as: #MockDatabaseHelperForTest, onMissingStub: OnMissingStub.returnDefault),
 ])
 void main() {
   late RoutinesLocalDataSourceImpl dataSource;
@@ -25,7 +25,8 @@ void main() {
 
   group('getLastRoutine', () {
     final tRoutineModel = RoutineModel.fromJson(json.decode(fixture('routine_cached.json')));
-    test('should return NumberTrivia from SharedPreferences when there is one in the cache', () async {
+    // const tRoutineModel = null;
+    test('should return routine from Local db when there is one in the cache', () async {
       //arrange
       when(await mockDatabaseHelper.getRoutines()).thenReturn([tRoutineModel]);
       //act
@@ -53,13 +54,12 @@ void main() {
       difficulty: 'easy',
       duration: 10,
       source: 'pre_loaded',
-      exercises: [],
     );
-    test('should call SharedPreferences to cache the data', () async {
+    test('should call local db to cache the data', () async {
       //act
       dataSource.cacheRoutine(tRoutineModel);
       //assert
-      final expectedJsonString = json.encode(tRoutineModel.toJson());
+      //final expectedJsonString = json.encode(tRoutineModel.toJson());
       verify(mockDatabaseHelper.insertRoutine(tRoutineModel));
     });
   });

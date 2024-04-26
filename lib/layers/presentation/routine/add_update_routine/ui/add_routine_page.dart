@@ -51,7 +51,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    //var size = MediaQuery.of(context).size;
     return BlocConsumer<RoutineAddBloc, RoutineAddState>(
       bloc: routineAddBloc,
       listenWhen: (previous, current) => current is RoutineAddActionState,

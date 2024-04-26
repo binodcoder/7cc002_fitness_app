@@ -31,9 +31,11 @@ class DatabaseHelper {
       await db.execute('''
           CREATE TABLE routine (
             id INTEGER PRIMARY KEY,
-            coachId INTEGER,
+            name TEXT,
             description TEXT,
-            source TEXT
+            difficulty TEXT,
+            duration INTEGER,
+            source TEXT,
           )
         ''');
     });
@@ -47,14 +49,15 @@ class DatabaseHelper {
   Future<List<RoutineModel>> getRoutines() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db!.query('routine');
+
     return List.generate(maps.length, (i) {
       return RoutineModel(
         id: maps[i]['id'],
         description: maps[i]['description'],
         source: maps[i]['source'],
-        name: '',
-        difficulty: '',
-        duration: 0,
+        name: maps[i]['name'],
+        difficulty: maps[i]['difficulty'],
+        duration: maps[i]['duration'],
       );
     });
   }
@@ -130,4 +133,6 @@ class DatabaseHelper {
     final db = await database;
     return await db!.delete('routine', where: 'id = ?', whereArgs: [postId]);
   }
+
+  insertUser(UserModel userModel) {}
 }

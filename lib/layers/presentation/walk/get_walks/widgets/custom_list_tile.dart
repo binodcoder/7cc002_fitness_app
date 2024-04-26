@@ -21,12 +21,10 @@ class CustomListTile extends StatelessWidget {
     return ListTile(
       onTap: onTap,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      leading: leadingIcon != null
-          ? Icon(
-              leadingIcon,
-              color: Theme.of(context).primaryColor,
-            )
-          : null,
+      leading: Icon(
+        leadingIcon,
+        color: Theme.of(context).primaryColor,
+      ),
       title: Text(
         title,
         style: const TextStyle(
@@ -34,13 +32,11 @@ class CustomListTile extends StatelessWidget {
           fontSize: 16.0,
         ),
       ),
-      subtitle: subtitle != null ? Text(subtitle) : null,
-      trailing: trailingIcon != null
-          ? Icon(
-              trailingIcon,
-              color: Theme.of(context).primaryColor,
-            )
-          : null,
+      subtitle: Text(subtitle),
+      trailing: Icon(
+        trailingIcon,
+        color: Theme.of(context).primaryColor,
+      ),
     );
   }
 }
