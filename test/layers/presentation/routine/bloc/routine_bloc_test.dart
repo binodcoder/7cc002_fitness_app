@@ -72,7 +72,7 @@ void main() {
       when(mockGetRoutines(any)).thenAnswer((_) async => Left(ServerFailure()));
 
       //assert later
-      final expected = [RoutineInitialState(), RoutineLoadingState(), RoutineErrorState(message: AppStrings.serverFailureMessage)];
+      final expected = [RoutineInitialState(), RoutineLoadingState(), const RoutineErrorState(message: AppStrings.serverFailureMessage)];
       expectLater(bloc, emitsInOrder(expected));
       //act
       bloc.add(RoutineInitialEvent());
@@ -84,7 +84,7 @@ void main() {
       when(mockGetRoutines(any)).thenAnswer((_) async => Left(CacheFailure()));
 
       //assert later
-      final expected = [RoutineInitialState(), RoutineLoadingState(), RoutineErrorState(message: AppStrings.cacheFailureMessage)];
+      final expected = [RoutineInitialState(), RoutineLoadingState(), const RoutineErrorState(message: AppStrings.cacheFailureMessage)];
       expectLater(bloc, emitsInOrder(expected));
       //act
       bloc.add(RoutineInitialEvent());
@@ -131,7 +131,7 @@ void main() {
       when(mockDeleteRoutine(tRoutineModel.id!)).thenAnswer((_) async => Left(ServerFailure()));
 
       //assert later
-      final expected = [RoutineInitialState(), RoutineLoadingState(), RoutineErrorState(message: AppStrings.serverFailureMessage)];
+      final expected = [RoutineInitialState(), RoutineLoadingState(), const RoutineErrorState(message: AppStrings.serverFailureMessage)];
       expectLater(bloc, emitsInOrder(expected));
       //act
       bloc.add(RoutineDeleteButtonClickedEvent(tRoutineModel));
@@ -142,7 +142,7 @@ void main() {
       when(mockDeleteRoutine(tRoutineModel.id!)).thenAnswer((_) async => Left(CacheFailure()));
 
       //assert later
-      final expected = [RoutineInitialState(), RoutineLoadingState(), RoutineErrorState(message: AppStrings.cacheFailureMessage)];
+      final expected = [RoutineInitialState(), RoutineLoadingState(), const RoutineErrorState(message: AppStrings.cacheFailureMessage)];
       expectLater(bloc, emitsInOrder(expected));
       //act
       bloc.add(RoutineDeleteButtonClickedEvent(tRoutineModel));

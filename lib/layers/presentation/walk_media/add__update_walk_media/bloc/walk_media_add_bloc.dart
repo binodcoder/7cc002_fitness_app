@@ -70,8 +70,8 @@ class WalkMediaAddBloc extends Bloc<WalkMediaAddEvent, WalkMediaAddState> {
   }
 
   FutureOr<void> addWalkMediaSaveButtonPressEvent(WalkMediaAddSaveButtonPressEvent event, Emitter<WalkMediaAddState> emit) async {
+    emit(AddWalkMediaLoadingState());
     final result = await addWalkMedia(event.newWalkMedia);
-
     result!.fold((failure) {
       emit(AddWalkMediaErrorState());
     }, (result) {
@@ -84,6 +84,7 @@ class WalkMediaAddBloc extends Bloc<WalkMediaAddEvent, WalkMediaAddState> {
   }
 
   FutureOr<void> walkMediaAddUpdateButtonPressEvent(WalkMediaAddUpdateButtonPressEvent event, Emitter<WalkMediaAddState> emit) async {
+    emit(AddWalkMediaLoadingState());
     final result = await updateWalkMedia(event.updatedWalkMedia);
     result!.fold((failure) {
       emit(AddWalkMediaErrorState());

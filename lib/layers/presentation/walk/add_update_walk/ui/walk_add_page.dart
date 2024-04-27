@@ -53,15 +53,24 @@ class _AddWalkPageState extends State<AddWalkPage> {
 
   @override
   Widget build(BuildContext context) {
-   // var size = MediaQuery.of(context).size;
+    // var size = MediaQuery.of(context).size;
     return BlocConsumer<WalkAddBloc, WalkAddState>(
       bloc: walkAddBloc,
       listenWhen: (previous, current) => current is WalkAddActionState,
       buildWhen: (previous, current) => current is! WalkAddActionState,
       listener: (context, state) {
-        if (state is AddWalkSavedState) {
+        if (state is AddWalkLoadingState) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const Center(child: CircularProgressIndicator());
+            },
+          );
+        } else if (state is AddWalkSavedState) {
+          Navigator.pop(context);
           Navigator.pop(context);
         } else if (state is AddWalkUpdatedState) {
+          Navigator.pop(context);
           Navigator.pop(context);
         }
       },

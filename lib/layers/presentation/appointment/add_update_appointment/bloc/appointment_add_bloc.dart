@@ -25,6 +25,7 @@ class AppointmentAddBloc extends Bloc<AppointmentAddEvent, AppointmentAddState> 
   }
 
   FutureOr<void> addAppointmentSaveButtonPressEvent(AppointmentAddSaveButtonPressEvent event, Emitter<AppointmentAddState> emit) async {
+    emit(AppointmentAddLoadingState());
     final result = await addAppointment(event.appointmentModel);
     result!.fold((failure) {
       emit(AddAppointmentErrorState(message: mapFailureToMessage(failure)));
@@ -36,7 +37,6 @@ class AppointmentAddBloc extends Bloc<AppointmentAddEvent, AppointmentAddState> 
   FutureOr<void> appointmentAddInitialEvent(AppointmentAddInitialEvent event, Emitter<AppointmentAddState> emit) async {
     emit(AppointmentAddLoadingState());
     final syncResult = await sync("donotdeleteordublicate@wlv.ac.uk");
-
     syncResult!.fold((failure) {
       emit(AddAppointmentErrorState(message: mapFailureToMessage(failure)));
     }, (syncData) {
@@ -45,8 +45,13 @@ class AppointmentAddBloc extends Bloc<AppointmentAddEvent, AppointmentAddState> 
   }
 
   FutureOr<void> appointmentAddUpdateButtonPressEvent(AppointmentAddUpdateButtonPressEvent event, Emitter<AppointmentAddState> emit) async {
-    await updateAppointment(event.appointmentModel);
-    emit(AddAppointmentUpdatedState());
+    emit(AppointmentAddLoadingState());
+    final result = await updateAppointment(event.appointmentModel);
+    result!.fold((failure) {
+      emit(AddAppointmentErrorState(message: mapFailureToMessage(failure)));
+    }, (result) {
+      emit(AddAppointmentUpdatedState());
+    });
   }
 
   FutureOr<void> appointmentAddReadyToUpdateEvent(AppointmentAddReadyToUpdateEvent event, Emitter<AppointmentAddState> emit) {

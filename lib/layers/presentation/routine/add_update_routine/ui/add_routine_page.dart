@@ -57,7 +57,14 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
       listenWhen: (previous, current) => current is RoutineAddActionState,
       buildWhen: (previous, current) => current is! RoutineAddActionState,
       listener: (context, state) {
-        if (state is AddRoutineSavedActionState) {
+        if (state is AddRoutineLoadingState) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const Center(child: CircularProgressIndicator());
+            },
+          );
+        } else if (state is AddRoutineSavedActionState) {
           Navigator.pop(context);
         } else if (state is AddRoutineUpdatedActionState) {
           Navigator.pop(context);

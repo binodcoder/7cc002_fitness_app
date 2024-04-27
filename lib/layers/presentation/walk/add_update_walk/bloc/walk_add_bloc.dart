@@ -64,6 +64,7 @@ class WalkAddBloc extends Bloc<WalkAddEvent, WalkAddState> {
   }
 
   FutureOr<void> addWalkSaveButtonPressEvent(WalkAddSaveButtonPressEvent event, Emitter<WalkAddState> emit) async {
+    emit(AddWalkLoadingState());
     final result = await addWalk(event.newWalk);
     result!.fold((failure) {
       emit(AddWalkErrorState());
@@ -77,6 +78,7 @@ class WalkAddBloc extends Bloc<WalkAddEvent, WalkAddState> {
   }
 
   FutureOr<void> walkAddUpdateButtonPressEvent(WalkAddUpdateButtonPressEvent event, Emitter<WalkAddState> emit) async {
+    emit(AddWalkLoadingState());
     final result = await updateWalk(event.updatedWalk);
     result!.fold((failure) {
       emit(AddWalkErrorState());

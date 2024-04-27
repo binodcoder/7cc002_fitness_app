@@ -19,6 +19,8 @@ class AddWalkImagePickedFromCameraState extends WalkAddState {
   AddWalkImagePickedFromCameraState(imagePath) : super(imagePath: imagePath);
 }
 
+class AddWalkLoadingState extends WalkAddActionState {}
+
 class AddWalkSavedState extends WalkAddActionState {}
 
 class AddWalkUpdatedState extends WalkAddActionState {}

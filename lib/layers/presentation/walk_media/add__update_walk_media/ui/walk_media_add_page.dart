@@ -48,13 +48,22 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
       listenWhen: (previous, current) => current is WalkMediaAddActionState,
       buildWhen: (previous, current) => current is! WalkMediaAddActionState,
       listener: (context, state) {
-        if (state is AddWalkMediaSavedState) {
+        if (state is AddWalkMediaLoadingState) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const Center(child: CircularProgressIndicator());
+            },
+          );
+        } else if (state is AddWalkMediaSavedState) {
           // sourceController.clear();
           // descriptionController.clear();
+          Navigator.pop(context);
           Navigator.pop(context);
         } else if (state is AddWalkMediaUpdatedState) {
           // sourceController.clear();
           // descriptionController.clear();
+          Navigator.pop(context);
           Navigator.pop(context);
         }
       },

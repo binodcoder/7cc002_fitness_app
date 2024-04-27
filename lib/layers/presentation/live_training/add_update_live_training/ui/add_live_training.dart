@@ -33,7 +33,7 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedStartTime = const TimeOfDay(hour: 00, minute: 00);
   TimeOfDay selectedEndTime = const TimeOfDay(hour: 00, minute: 00);
-   late double _height;
+  late double _height;
   late double _width;
   //late String _setTime, _setDate;
   final _formKey = GlobalKey<FormState>();
@@ -145,13 +145,22 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
       listenWhen: (previous, current) => current is LiveTrainingAddActionState,
       buildWhen: (previous, current) => current is! LiveTrainingAddActionState,
       listener: (context, state) {
-        if (state is AddLiveTrainingSavedState) {
+        if (state is LiveTrainingAddLoadingState) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const Center(child: CircularProgressIndicator());
+            },
+          );
+        } else if (state is AddLiveTrainingSavedState) {
           // sourceController.clear();
           // descriptionController.clear();
+          Navigator.pop(context);
           Navigator.pop(context);
         } else if (state is AddLiveTrainingUpdatedState) {
           // sourceController.clear();
           // descriptionController.clear();
+          Navigator.pop(context);
           Navigator.pop(context);
         } else if (state is AddLiveTrainingErrorState) {
           Fluttertoast.cancel();
@@ -219,7 +228,7 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                         keyboardType: TextInputType.text,
                         controller: _dateController,
                         onSaved: (String? val) {
-                         // _setDate = val!;
+                          // _setDate = val!;
                         },
                         decoration: const InputDecoration(
                             disabledBorder: UnderlineInputBorder(borderSide: BorderSide.none), contentPadding: EdgeInsets.only(top: 0.0)),
@@ -248,7 +257,7 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                             keyboardType: TextInputType.text,
                             controller: _startTimeController,
                             onSaved: (String? val) {
-                             // _setDate = val!;
+                              // _setDate = val!;
                             },
                             decoration: const InputDecoration(
                                 disabledBorder: UnderlineInputBorder(borderSide: BorderSide.none), contentPadding: EdgeInsets.only(top: 0.0)),
@@ -271,7 +280,7 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                             keyboardType: TextInputType.text,
                             controller: _endTimeController,
                             onSaved: (String? val) {
-                             // _setTime = val!;
+                              // _setTime = val!;
                             },
                             decoration: const InputDecoration(
                                 disabledBorder: UnderlineInputBorder(borderSide: BorderSide.none), contentPadding: EdgeInsets.only(top: 0.0)),

@@ -19,6 +19,8 @@ class AddRoutineImagePickedFromCameraState extends RoutineAddState {
   AddRoutineImagePickedFromCameraState(imagePath) : super(imagePath: imagePath);
 }
 
+class AddRoutineLoadingState extends RoutineAddActionState {}
+
 class AddRoutineSavedActionState extends RoutineAddActionState {}
 
 class AddRoutineUpdatedActionState extends RoutineAddActionState {}

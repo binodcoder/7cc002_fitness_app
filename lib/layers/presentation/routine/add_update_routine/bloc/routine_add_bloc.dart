@@ -69,6 +69,7 @@ class RoutineAddBloc extends Bloc<RoutineAddEvent, RoutineAddState> {
   }
 
   FutureOr<void> addRoutineSaveButtonPressEvent(RoutineAddSaveButtonPressEvent event, Emitter<RoutineAddState> emit) async {
+    emit(AddRoutineLoadingState());
     final result = await addRoutine(event.newRoutine);
     result!.fold((failure) {
       emit(AddRoutineErrorState());
@@ -82,8 +83,8 @@ class RoutineAddBloc extends Bloc<RoutineAddEvent, RoutineAddState> {
   }
 
   FutureOr<void> routineAddUpdateButtonPressEvent(RoutineAddUpdateButtonPressEvent event, Emitter<RoutineAddState> emit) async {
+    emit(AddRoutineLoadingState());
     final result = await updateRoutine(event.updatedRoutine);
-
     result!.fold((failure) {
       emit(AddRoutineErrorState());
     }, (result) {

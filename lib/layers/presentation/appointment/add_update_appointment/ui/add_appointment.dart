@@ -6,8 +6,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/model/sync_data_model.dart';
 import '../../../../../injection_container.dart';
 import '../../../../../resources/colour_manager.dart';
+import '../../../../../resources/font_manager.dart';
+import '../../../../../resources/strings_manager.dart';
+import '../../../../../resources/styles_manager.dart';
 import '../../../../../resources/values_manager.dart';
 import 'package:intl/intl.dart';
+import '../../../login/widgets/sign_in_button.dart';
 import '../bloc/appointment_add_bloc.dart';
 import '../bloc/appointment_add_event.dart';
 import '../bloc/appointment_add_state.dart';
@@ -44,7 +48,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
 
   setDateTime() {
     selectedDate = widget.focusedDay!;
-    _dateController.text = DateFormat('YYYY-MM-DD').format(widget.focusedDay!);
+    _dateController.text = DateFormat('yyyy-MM-dd').format(widget.focusedDay!);
     _startTimeController.text = "00:00:00";
     _endTimeController.text = "00:00:00";
   }
@@ -146,7 +150,14 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
       listenWhen: (previous, current) => current is AppointmentAddActionState,
       buildWhen: (previous, current) => current is! AppointmentAddActionState,
       listener: (context, state) {
-        if (state is AddAppointmentSavedState) {
+        if (state is AppointmentAddLoadingState) {
+          // showDialog(
+          //   context: context,
+          //   builder: (BuildContext context) {
+          //     return const Center(child: CircularProgressIndicator());
+          //   },
+          // );
+        } else if (state is AddAppointmentSavedState) {
           // sourceController.clear();
           // descriptionController.clear();
           Navigator.pop(context);
@@ -206,135 +217,6 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                       SizedBox(
                         height: size.height * 0.03,
                       ),
-                      // Center(
-                      //   child: DropdownButtonHideUnderline(
-                      //     child: DropdownButton2<Trainer>(
-                      //       isExpanded: true,
-                      //       hint: Text(
-                      //         'Select Trainer',
-                      //         style: TextStyle(
-                      //           fontSize: 14,
-                      //           color: Theme.of(context).hintColor,
-                      //         ),
-                      //       ),
-                      //       items: state.syncModel.data.trainers
-                      //           .map((item) => DropdownMenuItem(
-                      //                 value: item,
-                      //                 child: Text(
-                      //                   item.name ?? '',
-                      //                   style: const TextStyle(
-                      //                     fontSize: 14,
-                      //                   ),
-                      //                 ),
-                      //               ))
-                      //           .toList(),
-                      //       value: selectedTrainer,
-                      //       onChanged: (value) {
-                      //         setState(() {
-                      //           selectedTrainer = value;
-                      //         });
-                      //       },
-                      //       buttonStyleData: const ButtonStyleData(
-                      //         padding: EdgeInsets.symmetric(horizontal: 16),
-                      //         height: 40,
-                      //         width: 200,
-                      //       ),
-                      //       dropdownStyleData: const DropdownStyleData(
-                      //         maxHeight: 200,
-                      //       ),
-                      //       menuItemStyleData: const MenuItemStyleData(
-                      //         height: 40,
-                      //       ),
-                      //       dropdownSearchData: DropdownSearchData(
-                      //         searchController: _trainerController,
-                      //         searchInnerWidgetHeight: 50,
-                      //         searchInnerWidget: Container(
-                      //           height: 50,
-                      //           padding: const EdgeInsets.only(
-                      //             top: 8,
-                      //             bottom: 4,
-                      //             right: 8,
-                      //             left: 8,
-                      //           ),
-                      //           child: TextFormField(
-                      //             expands: true,
-                      //             maxLines: null,
-                      //             controller: _trainerController,
-                      //             decoration: InputDecoration(
-                      //               isDense: true,
-                      //               contentPadding: const EdgeInsets.symmetric(
-                      //                 horizontal: 10,
-                      //                 vertical: 8,
-                      //               ),
-                      //               hintText: 'Search for an item...',
-                      //               hintStyle: const TextStyle(fontSize: 12),
-                      //               border: OutlineInputBorder(
-                      //                 borderRadius: BorderRadius.circular(8),
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //         searchMatchFn: (item, searchValue) {
-                      //           return item.value.toString().contains(searchValue);
-                      //         },
-                      //       ),
-                      //       //This to clear the search value when you close the menu
-                      //       onMenuStateChange: (isOpen) {
-                      //         if (!isOpen) {
-                      //           _trainerController.clear();
-                      //         }
-                      //       },
-                      //     ),
-                      //   ),
-                      // ),
-                      // SizedBox(
-                      //   height: size.height * 0.03,
-                      // ),
-                      // Container(
-                      //   height: AppHeight.h50,
-                      //   margin: EdgeInsets.only(bottom: AppHeight.h10),
-                      //   child: DropdownButtonFormField<Trainer>(
-                      //     decoration: InputDecoration(
-                      //       labelText: 'Trainers',
-                      //       contentPadding: EdgeInsets.symmetric(horizontal: AppWidth.w4, vertical: AppHeight.h12),
-                      //       border: OutlineInputBorder(
-                      //         borderSide: const BorderSide(color: Colors.blue, width: 1.5),
-                      //         borderRadius: BorderRadius.all(
-                      //           Radius.circular(AppRadius.r4),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //     isExpanded: true,
-                      //     icon: const Icon(Icons.arrow_drop_down),
-                      //     iconEnabledColor: ColorManager.blue,
-                      //     iconSize: 30,
-                      //     items: state.syncModel.data.trainers.map((item) {
-                      //       return DropdownMenuItem<Trainer>(
-                      //         value: item,
-                      //         child: Container(
-                      //           margin: const EdgeInsets.only(left: 1),
-                      //           padding: const EdgeInsets.only(left: 10),
-                      //           height: 55,
-                      //           width: double.infinity,
-                      //           child: Align(
-                      //             alignment: Alignment.centerLeft,
-                      //             child: Text(
-                      //               item.name ?? '',
-                      //               style: TextStyle(
-                      //                 color: Colors.blueGrey[900],
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       );
-                      //     }).toList(),
-                      //     onChanged: (newValue) {
-                      //       selectedTrainer = newValue;
-                      //     },
-                      //     value: selectedTrainer,
-                      //   ),
-                      // ),
-
                       DropdownButtonFormField<Trainer>(
                         decoration: InputDecoration(
                           fillColor: Colors.grey[10],
@@ -343,7 +225,6 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                           contentPadding: EdgeInsets.symmetric(horizontal: AppWidth.w4, vertical: AppHeight.h12),
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
-                            //BorderSide(color: ColorManager.white, width: 0, style: BorderStyle.none),
                             borderRadius: BorderRadius.all(
                               Radius.circular(AppRadius.r10),
                             ),
@@ -489,52 +370,40 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                       SizedBox(
                         height: size.height * 0.03,
                       ),
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: ConstrainedBox(
-                              constraints: const BoxConstraints.tightFor(width: 300, height: 50),
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  shape: MaterialStateProperty.resolveWith<OutlinedBorder>(
-                                    (Set<MaterialState> states) {
-                                      return RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(AppRadius.r4),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                onPressed: () async {
-                                  if (_formKey.currentState!.validate()) {
-                                    if (widget.appointmentModel != null) {
-                                      var appointmentModel = AppointmentModel(
-                                        id: widget.appointmentModel!.id,
-                                        date: selectedDate,
-                                        endTime: _endTimeController.text,
-                                        startTime: _startTimeController.text,
-                                        trainerId: selectedTrainer!.id,
-                                        userId: sharedPreferences.getInt("user_id")!,
-                                        remark: _remarkController.text,
-                                      );
-                                      appointmentAddBloc.add(AppointmentAddUpdateButtonPressEvent(appointmentModel));
-                                    } else {
-                                      var appointmentModel = AppointmentModel(
-                                        date: selectedDate,
-                                        endTime: _startTimeController.text,
-                                        startTime: _endTimeController.text,
-                                        trainerId: selectedTrainer?.id ?? 1,
-                                        userId: sharedPreferences.getInt("user_id") ?? 1,
-                                        remark: _remarkController.text,
-                                      );
-                                      appointmentAddBloc.add(AppointmentAddSaveButtonPressEvent(appointmentModel));
-                                    }
-                                  }
-                                },
-                                child: const Text('Save'),
-                              ),
-                            ),
-                          )
-                        ],
+                      SigninButton(
+                        child: Text(
+                          AppStrings.save,
+                          style: getRegularStyle(
+                            fontSize: FontSize.s16,
+                            color: ColorManager.white,
+                          ),
+                        ),
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            if (widget.appointmentModel != null) {
+                              var appointmentModel = AppointmentModel(
+                                id: widget.appointmentModel!.id,
+                                date: selectedDate,
+                                endTime: _endTimeController.text,
+                                startTime: _startTimeController.text,
+                                trainerId: selectedTrainer!.id,
+                                userId: sharedPreferences.getInt("user_id")!,
+                                remark: _remarkController.text,
+                              );
+                              appointmentAddBloc.add(AppointmentAddUpdateButtonPressEvent(appointmentModel));
+                            } else {
+                              var appointmentModel = AppointmentModel(
+                                date: selectedDate,
+                                endTime: _startTimeController.text,
+                                startTime: _endTimeController.text,
+                                trainerId: selectedTrainer?.id ?? 1,
+                                userId: sharedPreferences.getInt("user_id") ?? 1,
+                                remark: _remarkController.text,
+                              );
+                              appointmentAddBloc.add(AppointmentAddSaveButtonPressEvent(appointmentModel));
+                            }
+                          }
+                        },
                       ),
                       const SizedBox(
                         height: 10,

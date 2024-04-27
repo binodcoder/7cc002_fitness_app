@@ -20,6 +20,7 @@ class LiveTrainingAddBloc extends Bloc<LiveTrainingAddEvent, LiveTrainingAddStat
   }
 
   FutureOr<void> addLiveTrainingSaveButtonPressEvent(LiveTrainingAddSaveButtonPressEvent event, Emitter<LiveTrainingAddState> emit) async {
+    emit(LiveTrainingAddLoadingState());
     final result = await addLiveTraining(event.liveTrainingModel);
     result!.fold((failure) {
       emit(AddLiveTrainingErrorState());
@@ -40,8 +41,13 @@ class LiveTrainingAddBloc extends Bloc<LiveTrainingAddEvent, LiveTrainingAddStat
   }
 
   FutureOr<void> liveTrainingAddUpdateButtonPressEvent(LiveTrainingAddUpdateButtonPressEvent event, Emitter<LiveTrainingAddState> emit) async {
-    await updateLiveTraining(event.liveTrainingModel);
-    emit(AddLiveTrainingUpdatedState());
+    emit(LiveTrainingAddLoadingState());
+    final result = await updateLiveTraining(event.liveTrainingModel);
+    result!.fold((failure) {
+      emit(AddLiveTrainingErrorState());
+    }, (result) {
+      emit(AddLiveTrainingUpdatedState());
+    });
   }
 
   FutureOr<void> liveTrainingAddReadyToUpdateEvent(LiveTrainingAddReadyToUpdateEvent event, Emitter<LiveTrainingAddState> emit) {
