@@ -126,11 +126,6 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                           fillColor: ColorManager.redWhite,
                           filled: true,
                           hintText: 'Routine Name',
-                          suffixIcon: Icon(
-                            Icons.person,
-                            color: ColorManager.blue,
-                            size: FontSize.s20,
-                          ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: ColorManager.blueGrey),
                             borderRadius: BorderRadius.circular(AppRadius.r10),
@@ -174,11 +169,6 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                           fillColor: ColorManager.redWhite,
                           filled: true,
                           hintText: 'Description',
-                          suffixIcon: Icon(
-                            Icons.person,
-                            color: ColorManager.blue,
-                            size: FontSize.s20,
-                          ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: ColorManager.blueGrey),
                             borderRadius: BorderRadius.circular(AppRadius.r10),
@@ -222,11 +212,6 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                           fillColor: ColorManager.redWhite,
                           filled: true,
                           hintText: 'Difficulty',
-                          suffixIcon: Icon(
-                            Icons.person,
-                            color: ColorManager.blue,
-                            size: FontSize.s20,
-                          ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: ColorManager.blueGrey),
                             borderRadius: BorderRadius.circular(AppRadius.r10),
@@ -270,11 +255,6 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                           fillColor: ColorManager.redWhite,
                           filled: true,
                           hintText: 'Duration',
-                          suffixIcon: Icon(
-                            Icons.person,
-                            color: ColorManager.blue,
-                            size: FontSize.s20,
-                          ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: ColorManager.blueGrey),
                             borderRadius: BorderRadius.circular(AppRadius.r10),
@@ -318,11 +298,6 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                           fillColor: ColorManager.redWhite,
                           filled: true,
                           hintText: 'Source',
-                          suffixIcon: Icon(
-                            Icons.person,
-                            color: ColorManager.blue,
-                            size: FontSize.s20,
-                          ),
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: ColorManager.blueGrey),
                             borderRadius: BorderRadius.circular(AppRadius.r10),

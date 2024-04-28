@@ -6,8 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/model/live_training_model.dart';
 import '../../../../../injection_container.dart';
 import '../../../../../resources/colour_manager.dart';
+import '../../../../../resources/font_manager.dart';
+import '../../../../../resources/styles_manager.dart';
 import '../../../../../resources/values_manager.dart';
 import 'package:intl/intl.dart';
+import '../../../login/widgets/sign_in_button.dart';
 import '../bloc/live_training_add_bloc.dart';
 import '../bloc/live_training_add_event.dart';
 import '../bloc/live_training_add_state.dart';
@@ -175,6 +178,7 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
+            backgroundColor: ColorManager.primary,
             leading: IconButton(
               icon: const Icon(Icons.close),
               onPressed: () {
@@ -313,51 +317,39 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                   SizedBox(
                     height: size.height * 0.03,
                   ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints.tightFor(width: 300, height: 50),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.resolveWith<OutlinedBorder>(
-                                (Set<MaterialState> states) {
-                                  return RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(AppRadius.r4),
-                                  );
-                                },
-                              ),
-                            ),
-                            onPressed: () async {
-                              if (_formKey.currentState!.validate()) {
-                                if (widget.liveTrainingModel != null) {
-                                  var liveTrainingModel = LiveTrainingModel(
-                                    trainerId: widget.liveTrainingModel!.trainerId,
-                                    title: _titleController.text,
-                                    description: _descriptionController.text,
-                                    trainingDate: DateTime.now(),
-                                    startTime: _startTimeController.text,
-                                    endTime: _endTimeController.text,
-                                  );
-                                  liveTrainingAddBloc.add(LiveTrainingAddUpdateButtonPressEvent(liveTrainingModel));
-                                } else {
-                                  var liveTrainingModel = LiveTrainingModel(
-                                    trainerId: sharedPreferences.getInt("user_id")!,
-                                    title: _titleController.text,
-                                    description: _descriptionController.text,
-                                    trainingDate: DateTime.now(),
-                                    startTime: _startTimeController.text,
-                                    endTime: _endTimeController.text,
-                                  );
-                                  liveTrainingAddBloc.add(LiveTrainingAddSaveButtonPressEvent(liveTrainingModel));
-                                }
-                              }
-                            },
-                            child: const Text('Save'),
-                          ),
-                        ),
-                      )
-                    ],
+                  SigninButton(
+                    child: Text(
+                      AppStrings.save,
+                      style: getRegularStyle(
+                        fontSize: FontSize.s16,
+                        color: ColorManager.white,
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        if (widget.liveTrainingModel != null) {
+                          var liveTrainingModel = LiveTrainingModel(
+                            trainerId: widget.liveTrainingModel!.trainerId,
+                            title: _titleController.text,
+                            description: _descriptionController.text,
+                            trainingDate: DateTime.now(),
+                            startTime: _startTimeController.text,
+                            endTime: _endTimeController.text,
+                          );
+                          liveTrainingAddBloc.add(LiveTrainingAddUpdateButtonPressEvent(liveTrainingModel));
+                        } else {
+                          var liveTrainingModel = LiveTrainingModel(
+                            trainerId: sharedPreferences.getInt("user_id")!,
+                            title: _titleController.text,
+                            description: _descriptionController.text,
+                            trainingDate: DateTime.now(),
+                            startTime: _startTimeController.text,
+                            endTime: _endTimeController.text,
+                          );
+                          liveTrainingAddBloc.add(LiveTrainingAddSaveButtonPressEvent(liveTrainingModel));
+                        }
+                      }
+                    },
                   ),
                   const SizedBox(
                     height: 10,

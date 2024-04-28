@@ -6,6 +6,7 @@ import 'package:fitness_app/resources/styles_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'injection_container.dart';
 import 'layers/presentation/appointment/get_appointments/ui/calender.dart';
@@ -70,7 +71,7 @@ class _MyDrawerState extends State<MyDrawer> {
             ListTile(
               leading: Icon(
                 CupertinoIcons.alarm,
-                color: ColorManager.darkGrey,
+                color: ColorManager.primary,
               ),
               title: Text(
                 AppStrings.titleRoutineLabel,
@@ -92,7 +93,7 @@ class _MyDrawerState extends State<MyDrawer> {
             ListTile(
               leading: Icon(
                 CupertinoIcons.calendar,
-                color: ColorManager.darkGrey,
+                color: ColorManager.primary,
               ),
               title: Text(
                 AppStrings.titleAppointmentLabel,
@@ -115,14 +116,14 @@ class _MyDrawerState extends State<MyDrawer> {
                 ? const SizedBox()
                 : ListTile(
                     leading: Icon(
-                      CupertinoIcons.alarm,
+                      FontAwesomeIcons.personWalking,
                       color: ColorManager.darkGrey,
                     ),
                     title: Text(
                       "Walk",
                       textScaleFactor: 1.2,
                       style: getSemiBoldStyle(
-                        color: ColorManager.darkGrey,
+                        color: ColorManager.primary,
                         fontSize: FontSize.s14,
                       ),
                     ),
@@ -137,8 +138,8 @@ class _MyDrawerState extends State<MyDrawer> {
                   ),
             ListTile(
               leading: Icon(
-                CupertinoIcons.alarm,
-                color: ColorManager.darkGrey,
+                FontAwesomeIcons.towerBroadcast,
+                color: ColorManager.primary,
               ),
               title: Text(
                 "Live Trainings",
@@ -160,11 +161,15 @@ class _MyDrawerState extends State<MyDrawer> {
             ListTile(
               leading: Icon(
                 CupertinoIcons.video_camera,
-                color: ColorManager.darkGrey,
+                color: ColorManager.primary,
               ),
-              title: const Text(
+              title: Text(
                 "Meeting",
-                style: TextStyle(color: Colors.black),
+                textScaleFactor: 1.2,
+                style: getSemiBoldStyle(
+                  color: ColorManager.darkGrey,
+                  fontSize: FontSize.s14,
+                ),
               ),
               onTap: () {
                 Navigator.push(
@@ -178,12 +183,14 @@ class _MyDrawerState extends State<MyDrawer> {
             ListTile(
               leading: Icon(
                 Icons.logout_outlined,
-                color: ColorManager.darkGrey,
+                color: ColorManager.primary,
               ),
-              title: const Text(
+              title: Text(
                 "Log out",
-                style: TextStyle(
-                  color: Colors.black,
+                textScaleFactor: 1.2,
+                style: getSemiBoldStyle(
+                  color: ColorManager.darkGrey,
+                  fontSize: FontSize.s14,
                 ),
               ),
               onTap: () {
@@ -200,7 +207,7 @@ class _MyDrawerState extends State<MyDrawer> {
             ListTile(
               leading: Icon(
                 CupertinoIcons.building_2_fill,
-                color: ColorManager.darkGrey,
+                color: ColorManager.primary,
               ),
               title: Text(
                 "About Us",
@@ -217,6 +224,4 @@ class _MyDrawerState extends State<MyDrawer> {
       ),
     );
   }
-
-  void logout() {}
 }
