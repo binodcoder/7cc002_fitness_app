@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import '../../../core/model/model.dart';
 import '../../../resources/assets_manager.dart';
 import '../../../resources/colour_manager.dart';
+import '../../../resources/routes_manager.dart';
 import '../../../resources/strings_manager.dart';
 import '../../../resources/values_manager.dart';
 import 'onboarding_viewmodel.dart';
@@ -76,11 +77,14 @@ class _OnBoardingViewState extends State<OnBoardingView> {
               color: ColorManager.white,
               height: AppSize.s100,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, Routes.loginRoute);
+                      },
                       child: Text(
                         AppStrings.skip,
                         textAlign: TextAlign.end,
@@ -88,7 +92,6 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                       ),
                     ),
                   ),
-
                   //add layout for indicator and arrows
                   _getBottomSheetWidget(sliderViewObject),
                 ],
@@ -177,20 +180,25 @@ class OnBoardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const SizedBox(
-          height: AppSize.s40,
+          height: AppSize.s10,
         ),
         Padding(
           padding: const EdgeInsets.all(AppPadding.p8),
           child: Text(
             sliderObject.title,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.displayLarge,
+            style: Theme.of(context).textTheme.displaySmall,
           ),
         ),
+        const SizedBox(
+          height: AppSize.s10,
+        ),
+
         Padding(
           padding: const EdgeInsets.all(AppPadding.p8),
           child: Text(
@@ -202,9 +210,31 @@ class OnBoardingPage extends StatelessWidget {
         const SizedBox(
           height: AppSize.s60,
         ),
+        // Image(
+        //   image: AssetImage(sliderObject.image),
+        // ),
+
+        SizedBox(
+          width: size.width,
+          height: size.height * 0.3,
+          // decoration: BoxDecoration(
+          //   border: Border.all(color: ColorManager.white),
+          //   borderRadius: BorderRadius.circular(15),
+          // ),
+          child: ClipRRect(
+            // borderRadius: BorderRadius.circular(15),
+            child: SizedBox(
+                width: size.width,
+                height: size.height * 0.3,
+                child: Image.asset(
+                  sliderObject.image,
+                  fit: BoxFit.cover,
+                )),
+          ),
+        ),
 
         //image widget
-        SvgPicture.asset(sliderObject.image)
+        // SvgPicture.asset(sliderObject.image)
       ],
     );
   }

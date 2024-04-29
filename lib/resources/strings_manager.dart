@@ -35,15 +35,16 @@ class AppStrings {
 
   //splash screen
 
-  static const String onBoardingTItle1 = "SEE THE BEST COURSE #1";
-  static const String onBoardingTItle2 = "SEE THE BEST COURSE #2";
-  static const String onBoardingTItle3 = "SEE THE BEST COURSE #3";
-  static const String onBoardingTItle4 = "SEE THE BEST COURSE #4";
+  static const String onBoardingTItle1 = "FITNESS CONTENT";
+  static const String onBoardingTItle2 = "LIVE TRAINING";
+  static const String onBoardingTItle3 = "MEETINGS";
+  static const String onBoardingTItle4 = "WALK FEATURE";
 
-  static const String onBoardingSubTitle1 = "Tut app is an awesome flutter application using clean architecture #1";
-  static const String onBoardingSubTitle2 = "Tut app is an awesome flutter application using clean architecture #2";
-  static const String onBoardingSubTitle3 = "Tut app is an awesome flutter application using clean architecture #3";
-  static const String onBoardingSubTitle4 = "Tut app is an awesome flutter application using clean architecture #4";
+  static const String onBoardingSubTitle1 = "The app provides pre-loaded fitness routines";
+  static const String onBoardingSubTitle2 = "Users can join real-time workout sessions led by either group trainers or book individual trainers";
+  static const String onBoardingSubTitle3 = "A calendar feature for users to schedule one-on-one sessions with personal trainers";
+  static const String onBoardingSubTitle4 =
+      "Users can design routes on a map, set times, and starting points. Others can view and express interest in joining";
 
   static const String skip = "Skip";
 }
