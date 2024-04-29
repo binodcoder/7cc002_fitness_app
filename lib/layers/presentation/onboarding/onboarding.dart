@@ -39,7 +39,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<SliderViewObject>(
-      stream: _viewModel.outputSliderViewObject,
+      stream: _viewModel.outputSliderViewObject.asBroadcastStream(),
       builder: (context, snapShot) {
         return _getContentWidget(snapShot.data);
       },
@@ -192,11 +192,11 @@ class OnBoardingPage extends StatelessWidget {
           child: Text(
             sliderObject.title,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.displaySmall,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
         const SizedBox(
-          height: AppSize.s10,
+          height: AppSize.s40,
         ),
 
         Padding(
@@ -210,19 +210,11 @@ class OnBoardingPage extends StatelessWidget {
         const SizedBox(
           height: AppSize.s60,
         ),
-        // Image(
-        //   image: AssetImage(sliderObject.image),
-        // ),
 
         SizedBox(
           width: size.width,
           height: size.height * 0.3,
-          // decoration: BoxDecoration(
-          //   border: Border.all(color: ColorManager.white),
-          //   borderRadius: BorderRadius.circular(15),
-          // ),
           child: ClipRRect(
-            // borderRadius: BorderRadius.circular(15),
             child: SizedBox(
                 width: size.width,
                 height: size.height * 0.3,
@@ -232,7 +224,6 @@ class OnBoardingPage extends StatelessWidget {
                 )),
           ),
         ),
-
         //image widget
         // SvgPicture.asset(sliderObject.image)
       ],

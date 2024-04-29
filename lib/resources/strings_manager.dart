@@ -37,7 +37,7 @@ class AppStrings {
 
   static const String onBoardingTItle1 = "FITNESS CONTENT";
   static const String onBoardingTItle2 = "LIVE TRAINING";
-  static const String onBoardingTItle3 = "MEETINGS";
+  static const String onBoardingTItle3 = "APPOINTMENT";
   static const String onBoardingTItle4 = "WALK FEATURE";
 
   static const String onBoardingSubTitle1 = "The app provides pre-loaded fitness routines";
