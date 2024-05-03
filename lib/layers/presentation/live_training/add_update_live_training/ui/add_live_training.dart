@@ -168,11 +168,13 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
         } else if (state is AddLiveTrainingErrorState) {
           Fluttertoast.cancel();
           Fluttertoast.showToast(
-            msg: 'Username or Password is Incorrect.',
+            msg: 'Error while adding training',
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: ColorManager.error,
           );
+          Navigator.pop(context);
+          Navigator.pop(context);
         }
       },
       builder: (context, state) {

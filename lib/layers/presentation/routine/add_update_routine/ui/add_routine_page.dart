@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../../../../core/model/routine_model.dart';
 import '../../../../../injection_container.dart';
 import '../../../../../resources/colour_manager.dart';
@@ -66,7 +67,19 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
           );
         } else if (state is AddRoutineSavedActionState) {
           Navigator.pop(context);
+          Navigator.pop(context);
         } else if (state is AddRoutineUpdatedActionState) {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        } else if (state is AddRoutineErrorState) {
+          Fluttertoast.cancel();
+          Fluttertoast.showToast(
+            msg: 'Error while adding routine',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: ColorManager.error,
+          );
+          Navigator.pop(context);
           Navigator.pop(context);
         }
       },

@@ -117,13 +117,13 @@ class _MyDrawerState extends State<MyDrawer> {
                 : ListTile(
                     leading: Icon(
                       FontAwesomeIcons.personWalking,
-                      color: ColorManager.darkGrey,
+                      color: ColorManager.primary,
                     ),
                     title: Text(
-                      "Walk",
+                      AppStrings.walk,
                       textScaleFactor: 1.2,
                       style: getSemiBoldStyle(
-                        color: ColorManager.primary,
+                        color: ColorManager.darkGrey,
                         fontSize: FontSize.s14,
                       ),
                     ),

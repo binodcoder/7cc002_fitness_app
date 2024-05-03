@@ -3,6 +3,7 @@ import 'package:fitness_app/layers/presentation/register/ui/register_page.dart';
 import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
 import '../layers/presentation/onboarding/onboarding.dart';
+import '../layers/presentation/routine/get_routines/ui/routine.dart';
 import '../layers/presentation/splash/splash.dart';
 
 class Routes {
@@ -13,11 +14,14 @@ class Routes {
   static const String forgotPasswordRoute = "/forgotPassword";
   static const String mainRoute = "/main";
   static const String storeDetailRoute = "/storeDetails";
+  static const String routineRoute = "/routine";
 }
 
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
+      case Routes.routineRoute:
+        return MaterialPageRoute(builder: (context) => const RoutinePage());
       case Routes.splashRoute:
         return MaterialPageRoute(builder: (context) => const SplashView());
       case Routes.onBoardingRoute:

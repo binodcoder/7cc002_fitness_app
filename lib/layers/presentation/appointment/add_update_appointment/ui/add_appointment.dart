@@ -165,10 +165,11 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
           // sourceController.clear();
           // descriptionController.clear();
           Navigator.pop(context);
+          Navigator.pop(context);
         } else if (state is AddAppointmentErrorState) {
           Fluttertoast.cancel();
           Fluttertoast.showToast(
-            msg: 'Username or Password is Incorrect.',
+            msg: 'Error while adding appointment',
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: ColorManager.error,

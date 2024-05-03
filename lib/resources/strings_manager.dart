@@ -26,6 +26,7 @@ class AppStrings {
   static const String editPost = "Edit Post";
   static const String cancel = "Cancel";
   static const String save = "Save";
+  static const String walk = "Walk";
 
   //failure messages
   static const String serverFailureMessage = 'Server Failure';

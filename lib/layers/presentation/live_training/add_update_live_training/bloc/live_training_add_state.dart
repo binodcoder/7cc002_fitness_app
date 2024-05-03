@@ -2,7 +2,7 @@ abstract class LiveTrainingAddState {}
 
 abstract class LiveTrainingAddActionState extends LiveTrainingAddState {}
 
-class LiveTrainingAddLoadingState extends LiveTrainingAddState {}
+class LiveTrainingAddLoadingState extends LiveTrainingAddActionState {}
 
 class LiveTrainingAddLoadedSuccessState extends LiveTrainingAddState {
   // final SyncModel syncModel;

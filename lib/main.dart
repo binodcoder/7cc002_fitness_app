@@ -13,36 +13,20 @@ import 'layers/presentation/routine/get_routines/bloc/routine_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await di.init();
-  runApp(
-    MyApp(),
-  );
+  await di.init().then((value) => runApp(const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
-
-  final SharedPreferences sharedPreferences = sl<SharedPreferences>();
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<RoutineBloc>(
-          create: (BuildContext context) => sl<RoutineBloc>(),
-        ),
-        BlocProvider<UserAddBloc>(
-          create: (BuildContext context) => sl<UserAddBloc>(),
-        ),
-      ],
-      child: const ScreenUtilInit(
-        child: MaterialApp(
-          onGenerateRoute: RouteGenerator.getRoute,
-          debugShowCheckedModeBanner: false,
-          title: AppStrings.titleLabel,
-          initialRoute: Routes.splashRoute,
-          //  home: sharedPreferences.getBool("login") == null ? const LoginPage() : const RoutinePage(),
-        ),
+    return const ScreenUtilInit(
+      child: MaterialApp(
+        onGenerateRoute: RouteGenerator.getRoute,
+        debugShowCheckedModeBanner: false,
+        title: AppStrings.titleLabel,
+        initialRoute: Routes.splashRoute,
       ),
     );
   }
