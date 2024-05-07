@@ -27,6 +27,8 @@ class AppStrings {
   static const String cancel = "Cancel";
   static const String save = "Save";
   static const String walk = "Walk";
+  static const String pickGalary = "Pick Galary";
+  static const String camera = "Camera";
 
   //failure messages
   static const String serverFailureMessage = 'Server Failure';

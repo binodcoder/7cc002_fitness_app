@@ -30,7 +30,9 @@ class _VideoCallState extends State<VideoCall> {
     final response = await http.get(Uri.parse(link));
     Map data = jsonDecode(response.body);
     setState(() {
-      rtmToken = data["rtmToken"];
+      rtmToken =
+          "007eJxTYFAoX15vwuf4Rv58e6rH+dxawcYCH/fuBSZLDnxbv+JgzhcFhqRU07S0JAtz81QLMxMjU4NE45QUQ8s0w8REsxSLNKO0lI1WaQ2BjAzTns9nZWSAQBCfhaEktbiEgQEAYiAgrQ==";
+      //data["rtmToken"];
     });
 
     _client = AgoraClient(

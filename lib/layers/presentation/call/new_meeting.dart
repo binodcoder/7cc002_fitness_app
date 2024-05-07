@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../resources/colour_manager.dart';
 import 'call_test.dart';
 
 class NewMeeting extends StatefulWidget {
@@ -29,6 +30,7 @@ class _NewMeetingState extends State<NewMeeting> {
             Align(
               alignment: Alignment.topLeft,
               child: IconButton(
+                color: ColorManager.primary,
                 icon: const Icon(Icons.arrow_back_ios_new_sharp),
                 iconSize: 35,
                 onPressed: () {
@@ -52,7 +54,6 @@ class _NewMeetingState extends State<NewMeeting> {
                 10,
               ),
               child: Card(
-                color: Colors.grey[300],
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25),
                 ),
@@ -82,7 +83,7 @@ class _NewMeetingState extends State<NewMeeting> {
                 label: const Text("Share invite"),
                 style: ElevatedButton.styleFrom(
                   fixedSize: const Size(350, 30),
-                  backgroundColor: Colors.indigo,
+                  backgroundColor: ColorManager.primary,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                 ),
               ),
@@ -102,12 +103,15 @@ class _NewMeetingState extends State<NewMeeting> {
                     ),
                   );
                 },
-                icon: const Icon(Icons.video_call),
+                icon: Icon(
+                  Icons.video_call,
+                  color: ColorManager.primary,
+                ),
                 label: const Text("start call"),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.indigo,
-                  side: const BorderSide(
-                    color: Colors.indigo,
+                  foregroundColor: ColorManager.black,
+                  side: BorderSide(
+                    color: ColorManager.primary,
                   ),
                   fixedSize: const Size(350, 30),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),

@@ -42,7 +42,7 @@ class CallPage extends StatelessWidget {
                     label: const Text("New Meeting"),
                     style: ElevatedButton.styleFrom(
                       fixedSize: const Size(350, 30),
-                      backgroundColor: Colors.indigo,
+                      backgroundColor: ColorManager.primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
                       ),
@@ -65,11 +65,16 @@ class CallPage extends StatelessWidget {
                         ),
                       );
                     },
-                    icon: const Icon(Icons.margin),
+                    icon: Icon(
+                      Icons.margin,
+                      color: ColorManager.primary,
+                    ),
                     label: const Text("Join with a code"),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.indigo,
-                      side: const BorderSide(color: Colors.indigo),
+                      foregroundColor: ColorManager.darkGrey,
+                      side: BorderSide(
+                        color: ColorManager.primary,
+                      ),
                       fixedSize: const Size(350, 30),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),

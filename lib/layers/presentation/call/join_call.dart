@@ -1,5 +1,6 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
+import '../../../resources/colour_manager.dart';
 import 'call_test.dart';
 
 class JoinCall extends StatelessWidget {
@@ -16,6 +17,7 @@ class JoinCall extends StatelessWidget {
             Align(
               alignment: Alignment.topLeft,
               child: IconButton(
+                color: ColorManager.primary,
                 icon: const Icon(Icons.arrow_back_ios_new_sharp),
                 iconSize: 35,
                 onPressed: () {
@@ -65,7 +67,7 @@ class JoinCall extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 fixedSize: const Size(50, 30),
-                backgroundColor: Colors.indigo,
+                backgroundColor: ColorManager.primary,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
               ),
               child: const Text("Join"),

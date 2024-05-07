@@ -72,6 +72,10 @@ class _LiveTrainingDetailsPageState extends State<LiveTrainingDetailsPage> {
                 widget.liveTrainingModel!.startTime,
                 style: const TextStyle(fontSize: FontSize.s14),
               ),
+              trailing: const Text(
+                "code: test",
+                style: TextStyle(fontSize: FontSize.s14),
+              ),
             ),
             SizedBox(
               height: AppHeight.h20,

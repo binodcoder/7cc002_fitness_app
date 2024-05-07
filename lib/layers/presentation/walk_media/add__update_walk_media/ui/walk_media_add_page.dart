@@ -42,7 +42,7 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
 
   @override
   Widget build(BuildContext context) {
-    //  var size = MediaQuery.of(context).size;
+    Size size = MediaQuery.of(context).size;
     return BlocConsumer<WalkMediaAddBloc, WalkMediaAddState>(
       bloc: walkMediaAddBloc,
       listenWhen: (previous, current) => current is WalkMediaAddActionState,
@@ -91,15 +91,9 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: AppHeight.h40,
+                      height: AppHeight.h30,
                     ),
-                    Text(
-                      "Walk Media Url",
-                      style: getBoldStyle(
-                        fontSize: FontSize.s15,
-                        color: ColorManager.primary,
-                      ),
-                    ),
+                    _imagePickerButtons(walkMediaAddBloc, context, size),
                     SizedBox(
                       height: AppHeight.h10,
                     ),
@@ -118,12 +112,7 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                         ),
                         fillColor: ColorManager.redWhite,
                         filled: true,
-                        hintText: 'WalkMedia Name',
-                        suffixIcon: Icon(
-                          Icons.person,
-                          color: ColorManager.blue,
-                          size: FontSize.s20,
-                        ),
+                        hintText: 'description',
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: ColorManager.blueGrey),
                           borderRadius: BorderRadius.circular(AppRadius.r10),
@@ -185,6 +174,65 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
           ),
         );
       },
+    );
+  }
+
+  Widget _imagePickerButtons(WalkMediaAddBloc walkMediaAddBloc, BuildContext context, Size size) {
+    return Container(
+      decoration: BoxDecoration(color: ColorManager.redWhite, borderRadius: BorderRadius.circular(AppRadius.r10)),
+      margin: const EdgeInsets.only(bottom: 10.0),
+      padding: EdgeInsets.all(size.height * 0.02),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          InkWell(
+            onTap: () async {
+              walkMediaAddBloc.add(WalkMediaAddPickFromGalaryButtonPressEvent());
+            },
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.file_copy_outlined,
+                  color: Colors.blue,
+                ),
+                const SizedBox(
+                  width: 6.0,
+                ),
+                Text(
+                  AppStrings.pickGalary,
+                  style: TextStyle(color: Colors.red[900], fontWeight: FontWeight.bold),
+                )
+              ],
+            ),
+          ),
+          const Text(
+            '|',
+            style: TextStyle(
+              fontSize: 30,
+            ),
+          ),
+          InkWell(
+            onTap: () async {
+              walkMediaAddBloc.add(WalkMediaAddPickFromCameraButtonPressEvent());
+            },
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.camera_enhance_outlined,
+                  color: Colors.blue,
+                ),
+                const SizedBox(
+                  width: 6.0,
+                ),
+                Text(
+                  AppStrings.camera,
+                  style: TextStyle(color: Colors.red[900], fontWeight: FontWeight.bold),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

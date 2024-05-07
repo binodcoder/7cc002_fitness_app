@@ -148,7 +148,16 @@ class _CalendarPageState extends State<CalendarPage> {
                               });
                             }
                           },
-                          calendarStyle: const CalendarStyle(),
+                          calendarStyle: CalendarStyle(
+                            selectedDecoration: BoxDecoration(
+                              color: ColorManager.primary,
+                              shape: BoxShape.circle,
+                            ),
+                            markerDecoration: BoxDecoration(
+                              color: ColorManager.darkGrey,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
                         ),
                       );
 
