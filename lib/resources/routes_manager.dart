@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import '../layers/presentation/appointment/add_update_appointment/ui/add_appointment.dart';
 import '../layers/presentation/appointment/get_appointments/ui/appointment_details.dart';
 import '../layers/presentation/appointment/get_appointments/ui/calender.dart';
-import '../layers/presentation/call/call_page.dart';
 import '../layers/presentation/live_training/add_update_live_training/ui/add_live_training.dart';
 import '../layers/presentation/live_training/get_live_trainings/ui/live_training.dart';
 import '../layers/presentation/live_training/get_live_trainings/ui/live_training_details.dart';
@@ -50,21 +49,27 @@ class RouteGenerator {
       case Routes.addRoutine:
         return MaterialPageRoute(builder: (context) => const AddRoutinePage());
       case Routes.liveTraining:
-        return MaterialPageRoute(builder: (context) => const LiveTrainingPage());
+        return MaterialPageRoute(
+            builder: (context) => const LiveTrainingPage());
       case Routes.liveTrainingDetails:
-        return MaterialPageRoute(builder: (context) => const LiveTrainingDetailsPage());
+        return MaterialPageRoute(
+            builder: (context) => const LiveTrainingDetailsPage());
       case Routes.addLiveTraining:
-        return MaterialPageRoute(builder: (context) => const AddLiveTrainingDialog());
-      case Routes.call:
-        return MaterialPageRoute(builder: (context) => CallPage());
+        return MaterialPageRoute(
+            builder: (context) => const AddLiveTrainingDialog());
+      // case Routes.call:
+      //   return MaterialPageRoute(builder: (context) => CallPage());
       case Routes.calendar:
         return MaterialPageRoute(builder: (context) => const CalendarPage());
       case Routes.appointmentDetails:
-        return MaterialPageRoute(builder: (context) => const AppointmentDetailsPage());
+        return MaterialPageRoute(
+            builder: (context) => const AppointmentDetailsPage());
       case Routes.addAppointment:
-        return MaterialPageRoute(builder: (context) => const AddAppointmentDialog());
+        return MaterialPageRoute(
+            builder: (context) => const AddAppointmentDialog());
       case Routes.routineDetails:
-        return MaterialPageRoute(builder: (context) => const RoutineDetailsPage());
+        return MaterialPageRoute(
+            builder: (context) => const RoutineDetailsPage());
 
       default:
         return unDefinedRoute();

@@ -10,7 +10,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'injection_container.dart';
 import 'layers/presentation/appointment/get_appointments/ui/calender.dart';
-import 'layers/presentation/call/call_page.dart';
 import 'layers/presentation/login/ui/login_screen.dart';
 import 'layers/presentation/routine/get_routines/ui/routine.dart';
 import 'layers/presentation/walk/get_walks/ui/walk.dart';
@@ -54,7 +53,8 @@ class _MyDrawerState extends State<MyDrawer> {
                     fontSize: FontSize.s12,
                   ),
                 ),
-                currentAccountPicture: const CircleAvatar(backgroundImage: AssetImage('assets/images/image.jpg')),
+                currentAccountPicture: const CircleAvatar(
+                    backgroundImage: AssetImage('assets/images/image.jpg')),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
@@ -112,7 +112,8 @@ class _MyDrawerState extends State<MyDrawer> {
                 );
               },
             ),
-            sharedPreferences.getString('institutionEmail') == null || sharedPreferences.getString('institutionEmail') == ""
+            sharedPreferences.getString('institutionEmail') == null ||
+                    sharedPreferences.getString('institutionEmail') == ""
                 ? const SizedBox()
                 : ListTile(
                     leading: Icon(
@@ -171,14 +172,14 @@ class _MyDrawerState extends State<MyDrawer> {
                   fontSize: FontSize.s14,
                 ),
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => CallPage(),
-                  ),
-                );
-              },
+              // onTap: () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (BuildContext context) => CallPage(),
+              //     ),
+              //   );
+              // },
             ),
             ListTile(
               leading: Icon(
