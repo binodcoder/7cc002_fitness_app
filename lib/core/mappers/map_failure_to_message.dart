@@ -1,14 +1,14 @@
-import '../../resources/strings_manager.dart';
+import '../../layers/presentation/localization/app_strings.dart';
 import '../errors/failures.dart';
 
 String mapFailureToMessage(Failure failure) {
   switch (failure.runtimeType) {
     case ServerFailure:
-      return AppStrings.serverFailureMessage;
+      return AppStringsEn.serverFailure;
     case CacheFailure:
-      return AppStrings.cacheFailureMessage;
+      return AppStringsEn.cacheFailure;
     case LoginFailure:
-      return AppStrings.loginFailureMessage;
+      return AppStringsEn.loginFailure;
     default:
       return 'Unexpected error';
   }

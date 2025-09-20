@@ -1,10 +1,12 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../injection_container.dart';
-import '../../../resources/assets_manager.dart';
-import '../../../resources/colour_manager.dart';
-import '../../../resources/routes_manager.dart';
+
+import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/layers/presentation/assets/app_assets.dart';
+import 'package:fitness_app/layers/presentation/navigation/app_router.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -43,10 +45,8 @@ class _SplashViewState extends State<SplashView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorManager.primary,
-      body: const Center(
-        child: Image(
-          image: AssetImage(ImageAssets.splashLogo),
-        ),
+      body: Center(
+        child: Image.asset(ImageAssets.splashLogo),
       ),
     );
   }

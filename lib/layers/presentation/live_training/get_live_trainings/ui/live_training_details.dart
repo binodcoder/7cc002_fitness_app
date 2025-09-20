@@ -1,10 +1,11 @@
-import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../../../../core/model/live_training_model.dart';
-import '../../../../../resources/colour_manager.dart';
-import '../../../../../resources/font_manager.dart';
-import '../../../../../resources/values_manager.dart';
+
+import 'package:fitness_app/core/model/live_training_model.dart';
+import 'package:fitness_app/layers/presentation/localization/app_strings.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/font_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/values_manager.dart';
 
 class LiveTrainingDetailsPage extends StatefulWidget {
   const LiveTrainingDetailsPage({
@@ -15,7 +16,8 @@ class LiveTrainingDetailsPage extends StatefulWidget {
   final LiveTrainingModel? liveTrainingModel;
 
   @override
-  State<LiveTrainingDetailsPage> createState() => _LiveTrainingDetailsPageState();
+  State<LiveTrainingDetailsPage> createState() =>
+      _LiveTrainingDetailsPageState();
 }
 
 class _LiveTrainingDetailsPageState extends State<LiveTrainingDetailsPage> {
@@ -32,6 +34,7 @@ class _LiveTrainingDetailsPageState extends State<LiveTrainingDetailsPage> {
   @override
   Widget build(BuildContext context) {
     // Size size = MediaQuery.of(context).size;
+    final strings = AppStrings.of(context);
 
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -46,9 +49,7 @@ class _LiveTrainingDetailsPageState extends State<LiveTrainingDetailsPage> {
             Icons.arrow_back,
           ),
         ),
-        title: const Text(
-          AppStrings.titleLiveTrainingLabel,
-        ),
+        title: Text(strings.titleLiveTrainingLabel),
         centerTitle: true,
       ),
       body: Padding(
@@ -63,7 +64,8 @@ class _LiveTrainingDetailsPageState extends State<LiveTrainingDetailsPage> {
               contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
               tileColor: ColorManager.white,
               title: Text(
-                DateFormat("yMd").format(widget.liveTrainingModel!.trainingDate),
+                DateFormat("yMd")
+                    .format(widget.liveTrainingModel!.trainingDate),
                 style: const TextStyle(
                   fontSize: FontSize.s20,
                 ),

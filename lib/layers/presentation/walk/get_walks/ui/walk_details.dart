@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/model/walk_model.dart';
-import '../../../../../resources/colour_manager.dart';
-import '../../../../../resources/font_manager.dart';
-import '../../../../../resources/values_manager.dart';
+
+import 'package:fitness_app/core/model/walk_model.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/font_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/values_manager.dart';
 
 class WalkDetailsPage extends StatefulWidget {
   const WalkDetailsPage({

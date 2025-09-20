@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../resources/colour_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
 
 class SigninButton extends StatelessWidget {
   final Widget child;
@@ -25,7 +25,6 @@ class SigninButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(25.0),
         gradient: LinearGradient(
           colors: <Color>[
-
             ColorManager.primary,
             ColorManager.primaryOpacity70,
           ],

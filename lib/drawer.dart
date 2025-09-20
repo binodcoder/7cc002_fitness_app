@@ -1,8 +1,8 @@
 import 'package:fitness_app/layers/presentation/live_training/get_live_trainings/ui/live_training.dart';
-import 'package:fitness_app/resources/colour_manager.dart';
-import 'package:fitness_app/resources/font_manager.dart';
-import 'package:fitness_app/resources/strings_manager.dart';
-import 'package:fitness_app/resources/styles_manager.dart';
+import 'package:fitness_app/layers/presentation/localization/app_strings.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/font_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/styles_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +10,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'injection_container.dart';
 import 'layers/presentation/appointment/get_appointments/ui/calender.dart';
-import 'layers/presentation/call/call_page.dart';
 import 'layers/presentation/login/ui/login_screen.dart';
 import 'layers/presentation/routine/get_routines/ui/routine.dart';
 import 'layers/presentation/walk/get_walks/ui/walk.dart';
@@ -26,6 +25,7 @@ class _MyDrawerState extends State<MyDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    final strings = AppStrings.of(context);
     // Size size = MediaQuery.of(context).size;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
@@ -54,7 +54,8 @@ class _MyDrawerState extends State<MyDrawer> {
                     fontSize: FontSize.s12,
                   ),
                 ),
-                currentAccountPicture: const CircleAvatar(backgroundImage: AssetImage('assets/images/image.jpg')),
+                currentAccountPicture: const CircleAvatar(
+                    backgroundImage: AssetImage('assets/images/image.jpg')),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
@@ -74,7 +75,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 color: ColorManager.primary,
               ),
               title: Text(
-                AppStrings.titleRoutineLabel,
+                strings.titleRoutineLabel,
                 textScaleFactor: 1.2,
                 style: getSemiBoldStyle(
                   color: ColorManager.darkGrey,
@@ -96,7 +97,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 color: ColorManager.primary,
               ),
               title: Text(
-                AppStrings.titleAppointmentLabel,
+                strings.titleAppointmentLabel,
                 textScaleFactor: 1.2,
                 style: getSemiBoldStyle(
                   color: ColorManager.darkGrey,
@@ -112,7 +113,8 @@ class _MyDrawerState extends State<MyDrawer> {
                 );
               },
             ),
-            sharedPreferences.getString('institutionEmail') == null || sharedPreferences.getString('institutionEmail') == ""
+            sharedPreferences.getString('institutionEmail') == null ||
+                    sharedPreferences.getString('institutionEmail') == ""
                 ? const SizedBox()
                 : ListTile(
                     leading: Icon(
@@ -120,7 +122,7 @@ class _MyDrawerState extends State<MyDrawer> {
                       color: ColorManager.primary,
                     ),
                     title: Text(
-                      AppStrings.walk,
+                      strings.walk,
                       textScaleFactor: 1.2,
                       style: getSemiBoldStyle(
                         color: ColorManager.darkGrey,
@@ -142,7 +144,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 color: ColorManager.primary,
               ),
               title: Text(
-                "Live Trainings",
+                strings.titleLiveTrainingLabel,
                 textScaleFactor: 1.2,
                 style: getSemiBoldStyle(
                   color: ColorManager.darkGrey,
@@ -171,14 +173,14 @@ class _MyDrawerState extends State<MyDrawer> {
                   fontSize: FontSize.s14,
                 ),
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => CallPage(),
-                  ),
-                );
-              },
+              // onTap: () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (BuildContext context) => CallPage(),
+              //     ),
+              //   );
+              // },
             ),
             ListTile(
               leading: Icon(

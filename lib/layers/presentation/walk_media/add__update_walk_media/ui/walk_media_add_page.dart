@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../../../core/model/walk_media_model.dart';
-import '../../../../../injection_container.dart';
-import '../../../../../resources/colour_manager.dart';
-import '../../../../../resources/font_manager.dart';
-import '../../../../../resources/strings_manager.dart';
-import '../../../../../resources/styles_manager.dart';
-import '../../../../../resources/values_manager.dart';
+
+import 'package:fitness_app/core/model/walk_media_model.dart';
+import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/layers/presentation/localization/app_strings.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/font_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/styles_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/values_manager.dart';
+
 import '../../../login/widgets/sign_in_button.dart';
 import '../bloc/walk_media_add_bloc.dart';
 import '../bloc/walk_media_add_event.dart';
@@ -30,7 +32,8 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
   void initState() {
     if (widget.walkMediaModel != null) {
       walkMediaUrlController.text = widget.walkMediaModel!.mediaUrl;
-      walkMediaAddBloc.add(WalkMediaAddReadyToUpdateEvent(widget.walkMediaModel!));
+      walkMediaAddBloc
+          .add(WalkMediaAddReadyToUpdateEvent(widget.walkMediaModel!));
     } else {
       walkMediaAddBloc.add(WalkMediaAddInitialEvent());
     }
@@ -43,6 +46,7 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final strings = AppStrings.of(context);
     return BlocConsumer<WalkMediaAddBloc, WalkMediaAddState>(
       bloc: walkMediaAddBloc,
       listenWhen: (previous, current) => current is WalkMediaAddActionState,
@@ -71,7 +75,9 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: ColorManager.primary,
-            title: const Text(AppStrings.addWalkMedia),
+            title: Text(widget.walkMediaModel == null
+                ? strings.addWalkMedia
+                : strings.updateWalkMedia),
           ),
           body: GestureDetector(
             onTap: () {
@@ -132,7 +138,9 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                     ),
                     SigninButton(
                       child: Text(
-                        widget.walkMediaModel == null ? AppStrings.addWalkMedia : AppStrings.updateWalkMedia,
+                        widget.walkMediaModel == null
+                            ? strings.addWalkMedia
+                            : strings.updateWalkMedia,
                         style: getRegularStyle(
                           fontSize: FontSize.s16,
                           color: ColorManager.white,
@@ -151,14 +159,17 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                               userId: userId!,
                               mediaUrl: mediaUrl,
                             );
-                            walkMediaAddBloc.add(WalkMediaAddUpdateButtonPressEvent(updatedWalkMedia));
+                            walkMediaAddBloc.add(
+                                WalkMediaAddUpdateButtonPressEvent(
+                                    updatedWalkMedia));
                           } else {
                             var newWalkMedia = WalkMediaModel(
                               walkId: walkId!,
                               userId: userId!,
                               mediaUrl: mediaUrl,
                             );
-                            walkMediaAddBloc.add(WalkMediaAddSaveButtonPressEvent(newWalkMedia));
+                            walkMediaAddBloc.add(
+                                WalkMediaAddSaveButtonPressEvent(newWalkMedia));
                           }
                         }
                       },
@@ -177,9 +188,12 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
     );
   }
 
-  Widget _imagePickerButtons(WalkMediaAddBloc walkMediaAddBloc, BuildContext context, Size size) {
+  Widget _imagePickerButtons(
+      WalkMediaAddBloc walkMediaAddBloc, BuildContext context, Size size) {
     return Container(
-      decoration: BoxDecoration(color: ColorManager.redWhite, borderRadius: BorderRadius.circular(AppRadius.r10)),
+      decoration: BoxDecoration(
+          color: ColorManager.redWhite,
+          borderRadius: BorderRadius.circular(AppRadius.r10)),
       margin: const EdgeInsets.only(bottom: 10.0),
       padding: EdgeInsets.all(size.height * 0.02),
       child: Row(
@@ -187,7 +201,8 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
         children: [
           InkWell(
             onTap: () async {
-              walkMediaAddBloc.add(WalkMediaAddPickFromGalaryButtonPressEvent());
+              walkMediaAddBloc
+                  .add(WalkMediaAddPickFromGalaryButtonPressEvent());
             },
             child: Row(
               children: [
@@ -199,8 +214,9 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                   width: 6.0,
                 ),
                 Text(
-                  AppStrings.pickGalary,
-                  style: TextStyle(color: Colors.red[900], fontWeight: FontWeight.bold),
+                  AppStrings.of(context).pickGalary,
+                  style: TextStyle(
+                      color: Colors.red[900], fontWeight: FontWeight.bold),
                 )
               ],
             ),
@@ -213,7 +229,8 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
           ),
           InkWell(
             onTap: () async {
-              walkMediaAddBloc.add(WalkMediaAddPickFromCameraButtonPressEvent());
+              walkMediaAddBloc
+                  .add(WalkMediaAddPickFromCameraButtonPressEvent());
             },
             child: Row(
               children: [
@@ -225,8 +242,9 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                   width: 6.0,
                 ),
                 Text(
-                  AppStrings.camera,
-                  style: TextStyle(color: Colors.red[900], fontWeight: FontWeight.bold),
+                  AppStrings.of(context).camera,
+                  style: TextStyle(
+                      color: Colors.red[900], fontWeight: FontWeight.bold),
                 )
               ],
             ),

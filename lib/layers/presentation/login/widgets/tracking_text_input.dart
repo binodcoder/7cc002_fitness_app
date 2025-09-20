@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'package:fitness_app/layers/presentation/common/global_declaration.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/values_manager.dart';
 
-import '../../../../resources/colour_manager.dart';
-import '../../../../resources/global_declaration.dart';
-import '../../../../resources/values_manager.dart';
 import 'input_helper.dart';
 
 class TrackingTextInput extends StatefulWidget {
@@ -42,8 +42,10 @@ class _TrackingTextInputState extends State<TrackingTextInput> {
       if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
       _debounceTimer = Timer(const Duration(milliseconds: 100), () {
         if (_fieldKey.currentContext != null) {
-          final RenderObject? fieldBox = _fieldKey.currentContext?.findRenderObject();
-          var caretPosition = fieldBox is RenderBox ? getCaretPosition(fieldBox) : null;
+          final RenderObject? fieldBox =
+              _fieldKey.currentContext?.findRenderObject();
+          var caretPosition =
+              fieldBox is RenderBox ? getCaretPosition(fieldBox) : null;
 
           widget.onCaretMoved?.call(caretPosition);
         }

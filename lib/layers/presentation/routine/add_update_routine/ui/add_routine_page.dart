@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../../../../../core/model/routine_model.dart';
-import '../../../../../injection_container.dart';
-import '../../../../../resources/colour_manager.dart';
-import '../../../../../resources/font_manager.dart';
-import '../../../../../resources/strings_manager.dart';
-import '../../../../../resources/styles_manager.dart';
-import '../../../../../resources/values_manager.dart';
+
+import 'package:fitness_app/core/model/routine_model.dart';
+import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/layers/presentation/localization/app_strings.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/font_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/styles_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/values_manager.dart';
+
 import '../../../login/widgets/sign_in_button.dart';
 import '../bloc/routine_add_bloc.dart';
 import '../bloc/routine_add_event.dart';
@@ -53,6 +55,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
   @override
   Widget build(BuildContext context) {
     //var size = MediaQuery.of(context).size;
+    final strings = AppStrings.of(context);
     return BlocConsumer<RoutineAddBloc, RoutineAddState>(
       bloc: routineAddBloc,
       listenWhen: (previous, current) => current is RoutineAddActionState,
@@ -91,7 +94,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
           child: Scaffold(
             appBar: AppBar(
               backgroundColor: ColorManager.primary,
-              title: const Text(AppStrings.addRoutine),
+              title: Text(strings.addRoutine),
             ),
             body: GestureDetector(
               onTap: () {
@@ -140,7 +143,8 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                           filled: true,
                           hintText: 'Routine Name',
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: ColorManager.blueGrey),
+                            borderSide:
+                                BorderSide(color: ColorManager.blueGrey),
                             borderRadius: BorderRadius.circular(AppRadius.r10),
                           ),
                           focusedBorder: OutlineInputBorder(
@@ -183,7 +187,8 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                           filled: true,
                           hintText: 'Description',
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: ColorManager.blueGrey),
+                            borderSide:
+                                BorderSide(color: ColorManager.blueGrey),
                             borderRadius: BorderRadius.circular(AppRadius.r10),
                           ),
                           focusedBorder: OutlineInputBorder(
@@ -226,7 +231,8 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                           filled: true,
                           hintText: 'Difficulty',
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: ColorManager.blueGrey),
+                            borderSide:
+                                BorderSide(color: ColorManager.blueGrey),
                             borderRadius: BorderRadius.circular(AppRadius.r10),
                           ),
                           focusedBorder: OutlineInputBorder(
@@ -269,7 +275,8 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                           filled: true,
                           hintText: 'Duration',
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: ColorManager.blueGrey),
+                            borderSide:
+                                BorderSide(color: ColorManager.blueGrey),
                             borderRadius: BorderRadius.circular(AppRadius.r10),
                           ),
                           focusedBorder: OutlineInputBorder(
@@ -312,7 +319,8 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                           filled: true,
                           hintText: 'Source',
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: ColorManager.blueGrey),
+                            borderSide:
+                                BorderSide(color: ColorManager.blueGrey),
                             borderRadius: BorderRadius.circular(AppRadius.r10),
                           ),
                           focusedBorder: OutlineInputBorder(
@@ -333,7 +341,9 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                       ),
                       SigninButton(
                         child: Text(
-                          widget.routineModel == null ? AppStrings.addRoutine : AppStrings.updateRoutine,
+                          widget.routineModel == null
+                              ? strings.addRoutine
+                              : strings.updateRoutine,
                           style: getRegularStyle(
                             fontSize: FontSize.s16,
                             color: ColorManager.white,
@@ -355,7 +365,9 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                                 duration: int.parse(duration),
                                 source: source,
                               );
-                              routineAddBloc.add(RoutineAddUpdateButtonPressEvent(updatedRoutine));
+                              routineAddBloc.add(
+                                  RoutineAddUpdateButtonPressEvent(
+                                      updatedRoutine));
                             } else {
                               var newRoutine = RoutineModel(
                                 name: routineName,
@@ -364,7 +376,8 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                                 duration: int.parse(duration),
                                 source: source,
                               );
-                              routineAddBloc.add(RoutineAddSaveButtonPressEvent(newRoutine));
+                              routineAddBloc.add(
+                                  RoutineAddSaveButtonPressEvent(newRoutine));
                             }
                           }
                         },

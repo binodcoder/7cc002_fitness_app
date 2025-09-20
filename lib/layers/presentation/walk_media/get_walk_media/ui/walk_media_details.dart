@@ -1,9 +1,10 @@
-import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
-import '../../../../../core/model/walk_media_model.dart';
-import '../../../../../resources/colour_manager.dart';
-import '../../../../../resources/font_manager.dart';
-import '../../../../../resources/values_manager.dart';
+
+import 'package:fitness_app/core/model/walk_media_model.dart';
+import 'package:fitness_app/layers/presentation/localization/app_strings.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/font_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/values_manager.dart';
 
 class WalkMediaDetailsPage extends StatefulWidget {
   const WalkMediaDetailsPage({
@@ -32,14 +33,14 @@ class _WalkMediaDetailsPageState extends State<WalkMediaDetailsPage> {
   Widget build(BuildContext context) {
     // Size size = MediaQuery.of(context).size;
 
+    final strings = AppStrings.of(context);
+
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       backgroundColor: ColorManager.white,
       appBar: AppBar(
         backgroundColor: ColorManager.primary,
-        title: const Text(
-          AppStrings.titleWalkMediaLabel,
-        ),
+        title: Text(strings.titleWalkMediaLabel),
         centerTitle: true,
       ),
       body: Padding(

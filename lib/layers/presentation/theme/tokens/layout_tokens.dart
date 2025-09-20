@@ -1,6 +1,8 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppMargin {
+  const AppMargin._();
+
   static const double m8 = 8.0;
   static const double m12 = 12.0;
   static const double m14 = 14.0;
@@ -10,6 +12,8 @@ class AppMargin {
 }
 
 class AppPadding {
+  const AppPadding._();
+
   static const double p3 = 3.0;
   static const double p6 = 6.0;
   static const double p7 = 7.0;
@@ -22,6 +26,8 @@ class AppPadding {
 }
 
 class AppSize {
+  const AppSize._();
+
   static const double s0 = 0;
   static const double s1_5 = 1.5;
   static const double s4 = 4.0;
@@ -40,6 +46,8 @@ class AppSize {
 }
 
 class AppHeight {
+  const AppHeight._();
+
   static double h1 = 1.h;
   static double h2 = 2.h;
   static double h3 = 3.h;
@@ -69,6 +77,8 @@ class AppHeight {
 }
 
 class AppWidth {
+  const AppWidth._();
+
   static double w0 = 0.1.w;
   static double w1 = 1.w;
   static double w2 = 2.w;
@@ -104,6 +114,8 @@ class AppWidth {
 }
 
 class AppRadius {
+  const AppRadius._();
+
   static double r4 = 4.r;
   static double r6 = 6.r;
   static double r8 = 8.r;
@@ -114,7 +126,6 @@ class AppRadius {
   static double r18 = 18.r;
   static double r20 = 20.r;
   static double r25 = 25.r;
-
   static double r28 = 28.r;
   static double r30 = 30.r;
   static double r35 = 35.r;
@@ -124,5 +135,7 @@ class AppRadius {
 }
 
 class DurationConstant {
+  const DurationConstant._();
+
   static const int d300 = 300;
 }

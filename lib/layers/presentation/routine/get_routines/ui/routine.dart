@@ -1,16 +1,18 @@
-import 'package:fitness_app/layers/presentation/routine/add_update_routine/ui/add_routine_page.dart';
-import 'package:fitness_app/layers/presentation/routine/get_routines/ui/routine_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../../../core/db/db_helper.dart';
-import '../../../../../drawer.dart';
-import '../../../../../resources/colour_manager.dart';
-import '../../../../../resources/strings_manager.dart';
+
+import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/drawer.dart';
+import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/layers/presentation/localization/app_strings.dart';
+import 'package:fitness_app/layers/presentation/routine/add_update_routine/ui/add_routine_page.dart';
+import 'package:fitness_app/layers/presentation/routine/get_routines/ui/routine_details.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+
 import '../bloc/routine_bloc.dart';
-import '../../../../../injection_container.dart';
 import '../bloc/routine_event.dart';
 import '../bloc/routine_state.dart';
 
@@ -40,6 +42,7 @@ class _RoutinePageState extends State<RoutinePage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final strings = AppStrings.of(context);
 
     return BlocConsumer<RoutineBloc, RoutineState>(
       bloc: postBloc,
@@ -101,18 +104,19 @@ class _RoutinePageState extends State<RoutinePage> {
               child: Scaffold(
                 backgroundColor: ColorManager.darkWhite,
                 drawer: const MyDrawer(),
-                floatingActionButton: sharedPreferences.getString('role') == "trainer"
-                    ? FloatingActionButton(
-                        backgroundColor: ColorManager.primary,
-                        child: const Icon(Icons.add),
-                        onPressed: () {
-                          postBloc.add(RoutineAddButtonClickedEvent());
-                        },
-                      )
-                    : null,
+                floatingActionButton:
+                    sharedPreferences.getString('role') == "trainer"
+                        ? FloatingActionButton(
+                            backgroundColor: ColorManager.primary,
+                            child: const Icon(Icons.add),
+                            onPressed: () {
+                              postBloc.add(RoutineAddButtonClickedEvent());
+                            },
+                          )
+                        : null,
                 appBar: AppBar(
                   backgroundColor: ColorManager.primary,
-                  title: const Text(AppStrings.titleRoutineLabel),
+                  title: Text(strings.titleRoutineLabel),
                 ),
                 body: ListView.builder(
                   itemCount: successState.routineModelList.length,
@@ -125,7 +129,8 @@ class _RoutinePageState extends State<RoutinePage> {
                         children: [
                           SlidableAction(
                             onPressed: (context) {
-                              postBloc.add(RoutineEditButtonClickedEvent(routineModel));
+                              postBloc.add(
+                                  RoutineEditButtonClickedEvent(routineModel));
                             },
                             backgroundColor: const Color(0xFF21B7CA),
                             foregroundColor: Colors.white,
@@ -156,7 +161,8 @@ class _RoutinePageState extends State<RoutinePage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (BuildContext context) => RoutineDetailsPage(
+                                builder: (BuildContext context) =>
+                                    RoutineDetailsPage(
                                   routineModel: routineModel,
                                 ),
                               ),

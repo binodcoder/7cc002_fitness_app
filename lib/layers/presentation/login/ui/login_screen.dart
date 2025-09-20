@@ -3,12 +3,14 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../../../../core/model/login_model.dart';
-import '../../../../injection_container.dart';
-import '../../../../resources/colour_manager.dart';
-import '../../../../resources/font_manager.dart';
-import '../../../../resources/styles_manager.dart';
-import '../../../../resources/values_manager.dart';
+
+import 'package:fitness_app/core/model/login_model.dart';
+import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/font_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/styles_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/values_manager.dart';
+
 import '../../register/ui/register_page.dart';
 import '../../routine/get_routines/ui/routine.dart';
 import '../bloc/login_bloc.dart';
@@ -109,7 +111,10 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     Positioned.fill(
                       child: SingleChildScrollView(
-                        padding: EdgeInsets.only(left: AppWidth.w20, right: AppWidth.w20, top: devicePadding.top + AppHeight.h50),
+                        padding: EdgeInsets.only(
+                            left: AppWidth.w20,
+                            right: AppWidth.w20,
+                            top: devicePadding.top + AppHeight.h50),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -125,7 +130,8 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             Container(
                               height: size.height * 0.2,
-                              padding: EdgeInsets.only(left: AppWidth.w30, right: AppWidth.w30),
+                              padding: EdgeInsets.only(
+                                  left: AppWidth.w30, right: AppWidth.w30),
                               child: FlareActor(
                                 "assets/images/Teddy.flr",
                                 shouldClip: false,
@@ -144,9 +150,11 @@ class _LoginPageState extends State<LoginPage> {
                               child: Form(
                                 key: formKey,
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: AppWidth.w20),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: AppWidth.w20),
                                   child: Container(
-                                    padding: EdgeInsets.symmetric(horizontal: AppWidth.w20),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: AppWidth.w20),
                                     decoration: BoxDecoration(
                                       color: ColorManager.white,
                                       borderRadius: BorderRadius.circular(
@@ -154,8 +162,10 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                     ),
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         SizedBox(
                                           height: AppHeight.h20,
@@ -172,7 +182,8 @@ class _LoginPageState extends State<LoginPage> {
                                         ),
                                         TrackingTextInput(
                                           hint: "UserName",
-                                          textEditingController: userNameController,
+                                          textEditingController:
+                                              userNameController,
                                           isObscured: false,
                                           icon: IconButton(
                                             onPressed: () {},
@@ -184,7 +195,8 @@ class _LoginPageState extends State<LoginPage> {
                                           ),
                                           onCaretMoved: (Offset? caret) {
                                             caretView = caret;
-                                            bearLogInController.coverEyes(caret == null);
+                                            bearLogInController
+                                                .coverEyes(caret == null);
                                             bearLogInController.lookAt(caret);
                                           },
                                         ),
@@ -201,19 +213,28 @@ class _LoginPageState extends State<LoginPage> {
                                         TrackingTextInput(
                                           hint: "Password",
                                           isObscured: !_passwordVisible,
-                                          textEditingController: passwordController,
+                                          textEditingController:
+                                              passwordController,
                                           icon: IconButton(
                                             icon: Icon(
-                                              _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                                              _passwordVisible
+                                                  ? Icons.visibility
+                                                  : Icons.visibility_off,
                                               color: ColorManager.blue,
                                             ),
                                             onPressed: () {
                                               setState(
                                                 () {
-                                                  _passwordVisible = !_passwordVisible;
-                                                  if (_passwordVisible == true && caretView != null) {
-                                                    bearLogInController.coverEyes(caretView == null);
-                                                    bearLogInController.lookAt(caretView);
+                                                  _passwordVisible =
+                                                      !_passwordVisible;
+                                                  if (_passwordVisible ==
+                                                          true &&
+                                                      caretView != null) {
+                                                    bearLogInController
+                                                        .coverEyes(
+                                                            caretView == null);
+                                                    bearLogInController
+                                                        .lookAt(caretView);
                                                   }
                                                 },
                                               );
@@ -221,11 +242,14 @@ class _LoginPageState extends State<LoginPage> {
                                           ),
                                           onCaretMoved: (Offset? caret) {
                                             if (_passwordVisible == false) {
-                                              bearLogInController.coverEyes(caret != null);
+                                              bearLogInController
+                                                  .coverEyes(caret != null);
                                               bearLogInController.lookAt(null);
                                             } else {
-                                              bearLogInController.coverEyes(caretView == null);
-                                              bearLogInController.lookAt(caretView);
+                                              bearLogInController
+                                                  .coverEyes(caretView == null);
+                                              bearLogInController
+                                                  .lookAt(caretView);
                                             }
                                           },
                                         ),
@@ -251,7 +275,8 @@ class _LoginPageState extends State<LoginPage> {
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                    builder: (context) => const RegisterPage(),
+                                                    builder: (context) =>
+                                                        const RegisterPage(),
                                                   ),
                                                 );
                                               },

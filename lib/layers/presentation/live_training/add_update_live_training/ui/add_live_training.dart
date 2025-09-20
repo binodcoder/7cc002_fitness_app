@@ -1,15 +1,17 @@
-import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../../../../core/model/live_training_model.dart';
-import '../../../../../injection_container.dart';
-import '../../../../../resources/colour_manager.dart';
-import '../../../../../resources/font_manager.dart';
-import '../../../../../resources/styles_manager.dart';
-import '../../../../../resources/values_manager.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:fitness_app/core/model/live_training_model.dart';
+import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/layers/presentation/localization/app_strings.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/font_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/styles_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/values_manager.dart';
+
 import '../../../login/widgets/sign_in_button.dart';
 import '../bloc/live_training_add_bloc.dart';
 import '../bloc/live_training_add_event.dart';
@@ -105,7 +107,8 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
   String formatTimeOfDay(TimeOfDay timeOfDay) {
     final hours = timeOfDay.hour.toString().padLeft(2, '0');
     final minutes = timeOfDay.minute.toString().padLeft(2, '0');
-    const seconds = '00'; // TimeOfDay doesn't have seconds, so we assume it as 00
+    const seconds =
+        '00'; // TimeOfDay doesn't have seconds, so we assume it as 00
     return '$hours:$minutes:$seconds';
   }
 
@@ -115,7 +118,8 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
     if (widget.liveTrainingModel != null) {
       _titleController.text = widget.liveTrainingModel!.title;
       selectedDate = widget.liveTrainingModel!.trainingDate;
-      _dateController.text = DateFormat('yyyy-MM-dd').format(widget.liveTrainingModel!.trainingDate);
+      _dateController.text = DateFormat('yyyy-MM-dd')
+          .format(widget.liveTrainingModel!.trainingDate);
       _startTimeController.text = widget.liveTrainingModel!.startTime;
       _endTimeController.text = widget.liveTrainingModel!.endTime;
       _descriptionController.text = widget.liveTrainingModel!.description;
@@ -141,6 +145,7 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final strings = AppStrings.of(context);
     _height = size.height;
     _width = size.width;
     return BlocConsumer<LiveTrainingAddBloc, LiveTrainingAddState>(
@@ -188,9 +193,9 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
               },
             ),
             centerTitle: true,
-            title: const Text(
-              AppStrings.addLiveTraining,
-              style: TextStyle(fontSize: 16.0),
+            title: Text(
+              strings.addLiveTraining,
+              style: const TextStyle(fontSize: 16.0),
             ),
           ),
           body: Padding(
@@ -208,9 +213,11 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                       controller: _titleController,
                       textInputAction: TextInputAction.go,
                       decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 20.0, horizontal: 10.0),
                         border: OutlineInputBorder(
-                          borderSide: const BorderSide(width: 1.5, color: Colors.blue),
+                          borderSide:
+                              const BorderSide(width: 1.5, color: Colors.blue),
                           borderRadius: BorderRadius.circular(AppRadius.r4),
                         ),
                         labelText: 'Title',
@@ -237,7 +244,9 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                           // _setDate = val!;
                         },
                         decoration: const InputDecoration(
-                            disabledBorder: UnderlineInputBorder(borderSide: BorderSide.none), contentPadding: EdgeInsets.only(top: 0.0)),
+                            disabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide.none),
+                            contentPadding: EdgeInsets.only(top: 0.0)),
                       ),
                     ),
                   ),
@@ -266,7 +275,9 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                               // _setDate = val!;
                             },
                             decoration: const InputDecoration(
-                                disabledBorder: UnderlineInputBorder(borderSide: BorderSide.none), contentPadding: EdgeInsets.only(top: 0.0)),
+                                disabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide.none),
+                                contentPadding: EdgeInsets.only(top: 0.0)),
                           ),
                         ),
                       ),
@@ -289,7 +300,9 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                               // _setTime = val!;
                             },
                             decoration: const InputDecoration(
-                                disabledBorder: UnderlineInputBorder(borderSide: BorderSide.none), contentPadding: EdgeInsets.only(top: 0.0)),
+                                disabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide.none),
+                                contentPadding: EdgeInsets.only(top: 0.0)),
                           ),
                         ),
                       ),
@@ -306,9 +319,11 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                       controller: _descriptionController,
                       textInputAction: TextInputAction.go,
                       decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 20.0, horizontal: 10.0),
                         border: OutlineInputBorder(
-                          borderSide: const BorderSide(width: 1.5, color: Colors.blue),
+                          borderSide:
+                              const BorderSide(width: 1.5, color: Colors.blue),
                           borderRadius: BorderRadius.circular(AppRadius.r4),
                         ),
                         labelText: 'Descriptions',
@@ -321,7 +336,7 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                   ),
                   SigninButton(
                     child: Text(
-                      AppStrings.save,
+                      strings.save,
                       style: getRegularStyle(
                         fontSize: FontSize.s16,
                         color: ColorManager.white,
@@ -338,7 +353,9 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                             startTime: _startTimeController.text,
                             endTime: _endTimeController.text,
                           );
-                          liveTrainingAddBloc.add(LiveTrainingAddUpdateButtonPressEvent(liveTrainingModel));
+                          liveTrainingAddBloc.add(
+                              LiveTrainingAddUpdateButtonPressEvent(
+                                  liveTrainingModel));
                         } else {
                           var liveTrainingModel = LiveTrainingModel(
                             trainerId: sharedPreferences.getInt("user_id")!,
@@ -348,7 +365,9 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                             startTime: _startTimeController.text,
                             endTime: _endTimeController.text,
                           );
-                          liveTrainingAddBloc.add(LiveTrainingAddSaveButtonPressEvent(liveTrainingModel));
+                          liveTrainingAddBloc.add(
+                              LiveTrainingAddSaveButtonPressEvent(
+                                  liveTrainingModel));
                         }
                       }
                     },

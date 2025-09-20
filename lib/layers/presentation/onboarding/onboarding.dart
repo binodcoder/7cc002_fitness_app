@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
-import '../../../core/model/model.dart';
-import '../../../resources/assets_manager.dart';
-import '../../../resources/colour_manager.dart';
-import '../../../resources/routes_manager.dart';
-import '../../../resources/strings_manager.dart';
-import '../../../resources/values_manager.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:fitness_app/core/model/model.dart';
+import 'package:fitness_app/layers/presentation/assets/app_assets.dart';
+import 'package:fitness_app/layers/presentation/localization/app_strings.dart';
+import 'package:fitness_app/layers/presentation/navigation/app_router.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/values_manager.dart';
 import 'onboarding_viewmodel.dart';
 
 class OnBoardingView extends StatefulWidget {
@@ -86,7 +87,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                         Navigator.pushNamed(context, Routes.loginRoute);
                       },
                       child: Text(
-                        AppStrings.skip,
+                        AppStrings.of(context).skip,
                         textAlign: TextAlign.end,
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
@@ -113,7 +114,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
               child: SizedBox(
                 height: AppSize.s20,
                 width: AppSize.s20,
-                child: SvgPicture.asset(ImageAssets.leftArrowIc),
+                child: SvgPicture.asset(ImageAssets.leftArrow),
               ),
               onTap: () {
                 //go to previous slide
@@ -144,7 +145,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
               child: SizedBox(
                 height: AppSize.s20,
                 width: AppSize.s20,
-                child: SvgPicture.asset(ImageAssets.rightArrowIc),
+                child: SvgPicture.asset(ImageAssets.rightArrow),
               ),
               onTap: () {
                 //go to next slide
@@ -163,9 +164,9 @@ class _OnBoardingViewState extends State<OnBoardingView> {
 
   Widget _getProperCircle(int index, int currentIndex) {
     if (index == currentIndex) {
-      return SvgPicture.asset(ImageAssets.hollowCircleIc); //selected slider
+      return SvgPicture.asset(ImageAssets.hollowCircle); //selected slider
     } else {
-      return SvgPicture.asset(ImageAssets.solidCircleIc); //unselected slider
+      return SvgPicture.asset(ImageAssets.solidCircle); //unselected slider
     }
   }
 }

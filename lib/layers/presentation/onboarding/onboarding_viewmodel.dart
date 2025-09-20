@@ -1,12 +1,15 @@
 import 'dart:async';
-import 'package:fitness_app/layers/presentation/base/baseviewmodel.dart';
-import '../../../core/model/model.dart';
-import '../../../resources/assets_manager.dart';
-import '../../../resources/strings_manager.dart';
 
-class OnBoardingViewModel extends BaseViewModel with OnBoardingViewModelInputs, OnBoardingViewModelOutputs {
+import 'package:fitness_app/core/model/model.dart';
+import 'package:fitness_app/layers/presentation/assets/app_assets.dart';
+import 'package:fitness_app/layers/presentation/base/baseviewmodel.dart';
+import 'package:fitness_app/layers/presentation/localization/app_strings.dart';
+
+class OnBoardingViewModel extends BaseViewModel
+    with OnBoardingViewModelInputs, OnBoardingViewModelOutputs {
   //stream controllers
-  final StreamController<SliderViewObject> _streamController = StreamController<SliderViewObject>();
+  final StreamController<SliderViewObject> _streamController =
+      StreamController<SliderViewObject>();
   late final List<SliderObject> _list;
   int currentIndex = 0;
   //inputs
@@ -35,7 +38,8 @@ class OnBoardingViewModel extends BaseViewModel with OnBoardingViewModelInputs, 
   int goPrevious() {
     int previousIndex = currentIndex--; //-1
     if (previousIndex == -1) {
-      currentIndex = _list.length - 1; // infinite loop to go to the length of slider list
+      currentIndex =
+          _list.length - 1; // infinite loop to go to the length of slider list
     }
 
     return currentIndex;
@@ -52,34 +56,38 @@ class OnBoardingViewModel extends BaseViewModel with OnBoardingViewModelInputs, 
 
 //outputs
   @override
-  Stream<SliderViewObject> get outputSliderViewObject => _streamController.stream.asBroadcastStream().map((slideViewObject) => slideViewObject);
+  Stream<SliderViewObject> get outputSliderViewObject =>
+      _streamController.stream
+          .asBroadcastStream()
+          .map((slideViewObject) => slideViewObject);
 
 // private functions
   List<SliderObject> _getSliderData() => [
         SliderObject(
-          title: AppStrings.onBoardingTItle1,
-          subTitle: AppStrings.onBoardingSubTitle1,
+          title: AppStringsEn.onboardingTitle1,
+          subTitle: AppStringsEn.onboardingSubtitle1,
           image: ImageAssets.onBoardingLogo1,
         ),
         SliderObject(
-          title: AppStrings.onBoardingTItle2,
-          subTitle: AppStrings.onBoardingSubTitle2,
+          title: AppStringsEn.onboardingTitle2,
+          subTitle: AppStringsEn.onboardingSubtitle2,
           image: ImageAssets.onBoardingLogo2,
         ),
         SliderObject(
-          title: AppStrings.onBoardingTItle3,
-          subTitle: AppStrings.onBoardingSubTitle3,
+          title: AppStringsEn.onboardingTitle3,
+          subTitle: AppStringsEn.onboardingSubtitle3,
           image: ImageAssets.onBoardingLogo3,
         ),
         SliderObject(
-          title: AppStrings.onBoardingTItle4,
-          subTitle: AppStrings.onBoardingSubTitle4,
+          title: AppStringsEn.onboardingTitle4,
+          subTitle: AppStringsEn.onboardingSubtitle4,
           image: ImageAssets.onBoardingLogo4,
         ),
       ];
 
   _postDataToView() {
-    inputSliderViewObject.add(SliderViewObject(_list[currentIndex], _list.length, currentIndex));
+    inputSliderViewObject
+        .add(SliderViewObject(_list[currentIndex], _list.length, currentIndex));
   }
 }
 
@@ -89,7 +97,8 @@ mixin OnBoardingViewModelInputs {
   void goPrevious(); //when user clicks on left arrow or swipe right.
   void onPageChanged(int index);
 
-  Sink get inputSliderViewObject; //this is the way to add data to the stream .. stream input
+  Sink
+      get inputSliderViewObject; //this is the way to add data to the stream .. stream input
 }
 
 //outputs mean data or results that will be sent from our vie model to our view

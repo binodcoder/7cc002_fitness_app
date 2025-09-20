@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../../../core/db/db_helper.dart';
-import '../../../../../core/model/walk_model.dart';
-import '../../../../../injection_container.dart';
-import '../../../../../resources/colour_manager.dart';
-import '../../../../../resources/font_manager.dart';
-import '../../../../../resources/strings_manager.dart';
-import '../../../../../resources/styles_manager.dart';
-import '../../../../../resources/values_manager.dart';
+
+import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/core/model/walk_model.dart';
+import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/layers/presentation/localization/app_strings.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/font_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/styles_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/values_manager.dart';
+
 import '../../../login/widgets/sign_in_button.dart';
 import '../bloc/walk_add_bloc.dart';
 import '../bloc/walk_add_event.dart';
@@ -54,6 +56,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
   @override
   Widget build(BuildContext context) {
     // var size = MediaQuery.of(context).size;
+    final strings = AppStrings.of(context);
     return BlocConsumer<WalkAddBloc, WalkAddState>(
       bloc: walkAddBloc,
       listenWhen: (previous, current) => current is WalkAddActionState,
@@ -78,7 +81,9 @@ class _AddWalkPageState extends State<AddWalkPage> {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: ColorManager.primary,
-            title: const Text(AppStrings.addWalk),
+            title: Text(widget.walkModel == null
+                ? strings.addWalk
+                : strings.updateWalk),
           ),
           body: GestureDetector(
             onTap: () {
@@ -274,7 +279,9 @@ class _AddWalkPageState extends State<AddWalkPage> {
                     ),
                     SigninButton(
                       child: Text(
-                        widget.walkModel == null ? AppStrings.addWalk : AppStrings.updateWalk,
+                        widget.walkModel == null
+                            ? strings.addWalk
+                            : strings.updateWalk,
                         style: getRegularStyle(
                           fontSize: FontSize.s16,
                           color: ColorManager.white,
@@ -296,7 +303,8 @@ class _AddWalkPageState extends State<AddWalkPage> {
                               startTime: startTime,
                               startLocation: startLocation,
                             );
-                            walkAddBloc.add(WalkAddUpdateButtonPressEvent(updatedWalk));
+                            walkAddBloc.add(
+                                WalkAddUpdateButtonPressEvent(updatedWalk));
                           } else {
                             var newWalk = WalkModel(
                               proposerId: proposerId!,
@@ -305,7 +313,8 @@ class _AddWalkPageState extends State<AddWalkPage> {
                               startTime: startTime,
                               startLocation: startLocation,
                             );
-                            walkAddBloc.add(WalkAddSaveButtonPressEvent(newWalk));
+                            walkAddBloc
+                                .add(WalkAddSaveButtonPressEvent(newWalk));
                           }
                         }
                       },

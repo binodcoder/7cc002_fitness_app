@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../../../core/db/db_helper.dart';
-import '../../../../../drawer.dart';
-import '../../../../../resources/colour_manager.dart';
-import '../../../../../resources/strings_manager.dart';
-import '../../../../../injection_container.dart';
-import '../../add_update_live_training/ui/add_live_training.dart';
+
+import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/drawer.dart';
+import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/layers/presentation/live_training/add_update_live_training/ui/add_live_training.dart';
+import 'package:fitness_app/layers/presentation/live_training/get_live_trainings/ui/live_training_details.dart';
+import 'package:fitness_app/layers/presentation/localization/app_strings.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+
 import '../bloc/live_training_bloc.dart';
 import '../bloc/live_training_event.dart';
 import '../bloc/live_training_state.dart';
-import 'live_training_details.dart';
 
 class LiveTrainingPage extends StatefulWidget {
   const LiveTrainingPage({super.key});
@@ -39,6 +41,7 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final strings = AppStrings.of(context);
     return BlocConsumer<LiveTrainingBloc, LiveTrainingState>(
       bloc: liveTrainingBloc,
       listenWhen: (previous, current) => current is LiveTrainingActionState,
@@ -95,23 +98,26 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
             return Scaffold(
               backgroundColor: ColorManager.darkWhite,
               drawer: const MyDrawer(),
-              floatingActionButton: sharedPreferences.getString('role') == "trainer"
-                  ? FloatingActionButton(
-                      backgroundColor: ColorManager.primary,
-                      child: const Icon(Icons.add),
-                      onPressed: () {
-                        liveTrainingBloc.add(LiveTrainingAddButtonClickedEvent());
-                      },
-                    )
-                  : null,
+              floatingActionButton:
+                  sharedPreferences.getString('role') == "trainer"
+                      ? FloatingActionButton(
+                          backgroundColor: ColorManager.primary,
+                          child: const Icon(Icons.add),
+                          onPressed: () {
+                            liveTrainingBloc
+                                .add(LiveTrainingAddButtonClickedEvent());
+                          },
+                        )
+                      : null,
               appBar: AppBar(
                 backgroundColor: ColorManager.primary,
-                title: const Text(AppStrings.titleLiveTrainingLabel),
+                title: Text(strings.titleLiveTrainingLabel),
               ),
               body: ListView.builder(
                 itemCount: successState.liveTrainingModels.length,
                 itemBuilder: (context, index) {
-                  var liveTrainingModel = successState.liveTrainingModels[index];
+                  var liveTrainingModel =
+                      successState.liveTrainingModels[index];
                   return Slidable(
                     endActionPane: ActionPane(
                       extentRatio: 0.46,
@@ -119,7 +125,9 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
                       children: [
                         SlidableAction(
                           onPressed: (context) {
-                            liveTrainingBloc.add(LiveTrainingEditButtonClickedEvent(liveTrainingModel));
+                            liveTrainingBloc.add(
+                                LiveTrainingEditButtonClickedEvent(
+                                    liveTrainingModel));
                           },
                           backgroundColor: const Color(0xFF21B7CA),
                           foregroundColor: Colors.white,
@@ -128,7 +136,9 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
                         ),
                         SlidableAction(
                           onPressed: (context) {
-                            liveTrainingBloc.add(LiveTrainingDeleteButtonClickedEvent(liveTrainingModel));
+                            liveTrainingBloc.add(
+                                LiveTrainingDeleteButtonClickedEvent(
+                                    liveTrainingModel));
                           },
                           backgroundColor: const Color(0xFF21B7CA),
                           foregroundColor: Colors.white,
@@ -148,7 +158,8 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (BuildContext context) => LiveTrainingDetailsPage(
+                              builder: (BuildContext context) =>
+                                  LiveTrainingDetailsPage(
                                 liveTrainingModel: liveTrainingModel,
                               ),
                             ),

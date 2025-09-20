@@ -1,10 +1,11 @@
-import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import '../../../../../core/model/routine_model.dart';
-import '../../../../../resources/colour_manager.dart';
-import '../../../../../resources/font_manager.dart';
-import '../../../../../resources/values_manager.dart';
+
+import 'package:fitness_app/core/model/routine_model.dart';
+import 'package:fitness_app/layers/presentation/localization/app_strings.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/font_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/values_manager.dart';
 
 class RoutineDetailsPage extends StatefulWidget {
   const RoutineDetailsPage({
@@ -32,6 +33,7 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final strings = AppStrings.of(context);
     return Scaffold(
       backgroundColor: ColorManager.darkWhite,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -45,9 +47,7 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
             Icons.arrow_back,
           ),
         ),
-        title: const Text(
-          AppStrings.routineDetails,
-        ),
+        title: Text(strings.routineDetails),
         centerTitle: true,
       ),
       body: Column(

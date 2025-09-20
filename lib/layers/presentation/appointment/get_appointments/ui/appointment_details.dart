@@ -1,10 +1,11 @@
-import 'package:fitness_app/resources/strings_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../../../../core/model/appointment_model.dart';
-import '../../../../../resources/colour_manager.dart';
-import '../../../../../resources/font_manager.dart';
-import '../../../../../resources/values_manager.dart';
+
+import 'package:fitness_app/core/model/appointment_model.dart';
+import 'package:fitness_app/layers/presentation/localization/app_strings.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/font_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/values_manager.dart';
 
 class AppointmentDetailsPage extends StatefulWidget {
   const AppointmentDetailsPage({
@@ -32,6 +33,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   @override
   Widget build(BuildContext context) {
     // Size size = MediaQuery.of(context).size;
+    final strings = AppStrings.of(context);
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       backgroundColor: ColorManager.white,
@@ -45,9 +47,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
             Icons.arrow_back,
           ),
         ),
-        title: const Text(
-          AppStrings.titleAppointmentLabel,
-        ),
+        title: Text(strings.titleAppointmentLabel),
         centerTitle: true,
       ),
       body: Padding(

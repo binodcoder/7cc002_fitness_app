@@ -1,13 +1,15 @@
-import 'package:fitness_app/layers/presentation/walk_media/get_walk_media/ui/walk_media_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import '../../../../../core/db/db_helper.dart';
-import '../../../../../resources/colour_manager.dart';
-import '../../../../../resources/strings_manager.dart';
+
+import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/layers/presentation/localization/app_strings.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+import 'package:fitness_app/layers/presentation/walk_media/get_walk_media/ui/walk_media_details.dart';
+
 import '../../add__update_walk_media/ui/walk_media_add_page.dart';
 import '../bloc/walk_media_bloc.dart';
-import '../../../../../injection_container.dart';
 import '../bloc/walk_media_event.dart';
 import '../bloc/walk_media_state.dart';
 
@@ -37,6 +39,7 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final strings = AppStrings.of(context);
     return BlocConsumer<WalkMediaBloc, WalkMediaState>(
       bloc: walkMediaBloc,
       listenWhen: (previous, current) => current is WalkMediaActionState,
@@ -100,12 +103,13 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                 backgroundColor: ColorManager.primary,
                 child: const Icon(Icons.add),
                 onPressed: () {
-                  walkMediaBloc.add(WalkMediaAddButtonClickedEvent(successState.walkMediaModelList.first.id!));
+                  walkMediaBloc.add(WalkMediaAddButtonClickedEvent(
+                      successState.walkMediaModelList.first.id!));
                 },
               ),
               appBar: AppBar(
                 backgroundColor: ColorManager.primary,
-                title: const Text(AppStrings.titleWalkMediaLabel),
+                title: Text(strings.titleWalkMediaLabel),
               ),
               body: ListView.builder(
                 itemCount: successState.walkMediaModelList.length,
@@ -118,7 +122,8 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                       children: [
                         SlidableAction(
                           onPressed: (context) {
-                            walkMediaBloc.add(WalkMediaEditButtonClickedEvent(walkMediaModel));
+                            walkMediaBloc.add(WalkMediaEditButtonClickedEvent(
+                                walkMediaModel));
                           },
                           backgroundColor: const Color(0xFF21B7CA),
                           foregroundColor: Colors.white,
@@ -127,7 +132,8 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                         ),
                         SlidableAction(
                           onPressed: (context) {
-                            walkMediaBloc.add(WalkMediaDeleteButtonClickedEvent(walkMediaModel));
+                            walkMediaBloc.add(WalkMediaDeleteButtonClickedEvent(
+                                walkMediaModel));
                           },
                           backgroundColor: const Color(0xFF21B7CA),
                           foregroundColor: Colors.white,
@@ -147,7 +153,8 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (BuildContext context) => WalkMediaDetailsPage(
+                              builder: (BuildContext context) =>
+                                  WalkMediaDetailsPage(
                                 walkMediaModel: walkMediaModel,
                               ),
                             ),

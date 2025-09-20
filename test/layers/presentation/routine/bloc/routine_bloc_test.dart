@@ -2,18 +2,18 @@ import 'package:dartz/dartz.dart';
 import 'package:fitness_app/core/errors/failures.dart';
 import 'package:fitness_app/core/model/routine_model.dart';
 import 'package:fitness_app/layers/domain/routine/usecases/add_routine.dart';
+import 'package:fitness_app/layers/domain/routine/usecases/delete_routine.dart';
 import 'package:fitness_app/layers/domain/routine/usecases/get_routines.dart';
 import 'package:fitness_app/layers/presentation/routine/get_routines/bloc/routine_bloc.dart';
 import 'package:fitness_app/layers/presentation/routine/get_routines/bloc/routine_event.dart';
 import 'package:fitness_app/layers/presentation/routine/get_routines/bloc/routine_state.dart';
-import 'package:fitness_app/resources/strings_manager.dart';
+import 'package:fitness_app/layers/presentation/localization/app_strings.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'routine_bloc_test.mocks.dart';
 
-@GenerateMocks([GetRoutines])
-@GenerateMocks([AddRoutine])
+@GenerateMocks([GetRoutines, AddRoutine, DeleteRoutine])
 void main() {
   late RoutineBloc bloc;
   late MockGetRoutines mockGetRoutines;
@@ -21,9 +21,10 @@ void main() {
 
   setUp(() {
     mockGetRoutines = MockGetRoutines();
-    mockDeleteRoutine = MockDeleteRoutine(1);
+    mockDeleteRoutine = MockDeleteRoutine();
 
-    bloc = RoutineBloc(getRoutines: mockGetRoutines, deleteRoutine: mockDeleteRoutine);
+    bloc = RoutineBloc(
+        getRoutines: mockGetRoutines, deleteRoutine: mockDeleteRoutine);
   });
 
   test('initialState should be RoutineInitialState', () async {
@@ -55,13 +56,18 @@ void main() {
       //assert
       verify(mockGetRoutines(any));
     });
-    test('should emits [Loading, Loaded] when data is gotten successfully', () async* {
+    test('should emits [Loading, Loaded] when data is gotten successfully',
+        () async* {
       //arrange
 
       when(mockGetRoutines(any)).thenAnswer((_) async => Right(tRoutineModel));
 
       //assert later
-      final expected = [RoutineInitialState(), RoutineLoadingState(), RoutineLoadedSuccessState(tRoutineModel)];
+      final expected = [
+        RoutineInitialState(),
+        RoutineLoadingState(),
+        RoutineLoadedSuccessState(tRoutineModel)
+      ];
       expectLater(bloc, emitsInOrder(expected));
       //act
       bloc.add(RoutineInitialEvent());
@@ -72,19 +78,29 @@ void main() {
       when(mockGetRoutines(any)).thenAnswer((_) async => Left(ServerFailure()));
 
       //assert later
-      final expected = [RoutineInitialState(), RoutineLoadingState(), const RoutineErrorState(message: AppStrings.serverFailureMessage)];
+      final expected = [
+        RoutineInitialState(),
+        RoutineLoadingState(),
+        const RoutineErrorState(message: AppStringsEn.serverFailure)
+      ];
       expectLater(bloc, emitsInOrder(expected));
       //act
       bloc.add(RoutineInitialEvent());
     });
 
-    test('should emits [Loading, Error] with a proper message for the error when getting data fails', () async* {
+    test(
+        'should emits [Loading, Error] with a proper message for the error when getting data fails',
+        () async* {
       //arrange
 
       when(mockGetRoutines(any)).thenAnswer((_) async => Left(CacheFailure()));
 
       //assert later
-      final expected = [RoutineInitialState(), RoutineLoadingState(), const RoutineErrorState(message: AppStrings.cacheFailureMessage)];
+      final expected = [
+        RoutineInitialState(),
+        RoutineLoadingState(),
+        const RoutineErrorState(message: AppStringsEn.cacheFailure)
+      ];
       expectLater(bloc, emitsInOrder(expected));
       //act
       bloc.add(RoutineInitialEvent());
@@ -104,17 +120,20 @@ void main() {
 
     test('should get int from the delete usecase', () async* {
       //arrange
-      when(mockDeleteRoutine(tRoutineModel.id!)).thenAnswer((_) async => const Right(1));
+      when(mockDeleteRoutine.call(tRoutineModel.id!))
+          .thenAnswer((_) async => const Right(1));
       //act
       bloc.add(RoutineDeleteButtonClickedEvent(tRoutineModel));
-      await untilCalled(mockDeleteRoutine(1));
+      await untilCalled(mockDeleteRoutine.call(any));
 
       //assert
-      verify(mockDeleteRoutine(tRoutineModel.id!));
+      verify(mockDeleteRoutine.call(tRoutineModel.id!));
     });
-    test('should emits [Loading, Loaded] when data is gotten successfully', () async* {
+    test('should emits [Loading, Loaded] when data is gotten successfully',
+        () async* {
       //arrange
-      when(mockDeleteRoutine(tRoutineModel.id!)).thenAnswer((_) async => const Right(1));
+      when(mockDeleteRoutine.call(tRoutineModel.id!))
+          .thenAnswer((_) async => const Right(1));
 
       //assert later
       final expected = [
@@ -128,21 +147,33 @@ void main() {
     });
     test('should emits [Loading, Error] when getting data fails', () async* {
       //arrange
-      when(mockDeleteRoutine(tRoutineModel.id!)).thenAnswer((_) async => Left(ServerFailure()));
+      when(mockDeleteRoutine.call(tRoutineModel.id!))
+          .thenAnswer((_) async => Left(ServerFailure()));
 
       //assert later
-      final expected = [RoutineInitialState(), RoutineLoadingState(), const RoutineErrorState(message: AppStrings.serverFailureMessage)];
+      final expected = [
+        RoutineInitialState(),
+        RoutineLoadingState(),
+        const RoutineErrorState(message: AppStringsEn.serverFailure)
+      ];
       expectLater(bloc, emitsInOrder(expected));
       //act
       bloc.add(RoutineDeleteButtonClickedEvent(tRoutineModel));
     });
 
-    test('should emits [Loading, Error] with a proper message for the error when getting data fails', () async* {
+    test(
+        'should emits [Loading, Error] with a proper message for the error when getting data fails',
+        () async* {
       //arrange
-      when(mockDeleteRoutine(tRoutineModel.id!)).thenAnswer((_) async => Left(CacheFailure()));
+      when(mockDeleteRoutine.call(tRoutineModel.id!))
+          .thenAnswer((_) async => Left(CacheFailure()));
 
       //assert later
-      final expected = [RoutineInitialState(), RoutineLoadingState(), const RoutineErrorState(message: AppStrings.cacheFailureMessage)];
+      final expected = [
+        RoutineInitialState(),
+        RoutineLoadingState(),
+        const RoutineErrorState(message: AppStringsEn.cacheFailure)
+      ];
       expectLater(bloc, emitsInOrder(expected));
       //act
       bloc.add(RoutineDeleteButtonClickedEvent(tRoutineModel));

@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../../../../core/db/db_helper.dart';
-import '../../../../core/model/user_model.dart';
-import '../../../../injection_container.dart';
-import '../../../../resources/colour_manager.dart';
-import '../../../../resources/font_manager.dart';
-import '../../../../resources/strings_manager.dart';
-import '../../../../resources/styles_manager.dart';
-import '../../../../resources/values_manager.dart';
+
+import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/core/model/user_model.dart';
+import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/layers/presentation/localization/app_strings.dart';
+import 'package:fitness_app/layers/presentation/theme/colour_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/font_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/styles_manager.dart';
+import 'package:fitness_app/layers/presentation/theme/values_manager.dart';
+
 import '../../login/ui/login_screen.dart';
 import '../../login/widgets/sign_in_button.dart';
 import '../bloc/user_add_bloc.dart';
@@ -30,11 +32,13 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController institutionEmailController = TextEditingController();
+  final TextEditingController institutionEmailController =
+      TextEditingController();
   final TextEditingController genderController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController conformPasswordController = TextEditingController();
+  final TextEditingController conformPasswordController =
+      TextEditingController();
 
   final DatabaseHelper dbHelper = DatabaseHelper();
   bool _passwordVisible = false;
@@ -62,7 +66,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-   // var size = MediaQuery.of(context).size;
+    final strings = AppStrings.of(context);
+    // var size = MediaQuery.of(context).size;
     return BlocConsumer<UserAddBloc, UserAddState>(
       bloc: userAddBloc,
       listenWhen: (previous, current) => current is UserAddActionState,
@@ -219,7 +224,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       decoration: InputDecoration(
                         fillColor: Colors.grey[10],
                         filled: true,
-                        contentPadding: EdgeInsets.symmetric(horizontal: AppWidth.w4, vertical: AppHeight.h12),
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: AppWidth.w4, vertical: AppHeight.h12),
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
                           //BorderSide(color: ColorManager.white, width: 0, style: BorderStyle.none),
@@ -411,7 +417,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         hintText: 'Password',
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                            _passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                             color: ColorManager.blue,
                           ),
                           onPressed: () {
@@ -468,13 +476,16 @@ class _RegisterPageState extends State<RegisterPage> {
                         hintText: 'Confirm Password',
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _confirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                            _confirmPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                             color: ColorManager.blue,
                           ),
                           onPressed: () {
                             setState(
                               () {
-                                _confirmPasswordVisible = !_confirmPasswordVisible;
+                                _confirmPasswordVisible =
+                                    !_confirmPasswordVisible;
                               },
                             );
                           },
@@ -498,7 +509,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     SigninButton(
                       child: Text(
-                        widget.userModel == null ? AppStrings.register : AppStrings.updateUser,
+                        widget.userModel == null
+                            ? strings.register
+                            : strings.updateUser,
                         style: getRegularStyle(
                           fontSize: FontSize.s16,
                           color: ColorManager.white,
@@ -524,7 +537,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               password: password,
                               role: role,
                             );
-                            userAddBloc.add(UserAddUpdateButtonPressEvent(updatedUser));
+                            userAddBloc.add(
+                                UserAddUpdateButtonPressEvent(updatedUser));
                           } else {
                             userAddBloc.add(UserAddSaveButtonPressEvent(
                               age,
