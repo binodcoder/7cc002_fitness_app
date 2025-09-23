@@ -4,7 +4,7 @@
 
 import 'dart:async' as i4;
 import 'package:fitness_app/core/network/network_info.dart' as i3;
-import 'package:fitness_app/layers/data/routine/data_sources/routines_remote_data_source.dart' as i5;
+import 'package:fitness_app/features/routine/data/routine/data_sources/routines_remote_data_source.dart' as i5;
 import 'package:fitness_app/core/model/routine_model.dart' as i2;
 import 'package:mockito/mockito.dart' as i1;
 

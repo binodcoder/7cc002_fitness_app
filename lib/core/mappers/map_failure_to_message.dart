@@ -1,4 +1,4 @@
-import '../../layers/presentation/localization/app_strings.dart';
+import 'package:fitness_app/core/localization/app_strings.dart';
 import '../errors/failures.dart';
 
 String mapFailureToMessage(Failure failure) {

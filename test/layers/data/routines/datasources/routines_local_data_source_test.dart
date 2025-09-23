@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:fitness_app/core/db/db_helper.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/core/model/routine_model.dart';
-import 'package:fitness_app/layers/data/routine/data_sources/routines_local_data_source.dart';
+import 'package:fitness_app/features/routine/data/routine/data_sources/routines_local_data_source.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
