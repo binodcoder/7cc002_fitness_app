@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:fitness_app/core/db/db_helper.dart';
-import 'package:fitness_app/core/model/walk_model.dart';
+import 'package:fitness_app/features/walk/data/models/walk_model.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
@@ -11,7 +11,7 @@ import 'package:fitness_app/core/theme/font_manager.dart';
 import 'package:fitness_app/core/theme/styles_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
 
-import 'package:fitness_app/features/login/presentation/login/widgets/sign_in_button.dart';
+import 'package:fitness_app/features/login/presentation/widgets/sign_in_button.dart';
 import '../bloc/walk_add_bloc.dart';
 import '../bloc/walk_add_event.dart';
 import '../bloc/walk_add_state.dart';

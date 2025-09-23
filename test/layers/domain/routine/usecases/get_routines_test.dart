@@ -1,7 +1,7 @@
 import 'package:fitness_app/core/model/routine_model.dart';
 import 'package:fitness_app/core/usecases/usecase.dart';
-import 'package:fitness_app/features/routine/domain/routine/repositories/routine_repositories.dart';
-import 'package:fitness_app/features/routine/domain/routine/usecases/get_routines.dart';
+import 'package:fitness_app/features/routine/domain/repositories/routine_repositories.dart';
+import 'package:fitness_app/features/routine/domain/usecases/get_routines.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:dartz/dartz.dart';
@@ -32,7 +32,8 @@ void main() {
       // "On the fly" implementation of the Repository using the Mockito package.
       // When readPost is called with any argument, always answer with
       // the Right "side" of Either containing a test Post object.
-      when(mockRoutineRepository.getRoutines()).thenAnswer((_) async => Right(tRoutine));
+      when(mockRoutineRepository.getRoutines())
+          .thenAnswer((_) async => Right(tRoutine));
       // The "act" phase of the test. Call the not-yet-existent method.
       final result = await usecase(NoParams());
       // UseCase should simply return whatever was returned from the Repository

@@ -1,6 +1,6 @@
 import 'package:fitness_app/core/model/routine_model.dart';
-import 'package:fitness_app/features/routine/domain/routine/repositories/routine_repositories.dart';
-import 'package:fitness_app/features/routine/domain/routine/usecases/delete_routine.dart';
+import 'package:fitness_app/features/routine/domain/repositories/routine_repositories.dart';
+import 'package:fitness_app/features/routine/domain/usecases/delete_routine.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:dartz/dartz.dart';
@@ -29,7 +29,8 @@ void main() {
   test(
     'should get int from the repository',
     () async {
-      when(mockRoutineRepository.deleteRoutine(tRoutineModel.id!)).thenAnswer((_) async => Right(tResponse));
+      when(mockRoutineRepository.deleteRoutine(tRoutineModel.id!))
+          .thenAnswer((_) async => Right(tResponse));
       final result = await usecase(tRoutineModel.id!);
       expect(result, Right(tResponse));
       verify(mockRoutineRepository.deleteRoutine(tRoutineModel.id!));

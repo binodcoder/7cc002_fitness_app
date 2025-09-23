@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:fitness_app/core/model/walk_model.dart';
+import 'package:fitness_app/features/walk/data/models/walk_model.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/font_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';

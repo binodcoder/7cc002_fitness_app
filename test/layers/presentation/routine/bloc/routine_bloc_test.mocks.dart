@@ -9,13 +9,13 @@ import 'package:dartz/dartz.dart' as _i5;
 import 'package:fitness_app/core/errors/failures.dart' as _i6;
 import 'package:fitness_app/core/model/routine_model.dart' as _i7;
 import 'package:fitness_app/core/usecases/usecase.dart' as _i8;
-import 'package:fitness_app/features/routine/domain/routine/repositories/routine_repositories.dart'
+import 'package:fitness_app/features/routine/domain/repositories/routine_repositories.dart'
     as _i2;
-import 'package:fitness_app/features/routine/domain/routine/usecases/add_routine.dart'
+import 'package:fitness_app/features/routine/domain/usecases/add_routine.dart'
     as _i9;
-import 'package:fitness_app/features/routine/domain/routine/usecases/delete_routine.dart'
+import 'package:fitness_app/features/routine/domain/usecases/delete_routine.dart'
     as _i10;
-import 'package:fitness_app/features/routine/domain/routine/usecases/get_routines.dart'
+import 'package:fitness_app/features/routine/domain/usecases/get_routines.dart'
     as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 

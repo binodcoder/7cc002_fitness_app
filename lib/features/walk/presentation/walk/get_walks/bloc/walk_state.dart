@@ -1,4 +1,4 @@
-import 'package:fitness_app/core/model/walk_model.dart';
+import 'package:fitness_app/features/walk/data/models/walk_model.dart';
 
 abstract class WalkState {}
 

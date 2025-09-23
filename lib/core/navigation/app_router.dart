@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-import 'package:fitness_app/features/appointment/presentation/appointment/add_update_appointment/ui/add_appointment.dart';
-import 'package:fitness_app/features/appointment/presentation/appointment/get_appointments/ui/appointment_details.dart';
-import 'package:fitness_app/features/appointment/presentation/appointment/get_appointments/ui/calender.dart';
-import 'package:fitness_app/features/live_training/presentation/live_training/add_update_live_training/ui/add_live_training.dart';
-import 'package:fitness_app/features/live_training/presentation/live_training/get_live_trainings/ui/live_training.dart';
-import 'package:fitness_app/features/live_training/presentation/live_training/get_live_trainings/ui/live_training_details.dart';
-import 'package:fitness_app/features/login/presentation/login/ui/login_screen.dart';
-import 'package:fitness_app/features/onboarding/presentation/onboarding/onboarding.dart';
-import 'package:fitness_app/features/register/presentation/register/ui/register_page.dart';
-import 'package:fitness_app/features/routine/presentation/routine/add_update_routine/ui/add_routine_page.dart';
-import 'package:fitness_app/features/routine/presentation/routine/get_routines/ui/routine.dart';
-import 'package:fitness_app/features/routine/presentation/routine/get_routines/ui/routine_details.dart';
-import 'package:fitness_app/features/splash/presentation/splash/splash.dart';
+import 'package:fitness_app/features/appointment/presentation/add_update_appointment/ui/add_appointment.dart';
+import 'package:fitness_app/features/appointment/presentation/get_appointments/ui/appointment_details.dart';
+import 'package:fitness_app/features/appointment/presentation/get_appointments/ui/calender.dart';
+import 'package:fitness_app/features/live_training/presentation/add_update_live_training/ui/add_live_training.dart';
+import 'package:fitness_app/features/live_training/presentation/get_live_trainings/ui/live_training.dart';
+import 'package:fitness_app/features/live_training/presentation/get_live_trainings/ui/live_training_details.dart';
+import 'package:fitness_app/features/login/presentation/ui/login_screen.dart';
+import 'package:fitness_app/features/onboarding/presentation/onboarding.dart';
+import 'package:fitness_app/features/register/presentation/ui/register_page.dart';
+import 'package:fitness_app/features/routine/presentation/add_update_routine/ui/add_routine_page.dart';
+import 'package:fitness_app/features/routine/presentation/get_routines/ui/routine.dart';
+import 'package:fitness_app/features/routine/presentation/get_routines/ui/routine_details.dart';
+import 'package:fitness_app/features/splash/presentation/splash.dart';
 import '../localization/app_strings.dart';
 
 class Routes {

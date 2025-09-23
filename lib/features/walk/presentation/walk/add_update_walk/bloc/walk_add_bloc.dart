@@ -6,22 +6,27 @@ import 'package:fitness_app/features/walk/presentation/walk/add_update_walk/bloc
 import 'package:fitness_app/features/walk/presentation/walk/add_update_walk/bloc/walk_add_state.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import '../../../../domain/walk/usecases/add_walk.dart';
-import '../../../../domain/walk/usecases/update_walk.dart';
+import '../../../../domain/usecases/add_walk.dart';
+import '../../../../domain/usecases/update_walk.dart';
 
 class WalkAddBloc extends Bloc<WalkAddEvent, WalkAddState> {
   final AddWalk addWalk;
   final UpdateWalk updateWalk;
-  WalkAddBloc({required this.addWalk, required this.updateWalk}) : super(WalkAddInitialState()) {
+  WalkAddBloc({required this.addWalk, required this.updateWalk})
+      : super(WalkAddInitialState()) {
     on<WalkAddInitialEvent>(walkAddInitialEvent);
     on<WalkAddReadyToUpdateEvent>(walkAddReadyToUpdateEvent);
-    on<WalkAddPickFromGalaryButtonPressEvent>(addwalkPickFromGalaryButtonPressEvent);
-    on<WalkAddPickFromCameraButtonPressEvent>(addwalkPickFromCameraButtonPressEvent);
+    on<WalkAddPickFromGalaryButtonPressEvent>(
+        addwalkPickFromGalaryButtonPressEvent);
+    on<WalkAddPickFromCameraButtonPressEvent>(
+        addwalkPickFromCameraButtonPressEvent);
     on<WalkAddSaveButtonPressEvent>(addWalkSaveButtonPressEvent);
     on<WalkAddUpdateButtonPressEvent>(walkAddUpdateButtonPressEvent);
   }
 
-  FutureOr<void> addwalkPickFromGalaryButtonPressEvent(WalkAddPickFromGalaryButtonPressEvent event, Emitter<WalkAddState> emit) async {
+  FutureOr<void> addwalkPickFromGalaryButtonPressEvent(
+      WalkAddPickFromGalaryButtonPressEvent event,
+      Emitter<WalkAddState> emit) async {
     ImagePicker picker = ImagePicker();
     XFile? pickedFile;
     final XFile? photo = await picker.pickImage(source: ImageSource.gallery);
@@ -44,13 +49,16 @@ class WalkAddBloc extends Bloc<WalkAddEvent, WalkAddState> {
 
   Future<String> saveImage(Uint8List? imageData) async {
     final directory = await getApplicationDocumentsDirectory();
-    String imagePath = '${directory.path}/image_${DateTime.now().millisecondsSinceEpoch}.png';
+    String imagePath =
+        '${directory.path}/image_${DateTime.now().millisecondsSinceEpoch}.png';
     final File imageFile = File(imagePath);
     await imageFile.writeAsBytes(imageData!);
     return imagePath;
   }
 
-  FutureOr<void> addwalkPickFromCameraButtonPressEvent(WalkAddPickFromCameraButtonPressEvent event, Emitter<WalkAddState> emit) async {
+  FutureOr<void> addwalkPickFromCameraButtonPressEvent(
+      WalkAddPickFromCameraButtonPressEvent event,
+      Emitter<WalkAddState> emit) async {
     ImagePicker picker = ImagePicker();
     XFile? pickedFile;
     final XFile? photo = await picker.pickImage(source: ImageSource.camera);
@@ -63,7 +71,8 @@ class WalkAddBloc extends Bloc<WalkAddEvent, WalkAddState> {
     }
   }
 
-  FutureOr<void> addWalkSaveButtonPressEvent(WalkAddSaveButtonPressEvent event, Emitter<WalkAddState> emit) async {
+  FutureOr<void> addWalkSaveButtonPressEvent(
+      WalkAddSaveButtonPressEvent event, Emitter<WalkAddState> emit) async {
     emit(AddWalkLoadingState());
     final result = await addWalk(event.newWalk);
     result!.fold((failure) {
@@ -73,11 +82,13 @@ class WalkAddBloc extends Bloc<WalkAddEvent, WalkAddState> {
     });
   }
 
-  FutureOr<void> walkAddInitialEvent(WalkAddInitialEvent event, Emitter<WalkAddState> emit) {
+  FutureOr<void> walkAddInitialEvent(
+      WalkAddInitialEvent event, Emitter<WalkAddState> emit) {
     emit(WalkAddInitialState());
   }
 
-  FutureOr<void> walkAddUpdateButtonPressEvent(WalkAddUpdateButtonPressEvent event, Emitter<WalkAddState> emit) async {
+  FutureOr<void> walkAddUpdateButtonPressEvent(
+      WalkAddUpdateButtonPressEvent event, Emitter<WalkAddState> emit) async {
     emit(AddWalkLoadingState());
     final result = await updateWalk(event.updatedWalk);
     result!.fold((failure) {
@@ -87,7 +98,8 @@ class WalkAddBloc extends Bloc<WalkAddEvent, WalkAddState> {
     });
   }
 
-  FutureOr<void> walkAddReadyToUpdateEvent(WalkAddReadyToUpdateEvent event, Emitter<WalkAddState> emit) {
+  FutureOr<void> walkAddReadyToUpdateEvent(
+      WalkAddReadyToUpdateEvent event, Emitter<WalkAddState> emit) {
     // emit(walkAddReadyToUpdateState(event.walkModel.imagePath));
   }
 }

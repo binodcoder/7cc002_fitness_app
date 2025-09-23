@@ -3,22 +3,25 @@ import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/core/errors/failures.dart';
 import 'package:fitness_app/core/model/routine_model.dart';
 import 'package:fitness_app/core/network/network_info.dart';
-import 'package:fitness_app/features/routine/data/routine/data_sources/routines_local_data_source.dart';
-import 'package:fitness_app/features/routine/data/routine/data_sources/routines_remote_data_source.dart';
-import 'package:fitness_app/features/routine/data/routine/repositories/routine_repository_impl.dart';
+import 'package:fitness_app/features/routine/data/data_sources/routines_local_data_source.dart';
+import 'package:fitness_app/features/routine/data/data_sources/routines_remote_data_source.dart';
+import 'package:fitness_app/features/routine/data/repositories/routine_repository_impl.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'routine_repositories_impl_test.mock.dart';
 
-class MockRoutinesLocalDataSource extends Mock implements RoutinesLocalDataSource {}
+class MockRoutinesLocalDataSource extends Mock
+    implements RoutinesLocalDataSource {}
 
 @GenerateMocks([NetworkInfo])
 @GenerateMocks([
   RoutineRemoteDataSource
 ], customMocks: [
-  MockSpec<RoutineRemoteDataSource>(as: #MockRoutinesRemoteDataSourceForTest, onMissingStub: OnMissingStub.returnDefault),
+  MockSpec<RoutineRemoteDataSource>(
+      as: #MockRoutinesRemoteDataSourceForTest,
+      onMissingStub: OnMissingStub.returnDefault),
 ])
 void main() {
   late RoutineRepositoryImpl repository;
@@ -69,25 +72,33 @@ void main() {
     });
 
     runTestsOnline(() {
-      test('should return remote data when the call to remote data source is successful', () async {
+      test(
+          'should return remote data when the call to remote data source is successful',
+          () async {
         //arrange
-        when(mockRemoteDataSource.getRoutines()).thenAnswer((_) async => tRoutineModel);
+        when(mockRemoteDataSource.getRoutines())
+            .thenAnswer((_) async => tRoutineModel);
         //act
         final result = await repository.getRoutines();
         //assert
         verify(mockRemoteDataSource.getRoutines());
         expect(result, equals(Right(tRoutineModel)));
       });
-      test('should cache the data locally when the call to remote data source is successful', () async {
+      test(
+          'should cache the data locally when the call to remote data source is successful',
+          () async {
         //arrange
-        when(mockRemoteDataSource.getRoutines()).thenAnswer((_) async => tRoutineModel);
+        when(mockRemoteDataSource.getRoutines())
+            .thenAnswer((_) async => tRoutineModel);
         //act
         await repository.getRoutines();
         //assert
         verify(mockRemoteDataSource.getRoutines());
         // verify(mockLocalDataSource.cacheNumberTrivia(tNumberTriviaModel));
       });
-      test('should return serverfailure when the call to remote data source is successful', () async {
+      test(
+          'should return serverfailure when the call to remote data source is successful',
+          () async {
         //arrange
         when(mockRemoteDataSource.getRoutines()).thenThrow(ServerException());
         //act

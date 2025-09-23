@@ -6,14 +6,14 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:fitness_app/core/db/db_helper.dart';
-import 'package:fitness_app/core/model/walk_participant_model.dart';
+import 'package:fitness_app/features/walk/data/models/walk_participant_model.dart';
 import 'package:fitness_app/drawer.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/features/walk/presentation/walk/add_update_walk/ui/walk_add_page.dart';
 import 'package:fitness_app/features/walk/presentation/walk/get_walks/ui/walk_details.dart';
-import 'package:fitness_app/features/walk_media/presentation/walk_media/get_walk_media/ui/walk_media.dart';
+import 'package:fitness_app/features/walk_media/presentation/get_walk_media/ui/walk_media.dart';
 
 import '../bloc/walk_bloc.dart';
 import '../bloc/walk_event.dart';

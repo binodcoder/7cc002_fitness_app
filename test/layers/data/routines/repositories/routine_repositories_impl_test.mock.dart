@@ -4,7 +4,8 @@
 
 import 'dart:async' as i4;
 import 'package:fitness_app/core/network/network_info.dart' as i3;
-import 'package:fitness_app/features/routine/data/routine/data_sources/routines_remote_data_source.dart' as i5;
+import 'package:fitness_app/features/routine/data/data_sources/routines_remote_data_source.dart'
+    as i5;
 import 'package:fitness_app/core/model/routine_model.dart' as i2;
 import 'package:mockito/mockito.dart' as i1;
 
@@ -28,23 +29,32 @@ class MockNetworkInfo extends i1.Mock implements i3.NetworkInfo {
   }
 
   @override
-  i4.Future<bool> get isConnected => (super.noSuchMethod(Invocation.getter(#isConnected),
-      returnValue: Future<bool>.value(false), returnValueForMissingStub: Future<bool>.value(true)) as i4.Future<bool>);
+  i4.Future<bool> get isConnected => (super.noSuchMethod(
+      Invocation.getter(#isConnected),
+      returnValue: Future<bool>.value(false),
+      returnValueForMissingStub: Future<bool>.value(true)) as i4.Future<bool>);
 }
 
 /// A class which mocks [RoutinesRemoteDataSource].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRoutinesRemoteDataSource extends i1.Mock implements i5.RoutineRemoteDataSource {
+class MockRoutinesRemoteDataSource extends i1.Mock
+    implements i5.RoutineRemoteDataSource {
   MockRoutinesRemoteDataSource() {
     i1.throwOnMissingStub(this);
   }
 
   @override
-  i4.Future<List<i2.RoutineModel>> getRoutines() => (super.noSuchMethod(Invocation.method(#ggetRoutines, []),
-      returnValue: Future<List<i2.RoutineModel>>.value([_FakeRoutineModel_0()]),
-      returnValueForMissingStub: Future<List<i2.RoutineModel>>.value([_FakeRoutineModel_0()])) as i4.Future<List<i2.RoutineModel>>);
+  i4.Future<List<i2.RoutineModel>> getRoutines() =>
+      (super.noSuchMethod(Invocation.method(#ggetRoutines, []),
+              returnValue:
+                  Future<List<i2.RoutineModel>>.value([_FakeRoutineModel_0()]),
+              returnValueForMissingStub:
+                  Future<List<i2.RoutineModel>>.value([_FakeRoutineModel_0()]))
+          as i4.Future<List<i2.RoutineModel>>);
   @override
-  i4.Future<int> deleteRoutine(int? number) => (super.noSuchMethod(Invocation.method(#deleteRoutine, [number]),
-      returnValue: Future<int>.value(1), returnValueForMissingStub: Future<int>.value(1)) as i4.Future<int>);
+  i4.Future<int> deleteRoutine(int? number) =>
+      (super.noSuchMethod(Invocation.method(#deleteRoutine, [number]),
+          returnValue: Future<int>.value(1),
+          returnValueForMissingStub: Future<int>.value(1)) as i4.Future<int>);
 }

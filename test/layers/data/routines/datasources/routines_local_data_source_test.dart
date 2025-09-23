@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:fitness_app/core/db/db_helper.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/core/model/routine_model.dart';
-import 'package:fitness_app/features/routine/data/routine/data_sources/routines_local_data_source.dart';
+import 'package:fitness_app/features/routine/data/data_sources/routines_local_data_source.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,7 +12,9 @@ import 'routines_local_data_source_test.mocks.dart';
 @GenerateMocks([
   DatabaseHelper
 ], customMocks: [
-  MockSpec<DatabaseHelper>(as: #MockDatabaseHelperForTest, onMissingStub: OnMissingStub.returnDefault),
+  MockSpec<DatabaseHelper>(
+      as: #MockDatabaseHelperForTest,
+      onMissingStub: OnMissingStub.returnDefault),
 ])
 void main() {
   late RoutinesLocalDataSourceImpl dataSource;
@@ -24,9 +26,11 @@ void main() {
   });
 
   group('getLastRoutine', () {
-    final tRoutineModel = RoutineModel.fromJson(json.decode(fixture('routine_cached.json')));
+    final tRoutineModel =
+        RoutineModel.fromJson(json.decode(fixture('routine_cached.json')));
     // const tRoutineModel = null;
-    test('should return routine from Local db when there is one in the cache', () async {
+    test('should return routine from Local db when there is one in the cache',
+        () async {
       //arrange
       when(await mockDatabaseHelper.getRoutines()).thenReturn([tRoutineModel]);
       //act
@@ -36,7 +40,8 @@ void main() {
       expect(result, equals(tRoutineModel));
     });
 
-    test('should throw a CacheException when there is not a cached value', () async {
+    test('should throw a CacheException when there is not a cached value',
+        () async {
       //arrange
       when(await mockDatabaseHelper.getRoutines()).thenReturn([tRoutineModel]);
       //act

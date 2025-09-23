@@ -1,4 +1,4 @@
-import 'package:fitness_app/features/live_training/presentation/live_training/get_live_trainings/ui/live_training.dart';
+import 'package:fitness_app/features/live_training/presentation/get_live_trainings/ui/live_training.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'injection_container.dart';
-import 'features/appointment/presentation/appointment/get_appointments/ui/calender.dart';
-import 'features/login/presentation/login/ui/login_screen.dart';
-import 'features/routine/presentation/routine/get_routines/ui/routine.dart';
+import 'features/appointment/presentation/get_appointments/ui/calender.dart';
+import 'features/login/presentation/ui/login_screen.dart';
+import 'features/routine/presentation/get_routines/ui/routine.dart';
 import 'features/walk/presentation/walk/get_walks/ui/walk.dart';
 import 'package:fitness_app/widgets/app_drawer_header.dart';
 import 'package:fitness_app/widgets/drawer_nav_tile.dart';
