@@ -63,7 +63,7 @@ class _RoutinePageState extends State<RoutinePage> {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => RoutineDetailsPage(
-                routineModel: state.routineModel,
+                routine: state.routine,
               ),
               fullscreenDialog: true,
             ),
@@ -75,7 +75,7 @@ class _RoutinePageState extends State<RoutinePage> {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => AddRoutinePage(
-                routineModel: state.routineModel,
+                routine: state.routine,
               ),
               fullscreenDialog: true,
             ),
@@ -118,27 +118,27 @@ class _RoutinePageState extends State<RoutinePage> {
                   title: Text(strings.titleRoutineLabel),
                 ),
                 body: ListView.builder(
-                  itemCount: successState.routineModelList.length,
+                  itemCount: successState.routines.length,
                   itemBuilder: (context, index) {
-                    var routineModel = successState.routineModelList[index];
+                    var routine = successState.routines[index];
                     return RoutineListTile(
-                      title: routineModel.name,
-                      subtitle: routineModel.description,
-                      trailing: routineModel.difficulty,
+                      title: routine.name,
+                      subtitle: routine.description,
+                      trailing: routine.difficulty,
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (BuildContext context) =>
                                 RoutineDetailsPage(
-                              routineModel: routineModel,
+                              routine: routine,
                             ),
                           ),
                         );
                       },
                       onEdit: () {
                         postBloc.add(
-                          RoutineEditButtonClickedEvent(routineModel),
+                          RoutineEditButtonClickedEvent(routine),
                         );
                       },
                       onDelete: () {},

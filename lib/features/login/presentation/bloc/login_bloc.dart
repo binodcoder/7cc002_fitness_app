@@ -33,7 +33,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   FutureOr<void> loginButtonPressEvent(
       LoginButtonPressEvent event, Emitter<LoginState> emit) async {
     emit(LoginLoadingState());
-    final result = await login(event.loginModel);
+    final result = await login(event.login);
     result!.fold((failure) {
       emit(LoginErrorState(message: mapFailureToMessage(failure)));
     }, (result) {

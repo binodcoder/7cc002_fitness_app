@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/font_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
-import 'package:fitness_app/features/walk_media/data/models/walk_media_model.dart';
+import 'package:fitness_app/features/walk_media/domain/entities/walk_media.dart';
 
 class WalkMediaDetailsBody extends StatelessWidget {
-  final WalkMediaModel walkMediaModel;
+  final WalkMedia walkMedia;
 
   const WalkMediaDetailsBody({
     super.key,
-    required this.walkMediaModel,
+    required this.walkMedia,
   });
 
   @override
@@ -25,11 +25,11 @@ class WalkMediaDetailsBody extends StatelessWidget {
             contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
             tileColor: ColorManager.white,
             title: Text(
-              walkMediaModel.mediaUrl,
+              walkMedia.mediaUrl,
               style: const TextStyle(fontSize: FontSize.s20),
             ),
             subtitle: Text(
-              walkMediaModel.userId.toString(),
+              walkMedia.userId.toString(),
               style: const TextStyle(fontSize: FontSize.s14),
             ),
           ),
@@ -47,4 +47,3 @@ class WalkMediaDetailsBody extends StatelessWidget {
     );
   }
 }
-

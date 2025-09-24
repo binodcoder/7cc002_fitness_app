@@ -1,4 +1,4 @@
-import 'package:fitness_app/features/walk_media/data/models/walk_media_model.dart';
+import 'package:fitness_app/features/walk_media/domain/entities/walk_media.dart';
 
 abstract class WalkMediaEvent {}
 
@@ -8,13 +8,13 @@ class WalkMediaInitialEvent extends WalkMediaEvent {
 }
 
 class WalkMediaEditButtonClickedEvent extends WalkMediaEvent {
-  final WalkMediaModel walkMediaModel;
-  WalkMediaEditButtonClickedEvent(this.walkMediaModel);
+  final WalkMedia walkMedia;
+  WalkMediaEditButtonClickedEvent(this.walkMedia);
 }
 
 class WalkMediaDeleteButtonClickedEvent extends WalkMediaEvent {
-  final WalkMediaModel walkMediaModel;
-  WalkMediaDeleteButtonClickedEvent(this.walkMediaModel);
+  final WalkMedia walkMedia;
+  WalkMediaDeleteButtonClickedEvent(this.walkMedia);
 }
 
 class WalkMediaDeleteAllButtonClickedEvent extends WalkMediaEvent {}
@@ -25,6 +25,6 @@ class WalkMediaAddButtonClickedEvent extends WalkMediaEvent {
 }
 
 class WalkMediaTileNavigateEvent extends WalkMediaEvent {
-  final WalkMediaModel walkMediaModel;
-  WalkMediaTileNavigateEvent(this.walkMediaModel);
+  final WalkMedia walkMedia;
+  WalkMediaTileNavigateEvent(this.walkMedia);
 }

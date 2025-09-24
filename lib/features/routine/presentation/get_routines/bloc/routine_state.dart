@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:fitness_app/features/routine/data/models/routine_model.dart';
+import 'package:fitness_app/features/routine/domain/entities/routine.dart';
 
 abstract class RoutineState extends Equatable {
   const RoutineState();
@@ -15,10 +15,10 @@ class RoutineInitialState extends RoutineState {}
 class RoutineLoadingState extends RoutineState {}
 
 class RoutineLoadedSuccessState extends RoutineState {
-  final List<RoutineModel> routineModelList;
-  const RoutineLoadedSuccessState(this.routineModelList);
-  RoutineLoadedSuccessState copyWith({List<RoutineModel>? routineModelList}) {
-    return RoutineLoadedSuccessState(routineModelList ?? this.routineModelList);
+  final List<Routine> routines;
+  const RoutineLoadedSuccessState(this.routines);
+  RoutineLoadedSuccessState copyWith({List<Routine>? routines}) {
+    return RoutineLoadedSuccessState(routines ?? this.routines);
   }
 }
 
@@ -31,15 +31,15 @@ class RoutineErrorState extends RoutineState {
 class RoutineNavigateToAddRoutineActionState extends RoutineActionState {}
 
 class RoutineNavigateToDetailPageActionState extends RoutineActionState {
-  final RoutineModel routineModel;
+  final Routine routine;
 
-  RoutineNavigateToDetailPageActionState(this.routineModel);
+  RoutineNavigateToDetailPageActionState(this.routine);
 }
 
 class RoutineNavigateToUpdatePageActionState extends RoutineActionState {
-  final RoutineModel routineModel;
+  final Routine routine;
 
-  RoutineNavigateToUpdatePageActionState(this.routineModel);
+  RoutineNavigateToUpdatePageActionState(this.routine);
 }
 
 class RoutineItemDeletedActionState extends RoutineActionState {}

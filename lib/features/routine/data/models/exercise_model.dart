@@ -1,13 +1,18 @@
 import 'dart:convert';
-import 'package:fitness_app/features/routine/domain/entities/exercise.dart' as entity;
+import 'package:fitness_app/features/routine/domain/entities/exercise.dart'
+    as entity;
 
-ExerciseModel exerciseModelFromJson(String str) => ExerciseModel.fromJson(json.decode(str));
+ExerciseModel exerciseModelFromJson(String str) =>
+    ExerciseModel.fromJson(json.decode(str));
 
 String exerciseModelToJson(ExerciseModel data) => json.encode(data.toJson());
 
-List<ExerciseModel> routineModelsFromJson(String str) => List<ExerciseModel>.from(json.decode(str).map((x) => ExerciseModel.fromJson(x)));
+List<ExerciseModel> routineModelsFromJson(String str) =>
+    List<ExerciseModel>.from(
+        json.decode(str).map((x) => ExerciseModel.fromJson(x)));
 
-String exerciseModelsToJson(List<ExerciseModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String exerciseModelsToJson(List<ExerciseModel> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class ExerciseModel extends entity.Exercise {
   const ExerciseModel({
@@ -18,7 +23,7 @@ class ExerciseModel extends entity.Exercise {
     required super.difficulty,
     required super.equipment,
     required super.imageUrl,
-    String? super.videoUrl,
+    super.videoUrl,
   });
 
   factory ExerciseModel.fromJson(Map<String, dynamic> json) => ExerciseModel(

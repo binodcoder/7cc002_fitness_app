@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/font_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
-import 'package:fitness_app/features/walk/data/models/walk_model.dart';
+import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 
 class WalkDetailsBody extends StatelessWidget {
-  final WalkModel walkModel;
+  final Walk walk;
 
   const WalkDetailsBody({
     super.key,
-    required this.walkModel,
+    required this.walk,
   });
 
   @override
@@ -25,11 +25,11 @@ class WalkDetailsBody extends StatelessWidget {
             contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
             tileColor: ColorManager.white,
             title: Text(
-              walkModel.startLocation,
+              walk.startLocation,
               style: const TextStyle(fontSize: FontSize.s20),
             ),
             subtitle: Text(
-              walkModel.date.toString(),
+              walk.date.toString(),
               style: const TextStyle(fontSize: FontSize.s14),
             ),
           ),

@@ -1,5 +1,5 @@
-import 'package:fitness_app/core/model/routine_model.dart';
 import 'package:fitness_app/core/usecases/usecase.dart';
+import 'package:fitness_app/features/routine/data/models/routine_model.dart';
 import 'package:fitness_app/features/routine/domain/repositories/routine_repositories.dart';
 import 'package:fitness_app/features/routine/domain/usecases/get_routines.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,7 +16,7 @@ void main() {
     usecase = GetRoutines(mockRoutineRepository);
   });
 
-  List<RoutineModel> tRoutine = [
+  List<RoutineModel> tRoutine = const [
     RoutineModel(
       id: 1,
       description: '',

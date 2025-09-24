@@ -1,5 +1,4 @@
-
-import 'package:fitness_app/features/routine/data/models/routine_model.dart';
+import 'package:fitness_app/features/routine/domain/entities/routine.dart';
 
 abstract class RoutineAddEvent {}
 
@@ -10,16 +9,16 @@ class RoutineAddPickFromGalaryButtonPressEvent extends RoutineAddEvent {}
 class RoutineAddPickFromCameraButtonPressEvent extends RoutineAddEvent {}
 
 class RoutineAddSaveButtonPressEvent extends RoutineAddEvent {
-  final RoutineModel newRoutine;
+  final Routine newRoutine;
   RoutineAddSaveButtonPressEvent(this.newRoutine);
 }
 
 class RoutineAddUpdateButtonPressEvent extends RoutineAddEvent {
-  final RoutineModel updatedRoutine;
+  final Routine updatedRoutine;
   RoutineAddUpdateButtonPressEvent(this.updatedRoutine);
 }
 
 class RoutineAddReadyToUpdateEvent extends RoutineAddEvent {
-  final RoutineModel routineModel;
-  RoutineAddReadyToUpdateEvent(this.routineModel);
+  final Routine routine;
+  RoutineAddReadyToUpdateEvent(this.routine);
 }

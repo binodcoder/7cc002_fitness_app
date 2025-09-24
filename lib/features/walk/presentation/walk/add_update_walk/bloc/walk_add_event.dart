@@ -1,4 +1,4 @@
-import 'package:fitness_app/features/walk/data/models/walk_model.dart';
+import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 
 abstract class WalkAddEvent {}
 
@@ -9,16 +9,16 @@ class WalkAddPickFromGalaryButtonPressEvent extends WalkAddEvent {}
 class WalkAddPickFromCameraButtonPressEvent extends WalkAddEvent {}
 
 class WalkAddSaveButtonPressEvent extends WalkAddEvent {
-  final WalkModel newWalk;
+  final Walk newWalk;
   WalkAddSaveButtonPressEvent(this.newWalk);
 }
 
 class WalkAddUpdateButtonPressEvent extends WalkAddEvent {
-  final WalkModel updatedWalk;
+  final Walk updatedWalk;
   WalkAddUpdateButtonPressEvent(this.updatedWalk);
 }
 
 class WalkAddReadyToUpdateEvent extends WalkAddEvent {
-  final WalkModel walkModel;
-  WalkAddReadyToUpdateEvent(this.walkModel);
+  final Walk walk;
+  WalkAddReadyToUpdateEvent(this.walk);
 }

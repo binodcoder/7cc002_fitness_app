@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:fitness_app/features/appointment/data/models/appointment_model.dart';
+import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:fitness_app/core/db/db_helper.dart';
 import 'package:fitness_app/core/usecases/usecase.dart';
@@ -13,7 +13,7 @@ class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
   final GetAppointments getAppointments;
   final DeleteAppointment deleteAppointment;
   final DatabaseHelper dbHelper = DatabaseHelper();
-  List<AppointmentModel> selectedCalenders = [];
+  List<Appointment> selectedCalenders = [];
   CalenderBloc({
     required this.getAppointments,
     required this.deleteAppointment,
@@ -31,13 +31,12 @@ class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
   FutureOr<void> calenderInitialEvent(
       CalenderInitialEvent event, Emitter<CalenderState> emit) async {
     emit(CalenderLoadingState());
-    final appointments = await getAppointments(NoParams());
+    final appointmentsResult = await getAppointments(NoParams());
 
-    appointments!.fold((failure) {
+    appointmentsResult!.fold((failure) {
       // emit(Error(message: _mapFailureToMessage(failure)));
     }, (appointments) {
-      emit(CalenderLoadedSuccessState(
-          appointments.map((e) => e as AppointmentModel).toList()));
+      emit(CalenderLoadedSuccessState(appointments));
     });
   }
 
@@ -48,7 +47,7 @@ class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
       CalenderDeleteButtonClickedEvent event,
       Emitter<CalenderState> emit) async {
     emit(CalenderLoadingState());
-    final result = await deleteAppointment(event.appointmentModel.id!);
+    final result = await deleteAppointment(event.appointment.id!);
 
     result!.fold((failure) {
       // emit(Error(message: _mapFailureToMessage(failure)));
@@ -78,13 +77,13 @@ class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
 
   FutureOr<void> calenderTileNavigateEvent(
       CalenderTileNavigateEvent event, Emitter<CalenderState> emit) {
-    emit(CalenderNavigateToDetailPageActionState(event.appointmentModel));
+    emit(CalenderNavigateToDetailPageActionState(event.appointment));
   }
 
   FutureOr<void> calenderDaySelectEvent(
       CalenderDaySelectEvent e, Emitter<CalenderState> emit) {
     // emit(CalenderLoadedSuccessState(e.appointmentModels.where((event) => isSameDay(event.date, e.selectedDay)).toList()));
-    emit(CalenderDaySelectedState(e.appointmentModels
+    emit(CalenderDaySelectedState(e.appointments
         .where((event) => isSameDay(event.date, e.selectedDay))
         .toList()));
   }

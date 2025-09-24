@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import 'package:fitness_app/features/appointment/data/models/appointment_model.dart';
+import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 import 'package:fitness_app/drawer.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/calender_bloc.dart';
@@ -45,7 +45,7 @@ class _CalendarPageState extends State<CalendarPage> {
   EventBloc eventBloc = sl<EventBloc>();
   DateTime? _selectedDay;
   DateTime _focusedDay = DateTime.now();
-  List<AppointmentModel> _selectedEvents = [];
+  List<Appointment> _selectedEvents = [];
   final SharedPreferences sharedPreferences = sl<SharedPreferences>();
 
   @override
@@ -97,7 +97,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       MaterialPageRoute(
                         builder: (BuildContext context) =>
                             AppointmentDetailsPage(
-                          appointmentModel: state.appointmentModel,
+                          appointment: state.appointment,
                         ),
                         fullscreenDialog: true,
                       ),
@@ -118,8 +118,8 @@ class _CalendarPageState extends State<CalendarPage> {
 
                     case CalenderLoadedSuccessState:
                       final successState = state as CalenderLoadedSuccessState;
-                      final List<AppointmentModel> allEvents =
-                          successState.appointmentModels;
+                      final List<Appointment> allEvents =
+                          successState.appointments;
                       eventBloc
                           .add(EventDaySelectEvent(_focusedDay, allEvents));
                       return AppointmentCalendar(
@@ -176,7 +176,7 @@ class _CalendarPageState extends State<CalendarPage> {
                               builder: (BuildContext context) =>
                                   AddAppointmentDialog(
                                 focusedDay: state.focusedDay,
-                                appointmentModel: state.appointmentModel,
+                                appointment: state.appointment,
                               ),
                               fullscreenDialog: true,
                             ),
@@ -194,12 +194,12 @@ class _CalendarPageState extends State<CalendarPage> {
 
                           case EventDaySelectedState:
                             final successState = state as EventDaySelectedState;
-                            _selectedEvents = successState.appointmentModels;
+                            _selectedEvents = successState.appointments;
 
                             return ListView.builder(
                               itemCount: _selectedEvents.length,
                               itemBuilder: (context, index) {
-                                AppointmentModel appointmentModel =
+                                Appointment appointmentModel =
                                     _selectedEvents[index];
                                 const String trainerName = "Binod Bhandari";
                                 return AppointmentEventTile(
@@ -212,7 +212,7 @@ class _CalendarPageState extends State<CalendarPage> {
                                       MaterialPageRoute(
                                         builder: (BuildContext context) =>
                                             AppointmentDetailsPage(
-                                          appointmentModel: appointmentModel,
+                                          appointment: appointmentModel,
                                         ),
                                       ),
                                     );

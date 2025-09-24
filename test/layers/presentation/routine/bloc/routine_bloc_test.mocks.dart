@@ -7,14 +7,13 @@ import 'dart:async' as _i4;
 
 import 'package:dartz/dartz.dart' as _i5;
 import 'package:fitness_app/core/errors/failures.dart' as _i6;
-import 'package:fitness_app/core/model/routine_model.dart' as _i7;
 import 'package:fitness_app/core/usecases/usecase.dart' as _i8;
+import 'package:fitness_app/features/routine/domain/entities/routine.dart'
+    as _i7;
 import 'package:fitness_app/features/routine/domain/repositories/routine_repositories.dart'
     as _i2;
-import 'package:fitness_app/features/routine/domain/usecases/add_routine.dart'
-    as _i9;
 import 'package:fitness_app/features/routine/domain/usecases/delete_routine.dart'
-    as _i10;
+    as _i9;
 import 'package:fitness_app/features/routine/domain/usecases/get_routines.dart'
     as _i3;
 import 'package:mockito/mockito.dart' as _i1;
@@ -63,51 +62,22 @@ class MockGetRoutines extends _i1.Mock implements _i3.GetRoutines {
       ) as _i2.RoutineRepository);
 
   @override
-  _i4.Future<_i5.Either<_i6.Failure, List<_i7.RoutineModel>>?> call(
+  _i4.Future<_i5.Either<_i6.Failure, List<_i7.Routine>>?> call(
           _i8.NoParams? noParams) =>
       (super.noSuchMethod(
         Invocation.method(
           #call,
           [noParams],
         ),
-        returnValue: _i4
-            .Future<_i5.Either<_i6.Failure, List<_i7.RoutineModel>>?>.value(),
-      ) as _i4.Future<_i5.Either<_i6.Failure, List<_i7.RoutineModel>>?>);
-}
-
-/// A class which mocks [AddRoutine].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockAddRoutine extends _i1.Mock implements _i9.AddRoutine {
-  MockAddRoutine() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i2.RoutineRepository get addRoutineRepository => (super.noSuchMethod(
-        Invocation.getter(#addRoutineRepository),
-        returnValue: _FakeRoutineRepository_0(
-          this,
-          Invocation.getter(#addRoutineRepository),
-        ),
-      ) as _i2.RoutineRepository);
-
-  @override
-  _i4.Future<_i5.Either<_i6.Failure, int>?> call(
-          _i7.RoutineModel? routineModel) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #call,
-          [routineModel],
-        ),
-        returnValue: _i4.Future<_i5.Either<_i6.Failure, int>?>.value(),
-      ) as _i4.Future<_i5.Either<_i6.Failure, int>?>);
+        returnValue:
+            _i4.Future<_i5.Either<_i6.Failure, List<_i7.Routine>>?>.value(),
+      ) as _i4.Future<_i5.Either<_i6.Failure, List<_i7.Routine>>?>);
 }
 
 /// A class which mocks [DeleteRoutine].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockDeleteRoutine extends _i1.Mock implements _i10.DeleteRoutine {
+class MockDeleteRoutine extends _i1.Mock implements _i9.DeleteRoutine {
   MockDeleteRoutine() {
     _i1.throwOnMissingStub(this);
   }

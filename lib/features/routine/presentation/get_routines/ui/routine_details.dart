@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fitness_app/features/routine/data/models/routine_model.dart';
+import 'package:fitness_app/features/routine/domain/entities/routine.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 // Removed unused font_manager import
@@ -10,10 +10,10 @@ import 'package:fitness_app/features/routine/presentation/get_routines/widgets/e
 class RoutineDetailsPage extends StatefulWidget {
   const RoutineDetailsPage({
     Key? key,
-    this.routineModel,
+    this.routine,
   }) : super(key: key);
 
-  final RoutineModel? routineModel;
+  final Routine? routine;
 
   @override
   State<RoutineDetailsPage> createState() => _RoutineDetailsPageState();
@@ -52,13 +52,13 @@ class _RoutineDetailsPageState extends State<RoutineDetailsPage> {
       ),
       body: Column(
         children: [
-          RoutineDetailsHeader(routineModel: widget.routineModel!),
+          RoutineDetailsHeader(routine: widget.routine!),
           SizedBox(height: AppHeight.h4),
           Expanded(
             child: ListView.builder(
-              itemCount: widget.routineModel!.exercises!.length,
+              itemCount: widget.routine!.exercises.length,
               itemBuilder: (context, index) {
-                var exerciseModel = widget.routineModel!.exercises![index];
+                var exerciseModel = widget.routine!.exercises[index];
                 return ExerciseListTile(
                   exerciseModel: exerciseModel,
                   onEdit: () {},

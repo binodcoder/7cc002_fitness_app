@@ -4,7 +4,7 @@ import 'package:fitness_app/features/walk/domain/usecases/leave_walk.dart';
 import 'package:fitness_app/features/walk/presentation/walk/get_walks/bloc/walk_event.dart';
 import 'package:fitness_app/features/walk/presentation/walk/get_walks/bloc/walk_state.dart';
 import 'package:fitness_app/core/db/db_helper.dart';
-import 'package:fitness_app/features/walk/data/models/walk_model.dart';
+import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 import 'package:fitness_app/core/usecases/usecase.dart';
 import 'package:fitness_app/features/walk/domain/usecases/delete_walk.dart';
 import 'package:fitness_app/features/walk/domain/usecases/get_walks.dart';
@@ -16,7 +16,7 @@ class WalkBloc extends Bloc<WalkEvent, WalkState> {
   final JoinWalk joinWalk;
   final LeaveWalk leaveWalk;
   final DatabaseHelper dbHelper = DatabaseHelper();
-  List<WalkModel> selectedWalks = [];
+  List<Walk> selectedWalks = [];
   WalkBloc({
     required this.getWalks,
     required this.deleteWalk,
@@ -36,19 +36,18 @@ class WalkBloc extends Bloc<WalkEvent, WalkState> {
   FutureOr<void> walkInitialEvent(
       WalkInitialEvent event, Emitter<WalkState> emit) async {
     emit(WalkLoadingState());
-    final walkModelList = await getWalks(NoParams());
+    final walkListResult = await getWalks(NoParams());
 
-    walkModelList!.fold((failure) {
+    walkListResult!.fold((failure) {
       // emit(Error(message: _mapFailureToMessage(failure)));
-    }, (walkModelList) {
-      emit(WalkLoadedSuccessState(
-          walkModelList.map((e) => e as WalkModel).toList()));
+    }, (walks) {
+      emit(WalkLoadedSuccessState(walks));
     });
   }
 
   FutureOr<void> walkEditButtonClickedEvent(
       WalkEditButtonClickedEvent event, Emitter<WalkState> emit) {
-    emit(WalkNavigateToUpdatePageActionState(event.walkModel));
+    emit(WalkNavigateToUpdatePageActionState(event.walk));
   }
 
   FutureOr<void> walkDeleteButtonClickedEvent(
@@ -64,12 +63,12 @@ class WalkBloc extends Bloc<WalkEvent, WalkState> {
 
   FutureOr<void> walkTileNavigateEvent(
       WalkTileNavigateEvent event, Emitter<WalkState> emit) {
-    emit(WalkNavigateToDetailPageActionState(event.walkModel));
+    emit(WalkNavigateToDetailPageActionState(event.walk));
   }
 
   FutureOr<void> walkJoinButtonClickedEvent(
       WalkJoinButtonClickedEvent event, Emitter<WalkState> emit) async {
-    final result = await joinWalk(event.walkParticipantModel);
+    final result = await joinWalk(event.walkParticipant);
 
     result!.fold((failure) {
       emit(WalkErrorState());
@@ -80,7 +79,7 @@ class WalkBloc extends Bloc<WalkEvent, WalkState> {
 
   FutureOr<void> walkLeaveButtonClickedEvent(
       WalkLeaveButtonClickedEvent event, Emitter<WalkState> emit) async {
-    final result = await leaveWalk(event.walkParticipantModel);
+    final result = await leaveWalk(event.walkParticipant);
 
     result!.fold((failure) {
       emit(WalkErrorState());

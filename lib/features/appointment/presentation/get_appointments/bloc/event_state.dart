@@ -1,4 +1,4 @@
-import 'package:fitness_app/features/appointment/data/models/appointment_model.dart';
+import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 
 abstract class EventState {}
 
@@ -9,10 +9,10 @@ class EventInitialState extends EventState {}
 class EventLoadingState extends EventState {}
 
 class EventLoadedSuccessState extends EventState {
-  final List<AppointmentModel> appointmentModels;
-  EventLoadedSuccessState(this.appointmentModels);
-  EventLoadedSuccessState copyWith({List<AppointmentModel>? appointmentModels}) {
-    return EventLoadedSuccessState(appointmentModels ?? this.appointmentModels);
+  final List<Appointment> appointments;
+  EventLoadedSuccessState(this.appointments);
+  EventLoadedSuccessState copyWith({List<Appointment>? appointments}) {
+    return EventLoadedSuccessState(appointments ?? this.appointments);
   }
 }
 
@@ -25,22 +25,22 @@ class EventNavigateToAddEventActionState extends EventActionState {
 }
 
 class EventNavigateToDetailPageActionState extends EventActionState {
-  final AppointmentModel appointmentModel;
+  final Appointment appointment;
 
-  EventNavigateToDetailPageActionState(this.appointmentModel);
+  EventNavigateToDetailPageActionState(this.appointment);
 }
 
 class EventNavigateToUpdatePageActionState extends EventActionState {
-  final AppointmentModel appointmentModel;
+  final Appointment appointment;
   final DateTime focusedDay;
-  EventNavigateToUpdatePageActionState(this.appointmentModel, this.focusedDay);
+  EventNavigateToUpdatePageActionState(this.appointment, this.focusedDay);
 }
 
 class EventItemDeletedActionState extends EventActionState {}
 
 class EventDaySelectedState extends EventState {
-  final List<AppointmentModel> appointmentModels;
-  EventDaySelectedState(this.appointmentModels);
+  final List<Appointment> appointments;
+  EventDaySelectedState(this.appointments);
 }
 
 class EventItemsDeletedActionState extends EventActionState {}

@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:fitness_app/features/login/data/models/login_model.dart';
+import 'package:fitness_app/features/login/domain/entities/login.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/font_manager.dart';
@@ -306,7 +306,7 @@ class _LoginPageState extends State<LoginPage> {
 
   _onLogin(LoginBloc loginBloc) async {
     if (formKey.currentState!.validate()) {
-      LoginModel loginModel = LoginModel(
+      Login loginModel = Login(
         email: userNameController.text,
         password: passwordController.text,
       );

@@ -4,14 +4,14 @@ import 'package:intl/intl.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/font_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
-import 'package:fitness_app/features/appointment/data/models/appointment_model.dart';
+import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 
 class AppointmentDetailsBody extends StatelessWidget {
-  final AppointmentModel appointmentModel;
+  final Appointment appointment;
 
   const AppointmentDetailsBody({
     super.key,
-    required this.appointmentModel,
+    required this.appointment,
   });
 
   @override
@@ -26,11 +26,11 @@ class AppointmentDetailsBody extends StatelessWidget {
             contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
             tileColor: ColorManager.white,
             title: Text(
-              DateFormat("yMd").format(appointmentModel.date),
+              DateFormat("yMd").format(appointment.date),
               style: const TextStyle(fontSize: FontSize.s20),
             ),
             subtitle: Text(
-              "${appointmentModel.startTime} to ${appointmentModel.endTime}",
+              "${appointment.startTime} to ${appointment.endTime}",
               style: const TextStyle(fontSize: FontSize.s14),
             ),
           ),
@@ -38,7 +38,7 @@ class AppointmentDetailsBody extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              appointmentModel.remark ?? "",
+              appointment.remark ?? "",
               style: const TextStyle(fontSize: FontSize.s12),
             ),
           )

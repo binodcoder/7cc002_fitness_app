@@ -4,14 +4,14 @@ import 'package:intl/intl.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/font_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
-import 'package:fitness_app/features/live_training/data/models/live_training_model.dart';
+import 'package:fitness_app/features/live_training/domain/entities/live_training.dart';
 
 class LiveTrainingDetailsBody extends StatelessWidget {
-  final LiveTrainingModel liveTrainingModel;
+  final LiveTraining liveTraining;
 
   const LiveTrainingDetailsBody({
     super.key,
-    required this.liveTrainingModel,
+    required this.liveTraining,
   });
 
   @override
@@ -26,11 +26,11 @@ class LiveTrainingDetailsBody extends StatelessWidget {
             contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
             tileColor: ColorManager.white,
             title: Text(
-              DateFormat("yMd").format(liveTrainingModel.trainingDate),
+              DateFormat("yMd").format(liveTraining.trainingDate),
               style: const TextStyle(fontSize: FontSize.s20),
             ),
             subtitle: Text(
-              liveTrainingModel.startTime,
+              liveTraining.startTime,
               style: const TextStyle(fontSize: FontSize.s14),
             ),
             trailing: const Text(
@@ -52,4 +52,3 @@ class LiveTrainingDetailsBody extends StatelessWidget {
     );
   }
 }
-

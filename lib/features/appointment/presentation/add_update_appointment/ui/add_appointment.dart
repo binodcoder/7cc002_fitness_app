@@ -4,7 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:fitness_app/features/appointment/data/models/appointment_model.dart';
+import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 import 'package:fitness_app/features/appointment/domain/entities/sync.dart' as entity;
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
@@ -22,11 +22,11 @@ import 'package:fitness_app/core/common_widgets/time_picker_field.dart';
 import 'package:fitness_app/core/common_widgets/text_area_field.dart';
 
 class AddAppointmentDialog extends StatefulWidget {
-  final AppointmentModel? appointmentModel;
+  final Appointment? appointment;
   final DateTime? focusedDay;
   const AddAppointmentDialog({
     Key? key,
-    this.appointmentModel,
+    this.appointment,
     this.focusedDay,
   }) : super(key: key);
   @override
@@ -122,13 +122,13 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
   @override
   void initState() {
     setDateTime();
-    if (widget.appointmentModel != null) {
-      selectedDate = widget.appointmentModel!.date;
+    if (widget.appointment != null) {
+      selectedDate = widget.appointment!.date;
       _dateController.text =
-          DateFormat('yyyy-MM-dd').format(widget.appointmentModel!.date);
-      _startTimeController.text = widget.appointmentModel!.startTime;
-      _endTimeController.text = widget.appointmentModel!.endTime;
-      _remarkController.text = widget.appointmentModel!.remark.toString();
+          DateFormat('yyyy-MM-dd').format(widget.appointment!.date);
+      _startTimeController.text = widget.appointment!.startTime;
+      _endTimeController.text = widget.appointment!.endTime;
+      _remarkController.text = widget.appointment!.remark.toString();
       // appointmentAddBloc.add(AppointmentAddReadyToUpdateEvent(widget.appointmentModel!));
       appointmentAddBloc.add(AppointmentAddInitialEvent());
     } else {
@@ -195,10 +195,10 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
 
           case AppointmentAddLoadedSuccessState:
             final successState = state as AppointmentAddLoadedSuccessState;
-            if (widget.appointmentModel != null) {
+            if (widget.appointment != null) {
               selectedTrainer = successState.syncModel.data.trainers
                   .where((entity.TrainerEntity element) =>
-                      element.id == widget.appointmentModel!.trainerId)
+                      element.id == widget.appointment!.trainerId)
                   .first;
               // _trainerController.text =
               //     successState.syncModel.data.trainers.where((Trainer element) => element.id == widget.appointmentModel!.trainerId).first.name;
@@ -287,9 +287,9 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                         ),
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            if (widget.appointmentModel != null) {
-                              var appointmentModel = AppointmentModel(
-                                id: widget.appointmentModel!.id,
+                            if (widget.appointment != null) {
+                              var appointmentModel = Appointment(
+                                id: widget.appointment!.id,
                                 date: selectedDate,
                                 endTime: _endTimeController.text,
                                 startTime: _startTimeController.text,
@@ -301,7 +301,7 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                                   AppointmentAddUpdateButtonPressEvent(
                                       appointmentModel));
                             } else {
-                              var appointmentModel = AppointmentModel(
+                              var appointmentModel = Appointment(
                                 date: selectedDate,
                                 endTime: _endTimeController.text,
                                 startTime: _startTimeController.text,

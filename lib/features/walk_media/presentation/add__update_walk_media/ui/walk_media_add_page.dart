@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:fitness_app/features/walk_media/data/models/walk_media_model.dart';
+import 'package:fitness_app/features/walk_media/domain/entities/walk_media.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
@@ -16,9 +16,9 @@ import '../bloc/walk_media_add_event.dart';
 import '../bloc/walk_media_add_state.dart';
 
 class WalkMediaAddPage extends StatefulWidget {
-  const WalkMediaAddPage({super.key, this.walkMediaModel, this.walkId});
+  const WalkMediaAddPage({super.key, this.walkMedia, this.walkId});
 
-  final WalkMediaModel? walkMediaModel;
+  final WalkMedia? walkMedia;
   final int? walkId;
 
   @override
@@ -30,10 +30,9 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
 
   @override
   void initState() {
-    if (widget.walkMediaModel != null) {
-      walkMediaUrlController.text = widget.walkMediaModel!.mediaUrl;
-      walkMediaAddBloc
-          .add(WalkMediaAddReadyToUpdateEvent(widget.walkMediaModel!));
+    if (widget.walkMedia != null) {
+      walkMediaUrlController.text = widget.walkMedia!.mediaUrl;
+      walkMediaAddBloc.add(WalkMediaAddReadyToUpdateEvent(widget.walkMedia!));
     } else {
       walkMediaAddBloc.add(WalkMediaAddInitialEvent());
     }
@@ -75,7 +74,7 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: ColorManager.primary,
-            title: Text(widget.walkMediaModel == null
+            title: Text(widget.walkMedia == null
                 ? strings.addWalkMedia
                 : strings.updateWalkMedia),
           ),
@@ -140,7 +139,7 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                     ),
                     SigninButton(
                       child: Text(
-                        widget.walkMediaModel == null
+                        widget.walkMedia == null
                             ? strings.addWalkMedia
                             : strings.updateWalkMedia,
                         style: getRegularStyle(
@@ -154,9 +153,9 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                         var mediaUrl = walkMediaUrlController.text;
 
                         if (mediaUrl.isNotEmpty) {
-                          if (widget.walkMediaModel != null) {
-                            var updatedWalkMedia = WalkMediaModel(
-                              id: widget.walkMediaModel!.id,
+                          if (widget.walkMedia != null) {
+                            var updatedWalkMedia = WalkMedia(
+                              id: widget.walkMedia!.id,
                               walkId: walkId!,
                               userId: userId!,
                               mediaUrl: mediaUrl,
@@ -165,7 +164,7 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                                 WalkMediaAddUpdateButtonPressEvent(
                                     updatedWalkMedia));
                           } else {
-                            var newWalkMedia = WalkMediaModel(
+                            var newWalkMedia = WalkMedia(
                               walkId: walkId!,
                               userId: userId!,
                               mediaUrl: mediaUrl,

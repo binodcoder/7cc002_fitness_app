@@ -1,4 +1,4 @@
-import 'package:fitness_app/features/walk_media/data/models/walk_media_model.dart';
+import 'package:fitness_app/features/walk_media/domain/entities/walk_media.dart';
 
 abstract class WalkMediaState {}
 
@@ -9,10 +9,10 @@ class WalkMediaInitialState extends WalkMediaState {}
 class WalkMediaLoadingState extends WalkMediaState {}
 
 class WalkMediaLoadedSuccessState extends WalkMediaState {
-  final List<WalkMediaModel> walkMediaModelList;
-  WalkMediaLoadedSuccessState(this.walkMediaModelList);
-  WalkMediaLoadedSuccessState copyWith({List<WalkMediaModel>? walkMediaModelList}) {
-    return WalkMediaLoadedSuccessState(walkMediaModelList ?? this.walkMediaModelList);
+  final List<WalkMedia> walkMediaList;
+  WalkMediaLoadedSuccessState(this.walkMediaList);
+  WalkMediaLoadedSuccessState copyWith({List<WalkMedia>? walkMediaList}) {
+    return WalkMediaLoadedSuccessState(walkMediaList ?? this.walkMediaList);
   }
 }
 
@@ -24,15 +24,15 @@ class WalkMediaNavigateToAddWalkMediaActionState extends WalkMediaActionState {
 }
 
 class WalkMediaNavigateToDetailPageActionState extends WalkMediaActionState {
-  final WalkMediaModel walkMediaModel;
+  final WalkMedia walkMedia;
 
-  WalkMediaNavigateToDetailPageActionState(this.walkMediaModel);
+  WalkMediaNavigateToDetailPageActionState(this.walkMedia);
 }
 
 class WalkMediaNavigateToUpdatePageActionState extends WalkMediaActionState {
-  final WalkMediaModel walkMediaModel;
+  final WalkMedia walkMedia;
 
-  WalkMediaNavigateToUpdatePageActionState(this.walkMediaModel);
+  WalkMediaNavigateToUpdatePageActionState(this.walkMedia);
 }
 
 class WalkMediaItemDeletedActionState extends WalkMediaActionState {}

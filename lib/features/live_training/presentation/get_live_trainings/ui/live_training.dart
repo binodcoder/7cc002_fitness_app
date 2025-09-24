@@ -61,7 +61,7 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => LiveTrainingDetailsPage(
-                liveTrainingModel: state.liveTrainingModel,
+                liveTraining: state.liveTraining,
               ),
               fullscreenDialog: true,
             ),
@@ -73,7 +73,7 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => AddLiveTrainingDialog(
-                liveTrainingModel: state.liveTrainingModel,
+                liveTraining: state.liveTraining,
               ),
               fullscreenDialog: true,
             ),
@@ -112,34 +112,34 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
                 backgroundColor: ColorManager.primary,
                 title: Text(strings.titleLiveTrainingLabel),
               ),
-              body: ListView.builder(
-                itemCount: successState.liveTrainingModels.length,
+                body: ListView.builder(
+                itemCount: successState.liveTrainings.length,
                 itemBuilder: (context, index) {
-                  var liveTrainingModel =
-                      successState.liveTrainingModels[index];
+                  var liveTraining =
+                      successState.liveTrainings[index];
                   return LiveTrainingListTile(
-                    title: liveTrainingModel.title,
-                    subtitle: liveTrainingModel.description,
+                    title: liveTraining.title,
+                    subtitle: liveTraining.description,
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) =>
                               LiveTrainingDetailsPage(
-                            liveTrainingModel: liveTrainingModel,
+                            liveTraining: liveTraining,
                           ),
                         ),
                       );
                     },
                     onEdit: () {
                       liveTrainingBloc.add(
-                        LiveTrainingEditButtonClickedEvent(liveTrainingModel),
+                        LiveTrainingEditButtonClickedEvent(liveTraining),
                       );
                     },
                     onDelete: () {
                       liveTrainingBloc.add(
                         LiveTrainingDeleteButtonClickedEvent(
-                            liveTrainingModel),
+                            liveTraining),
                       );
                     },
                   );

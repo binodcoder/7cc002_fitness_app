@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:fitness_app/core/errors/failures.dart';
-import 'package:fitness_app/core/model/routine_model.dart';
-import 'package:fitness_app/features/routine/domain/usecases/add_routine.dart';
+import 'package:fitness_app/features/routine/domain/entities/routine.dart';
 import 'package:fitness_app/features/routine/domain/usecases/delete_routine.dart';
 import 'package:fitness_app/features/routine/domain/usecases/get_routines.dart';
 import 'package:fitness_app/features/routine/presentation/get_routines/bloc/routine_bloc.dart';
@@ -13,7 +12,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'routine_bloc_test.mocks.dart';
 
-@GenerateMocks([GetRoutines, AddRoutine, DeleteRoutine])
+@GenerateMocks([GetRoutines, DeleteRoutine])
 void main() {
   late RoutineBloc bloc;
   late MockGetRoutines mockGetRoutines;
@@ -33,8 +32,8 @@ void main() {
   });
 
   group('GetRoutines', () {
-    final tRoutineModel = [
-      RoutineModel(
+    const tRoutines = [
+      Routine(
         id: 37,
         name: 'string',
         description: 'This is for random',
@@ -48,7 +47,8 @@ void main() {
     test('should get data from the routine usecase', () async* {
       //arrange
 
-      when(mockGetRoutines(any)).thenAnswer((_) async => Right(tRoutineModel));
+      when(mockGetRoutines(any))
+          .thenAnswer((_) async => const Right(tRoutines));
       //act
       bloc.add(RoutineInitialEvent());
       await untilCalled(mockGetRoutines(any));
@@ -60,13 +60,14 @@ void main() {
         () async* {
       //arrange
 
-      when(mockGetRoutines(any)).thenAnswer((_) async => Right(tRoutineModel));
+      when(mockGetRoutines(any))
+          .thenAnswer((_) async => const Right(tRoutines));
 
       //assert later
       final expected = [
         RoutineInitialState(),
         RoutineLoadingState(),
-        RoutineLoadedSuccessState(tRoutineModel)
+        const RoutineLoadedSuccessState(tRoutines)
       ];
       expectLater(bloc, emitsInOrder(expected));
       //act
@@ -108,7 +109,7 @@ void main() {
   });
 
   group('DeleteRoutine', () {
-    final tRoutineModel = RoutineModel(
+    const tRoutine = Routine(
       id: 37,
       name: 'string',
       description: 'This is for random',
@@ -120,34 +121,34 @@ void main() {
 
     test('should get int from the delete usecase', () async* {
       //arrange
-      when(mockDeleteRoutine.call(tRoutineModel.id!))
+      when(mockDeleteRoutine.call(tRoutine.id!))
           .thenAnswer((_) async => const Right(1));
       //act
-      bloc.add(RoutineDeleteButtonClickedEvent(tRoutineModel));
+      bloc.add(RoutineDeleteButtonClickedEvent(tRoutine));
       await untilCalled(mockDeleteRoutine.call(any));
 
       //assert
-      verify(mockDeleteRoutine.call(tRoutineModel.id!));
+      verify(mockDeleteRoutine.call(tRoutine.id!));
     });
     test('should emits [Loading, Loaded] when data is gotten successfully',
         () async* {
       //arrange
-      when(mockDeleteRoutine.call(tRoutineModel.id!))
+      when(mockDeleteRoutine.call(tRoutine.id!))
           .thenAnswer((_) async => const Right(1));
 
       //assert later
       final expected = [
         RoutineInitialState(),
         RoutineLoadingState(),
-        RoutineLoadedSuccessState([tRoutineModel])
+        RoutineLoadedSuccessState([tRoutine])
       ];
       expectLater(bloc, emitsInOrder(expected));
       //act
-      bloc.add(RoutineDeleteButtonClickedEvent(tRoutineModel));
+      bloc.add(RoutineDeleteButtonClickedEvent(tRoutine));
     });
     test('should emits [Loading, Error] when getting data fails', () async* {
       //arrange
-      when(mockDeleteRoutine.call(tRoutineModel.id!))
+      when(mockDeleteRoutine.call(tRoutine.id!))
           .thenAnswer((_) async => Left(ServerFailure()));
 
       //assert later
@@ -158,14 +159,14 @@ void main() {
       ];
       expectLater(bloc, emitsInOrder(expected));
       //act
-      bloc.add(RoutineDeleteButtonClickedEvent(tRoutineModel));
+      bloc.add(RoutineDeleteButtonClickedEvent(tRoutine));
     });
 
     test(
         'should emits [Loading, Error] with a proper message for the error when getting data fails',
         () async* {
       //arrange
-      when(mockDeleteRoutine.call(tRoutineModel.id!))
+      when(mockDeleteRoutine.call(tRoutine.id!))
           .thenAnswer((_) async => Left(CacheFailure()));
 
       //assert later
@@ -176,7 +177,7 @@ void main() {
       ];
       expectLater(bloc, emitsInOrder(expected));
       //act
-      bloc.add(RoutineDeleteButtonClickedEvent(tRoutineModel));
+      bloc.add(RoutineDeleteButtonClickedEvent(tRoutine));
     });
   });
 }

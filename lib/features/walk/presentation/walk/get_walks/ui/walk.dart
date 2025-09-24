@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:fitness_app/core/db/db_helper.dart';
-import 'package:fitness_app/features/walk/data/models/walk_participant_model.dart';
+import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 import 'package:fitness_app/drawer.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
@@ -65,7 +65,7 @@ class _WalkPageState extends State<WalkPage> {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => WalkDetailsPage(
-                walkModel: state.walkModel,
+                walk: state.walk,
               ),
               fullscreenDialog: true,
             ),
@@ -77,7 +77,7 @@ class _WalkPageState extends State<WalkPage> {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) =>
-                  AddWalkPage(walkModel: state.walkModel),
+                  AddWalkPage(walk: state.walk),
               fullscreenDialog: true,
             ),
           ).then(
@@ -121,44 +121,44 @@ class _WalkPageState extends State<WalkPage> {
                   title: Text(strings.titleWalkLabel),
                 ),
                 body: ListView.builder(
-                  itemCount: successState.walkModelList.length,
+                  itemCount: successState.walks.length,
                   itemBuilder: (context, index) {
-                    var walkModel = successState.walkModelList[index];
-                    final bool isJoined = walkModel.participants!
+                    var walk = successState.walks[index];
+                    final bool isJoined = walk.participants
                         .where((element) =>
                             element.id == sharedPreferences.getInt("user_id"))
                         .isNotEmpty;
                     return WalkListTile(
-                      title: walkModel.startLocation,
+                      title: walk.startLocation,
                       subtitle:
-                          "${DateFormat("yMd").format(walkModel.date)} ${walkModel.startTime}",
+                          "${DateFormat("yMd").format(walk.date)} ${walk.startTime}",
                       isJoined: isJoined,
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (BuildContext context) => WalkMediaPage(
-                              walkId: successState.walkModelList[index].id!,
+                              walkId: successState.walks[index].id!,
                             ),
                           ),
                         );
                       },
                       onJoinTap: () {
-                        WalkParticipantModel walkParticipantModel =
-                            WalkParticipantModel(
+                        WalkParticipant walkParticipant =
+                            WalkParticipant(
                           userId: sharedPreferences.getInt("user_id")!,
-                          walkId: walkModel.id!,
+                          walkId: walk.id!,
                         );
                         if (isJoined) {
-                          walkBloc.add(
-                              WalkLeaveButtonClickedEvent(walkParticipantModel));
+                          walkBloc.add(WalkLeaveButtonClickedEvent(
+                              walkParticipant));
                         } else {
                           walkBloc.add(
-                              WalkJoinButtonClickedEvent(walkParticipantModel));
+                              WalkJoinButtonClickedEvent(walkParticipant));
                         }
                       },
                       onEdit: () {
-                        walkBloc.add(WalkEditButtonClickedEvent(walkModel));
+                        walkBloc.add(WalkEditButtonClickedEvent(walk));
                       },
                       onDelete: () {},
                     );

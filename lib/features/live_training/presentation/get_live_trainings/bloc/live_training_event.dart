@@ -1,17 +1,17 @@
-import 'package:fitness_app/features/live_training/data/models/live_training_model.dart';
+import 'package:fitness_app/features/live_training/domain/entities/live_training.dart';
 
 abstract class LiveTrainingEvent {}
 
 class LiveTrainingInitialEvent extends LiveTrainingEvent {}
 
 class LiveTrainingEditButtonClickedEvent extends LiveTrainingEvent {
-  final LiveTrainingModel liveTrainingModel;
-  LiveTrainingEditButtonClickedEvent(this.liveTrainingModel);
+  final LiveTraining liveTraining;
+  LiveTrainingEditButtonClickedEvent(this.liveTraining);
 }
 
 class LiveTrainingDeleteButtonClickedEvent extends LiveTrainingEvent {
-  final LiveTrainingModel liveTrainingModel;
-  LiveTrainingDeleteButtonClickedEvent(this.liveTrainingModel);
+  final LiveTraining liveTraining;
+  LiveTrainingDeleteButtonClickedEvent(this.liveTraining);
 }
 
 class LiveTrainingDeleteAllButtonClickedEvent extends LiveTrainingEvent {}
@@ -19,12 +19,12 @@ class LiveTrainingDeleteAllButtonClickedEvent extends LiveTrainingEvent {}
 class LiveTrainingAddButtonClickedEvent extends LiveTrainingEvent {}
 
 class LiveTrainingTileNavigateEvent extends LiveTrainingEvent {
-  final LiveTrainingModel liveTrainingModel;
-  LiveTrainingTileNavigateEvent(this.liveTrainingModel);
+  final LiveTraining liveTraining;
+  LiveTrainingTileNavigateEvent(this.liveTraining);
 }
 
 class LiveTrainingDaySelectEvent extends LiveTrainingEvent {
-  List<LiveTrainingModel> liveTrainingModels;
+  List<LiveTraining> liveTrainingModels;
   final DateTime selectedDay;
   LiveTrainingDaySelectEvent(this.selectedDay, this.liveTrainingModels);
 }

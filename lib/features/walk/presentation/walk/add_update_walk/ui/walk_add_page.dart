@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:fitness_app/core/db/db_helper.dart';
-import 'package:fitness_app/features/walk/data/models/walk_model.dart';
+import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
@@ -19,10 +19,10 @@ import '../bloc/walk_add_state.dart';
 class AddWalkPage extends StatefulWidget {
   const AddWalkPage({
     super.key,
-    this.walkModel,
+    this.walk,
   });
 
-  final WalkModel? walkModel;
+  final Walk? walk;
 
   @override
   State<AddWalkPage> createState() => _AddWalkPageState();
@@ -38,12 +38,12 @@ class _AddWalkPageState extends State<AddWalkPage> {
 
   @override
   void initState() {
-    if (widget.walkModel != null) {
-      routeDataController.text = widget.walkModel!.routeData;
-      dateController.text = widget.walkModel!.date.toString();
-      startTimeController.text = widget.walkModel!.startTime;
-      startLocationController.text = widget.walkModel!.startLocation;
-      walkAddBloc.add(WalkAddReadyToUpdateEvent(widget.walkModel!));
+    if (widget.walk != null) {
+      routeDataController.text = widget.walk!.routeData;
+      dateController.text = widget.walk!.date.toString();
+      startTimeController.text = widget.walk!.startTime;
+      startLocationController.text = widget.walk!.startLocation;
+      walkAddBloc.add(WalkAddReadyToUpdateEvent(widget.walk!));
     } else {
       walkAddBloc.add(WalkAddInitialEvent());
     }
@@ -81,7 +81,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: ColorManager.primary,
-            title: Text(widget.walkModel == null
+            title: Text(widget.walk == null
                 ? strings.addWalk
                 : strings.updateWalk),
           ),
@@ -287,7 +287,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                     ),
                     SigninButton(
                       child: Text(
-                        widget.walkModel == null
+                        widget.walk == null
                             ? strings.addWalk
                             : strings.updateWalk,
                         style: getRegularStyle(
@@ -302,9 +302,9 @@ class _AddWalkPageState extends State<AddWalkPage> {
                         var startTime = startTimeController.text;
                         var startLocation = startLocationController.text;
                         if (date.isNotEmpty && startLocation.isNotEmpty) {
-                          if (widget.walkModel != null) {
-                            var updatedWalk = WalkModel(
-                              id: widget.walkModel!.id,
+                          if (widget.walk != null) {
+                            var updatedWalk = Walk(
+                              id: widget.walk!.id,
                               proposerId: proposerId!,
                               routeData: routeData,
                               date: DateTime.now(),
@@ -314,7 +314,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                             walkAddBloc.add(
                                 WalkAddUpdateButtonPressEvent(updatedWalk));
                           } else {
-                            var newWalk = WalkModel(
+                            var newWalk = Walk(
                               proposerId: proposerId!,
                               routeData: routeData,
                               date: DateTime.now(),

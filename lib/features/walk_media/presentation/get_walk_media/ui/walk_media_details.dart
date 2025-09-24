@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:fitness_app/features/walk_media/data/models/walk_media_model.dart';
+import 'package:fitness_app/features/walk_media/domain/entities/walk_media.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 // Removed unused theme imports after extracting body widget
@@ -9,10 +9,10 @@ import 'package:fitness_app/features/walk_media/presentation/get_walk_media/widg
 class WalkMediaDetailsPage extends StatefulWidget {
   const WalkMediaDetailsPage({
     Key? key,
-    this.walkMediaModel,
+    this.walkMedia,
   }) : super(key: key);
 
-  final WalkMediaModel? walkMediaModel;
+  final WalkMedia? walkMedia;
 
   @override
   State<WalkMediaDetailsPage> createState() => _WalkMediaDetailsPageState();
@@ -43,7 +43,7 @@ class _WalkMediaDetailsPageState extends State<WalkMediaDetailsPage> {
         title: Text(strings.titleWalkMediaLabel),
         centerTitle: true,
       ),
-      body: WalkMediaDetailsBody(walkMediaModel: widget.walkMediaModel!),
+      body: WalkMediaDetailsBody(walkMedia: widget.walkMedia!),
     );
   }
 }

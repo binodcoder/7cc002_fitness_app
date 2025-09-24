@@ -1,5 +1,4 @@
-
-import 'package:fitness_app/features/walk_media/data/models/walk_media_model.dart';
+import 'package:fitness_app/features/walk_media/domain/entities/walk_media.dart';
 
 abstract class WalkMediaAddEvent {}
 
@@ -10,16 +9,16 @@ class WalkMediaAddPickFromGalaryButtonPressEvent extends WalkMediaAddEvent {}
 class WalkMediaAddPickFromCameraButtonPressEvent extends WalkMediaAddEvent {}
 
 class WalkMediaAddSaveButtonPressEvent extends WalkMediaAddEvent {
-  final WalkMediaModel newWalkMedia;
+  final WalkMedia newWalkMedia;
   WalkMediaAddSaveButtonPressEvent(this.newWalkMedia);
 }
 
 class WalkMediaAddUpdateButtonPressEvent extends WalkMediaAddEvent {
-  final WalkMediaModel updatedWalkMedia;
+  final WalkMedia updatedWalkMedia;
   WalkMediaAddUpdateButtonPressEvent(this.updatedWalkMedia);
 }
 
 class WalkMediaAddReadyToUpdateEvent extends WalkMediaAddEvent {
-  final WalkMediaModel walkMediaModel;
-  WalkMediaAddReadyToUpdateEvent(this.walkMediaModel);
+  final WalkMedia walkMedia;
+  WalkMediaAddReadyToUpdateEvent(this.walkMedia);
 }

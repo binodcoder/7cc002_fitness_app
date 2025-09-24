@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:fitness_app/features/routine/data/models/routine_model.dart';
+import 'package:fitness_app/features/routine/domain/entities/routine.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
@@ -19,10 +19,10 @@ import '../bloc/routine_add_state.dart';
 class AddRoutinePage extends StatefulWidget {
   const AddRoutinePage({
     super.key,
-    this.routineModel,
+    this.routine,
   });
 
-  final RoutineModel? routineModel;
+  final Routine? routine;
 
   @override
   State<AddRoutinePage> createState() => _AddRoutinePageState();
@@ -37,13 +37,13 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
 
   @override
   void initState() {
-    if (widget.routineModel != null) {
-      routineNameController.text = widget.routineModel!.name;
-      descriptionController.text = widget.routineModel!.description;
-      difficultyController.text = widget.routineModel!.difficulty;
-      durationController.text = widget.routineModel!.duration.toString();
-      sourceController.text = widget.routineModel!.source;
-      routineAddBloc.add(RoutineAddReadyToUpdateEvent(widget.routineModel!));
+    if (widget.routine != null) {
+      routineNameController.text = widget.routine!.name;
+      descriptionController.text = widget.routine!.description;
+      difficultyController.text = widget.routine!.difficulty;
+      durationController.text = widget.routine!.duration.toString();
+      sourceController.text = widget.routine!.source;
+      routineAddBloc.add(RoutineAddReadyToUpdateEvent(widget.routine!));
     } else {
       routineAddBloc.add(RoutineAddInitialEvent());
     }
@@ -351,7 +351,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                       ),
                       SigninButton(
                         child: Text(
-                          widget.routineModel == null
+                          widget.routine == null
                               ? strings.addRoutine
                               : strings.updateRoutine,
                           style: getRegularStyle(
@@ -366,9 +366,9 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                           var duration = durationController.text;
                           var source = sourceController.text;
                           if (routineName.isNotEmpty && duration.isNotEmpty) {
-                            if (widget.routineModel != null) {
-                              var updatedRoutine = RoutineModel(
-                                id: widget.routineModel!.id,
+                            if (widget.routine != null) {
+                              var updatedRoutine = Routine(
+                                id: widget.routine!.id,
                                 name: routineName,
                                 description: description,
                                 difficulty: difficulty,
@@ -379,7 +379,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                                   RoutineAddUpdateButtonPressEvent(
                                       updatedRoutine));
                             } else {
-                              var newRoutine = RoutineModel(
+                              var newRoutine = Routine(
                                 name: routineName,
                                 description: description,
                                 difficulty: difficulty,

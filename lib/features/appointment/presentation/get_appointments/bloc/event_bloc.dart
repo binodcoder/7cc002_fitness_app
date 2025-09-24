@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:fitness_app/features/appointment/data/models/appointment_model.dart';
+import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:fitness_app/core/db/db_helper.dart';
 import 'package:fitness_app/core/usecases/usecase.dart';
@@ -13,7 +13,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
   final GetAppointments getAppointments;
   final DeleteAppointment deleteAppointment;
   final DatabaseHelper dbHelper = DatabaseHelper();
-  List<AppointmentModel> selectedEvents = [];
+  List<Appointment> selectedEvents = [];
   EventBloc({
     required this.getAppointments,
     required this.deleteAppointment,
@@ -30,20 +30,19 @@ class EventBloc extends Bloc<EventEvent, EventState> {
   FutureOr<void> eventInitialEvent(
       EventInitialEvent event, Emitter<EventState> emit) async {
     emit(EventLoadingState());
-    final appointments = await getAppointments(NoParams());
+    final appointmentsResult = await getAppointments(NoParams());
 
-    appointments!.fold((failure) {
+    appointmentsResult!.fold((failure) {
       // emit(Error(message: _mapFailureToMessage(failure)));
     }, (appointments) {
-      emit(EventLoadedSuccessState(
-          appointments.map((e) => e as AppointmentModel).toList()));
+      emit(EventLoadedSuccessState(appointments));
     });
   }
 
   FutureOr<void> eventEditButtonClickedEvent(
       EventEditButtonClickedEvent event, Emitter<EventState> emit) {
     emit(EventNavigateToUpdatePageActionState(
-        event.appointmentModel, event.focusedDay));
+        event.appointment, event.focusedDay));
   }
 
   FutureOr<void> eventDeleteButtonClickedEvent(
@@ -69,13 +68,13 @@ class EventBloc extends Bloc<EventEvent, EventState> {
 
   FutureOr<void> eventTileNavigateEvent(
       EventTileNavigateEvent event, Emitter<EventState> emit) {
-    emit(EventNavigateToDetailPageActionState(event.appointmentModel));
+    emit(EventNavigateToDetailPageActionState(event.appointment));
   }
 
   FutureOr<void> eventDaySelectEvent(
       EventDaySelectEvent e, Emitter<EventState> emit) {
     // emit(EventLoadedSuccessState(e.appointmentModels.where((event) => isSameDay(event.date, e.selectedDay)).toList()));
-    emit(EventDaySelectedState(e.appointmentModels
+    emit(EventDaySelectedState(e.appointments
         .where((event) => isSameDay(event.date, e.selectedDay))
         .toList()));
   }

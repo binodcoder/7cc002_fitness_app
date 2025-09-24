@@ -42,7 +42,8 @@ class WalkRepositoryImpl implements WalkRepository {
   @override
   Future<Either<Failure, int>>? addWalk(entity.Walk walkModel) async {
     try {
-      final model = walkModel is WalkModel ? walkModel as WalkModel : WalkModel.fromEntity(walkModel);
+      final model =
+          walkModel is WalkModel ? walkModel : WalkModel.fromEntity(walkModel);
       int response = await walkRemoteDataSource.addWalk(model);
       return Right(response);
     } on ServerException {
@@ -53,7 +54,8 @@ class WalkRepositoryImpl implements WalkRepository {
   @override
   Future<Either<Failure, int>>? updateWalk(entity.Walk walkModel) async {
     try {
-      final model = walkModel is WalkModel ? walkModel as WalkModel : WalkModel.fromEntity(walkModel);
+      final model =
+          walkModel is WalkModel ? walkModel : WalkModel.fromEntity(walkModel);
       int response = await walkRemoteDataSource.updateWalk(model);
       return Right(response);
     } on ServerException {
@@ -72,10 +74,11 @@ class WalkRepositoryImpl implements WalkRepository {
   }
 
   @override
-  Future<Either<Failure, int>>? joinWalk(entity.WalkParticipant walkParticipantModel) async {
+  Future<Either<Failure, int>>? joinWalk(
+      entity.WalkParticipant walkParticipantModel) async {
     try {
       final model = walkParticipantModel is WalkParticipantModel
-          ? walkParticipantModel as WalkParticipantModel
+          ? walkParticipantModel
           : WalkParticipantModel.fromEntity(walkParticipantModel);
       int response = await walkRemoteDataSource.joinWalk(model);
       return Right(response);
@@ -85,10 +88,11 @@ class WalkRepositoryImpl implements WalkRepository {
   }
 
   @override
-  Future<Either<Failure, int>>? leaveWalk(entity.WalkParticipant walkParticipantModel) async {
+  Future<Either<Failure, int>>? leaveWalk(
+      entity.WalkParticipant walkParticipantModel) async {
     try {
       final model = walkParticipantModel is WalkParticipantModel
-          ? walkParticipantModel as WalkParticipantModel
+          ? walkParticipantModel
           : WalkParticipantModel.fromEntity(walkParticipantModel);
       int response = await walkRemoteDataSource.leaveWalk(model);
       return Right(response);

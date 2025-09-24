@@ -31,7 +31,7 @@ class AppointmentAddBloc
       AppointmentAddSaveButtonPressEvent event,
       Emitter<AppointmentAddState> emit) async {
     emit(AppointmentAddLoadingState());
-    final result = await addAppointment(event.appointmentModel);
+    final result = await addAppointment(event.appointment);
     result!.fold((failure) {
       emit(AddAppointmentErrorState(message: mapFailureToMessage(failure)));
     }, (result) {
@@ -54,7 +54,7 @@ class AppointmentAddBloc
       AppointmentAddUpdateButtonPressEvent event,
       Emitter<AppointmentAddState> emit) async {
     emit(AppointmentAddLoadingState());
-    final result = await updateAppointment(event.appointmentModel);
+    final result = await updateAppointment(event.appointment);
     result!.fold((failure) {
       emit(AddAppointmentErrorState(message: mapFailureToMessage(failure)));
     }, (result) {

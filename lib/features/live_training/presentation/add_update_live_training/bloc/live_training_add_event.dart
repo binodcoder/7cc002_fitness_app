@@ -1,20 +1,20 @@
-import 'package:fitness_app/features/live_training/data/models/live_training_model.dart';
+import 'package:fitness_app/features/live_training/domain/entities/live_training.dart';
 
 abstract class LiveTrainingAddEvent {}
 
 class LiveTrainingAddInitialEvent extends LiveTrainingAddEvent {}
 
 class LiveTrainingAddSaveButtonPressEvent extends LiveTrainingAddEvent {
-  final LiveTrainingModel liveTrainingModel;
-  LiveTrainingAddSaveButtonPressEvent(this.liveTrainingModel);
+  final LiveTraining liveTraining;
+  LiveTrainingAddSaveButtonPressEvent(this.liveTraining);
 }
 
 class LiveTrainingAddUpdateButtonPressEvent extends LiveTrainingAddEvent {
-  final LiveTrainingModel liveTrainingModel;
-  LiveTrainingAddUpdateButtonPressEvent(this.liveTrainingModel);
+  final LiveTraining liveTraining;
+  LiveTrainingAddUpdateButtonPressEvent(this.liveTraining);
 }
 
 class LiveTrainingAddReadyToUpdateEvent extends LiveTrainingAddEvent {
-  final LiveTrainingModel liveTrainingModel;
-  LiveTrainingAddReadyToUpdateEvent(this.liveTrainingModel);
+  final LiveTraining liveTraining;
+  LiveTrainingAddReadyToUpdateEvent(this.liveTraining);
 }

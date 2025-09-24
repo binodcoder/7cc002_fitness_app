@@ -61,7 +61,7 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => WalkMediaDetailsPage(
-                walkMediaModel: state.walkMediaModel,
+                walkMedia: state.walkMedia,
               ),
               fullscreenDialog: true,
             ),
@@ -73,7 +73,7 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => WalkMediaAddPage(
-                walkMediaModel: state.walkMediaModel,
+                walkMedia: state.walkMedia,
                 walkId: widget.walkId,
               ),
               fullscreenDialog: true,
@@ -103,7 +103,7 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                 child: const Icon(Icons.add),
                 onPressed: () {
                   walkMediaBloc.add(WalkMediaAddButtonClickedEvent(
-                      successState.walkMediaModelList.first.id!));
+                      successState.walkMediaList.first.id!));
                 },
               ),
               appBar: AppBar(
@@ -111,31 +111,31 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                 title: Text(strings.titleWalkMediaLabel),
               ),
               body: ListView.builder(
-                itemCount: successState.walkMediaModelList.length,
+                itemCount: successState.walkMediaList.length,
                 itemBuilder: (context, index) {
-                  var walkMediaModel = successState.walkMediaModelList[index];
+                  var walkMedia = successState.walkMediaList[index];
                   return WalkMediaListTile(
-                    title: walkMediaModel.mediaUrl,
-                    subtitle: walkMediaModel.userId.toString(),
+                    title: walkMedia.mediaUrl,
+                    subtitle: walkMedia.userId.toString(),
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) =>
                               WalkMediaDetailsPage(
-                            walkMediaModel: walkMediaModel,
+                            walkMedia: walkMedia,
                           ),
                         ),
                       );
                     },
                     onEdit: () {
                       walkMediaBloc.add(
-                        WalkMediaEditButtonClickedEvent(walkMediaModel),
+                        WalkMediaEditButtonClickedEvent(walkMedia),
                       );
                     },
                     onDelete: () {
                       walkMediaBloc.add(
-                        WalkMediaDeleteButtonClickedEvent(walkMediaModel),
+                        WalkMediaDeleteButtonClickedEvent(walkMedia),
                       );
                     },
                   );

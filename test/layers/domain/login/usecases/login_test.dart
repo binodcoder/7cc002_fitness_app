@@ -1,7 +1,7 @@
-import 'package:fitness_app/core/model/login_model.dart';
-import 'package:fitness_app/core/model/user_model.dart';
+import 'package:fitness_app/features/login/data/models/login_model.dart';
 import 'package:fitness_app/features/login/domain/repositories/login_repositories.dart';
 import 'package:fitness_app/features/login/domain/usecases/login.dart';
+import 'package:fitness_app/features/register/data/models/user_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:dartz/dartz.dart';
@@ -16,7 +16,7 @@ void main() {
     usecase = Login(mockLoginRepository);
   });
 
-  UserModel tUser = UserModel(
+  UserModel tUser = const UserModel(
     email: "",
     name: " ",
     password: " ",
@@ -25,7 +25,7 @@ void main() {
     institutionEmail: '',
     role: '',
   );
-  LoginModel tLoginModel = LoginModel(email: "", password: "");
+  LoginModel tLoginModel = const LoginModel(email: "", password: "");
   test(
     'should get user from the repository',
     () async {

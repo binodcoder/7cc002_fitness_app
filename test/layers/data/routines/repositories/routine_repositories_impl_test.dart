@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/core/errors/failures.dart';
-import 'package:fitness_app/core/model/routine_model.dart';
 import 'package:fitness_app/core/network/network_info.dart';
 import 'package:fitness_app/features/routine/data/data_sources/routines_local_data_source.dart';
 import 'package:fitness_app/features/routine/data/data_sources/routines_remote_data_source.dart';
+import 'package:fitness_app/features/routine/data/models/routine_model.dart';
 import 'package:fitness_app/features/routine/data/repositories/routine_repository_impl.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -50,7 +50,7 @@ void main() {
   }
 
   group('getRoutines', () {
-    final tRoutineModel = [
+    const tRoutineModel = [
       RoutineModel(
         id: 37,
         name: 'string',
@@ -82,7 +82,7 @@ void main() {
         final result = await repository.getRoutines();
         //assert
         verify(mockRemoteDataSource.getRoutines());
-        expect(result, equals(Right(tRoutineModel)));
+        expect(result, equals(const Right(tRoutineModel)));
       });
       test(
           'should cache the data locally when the call to remote data source is successful',

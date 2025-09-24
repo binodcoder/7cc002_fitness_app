@@ -4,7 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:fitness_app/features/live_training/data/models/live_training_model.dart';
+import 'package:fitness_app/features/live_training/domain/entities/live_training.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
@@ -21,11 +21,11 @@ import '../bloc/live_training_add_event.dart';
 import '../bloc/live_training_add_state.dart';
 
 class AddLiveTrainingDialog extends StatefulWidget {
-  final LiveTrainingModel? liveTrainingModel;
+  final LiveTraining? liveTraining;
 
   const AddLiveTrainingDialog({
     Key? key,
-    this.liveTrainingModel,
+    this.liveTraining,
   }) : super(key: key);
   @override
   AddLiveTrainingDialogState createState() => AddLiveTrainingDialogState();
@@ -118,14 +118,14 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
   @override
   void initState() {
     setDateTime();
-    if (widget.liveTrainingModel != null) {
-      _titleController.text = widget.liveTrainingModel!.title;
-      selectedDate = widget.liveTrainingModel!.trainingDate;
+    if (widget.liveTraining != null) {
+      _titleController.text = widget.liveTraining!.title;
+      selectedDate = widget.liveTraining!.trainingDate;
       _dateController.text = DateFormat('yyyy-MM-dd')
-          .format(widget.liveTrainingModel!.trainingDate);
-      _startTimeController.text = widget.liveTrainingModel!.startTime;
-      _endTimeController.text = widget.liveTrainingModel!.endTime;
-      _descriptionController.text = widget.liveTrainingModel!.description;
+          .format(widget.liveTraining!.trainingDate);
+      _startTimeController.text = widget.liveTraining!.startTime;
+      _endTimeController.text = widget.liveTraining!.endTime;
+      _descriptionController.text = widget.liveTraining!.description;
       // LiveTrainingAddBloc.add(LiveTrainingAddReadyToUpdateEvent(widget.LiveTrainingModel!));
       liveTrainingAddBloc.add(LiveTrainingAddInitialEvent());
     } else {
@@ -258,9 +258,9 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                     ),
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        if (widget.liveTrainingModel != null) {
-                          var liveTrainingModel = LiveTrainingModel(
-                            trainerId: widget.liveTrainingModel!.trainerId,
+                        if (widget.liveTraining != null) {
+                          var liveTrainingModel = LiveTraining(
+                            trainerId: widget.liveTraining!.trainerId,
                             title: _titleController.text,
                             description: _descriptionController.text,
                             trainingDate: DateTime.now(),
@@ -271,7 +271,7 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                               LiveTrainingAddUpdateButtonPressEvent(
                                   liveTrainingModel));
                         } else {
-                          var liveTrainingModel = LiveTrainingModel(
+                          var liveTrainingModel = LiveTraining(
                             trainerId: sharedPreferences.getInt("user_id")!,
                             title: _titleController.text,
                             description: _descriptionController.text,

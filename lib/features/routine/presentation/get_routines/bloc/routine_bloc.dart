@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:fitness_app/features/routine/presentation/get_routines/bloc/routine_event.dart';
 import 'package:fitness_app/features/routine/presentation/get_routines/bloc/routine_state.dart';
 import 'package:fitness_app/core/db/db_helper.dart';
-import 'package:fitness_app/features/routine/data/models/routine_model.dart';
+import 'package:fitness_app/features/routine/domain/entities/routine.dart';
 import 'package:fitness_app/core/usecases/usecase.dart';
 import '../../../domain/usecases/delete_routine.dart';
 import '../../../domain/usecases/get_routines.dart';
@@ -12,7 +12,7 @@ class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
   final GetRoutines getRoutines;
   final DeleteRoutine deleteRoutine;
   final DatabaseHelper dbHelper = DatabaseHelper();
-  List<RoutineModel> selectedRoutines = [];
+  List<Routine> selectedRoutines = [];
 
   RoutineState get initialState => RoutineInitialState();
 
@@ -31,24 +31,23 @@ class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
   FutureOr<void> routineInitialEvent(
       RoutineInitialEvent event, Emitter<RoutineState> emit) async {
     emit(RoutineLoadingState());
-    final routineModelList = await getRoutines(NoParams());
+    final routineList = await getRoutines(NoParams());
 
-    routineModelList!.fold((failure) {
+    routineList!.fold((failure) {
       // emit(Error(message: _mapFailureToMessage(failure)));
-    }, (routineModelList) {
-      emit(RoutineLoadedSuccessState(
-          routineModelList.map((e) => e as RoutineModel).toList()));
+    }, (routines) {
+      emit(RoutineLoadedSuccessState(routines));
     });
   }
 
   FutureOr<void> routineEditButtonClickedEvent(
       RoutineEditButtonClickedEvent event, Emitter<RoutineState> emit) {
-    emit(RoutineNavigateToUpdatePageActionState(event.routineModel));
+    emit(RoutineNavigateToUpdatePageActionState(event.routine));
   }
 
   FutureOr<void> routineDeleteButtonClickedEvent(
       RoutineDeleteButtonClickedEvent event, Emitter<RoutineState> emit) async {
-    // await dbHelper.deleteRoutine(event.routineModel.id);
+    // await dbHelper.deleteRoutine(event.routine.id);
     // List<RoutineModel> routineList = await dbHelper.getRoutines();
     // emit(RoutineLoadedSuccessState(routineList));
   }
@@ -70,6 +69,6 @@ class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
 
   FutureOr<void> routineTileNavigateEvent(
       RoutineTileNavigateEvent event, Emitter<RoutineState> emit) {
-    emit(RoutineNavigateToDetailPageActionState(event.routineModel));
+    emit(RoutineNavigateToDetailPageActionState(event.routine));
   }
 }

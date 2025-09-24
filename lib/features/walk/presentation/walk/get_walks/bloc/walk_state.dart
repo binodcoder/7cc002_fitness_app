@@ -1,4 +1,4 @@
-import 'package:fitness_app/features/walk/data/models/walk_model.dart';
+import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 
 abstract class WalkState {}
 
@@ -9,10 +9,10 @@ class WalkInitialState extends WalkState {}
 class WalkLoadingState extends WalkState {}
 
 class WalkLoadedSuccessState extends WalkState {
-  final List<WalkModel> walkModelList;
-  WalkLoadedSuccessState(this.walkModelList);
-  WalkLoadedSuccessState copyWith({List<WalkModel>? walkModelList}) {
-    return WalkLoadedSuccessState(walkModelList ?? this.walkModelList);
+  final List<Walk> walks;
+  WalkLoadedSuccessState(this.walks);
+  WalkLoadedSuccessState copyWith({List<Walk>? walks}) {
+    return WalkLoadedSuccessState(walks ?? this.walks);
   }
 }
 
@@ -21,15 +21,15 @@ class WalkErrorState extends WalkState {}
 class WalkNavigateToAddWalkActionState extends WalkActionState {}
 
 class WalkNavigateToDetailPageActionState extends WalkActionState {
-  final WalkModel walkModel;
+  final Walk walk;
 
-  WalkNavigateToDetailPageActionState(this.walkModel);
+  WalkNavigateToDetailPageActionState(this.walk);
 }
 
 class WalkNavigateToUpdatePageActionState extends WalkActionState {
-  final WalkModel walkModel;
+  final Walk walk;
 
-  WalkNavigateToUpdatePageActionState(this.walkModel);
+  WalkNavigateToUpdatePageActionState(this.walk);
 }
 
 class WalkItemDeletedActionState extends WalkActionState {}

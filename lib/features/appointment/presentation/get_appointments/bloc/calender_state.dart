@@ -1,4 +1,4 @@
-import 'package:fitness_app/features/appointment/data/models/appointment_model.dart';
+import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 
 abstract class CalenderState {}
 
@@ -9,10 +9,10 @@ class CalenderInitialState extends CalenderState {}
 class CalenderLoadingState extends CalenderState {}
 
 class CalenderLoadedSuccessState extends CalenderState {
-  final List<AppointmentModel> appointmentModels;
-  CalenderLoadedSuccessState(this.appointmentModels);
-  CalenderLoadedSuccessState copyWith({List<AppointmentModel>? appointmentModels}) {
-    return CalenderLoadedSuccessState(appointmentModels ?? this.appointmentModels);
+  final List<Appointment> appointments;
+  CalenderLoadedSuccessState(this.appointments);
+  CalenderLoadedSuccessState copyWith({List<Appointment>? appointments}) {
+    return CalenderLoadedSuccessState(appointments ?? this.appointments);
   }
 }
 
@@ -25,9 +25,9 @@ class CalenderNavigateToAddCalenderActionState extends CalenderActionState {
 }
 
 class CalenderNavigateToDetailPageActionState extends CalenderActionState {
-  final AppointmentModel appointmentModel;
+  final Appointment appointment;
 
-  CalenderNavigateToDetailPageActionState(this.appointmentModel);
+  CalenderNavigateToDetailPageActionState(this.appointment);
 }
 
 class CalenderNavigateToUpdatePageActionState extends CalenderActionState {}
@@ -35,9 +35,9 @@ class CalenderNavigateToUpdatePageActionState extends CalenderActionState {}
 class CalenderItemDeletedActionState extends CalenderActionState {}
 
 class CalenderDaySelectedState extends CalenderState {
-  final List<AppointmentModel> appointmentModels;
+  final List<Appointment> appointments;
 
-  CalenderDaySelectedState(this.appointmentModels);
+  CalenderDaySelectedState(this.appointments);
 }
 
 class CalenderItemsDeletedActionState extends CalenderActionState {}

@@ -26,7 +26,7 @@ class LiveTrainingAddBloc
       LiveTrainingAddSaveButtonPressEvent event,
       Emitter<LiveTrainingAddState> emit) async {
     emit(LiveTrainingAddLoadingState());
-    final result = await addLiveTraining(event.liveTrainingModel);
+    final result = await addLiveTraining(event.liveTraining);
     result!.fold((failure) {
       emit(AddLiveTrainingErrorState());
     }, (result) {
@@ -50,7 +50,7 @@ class LiveTrainingAddBloc
       LiveTrainingAddUpdateButtonPressEvent event,
       Emitter<LiveTrainingAddState> emit) async {
     emit(LiveTrainingAddLoadingState());
-    final result = await updateLiveTraining(event.liveTrainingModel);
+    final result = await updateLiveTraining(event.liveTraining);
     result!.fold((failure) {
       emit(AddLiveTrainingErrorState());
     }, (result) {

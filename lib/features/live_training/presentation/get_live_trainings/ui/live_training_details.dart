@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:fitness_app/features/live_training/data/models/live_training_model.dart';
+import 'package:fitness_app/features/live_training/domain/entities/live_training.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 // Unused local theme imports removed after extracting body widget
@@ -9,10 +9,10 @@ import 'package:fitness_app/features/live_training/presentation/get_live_trainin
 class LiveTrainingDetailsPage extends StatefulWidget {
   const LiveTrainingDetailsPage({
     Key? key,
-    this.liveTrainingModel,
+    this.liveTraining,
   }) : super(key: key);
 
-  final LiveTrainingModel? liveTrainingModel;
+  final LiveTraining? liveTraining;
 
   @override
   State<LiveTrainingDetailsPage> createState() =>
@@ -52,7 +52,7 @@ class _LiveTrainingDetailsPageState extends State<LiveTrainingDetailsPage> {
         centerTitle: true,
       ),
       body: LiveTrainingDetailsBody(
-        liveTrainingModel: widget.liveTrainingModel!,
+        liveTraining: widget.liveTraining!,
       ),
     );
   }

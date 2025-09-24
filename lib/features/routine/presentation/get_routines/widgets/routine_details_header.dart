@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/font_manager.dart';
-import 'package:fitness_app/features/routine/data/models/routine_model.dart';
+import 'package:fitness_app/features/routine/domain/entities/routine.dart';
 
 class RoutineDetailsHeader extends StatelessWidget {
-  final RoutineModel routineModel;
+  final Routine routine;
 
   const RoutineDetailsHeader({
     super.key,
-    required this.routineModel,
+    required this.routine,
   });
 
   @override
@@ -25,7 +25,7 @@ class RoutineDetailsHeader extends StatelessWidget {
       ),
       tileColor: ColorManager.white,
       title: Text(
-        routineModel.name,
+        routine.name,
         style: const TextStyle(
           fontSize: FontSize.s20,
         ),
@@ -34,26 +34,25 @@ class RoutineDetailsHeader extends StatelessWidget {
         children: [
           Align(
             alignment: Alignment.bottomLeft,
-            child: Text("Duration: ${routineModel.duration} minutes"),
+            child: Text("Duration: ${routine.duration} minutes"),
           ),
           Align(
             alignment: Alignment.bottomLeft,
             child: Text(
-              routineModel.source,
+              routine.source,
               textAlign: TextAlign.left,
             ),
           ),
           Align(
             alignment: Alignment.bottomLeft,
-            child: Text(routineModel.description),
+            child: Text(routine.description),
           ),
         ],
       ),
       trailing: Text(
-        routineModel.difficulty,
+        routine.difficulty,
         style: const TextStyle(fontSize: FontSize.s14),
       ),
     );
   }
 }
-

@@ -1,4 +1,4 @@
-import 'package:fitness_app/features/appointment/data/models/appointment_model.dart';
+import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 
 abstract class CalenderEvent {}
 
@@ -7,8 +7,8 @@ class CalenderInitialEvent extends CalenderEvent {}
 class CalenderEditButtonClickedEvent extends CalenderEvent {}
 
 class CalenderDeleteButtonClickedEvent extends CalenderEvent {
-  final AppointmentModel appointmentModel;
-  CalenderDeleteButtonClickedEvent(this.appointmentModel);
+  final Appointment appointment;
+  CalenderDeleteButtonClickedEvent(this.appointment);
 }
 
 class CalenderDeleteAllButtonClickedEvent extends CalenderEvent {}
@@ -19,12 +19,12 @@ class CalenderAddButtonClickedEvent extends CalenderEvent {
 }
 
 class CalenderTileNavigateEvent extends CalenderEvent {
-  final AppointmentModel appointmentModel;
-  CalenderTileNavigateEvent(this.appointmentModel);
+  final Appointment appointment;
+  CalenderTileNavigateEvent(this.appointment);
 }
 
 class CalenderDaySelectEvent extends CalenderEvent {
-  List<AppointmentModel> appointmentModels;
+  List<Appointment> appointments;
   final DateTime selectedDay;
-  CalenderDaySelectEvent(this.selectedDay, this.appointmentModels);
+  CalenderDaySelectEvent(this.selectedDay, this.appointments);
 }

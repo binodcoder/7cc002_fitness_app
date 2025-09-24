@@ -1,4 +1,4 @@
-import 'package:fitness_app/core/model/routine_model.dart';
+import 'package:fitness_app/features/routine/data/models/routine_model.dart';
 import 'package:fitness_app/features/routine/domain/repositories/routine_repositories.dart';
 import 'package:fitness_app/features/routine/domain/usecases/update_routine.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,7 +17,7 @@ void main() {
 
   int tResponse = 1;
 
-  RoutineModel tRoutineModel = RoutineModel(
+  RoutineModel tRoutineModel = const RoutineModel(
     id: 1,
     description: '',
     difficulty: '',

@@ -27,7 +27,8 @@ class DatabaseHelper {
     final databasesPath = await getDatabasesPath();
     final path = join(databasesPath, 'fitness.db');
 
-    return await openDatabase(path, version: 1, onCreate: (Database db, int version) async {
+    return await openDatabase(path, version: 1,
+        onCreate: (Database db, int version) async {
       await db.execute('''
           CREATE TABLE routine (
             id INTEGER PRIMARY KEY,
@@ -88,7 +89,7 @@ class DatabaseHelper {
         date: DateTime.now(),
         startTime: '',
         startLocation: '',
-        participants: [],
+        participants: const [],
       );
     });
   }
@@ -97,7 +98,7 @@ class DatabaseHelper {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db!.query('routine');
     return List.generate(maps.length, (i) {
-      return WalkMediaModel(
+      return const WalkMediaModel(
         id: 1,
         walkId: 0,
         userId: 0,
@@ -110,7 +111,7 @@ class DatabaseHelper {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db!.query('routine');
     return List.generate(maps.length, (i) {
-      return WalkMediaModel(
+      return const WalkMediaModel(
         id: 1,
         walkId: 0,
         userId: 0,

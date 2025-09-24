@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:fitness_app/features/appointment/data/models/appointment_model.dart';
+import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 // Removed unused theme imports after extracting body widgets
@@ -9,10 +9,10 @@ import 'package:fitness_app/features/appointment/presentation/get_appointments/w
 class AppointmentDetailsPage extends StatefulWidget {
   const AppointmentDetailsPage({
     Key? key,
-    this.appointmentModel,
+    this.appointment,
   }) : super(key: key);
 
-  final AppointmentModel? appointmentModel;
+  final Appointment? appointment;
 
   @override
   State<AppointmentDetailsPage> createState() => _AppointmentDetailsPageState();
@@ -50,7 +50,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
         centerTitle: true,
       ),
       body: AppointmentDetailsBody(
-        appointmentModel: widget.appointmentModel!,
+        appointment: widget.appointment!,
       ),
     );
   }
