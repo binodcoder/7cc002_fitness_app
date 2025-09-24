@@ -10,7 +10,10 @@ import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/font_manager.dart';
 import 'package:fitness_app/core/theme/styles_manager.dart';
-import 'package:fitness_app/core/theme/values_manager.dart';
+import 'package:fitness_app/core/common_widgets/date_picker_field.dart';
+import 'package:fitness_app/core/common_widgets/time_picker_field.dart';
+import 'package:fitness_app/core/common_widgets/text_area_field.dart';
+import 'package:fitness_app/features/live_training/presentation/add_update_live_training/widgets/title_field.dart';
 
 import 'package:fitness_app/features/login/presentation/widgets/sign_in_button.dart';
 import '../bloc/live_training_add_bloc.dart';
@@ -207,48 +210,12 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                   SizedBox(
                     height: size.height * 0.03,
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 15.0),
-                    child: TextFormField(
-                      controller: _titleController,
-                      textInputAction: TextInputAction.go,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 20.0, horizontal: 10.0),
-                        border: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(width: 1.5, color: Colors.blue),
-                          borderRadius: BorderRadius.circular(AppRadius.r4),
-                        ),
-                        labelText: 'Title',
-                        hintText: 'Enter Title',
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      selectDate(context);
-                    },
-                    child: Container(
-                      width: _width / 1.7,
-                      height: _height / 9,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(color: Colors.grey[200]),
-                      child: TextFormField(
-                        style: const TextStyle(fontSize: 40),
-                        textAlign: TextAlign.center,
-                        enabled: false,
-                        keyboardType: TextInputType.text,
-                        controller: _dateController,
-                        onSaved: (String? val) {
-                          // _setDate = val!;
-                        },
-                        decoration: const InputDecoration(
-                            disabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide.none),
-                            contentPadding: EdgeInsets.only(top: 0.0)),
-                      ),
-                    ),
+                  TitleField(controller: _titleController),
+                  DatePickerField(
+                    controller: _dateController,
+                    width: _width / 1.7,
+                    height: _height / 9,
+                    onTap: () => selectDate(context),
                   ),
                   SizedBox(
                     height: size.height * 0.03,
@@ -256,80 +223,27 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      InkWell(
-                        onTap: () {
-                          _selectStartTime(context);
-                        },
-                        child: Container(
-                          width: _width * 0.45,
-                          height: _height * 0.1,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(color: Colors.grey[200]),
-                          child: TextFormField(
-                            style: const TextStyle(fontSize: 20),
-                            textAlign: TextAlign.center,
-                            enabled: false,
-                            keyboardType: TextInputType.text,
-                            controller: _startTimeController,
-                            onSaved: (String? val) {
-                              // _setDate = val!;
-                            },
-                            decoration: const InputDecoration(
-                                disabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide.none),
-                                contentPadding: EdgeInsets.only(top: 0.0)),
-                          ),
-                        ),
+                      TimePickerField(
+                        controller: _startTimeController,
+                        width: _width * 0.45,
+                        height: _height * 0.1,
+                        onTap: () => _selectStartTime(context),
                       ),
-                      InkWell(
-                        onTap: () {
-                          _selectEndTime(context);
-                        },
-                        child: Container(
-                          width: _width * 0.45,
-                          height: _height * 0.1,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(color: Colors.grey[200]),
-                          child: TextFormField(
-                            style: const TextStyle(fontSize: 20),
-                            textAlign: TextAlign.center,
-                            enabled: false,
-                            keyboardType: TextInputType.text,
-                            controller: _endTimeController,
-                            onSaved: (String? val) {
-                              // _setTime = val!;
-                            },
-                            decoration: const InputDecoration(
-                                disabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide.none),
-                                contentPadding: EdgeInsets.only(top: 0.0)),
-                          ),
-                        ),
+                      TimePickerField(
+                        controller: _endTimeController,
+                        width: _width * 0.45,
+                        height: _height * 0.1,
+                        onTap: () => _selectEndTime(context),
                       ),
                     ],
                   ),
                   SizedBox(
                     height: size.height * 0.03,
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 15.0),
-                    child: TextFormField(
-                      maxLines: 4,
-                      minLines: 2,
-                      controller: _descriptionController,
-                      textInputAction: TextInputAction.go,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 20.0, horizontal: 10.0),
-                        border: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(width: 1.5, color: Colors.blue),
-                          borderRadius: BorderRadius.circular(AppRadius.r4),
-                        ),
-                        labelText: 'Descriptions',
-                        hintText: 'Enter Descriptions',
-                      ),
-                    ),
+                  TextAreaField(
+                    controller: _descriptionController,
+                    labelText: 'Descriptions',
+                    hintText: 'Enter Descriptions',
                   ),
                   SizedBox(
                     height: size.height * 0.03,

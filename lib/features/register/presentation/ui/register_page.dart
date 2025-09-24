@@ -16,6 +16,7 @@ import 'package:fitness_app/features/login/presentation/widgets/sign_in_button.d
 import '../bloc/user_add_bloc.dart';
 import '../bloc/user_add_event.dart';
 import '../bloc/user_add_state.dart';
+import 'package:fitness_app/features/register/presentation/widgets/role_dropdown.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({
@@ -224,47 +225,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     SizedBox(
                       height: AppHeight.h10,
                     ),
-                    DropdownButtonFormField<String>(
-                      decoration: InputDecoration(
-                        fillColor: Colors.grey[10],
-                        filled: true,
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: AppWidth.w4, vertical: AppHeight.h12),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          //BorderSide(color: ColorManager.white, width: 0, style: BorderStyle.none),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(AppRadius.r10),
-                          ),
-                        ),
-                      ),
-                      isExpanded: true,
-                      icon: const Icon(Icons.arrow_drop_down),
-                      iconEnabledColor: ColorManager.blue,
-                      iconSize: 30,
-                      items: role.map((item) {
-                        return DropdownMenuItem<String>(
-                          value: item,
-                          child: Container(
-                            margin: const EdgeInsets.only(left: 1),
-                            padding: const EdgeInsets.only(left: 10),
-                            height: 55,
-                            width: double.infinity,
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                item,
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                    RoleDropdown(
+                      roles: role,
+                      selectedRole: selectedRole,
                       onChanged: (newValue) {
                         setState(() {
-                          selectedRole = newValue!;
+                          selectedRole = newValue ?? selectedRole;
                         });
                       },
-                      value: selectedRole,
                     ),
                     SizedBox(
                       height: AppHeight.h10,

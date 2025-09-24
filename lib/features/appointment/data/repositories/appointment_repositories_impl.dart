@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:fitness_app/features/appointment/data/models/appointment_model.dart';
-import 'package:fitness_app/features/appointment/domain/entities/appointment.dart'
-    as entity;
+import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/core/errors/failures.dart';
 import '../../domain/repositories/appointment_repositories.dart';
@@ -16,7 +15,7 @@ class AppointmentRepositoriesImpl implements AppointmentRepositories {
 
   @override
   Future<Either<Failure, int>>? addAppointment(
-      entity.Appointment appointmentModel) async {
+      Appointment appointmentModel) async {
     try {
       final model = appointmentModel is AppointmentModel
           ? appointmentModel
@@ -30,7 +29,7 @@ class AppointmentRepositoriesImpl implements AppointmentRepositories {
 
   @override
   Future<Either<Failure, int>>? updateAppointment(
-      entity.Appointment appointmentModel) async {
+      Appointment appointmentModel) async {
     try {
       final model = appointmentModel is AppointmentModel
           ? appointmentModel
@@ -54,11 +53,11 @@ class AppointmentRepositoriesImpl implements AppointmentRepositories {
   }
 
   @override
-  Future<Either<Failure, List<entity.Appointment>>>? getAppointments() async {
+  Future<Either<Failure, List<Appointment>>>? getAppointments() async {
     try {
       List<AppointmentModel> response =
           await appointmentRemoteDataSource.getAppointments();
-      return Right(response.cast<entity.Appointment>());
+      return Right(response.cast<Appointment>());
     } on ServerException {
       return Left(ServerFailure());
     }

@@ -11,8 +11,8 @@ import 'features/appointment/presentation/get_appointments/ui/calender.dart';
 import 'features/login/presentation/ui/login_screen.dart';
 import 'features/routine/presentation/get_routines/ui/routine.dart';
 import 'features/walk/presentation/walk/get_walks/ui/walk.dart';
-import 'package:fitness_app/widgets/app_drawer_header.dart';
-import 'package:fitness_app/widgets/drawer_nav_tile.dart';
+import 'package:fitness_app/core/common_widgets/app_drawer_header.dart';
+import 'package:fitness_app/core/common_widgets/drawer_nav_tile.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({Key? key}) : super(key: key);

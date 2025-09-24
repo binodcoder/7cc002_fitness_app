@@ -11,12 +11,15 @@ import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/font_manager.dart';
 import 'package:fitness_app/core/theme/styles_manager.dart';
-import 'package:fitness_app/core/theme/values_manager.dart';
 
 import 'package:fitness_app/features/login/presentation/widgets/sign_in_button.dart';
 import '../bloc/appointment_add_bloc.dart';
 import '../bloc/appointment_add_event.dart';
 import '../bloc/appointment_add_state.dart';
+import 'package:fitness_app/features/appointment/presentation/add_update_appointment/widgets/trainer_dropdown.dart';
+import 'package:fitness_app/core/common_widgets/date_picker_field.dart';
+import 'package:fitness_app/core/common_widgets/time_picker_field.dart';
+import 'package:fitness_app/core/common_widgets/text_area_field.dart';
 
 class AddAppointmentDialog extends StatefulWidget {
   final AppointmentModel? appointmentModel;
@@ -225,79 +228,23 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                       SizedBox(
                         height: size.height * 0.03,
                       ),
-                      DropdownButtonFormField<entity.TrainerEntity>(
-                        decoration: InputDecoration(
-                          fillColor: Colors.grey[10],
-                          filled: true,
-                          labelText: '  Select Trainer',
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: AppWidth.w4, vertical: AppHeight.h12),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(AppRadius.r10),
-                            ),
-                          ),
-                        ),
-                        isExpanded: true,
-                        icon: const Icon(Icons.arrow_drop_down),
-                        iconEnabledColor: ColorManager.blue,
-                        iconSize: 30,
-                        items: successState.syncModel.data.trainers.map((item) {
-                          return DropdownMenuItem<entity.TrainerEntity>(
-                            value: item,
-                            child: Container(
-                              margin: const EdgeInsets.only(left: 1),
-                              padding: const EdgeInsets.only(left: 10),
-                              height: 55,
-                              width: double.infinity,
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  item.name,
-                                  style: const TextStyle(
-                                    color: ColorManager.primary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                      TrainerDropdown(
+                        trainers: successState.syncModel.data.trainers,
+                        selectedTrainer: selectedTrainer,
                         onChanged: (newValue) {
                           setState(() {
                             selectedTrainer = newValue;
                           });
                         },
-                        value: selectedTrainer,
                       ),
                       SizedBox(
                         height: size.height * 0.03,
                       ),
-                      InkWell(
-                        onTap: () {
-                          selectDate(context);
-                        },
-                        child: Container(
-                          width: _width / 1.7,
-                          height: _height / 9,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(color: Colors.grey[200]),
-                          child: TextFormField(
-                            style: const TextStyle(fontSize: 40),
-                            textAlign: TextAlign.center,
-                            enabled: false,
-                            keyboardType: TextInputType.text,
-                            controller: _dateController,
-                            onSaved: (String? val) {
-                              //  _setDate = val!;
-                            },
-                            decoration: const InputDecoration(
-                                disabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide.none),
-                                contentPadding: EdgeInsets.only(top: 0.0)),
-                          ),
-                        ),
+                      DatePickerField(
+                        controller: _dateController,
+                        width: _width / 1.7,
+                        height: _height / 9,
+                        onTap: () => selectDate(context),
                       ),
                       SizedBox(
                         height: size.height * 0.03,
@@ -305,85 +252,27 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          InkWell(
-                            onTap: () {
-                              _selectStartTime(context);
-                            },
-                            child: Container(
-                              width: _width * 0.45,
-                              height: _height * 0.1,
-                              alignment: Alignment.center,
-                              decoration:
-                                  BoxDecoration(color: Colors.grey[200]),
-                              child: TextFormField(
-                                style: const TextStyle(fontSize: 20),
-                                textAlign: TextAlign.center,
-                                enabled: false,
-                                keyboardType: TextInputType.text,
-                                controller: _startTimeController,
-                                onSaved: (String? val) {
-                                  // _setDate = val!;
-                                },
-                                decoration: const InputDecoration(
-                                  disabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide.none),
-                                  contentPadding: EdgeInsets.only(
-                                    top: 0.0,
-                                  ),
-                                ),
-                              ),
-                            ),
+                          TimePickerField(
+                            controller: _startTimeController,
+                            width: _width * 0.45,
+                            height: _height * 0.1,
+                            onTap: () => _selectStartTime(context),
                           ),
-                          InkWell(
-                            onTap: () {
-                              _selectEndTime(context);
-                            },
-                            child: Container(
-                              width: _width * 0.45,
-                              height: _height * 0.1,
-                              alignment: Alignment.center,
-                              decoration:
-                                  BoxDecoration(color: Colors.grey[200]),
-                              child: TextFormField(
-                                style: const TextStyle(fontSize: 20),
-                                textAlign: TextAlign.center,
-                                enabled: false,
-                                keyboardType: TextInputType.text,
-                                controller: _endTimeController,
-                                onSaved: (String? val) {
-                                  //_setTime = val!;
-                                },
-                                decoration: const InputDecoration(
-                                    disabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide.none),
-                                    contentPadding: EdgeInsets.only(top: 0.0)),
-                              ),
-                            ),
+                          TimePickerField(
+                            controller: _endTimeController,
+                            width: _width * 0.45,
+                            height: _height * 0.1,
+                            onTap: () => _selectEndTime(context),
                           ),
                         ],
                       ),
                       SizedBox(
                         height: size.height * 0.03,
                       ),
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 15.0),
-                        child: TextFormField(
-                          maxLines: 4,
-                          minLines: 2,
-                          controller: _remarkController,
-                          textInputAction: TextInputAction.go,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 20.0, horizontal: 10.0),
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  width: 1.5, color: Colors.blue),
-                              borderRadius: BorderRadius.circular(AppRadius.r4),
-                            ),
-                            labelText: 'Remarks',
-                            hintText: 'Enter remarks',
-                          ),
-                        ),
+                      TextAreaField(
+                        controller: _remarkController,
+                        labelText: 'Remarks',
+                        hintText: 'Enter remarks',
                       ),
                       SizedBox(
                         height: size.height * 0.03,

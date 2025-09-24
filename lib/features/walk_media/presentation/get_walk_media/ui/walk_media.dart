@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'package:fitness_app/core/db/db_helper.dart';
 import 'package:fitness_app/injection_container.dart';
@@ -12,6 +11,7 @@ import '../../add__update_walk_media/ui/walk_media_add_page.dart';
 import '../bloc/walk_media_bloc.dart';
 import '../bloc/walk_media_event.dart';
 import '../bloc/walk_media_state.dart';
+import 'package:fitness_app/features/walk_media/presentation/get_walk_media/widgets/walk_media_list_tile.dart';
 
 class WalkMediaPage extends StatefulWidget {
   final int walkId;
@@ -38,7 +38,6 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     final strings = AppStrings.of(context);
     return BlocConsumer<WalkMediaBloc, WalkMediaState>(
       bloc: walkMediaBloc,
@@ -115,55 +114,30 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                 itemCount: successState.walkMediaModelList.length,
                 itemBuilder: (context, index) {
                   var walkMediaModel = successState.walkMediaModelList[index];
-                  return Slidable(
-                    endActionPane: ActionPane(
-                      extentRatio: 0.46,
-                      motion: const ScrollMotion(),
-                      children: [
-                        SlidableAction(
-                          onPressed: (context) {
-                            walkMediaBloc.add(WalkMediaEditButtonClickedEvent(
-                                walkMediaModel));
-                          },
-                          backgroundColor: const Color(0xFF21B7CA),
-                          foregroundColor: Colors.white,
-                          icon: Icons.edit,
-                          label: 'Edit',
+                  return WalkMediaListTile(
+                    title: walkMediaModel.mediaUrl,
+                    subtitle: walkMediaModel.userId.toString(),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              WalkMediaDetailsPage(
+                            walkMediaModel: walkMediaModel,
+                          ),
                         ),
-                        SlidableAction(
-                          onPressed: (context) {
-                            walkMediaBloc.add(WalkMediaDeleteButtonClickedEvent(
-                                walkMediaModel));
-                          },
-                          backgroundColor: const Color(0xFF21B7CA),
-                          foregroundColor: Colors.white,
-                          icon: Icons.delete,
-                          label: 'Delete',
-                        )
-                      ],
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: ColorManager.white,
-                      ),
-                      margin: EdgeInsets.all(size.width * 0.02),
-                      child: ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  WalkMediaDetailsPage(
-                                walkMediaModel: walkMediaModel,
-                              ),
-                            ),
-                          );
-                        },
-                        title: Text(walkMediaModel.mediaUrl),
-                        subtitle: Text(walkMediaModel.userId.toString()),
-                      ),
-                    ),
+                      );
+                    },
+                    onEdit: () {
+                      walkMediaBloc.add(
+                        WalkMediaEditButtonClickedEvent(walkMediaModel),
+                      );
+                    },
+                    onDelete: () {
+                      walkMediaBloc.add(
+                        WalkMediaDeleteButtonClickedEvent(walkMediaModel),
+                      );
+                    },
                   );
                 },
               ),

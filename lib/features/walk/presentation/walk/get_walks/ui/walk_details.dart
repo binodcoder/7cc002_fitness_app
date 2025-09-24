@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:fitness_app/features/walk/data/models/walk_model.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
-import 'package:fitness_app/core/theme/font_manager.dart';
-import 'package:fitness_app/core/theme/values_manager.dart';
+// Removed unused theme imports after extracting body widget
+import 'package:fitness_app/features/walk/presentation/walk/get_walks/widgets/walk_details_body.dart';
 
 class WalkDetailsPage extends StatefulWidget {
   const WalkDetailsPage({
@@ -56,44 +56,7 @@ class _WalkDetailsPageState extends State<WalkDetailsPage> {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(14.0),
-        child: Column(
-          children: [
-            SizedBox(
-              height: AppHeight.h10,
-            ),
-            ListTile(
-              dense: true,
-              contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
-              tileColor: ColorManager.white,
-              title: Text(
-                widget.walkModel!.startLocation,
-                style: const TextStyle(
-                  fontSize: FontSize.s20,
-                ),
-              ),
-              subtitle: Text(
-                widget.walkModel!.date.toString(),
-                style: const TextStyle(fontSize: FontSize.s14),
-              ),
-            ),
-            SizedBox(
-              height: AppHeight.h20,
-            ),
-            SizedBox(
-              height: AppHeight.h20,
-            ),
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                '',
-                style: TextStyle(fontSize: FontSize.s12),
-              ),
-            )
-          ],
-        ),
-      ),
+      body: WalkDetailsBody(walkModel: widget.walkModel!),
     );
   }
 }

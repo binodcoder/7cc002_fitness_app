@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:fitness_app/core/db/db_helper.dart';
@@ -10,6 +9,7 @@ import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/features/routine/presentation/add_update_routine/ui/add_routine_page.dart';
 import 'package:fitness_app/features/routine/presentation/get_routines/ui/routine_details.dart';
+import 'package:fitness_app/features/routine/presentation/get_routines/widgets/routine_list_tile.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 
 import '../bloc/routine_bloc.dart';
@@ -41,7 +41,6 @@ class _RoutinePageState extends State<RoutinePage> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     final strings = AppStrings.of(context);
 
     return BlocConsumer<RoutineBloc, RoutineState>(
@@ -122,58 +121,27 @@ class _RoutinePageState extends State<RoutinePage> {
                   itemCount: successState.routineModelList.length,
                   itemBuilder: (context, index) {
                     var routineModel = successState.routineModelList[index];
-                    return Slidable(
-                      endActionPane: ActionPane(
-                        extentRatio: 0.46,
-                        motion: const ScrollMotion(),
-                        children: [
-                          SlidableAction(
-                            onPressed: (context) {
-                              postBloc.add(
-                                  RoutineEditButtonClickedEvent(routineModel));
-                            },
-                            backgroundColor: const Color(0xFF21B7CA),
-                            foregroundColor: Colors.white,
-                            icon: Icons.edit,
-                            label: 'Edit',
+                    return RoutineListTile(
+                      title: routineModel.name,
+                      subtitle: routineModel.description,
+                      trailing: routineModel.difficulty,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                RoutineDetailsPage(
+                              routineModel: routineModel,
+                            ),
                           ),
-                          SlidableAction(
-                            onPressed: (context) {},
-                            backgroundColor: const Color(0xFF21B7CA),
-                            foregroundColor: Colors.white,
-                            icon: Icons.delete,
-                            label: 'Delete',
-                          )
-                        ],
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: ColorManager.white,
-                        ),
-                        margin: EdgeInsets.only(
-                          top: size.width * 0.04,
-                          left: size.width * 0.02,
-                          right: size.width * 0.02,
-                        ),
-                        child: ListTile(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    RoutineDetailsPage(
-                                  routineModel: routineModel,
-                                ),
-                              ),
-                            );
-                          },
-                          title: Text(routineModel.name),
-                          subtitle: Text(routineModel.description),
-                          trailing: Text(routineModel.difficulty),
-                          isThreeLine: true,
-                        ),
-                      ),
+                        );
+                      },
+                      onEdit: () {
+                        postBloc.add(
+                          RoutineEditButtonClickedEvent(routineModel),
+                        );
+                      },
+                      onDelete: () {},
                     );
                   },
                 ),

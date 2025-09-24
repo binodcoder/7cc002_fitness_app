@@ -3,18 +3,22 @@
 //     final appointmentModel = appointmentModelFromJson(jsonString);
 
 import 'dart:convert';
-import 'package:fitness_app/features/appointment/domain/entities/appointment.dart' as entity;
+import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 
 List<AppointmentModel> appointmentModelListFromJson(String str) =>
-    List<AppointmentModel>.from(json.decode(str).map((x) => AppointmentModel.fromJson(x)));
+    List<AppointmentModel>.from(
+        json.decode(str).map((x) => AppointmentModel.fromJson(x)));
 
-String appointmentModelListToJson(List<AppointmentModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String appointmentModelListToJson(List<AppointmentModel> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-AppointmentModel appointmentModelFromJson(String str) => AppointmentModel.fromJson(json.decode(str));
+AppointmentModel appointmentModelFromJson(String str) =>
+    AppointmentModel.fromJson(json.decode(str));
 
-String appointmentModelToJson(AppointmentModel data) => json.encode(data.toJson());
+String appointmentModelToJson(AppointmentModel data) =>
+    json.encode(data.toJson());
 
-class AppointmentModel extends entity.Appointment {
+class AppointmentModel extends Appointment {
   const AppointmentModel({
     required super.date,
     required super.endTime,
@@ -25,7 +29,8 @@ class AppointmentModel extends entity.Appointment {
     super.remark,
   });
 
-  factory AppointmentModel.fromJson(Map<String, dynamic> json) => AppointmentModel(
+  factory AppointmentModel.fromJson(Map<String, dynamic> json) =>
+      AppointmentModel(
         date: DateTime.parse(json["date"]),
         endTime: json["endTime"],
         id: json["id"],
@@ -35,7 +40,7 @@ class AppointmentModel extends entity.Appointment {
         remark: json["remark"],
       );
 
-  factory AppointmentModel.fromEntity(entity.Appointment e) => AppointmentModel(
+  factory AppointmentModel.fromEntity(Appointment e) => AppointmentModel(
         date: e.date,
         endTime: e.endTime,
         id: e.id,
@@ -46,7 +51,8 @@ class AppointmentModel extends entity.Appointment {
       );
 
   Map<String, dynamic> toJson() => {
-        "date": "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+        "date":
+            "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
         "endTime": endTime,
         "id": id,
         "startTime": startTime,

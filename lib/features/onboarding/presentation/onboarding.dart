@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:fitness_app/features/onboarding/data/models/model.dart';
+// Removed direct model import; page widget handles SliderObject usage
 import 'package:fitness_app/core/assets/app_assets.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/navigation/app_router.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
 import 'onboarding_viewmodel.dart';
+import 'package:fitness_app/features/onboarding/presentation/widgets/onboarding_page.dart';
 
 class OnBoardingView extends StatefulWidget {
   const OnBoardingView({super.key});
@@ -171,63 +172,4 @@ class _OnBoardingViewState extends State<OnBoardingView> {
   }
 }
 
-class OnBoardingPage extends StatelessWidget {
-  final SliderObject sliderObject;
-
-  const OnBoardingPage({
-    Key? key,
-    required this.sliderObject,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const SizedBox(
-          height: AppSize.s10,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(AppPadding.p8),
-          child: Text(
-            sliderObject.title,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        const SizedBox(
-          height: AppSize.s40,
-        ),
-
-        Padding(
-          padding: const EdgeInsets.all(AppPadding.p8),
-          child: Text(
-            sliderObject.subTitle,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-        ),
-        const SizedBox(
-          height: AppSize.s60,
-        ),
-
-        SizedBox(
-          width: size.width,
-          height: size.height * 0.3,
-          child: ClipRRect(
-            child: SizedBox(
-                width: size.width,
-                height: size.height * 0.3,
-                child: Image.asset(
-                  sliderObject.image,
-                  fit: BoxFit.cover,
-                )),
-          ),
-        ),
-        //image widget
-        // SvgPicture.asset(sliderObject.image)
-      ],
-    );
-  }
-}
+// OnBoardingPage moved to widgets/onboarding_page.dart

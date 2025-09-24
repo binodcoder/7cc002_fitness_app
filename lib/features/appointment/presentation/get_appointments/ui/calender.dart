@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -15,6 +14,8 @@ import 'package:fitness_app/features/appointment/presentation/get_appointments/b
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/event_event.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/event_state.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/ui/appointment_details.dart';
+import 'package:fitness_app/features/appointment/presentation/get_appointments/widgets/appointment_event_tile.dart';
+import 'package:fitness_app/features/appointment/presentation/get_appointments/widgets/appointment_calendar.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 
@@ -49,7 +50,6 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     final strings = AppStrings.of(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -122,57 +122,36 @@ class _CalendarPageState extends State<CalendarPage> {
                           successState.appointmentModels;
                       eventBloc
                           .add(EventDaySelectEvent(_focusedDay, allEvents));
-                      return Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: ColorManager.white,
-                        ),
-                        margin: EdgeInsets.all(size.width * 0.02),
-                        child: TableCalendar(
-                          firstDay: DateTime.utc(2010, 10, 16),
-                          lastDay: DateTime.utc(2030, 3, 14),
-                          focusedDay: _focusedDay,
-                          selectedDayPredicate: (day) {
-                            return isSameDay(_selectedDay, day);
-                          },
-                          onDaySelected: (selectedDay, focusedDay) {
-                            eventBloc.add(
-                                EventDaySelectEvent(selectedDay, allEvents));
-                            _selectedDay = selectedDay;
-                            _focusedDay = selectedDay;
-                            setState(() {});
-                          },
-                          onPageChanged: (focusedDay) {
-                            _focusedDay = focusedDay;
-                          },
-                          eventLoader: sharedPreferences.getString('role') ==
-                                  "trainer"
-                              ? (day) {
-                                  return allEvents
-                                      .where(
-                                          (event) => isSameDay(event.date, day))
-                                      .toList();
-                                }
-                              : null,
-                          calendarFormat: _calendarFormat,
-                          onFormatChanged: (format) {
-                            if (_calendarFormat != format) {
-                              setState(() {
-                                _calendarFormat = format;
-                              });
-                            }
-                          },
-                          calendarStyle: const CalendarStyle(
-                            selectedDecoration: BoxDecoration(
-                              color: ColorManager.primary,
-                              shape: BoxShape.circle,
-                            ),
-                            markerDecoration: BoxDecoration(
-                              color: ColorManager.darkGrey,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                        ),
+                      return AppointmentCalendar(
+                        focusedDay: _focusedDay,
+                        selectedDay: _selectedDay,
+                        calendarFormat: _calendarFormat,
+                        onDaySelected: (selectedDay, focusedDay) {
+                          eventBloc.add(
+                              EventDaySelectEvent(selectedDay, allEvents));
+                          _selectedDay = selectedDay;
+                          _focusedDay = selectedDay;
+                          setState(() {});
+                        },
+                        onPageChanged: (focusedDay) {
+                          _focusedDay = focusedDay;
+                        },
+                        onFormatChanged: (format) {
+                          if (_calendarFormat != format) {
+                            setState(() {
+                              _calendarFormat = format;
+                            });
+                          }
+                        },
+                        eventLoader: sharedPreferences.getString('role') ==
+                                "trainer"
+                            ? (day) {
+                                return allEvents
+                                    .where(
+                                        (event) => isSameDay(event.date, day))
+                                    .toList();
+                              }
+                            : null,
                       );
 
                     case CalenderErrorState:
@@ -222,63 +201,34 @@ class _CalendarPageState extends State<CalendarPage> {
                               itemBuilder: (context, index) {
                                 AppointmentModel appointmentModel =
                                     _selectedEvents[index];
-                                String trainerName = "Binod Bhandari";
-                                return Slidable(
-                                  endActionPane: ActionPane(
-                                    extentRatio: 0.46,
-                                    motion: const ScrollMotion(),
-                                    children: [
-                                      SlidableAction(
-                                        onPressed: (context) {
-                                          eventBloc.add(
-                                              EventEditButtonClickedEvent(
-                                                  appointmentModel,
-                                                  _focusedDay));
-                                        },
-                                        backgroundColor:
-                                            const Color(0xFF21B7CA),
-                                        foregroundColor: Colors.white,
-                                        icon: Icons.edit,
-                                        label: 'Edit',
+                                const String trainerName = "Binod Bhandari";
+                                return AppointmentEventTile(
+                                  title: trainerName,
+                                  subtitle:
+                                      "${appointmentModel.startTime} to ${appointmentModel.endTime}",
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            AppointmentDetailsPage(
+                                          appointmentModel: appointmentModel,
+                                        ),
                                       ),
-                                      SlidableAction(
-                                        onPressed: (context) {
-                                          calenderBloc.add(
-                                              CalenderDeleteButtonClickedEvent(
-                                                  appointmentModel));
-                                        },
-                                        backgroundColor:
-                                            const Color(0xFF21B7CA),
-                                        foregroundColor: Colors.white,
-                                        icon: Icons.delete,
-                                        label: 'Delete',
-                                      )
-                                    ],
-                                  ),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: ColorManager.white,
-                                    ),
-                                    margin: EdgeInsets.all(size.width * 0.02),
-                                    child: ListTile(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (BuildContext context) =>
-                                                AppointmentDetailsPage(
-                                              appointmentModel:
-                                                  appointmentModel,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      title: Text(trainerName),
-                                      subtitle: Text(
-                                          "${appointmentModel.startTime} to ${appointmentModel.endTime}"),
-                                    ),
-                                  ),
+                                    );
+                                  },
+                                  onEdit: () {
+                                    eventBloc.add(
+                                      EventEditButtonClickedEvent(
+                                          appointmentModel, _focusedDay),
+                                    );
+                                  },
+                                  onDelete: () {
+                                    calenderBloc.add(
+                                      CalenderDeleteButtonClickedEvent(
+                                          appointmentModel),
+                                    );
+                                  },
                                 );
                               },
                             );

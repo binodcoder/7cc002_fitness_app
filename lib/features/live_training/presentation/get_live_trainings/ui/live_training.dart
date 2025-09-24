@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:fitness_app/core/db/db_helper.dart';
@@ -14,6 +13,7 @@ import 'package:fitness_app/core/theme/colour_manager.dart';
 import '../bloc/live_training_bloc.dart';
 import '../bloc/live_training_event.dart';
 import '../bloc/live_training_state.dart';
+import 'package:fitness_app/features/live_training/presentation/get_live_trainings/widgets/live_training_list_tile.dart';
 
 class LiveTrainingPage extends StatefulWidget {
   const LiveTrainingPage({super.key});
@@ -40,7 +40,6 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     final strings = AppStrings.of(context);
     return BlocConsumer<LiveTrainingBloc, LiveTrainingState>(
       bloc: liveTrainingBloc,
@@ -118,57 +117,31 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
                 itemBuilder: (context, index) {
                   var liveTrainingModel =
                       successState.liveTrainingModels[index];
-                  return Slidable(
-                    endActionPane: ActionPane(
-                      extentRatio: 0.46,
-                      motion: const ScrollMotion(),
-                      children: [
-                        SlidableAction(
-                          onPressed: (context) {
-                            liveTrainingBloc.add(
-                                LiveTrainingEditButtonClickedEvent(
-                                    liveTrainingModel));
-                          },
-                          backgroundColor: const Color(0xFF21B7CA),
-                          foregroundColor: Colors.white,
-                          icon: Icons.edit,
-                          label: 'Edit',
+                  return LiveTrainingListTile(
+                    title: liveTrainingModel.title,
+                    subtitle: liveTrainingModel.description,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              LiveTrainingDetailsPage(
+                            liveTrainingModel: liveTrainingModel,
+                          ),
                         ),
-                        SlidableAction(
-                          onPressed: (context) {
-                            liveTrainingBloc.add(
-                                LiveTrainingDeleteButtonClickedEvent(
-                                    liveTrainingModel));
-                          },
-                          backgroundColor: const Color(0xFF21B7CA),
-                          foregroundColor: Colors.white,
-                          icon: Icons.delete,
-                          label: 'Delete',
-                        )
-                      ],
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: ColorManager.white,
-                      ),
-                      margin: EdgeInsets.all(size.width * 0.02),
-                      child: ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  LiveTrainingDetailsPage(
-                                liveTrainingModel: liveTrainingModel,
-                              ),
-                            ),
-                          );
-                        },
-                        title: Text(liveTrainingModel.title),
-                        subtitle: Text(liveTrainingModel.description),
-                      ),
-                    ),
+                      );
+                    },
+                    onEdit: () {
+                      liveTrainingBloc.add(
+                        LiveTrainingEditButtonClickedEvent(liveTrainingModel),
+                      );
+                    },
+                    onDelete: () {
+                      liveTrainingBloc.add(
+                        LiveTrainingDeleteButtonClickedEvent(
+                            liveTrainingModel),
+                      );
+                    },
                   );
                 },
               ),

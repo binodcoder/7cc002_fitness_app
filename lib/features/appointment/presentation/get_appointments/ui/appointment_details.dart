@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import 'package:fitness_app/features/appointment/data/models/appointment_model.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
-import 'package:fitness_app/core/theme/font_manager.dart';
-import 'package:fitness_app/core/theme/values_manager.dart';
+// Removed unused theme imports after extracting body widgets
+import 'package:fitness_app/features/appointment/presentation/get_appointments/widgets/appointment_details_body.dart';
 
 class AppointmentDetailsPage extends StatefulWidget {
   const AppointmentDetailsPage({
@@ -50,40 +49,8 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
         title: Text(strings.titleAppointmentLabel),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(14.0),
-        child: Column(
-          children: [
-            SizedBox(
-              height: AppHeight.h10,
-            ),
-            ListTile(
-              dense: true,
-              contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
-              tileColor: ColorManager.white,
-              title: Text(
-                DateFormat("yMd").format(widget.appointmentModel!.date),
-                style: const TextStyle(
-                  fontSize: FontSize.s20,
-                ),
-              ),
-              subtitle: Text(
-                "${widget.appointmentModel!.startTime} to ${widget.appointmentModel!.endTime}",
-                style: const TextStyle(fontSize: FontSize.s14),
-              ),
-            ),
-            SizedBox(
-              height: AppHeight.h20,
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                widget.appointmentModel?.remark ?? "",
-                style: const TextStyle(fontSize: FontSize.s12),
-              ),
-            )
-          ],
-        ),
+      body: AppointmentDetailsBody(
+        appointmentModel: widget.appointmentModel!,
       ),
     );
   }
