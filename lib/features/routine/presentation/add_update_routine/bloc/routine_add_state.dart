@@ -1,28 +1,51 @@
-abstract class RoutineAddState {
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
+
+@immutable
+abstract class RoutineAddState extends Equatable {
   final String? imagePath;
-  RoutineAddState({this.imagePath});
+  const RoutineAddState({this.imagePath});
+
+  @override
+  List<Object?> get props => [imagePath];
 }
 
-abstract class RoutineAddActionState extends RoutineAddState {}
+@immutable
+abstract class RoutineAddActionState extends RoutineAddState {
+  const RoutineAddActionState({super.imagePath});
+}
 
-class RoutineAddInitialState extends RoutineAddState {}
+class RoutineAddInitialState extends RoutineAddState {
+  const RoutineAddInitialState({super.imagePath});
+}
 
 class RoutineAddReadyToUpdateState extends RoutineAddState {
-  RoutineAddReadyToUpdateState(imagePath) : super(imagePath: imagePath);
+  const RoutineAddReadyToUpdateState({required String imagePath})
+      : super(imagePath: imagePath);
 }
 
 class AddRoutineImagePickedFromGalaryState extends RoutineAddState {
-  AddRoutineImagePickedFromGalaryState(imagePath) : super(imagePath: imagePath);
+  const AddRoutineImagePickedFromGalaryState({required String imagePath})
+      : super(imagePath: imagePath);
 }
 
 class AddRoutineImagePickedFromCameraState extends RoutineAddState {
-  AddRoutineImagePickedFromCameraState(imagePath) : super(imagePath: imagePath);
+  const AddRoutineImagePickedFromCameraState({required String imagePath})
+      : super(imagePath: imagePath);
 }
 
-class AddRoutineLoadingState extends RoutineAddActionState {}
+class AddRoutineLoadingState extends RoutineAddActionState {
+  const AddRoutineLoadingState();
+}
 
-class AddRoutineSavedActionState extends RoutineAddActionState {}
+class AddRoutineSavedActionState extends RoutineAddActionState {
+  const AddRoutineSavedActionState();
+}
 
-class AddRoutineUpdatedActionState extends RoutineAddActionState {}
+class AddRoutineUpdatedActionState extends RoutineAddActionState {
+  const AddRoutineUpdatedActionState();
+}
 
-class AddRoutineErrorState extends RoutineAddActionState {}
+class AddRoutineErrorState extends RoutineAddActionState {
+  const AddRoutineErrorState();
+}

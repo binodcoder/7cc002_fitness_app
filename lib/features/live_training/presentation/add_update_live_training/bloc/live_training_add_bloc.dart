@@ -13,7 +13,7 @@ class LiveTrainingAddBloc
   LiveTrainingAddBloc({
     required this.addLiveTraining,
     required this.updateLiveTraining,
-  }) : super(LiveTrainingAddInitialState()) {
+  }) : super(const LiveTrainingAddInitialState()) {
     on<LiveTrainingAddInitialEvent>(liveTrainingAddInitialEvent);
     on<LiveTrainingAddReadyToUpdateEvent>(liveTrainingAddReadyToUpdateEvent);
     on<LiveTrainingAddSaveButtonPressEvent>(
@@ -25,12 +25,12 @@ class LiveTrainingAddBloc
   FutureOr<void> addLiveTrainingSaveButtonPressEvent(
       LiveTrainingAddSaveButtonPressEvent event,
       Emitter<LiveTrainingAddState> emit) async {
-    emit(LiveTrainingAddLoadingState());
+    emit(const LiveTrainingAddLoadingState());
     final result = await addLiveTraining(event.liveTraining);
     result!.fold((failure) {
-      emit(AddLiveTrainingErrorState());
+      emit(const AddLiveTrainingErrorState());
     }, (result) {
-      emit(AddLiveTrainingSavedState());
+      emit(const AddLiveTrainingSavedState());
     });
   }
 
@@ -49,12 +49,12 @@ class LiveTrainingAddBloc
   FutureOr<void> liveTrainingAddUpdateButtonPressEvent(
       LiveTrainingAddUpdateButtonPressEvent event,
       Emitter<LiveTrainingAddState> emit) async {
-    emit(LiveTrainingAddLoadingState());
+    emit(const LiveTrainingAddLoadingState());
     final result = await updateLiveTraining(event.liveTraining);
     result!.fold((failure) {
-      emit(AddLiveTrainingErrorState());
+      emit(const AddLiveTrainingErrorState());
     }, (result) {
-      emit(AddLiveTrainingUpdatedState());
+      emit(const AddLiveTrainingUpdatedState());
     });
   }
 

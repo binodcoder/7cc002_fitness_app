@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/features/routine/data/data_sources/routines_local_data_source.dart';
 import 'package:fitness_app/features/routine/data/models/routine_model.dart';
@@ -52,7 +52,7 @@ void main() {
   });
 
   group('cacheRoutineModel', () {
-    final tRoutineModel = RoutineModel(
+    const tRoutineModel = RoutineModel(
       id: 37,
       name: 'string',
       description: 'This is for random',

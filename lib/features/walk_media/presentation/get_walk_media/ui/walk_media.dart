@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
@@ -11,7 +11,7 @@ import '../../add__update_walk_media/ui/walk_media_add_page.dart';
 import '../bloc/walk_media_bloc.dart';
 import '../bloc/walk_media_event.dart';
 import '../bloc/walk_media_state.dart';
-import 'package:fitness_app/features/walk_media/presentation/get_walk_media/widgets/walk_media_list_tile.dart';
+import 'package:fitness_app/core/widgets/app_slidable_list_tile.dart';
 
 class WalkMediaPage extends StatefulWidget {
   final int walkId;
@@ -45,6 +45,7 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
       buildWhen: (previous, current) => current is! WalkMediaActionState,
       listener: (context, state) {
         if (state is WalkMediaNavigateToAddWalkMediaActionState) {
+          if (!mounted) return;
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -57,6 +58,7 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
             (value) => refreshPage(),
           );
         } else if (state is WalkMediaNavigateToDetailPageActionState) {
+          if (!mounted) return;
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -69,6 +71,7 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
             (value) => refreshPage(),
           );
         } else if (state is WalkMediaNavigateToUpdatePageActionState) {
+          if (!mounted) return;
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -84,7 +87,12 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
         } else if (state is WalkMediaItemSelectedActionState) {
         } else if (state is WalkMediaItemDeletedActionState) {
           walkMediaBloc.add(WalkMediaInitialEvent(widget.walkId));
-        } else if (state is WalkMediaItemsDeletedActionState) {}
+        } else if (state is WalkMediaItemsDeletedActionState) {
+        } else if (state is WalkMediaShowErrorActionState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        }
       },
       builder: (context, state) {
         switch (state.runtimeType) {
@@ -114,10 +122,11 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                 itemCount: successState.walkMediaList.length,
                 itemBuilder: (context, index) {
                   var walkMedia = successState.walkMediaList[index];
-                  return WalkMediaListTile(
+                  return AppSlidableListTile(
                     title: walkMedia.mediaUrl,
                     subtitle: walkMedia.userId.toString(),
                     onTap: () {
+                      if (!mounted) return;
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -143,7 +152,8 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
               ),
             );
           case WalkMediaErrorState:
-            return const Scaffold(body: Center(child: Text('Error')));
+            final error = state as WalkMediaErrorState;
+            return Scaffold(body: Center(child: Text(error.message)));
           default:
             return const SizedBox();
         }

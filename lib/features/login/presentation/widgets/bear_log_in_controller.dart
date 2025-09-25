@@ -37,7 +37,8 @@ class BearLogInController extends FlareControls {
       Vec2D.transformMat2D(_caretWorld, _caretGlobal, _globalToFlareWorld);
 
       // To make it more interesting, we'll also add a sinusoidal vertical offset.
-      _caretWorld[1] += sin(DateTime.now().millisecondsSinceEpoch / 300.0) * 70.0;
+      _caretWorld[1] +=
+          sin(DateTime.now().millisecondsSinceEpoch / 300.0) * 70.0;
 
       // Compute direction vector.
       Vec2D toCaret = Vec2D.subtract(Vec2D(), _caretWorld, _faceOrigin);
@@ -61,8 +62,10 @@ class BearLogInController extends FlareControls {
 
     // We could just set _faceControl.translation to targetTranslation, but we want to animate it smoothly to this target
     // so we interpolate towards it by a factor of elapsed time in order to maintain speed regardless of frame rate.
-    Vec2D diff = Vec2D.subtract(Vec2D(), targetTranslation, _faceControl!.translation);
-    Vec2D frameTranslation = Vec2D.add(Vec2D(), _faceControl!.translation, Vec2D.scale(diff, diff, min(1.0, elapsed * 5.0)));
+    Vec2D diff =
+        Vec2D.subtract(Vec2D(), targetTranslation, _faceControl!.translation);
+    Vec2D frameTranslation = Vec2D.add(Vec2D(), _faceControl!.translation,
+        Vec2D.scale(diff, diff, min(1.0, elapsed * 5.0)));
 
     _faceControl!.translation = frameTranslation;
 

@@ -1,24 +1,47 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fitness_app/features/walk_media/domain/entities/walk_media.dart';
 
-abstract class WalkMediaAddEvent {}
+@immutable
+abstract class WalkMediaAddEvent extends Equatable {
+  const WalkMediaAddEvent();
 
-class WalkMediaAddInitialEvent extends WalkMediaAddEvent {}
+  @override
+  List<Object?> get props => const [];
+}
 
-class WalkMediaAddPickFromGalaryButtonPressEvent extends WalkMediaAddEvent {}
+class WalkMediaAddInitialEvent extends WalkMediaAddEvent {
+  const WalkMediaAddInitialEvent();
+}
 
-class WalkMediaAddPickFromCameraButtonPressEvent extends WalkMediaAddEvent {}
+class WalkMediaAddPickFromGalaryButtonPressEvent extends WalkMediaAddEvent {
+  const WalkMediaAddPickFromGalaryButtonPressEvent();
+}
+
+class WalkMediaAddPickFromCameraButtonPressEvent extends WalkMediaAddEvent {
+  const WalkMediaAddPickFromCameraButtonPressEvent();
+}
 
 class WalkMediaAddSaveButtonPressEvent extends WalkMediaAddEvent {
   final WalkMedia newWalkMedia;
-  WalkMediaAddSaveButtonPressEvent(this.newWalkMedia);
+  const WalkMediaAddSaveButtonPressEvent({required this.newWalkMedia});
+
+  @override
+  List<Object?> get props => [newWalkMedia];
 }
 
 class WalkMediaAddUpdateButtonPressEvent extends WalkMediaAddEvent {
   final WalkMedia updatedWalkMedia;
-  WalkMediaAddUpdateButtonPressEvent(this.updatedWalkMedia);
+  const WalkMediaAddUpdateButtonPressEvent({required this.updatedWalkMedia});
+
+  @override
+  List<Object?> get props => [updatedWalkMedia];
 }
 
 class WalkMediaAddReadyToUpdateEvent extends WalkMediaAddEvent {
   final WalkMedia walkMedia;
-  WalkMediaAddReadyToUpdateEvent(this.walkMedia);
+  const WalkMediaAddReadyToUpdateEvent({required this.walkMedia});
+
+  @override
+  List<Object?> get props => [walkMedia];
 }

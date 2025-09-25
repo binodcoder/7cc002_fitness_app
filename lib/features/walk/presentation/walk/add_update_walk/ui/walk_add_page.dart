@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
@@ -43,9 +43,9 @@ class _AddWalkPageState extends State<AddWalkPage> {
       dateController.text = widget.walk!.date.toString();
       startTimeController.text = widget.walk!.startTime;
       startLocationController.text = widget.walk!.startLocation;
-      walkAddBloc.add(WalkAddReadyToUpdateEvent(widget.walk!));
+      walkAddBloc.add(WalkAddReadyToUpdateEvent(walk: widget.walk!));
     } else {
-      walkAddBloc.add(WalkAddInitialEvent());
+      walkAddBloc.add(const WalkAddInitialEvent());
     }
     super.initState();
   }
@@ -312,7 +312,7 @@ class _AddWalkPageState extends State<AddWalkPage> {
                               startLocation: startLocation,
                             );
                             walkAddBloc.add(
-                                WalkAddUpdateButtonPressEvent(updatedWalk));
+                                WalkAddUpdateButtonPressEvent(updatedWalk: updatedWalk));
                           } else {
                             var newWalk = Walk(
                               proposerId: proposerId!,
@@ -321,8 +321,8 @@ class _AddWalkPageState extends State<AddWalkPage> {
                               startTime: startTime,
                               startLocation: startLocation,
                             );
-                            walkAddBloc
-                                .add(WalkAddSaveButtonPressEvent(newWalk));
+                            walkAddBloc.add(
+                                WalkAddSaveButtonPressEvent(newWalk: newWalk));
                           }
                         }
                       },

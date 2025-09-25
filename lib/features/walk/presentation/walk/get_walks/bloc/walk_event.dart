@@ -1,34 +1,63 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 
-abstract class WalkEvent {}
+@immutable
+abstract class WalkEvent extends Equatable {
+  const WalkEvent();
 
-class WalkInitialEvent extends WalkEvent {}
+  @override
+  List<Object?> get props => const [];
+}
+
+class WalkInitialEvent extends WalkEvent {
+  const WalkInitialEvent();
+}
 
 class WalkEditButtonClickedEvent extends WalkEvent {
   final Walk walk;
-  WalkEditButtonClickedEvent(this.walk);
+  const WalkEditButtonClickedEvent({required this.walk});
+
+  @override
+  List<Object?> get props => [walk];
 }
 
 class WalkDeleteButtonClickedEvent extends WalkEvent {
   final Walk walk;
-  WalkDeleteButtonClickedEvent(this.walk);
+  const WalkDeleteButtonClickedEvent({required this.walk});
+
+  @override
+  List<Object?> get props => [walk];
 }
 
-class WalkDeleteAllButtonClickedEvent extends WalkEvent {}
+class WalkDeleteAllButtonClickedEvent extends WalkEvent {
+  const WalkDeleteAllButtonClickedEvent();
+}
 
-class WalkAddButtonClickedEvent extends WalkEvent {}
+class WalkAddButtonClickedEvent extends WalkEvent {
+  const WalkAddButtonClickedEvent();
+}
 
 class WalkJoinButtonClickedEvent extends WalkEvent {
-  WalkParticipant walkParticipant;
-  WalkJoinButtonClickedEvent(this.walkParticipant);
+  final WalkParticipant walkParticipant;
+  const WalkJoinButtonClickedEvent({required this.walkParticipant});
+
+  @override
+  List<Object?> get props => [walkParticipant];
 }
 
 class WalkLeaveButtonClickedEvent extends WalkEvent {
-  WalkParticipant walkParticipant;
-  WalkLeaveButtonClickedEvent(this.walkParticipant);
+  final WalkParticipant walkParticipant;
+  const WalkLeaveButtonClickedEvent({required this.walkParticipant});
+
+  @override
+  List<Object?> get props => [walkParticipant];
 }
 
 class WalkTileNavigateEvent extends WalkEvent {
   final Walk walk;
-  WalkTileNavigateEvent(this.walk);
+  const WalkTileNavigateEvent({required this.walk});
+
+  @override
+  List<Object?> get props => [walk];
 }

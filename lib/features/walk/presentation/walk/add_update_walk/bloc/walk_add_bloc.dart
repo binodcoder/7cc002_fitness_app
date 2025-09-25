@@ -13,7 +13,7 @@ class WalkAddBloc extends Bloc<WalkAddEvent, WalkAddState> {
   final AddWalk addWalk;
   final UpdateWalk updateWalk;
   WalkAddBloc({required this.addWalk, required this.updateWalk})
-      : super(WalkAddInitialState()) {
+      : super(const WalkAddInitialState()) {
     on<WalkAddInitialEvent>(walkAddInitialEvent);
     on<WalkAddReadyToUpdateEvent>(walkAddReadyToUpdateEvent);
     on<WalkAddPickFromGalaryButtonPressEvent>(
@@ -35,7 +35,7 @@ class WalkAddBloc extends Bloc<WalkAddEvent, WalkAddState> {
       File image = File(pickedFile.path);
       Uint8List? uint8list = await getBytesFromImage(image);
       String imagePath = await saveImage(uint8list);
-      emit(AddWalkImagePickedFromGalaryState(imagePath));
+      emit(AddWalkImagePickedFromGalaryState(imagePath: imagePath));
     }
   }
 
@@ -67,34 +67,34 @@ class WalkAddBloc extends Bloc<WalkAddEvent, WalkAddState> {
       File image = File(pickedFile.path);
       Uint8List? uint8list = await getBytesFromImage(image);
       String imagePath = await saveImage(uint8list);
-      emit(AddWalkImagePickedFromCameraState(imagePath));
+      emit(AddWalkImagePickedFromCameraState(imagePath: imagePath));
     }
   }
 
   FutureOr<void> addWalkSaveButtonPressEvent(
       WalkAddSaveButtonPressEvent event, Emitter<WalkAddState> emit) async {
-    emit(AddWalkLoadingState());
+    emit(const AddWalkLoadingState());
     final result = await addWalk(event.newWalk);
     result!.fold((failure) {
-      emit(AddWalkErrorState());
+      emit(const AddWalkErrorState());
     }, (result) {
-      emit(AddWalkSavedState());
+      emit(const AddWalkSavedState());
     });
   }
 
   FutureOr<void> walkAddInitialEvent(
       WalkAddInitialEvent event, Emitter<WalkAddState> emit) {
-    emit(WalkAddInitialState());
+    emit(const WalkAddInitialState());
   }
 
   FutureOr<void> walkAddUpdateButtonPressEvent(
       WalkAddUpdateButtonPressEvent event, Emitter<WalkAddState> emit) async {
-    emit(AddWalkLoadingState());
+    emit(const AddWalkLoadingState());
     final result = await updateWalk(event.updatedWalk);
     result!.fold((failure) {
-      emit(AddWalkErrorState());
+      emit(const AddWalkErrorState());
     }, (result) {
-      emit(AddWalkUpdatedState());
+      emit(const AddWalkUpdatedState());
     });
   }
 

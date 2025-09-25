@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/features/live_training/domain/entities/live_training.dart';
 import 'package:fitness_app/core/usecases/usecase.dart';
 import '../../../domain/usecases/delete_live_training.dart';
 import '../../../domain/usecases/get_live_trainings.dart';
 import 'live_training_event.dart';
 import 'live_training_state.dart';
+import 'package:fitness_app/core/errors/map_failure_to_message.dart';
 
 class LiveTrainingBloc extends Bloc<LiveTrainingEvent, LiveTrainingState> {
   final GetLiveTrainings getLiveTrainings;
@@ -16,7 +17,7 @@ class LiveTrainingBloc extends Bloc<LiveTrainingEvent, LiveTrainingState> {
   LiveTrainingBloc({
     required this.getLiveTrainings,
     required this.deleteLiveTraining,
-  }) : super(LiveTrainingInitialState()) {
+  }) : super(const LiveTrainingInitialState()) {
     on<LiveTrainingInitialEvent>(liveTrainingInitialEvent);
     on<LiveTrainingEditButtonClickedEvent>(liveTrainingEditButtonClickedEvent);
     on<LiveTrainingDeleteButtonClickedEvent>(
@@ -30,32 +31,33 @@ class LiveTrainingBloc extends Bloc<LiveTrainingEvent, LiveTrainingState> {
 
   FutureOr<void> liveTrainingInitialEvent(
       LiveTrainingInitialEvent event, Emitter<LiveTrainingState> emit) async {
-    emit(LiveTrainingLoadingState());
+    emit(const LiveTrainingLoadingState());
     final liveTrainingsResult = await getLiveTrainings(NoParams());
 
     liveTrainingsResult!.fold((failure) {
-      // emit(Error(message: _mapFailureToMessage(failure)));
+      emit(LiveTrainingErrorState(message: mapFailureToMessage(failure)));
     }, (liveTrainings) {
-      emit(LiveTrainingLoadedSuccessState(liveTrainings));
+      emit(LiveTrainingLoadedSuccessState(liveTrainings: liveTrainings));
     });
   }
 
   FutureOr<void> liveTrainingEditButtonClickedEvent(
       LiveTrainingEditButtonClickedEvent event,
       Emitter<LiveTrainingState> emit) {
-    emit(LiveTrainingNavigateToUpdatePageActionState(event.liveTraining));
+    emit(LiveTrainingNavigateToUpdatePageActionState(
+        liveTraining: event.liveTraining));
   }
 
   FutureOr<void> liveTrainingDeleteButtonClickedEvent(
       LiveTrainingDeleteButtonClickedEvent event,
       Emitter<LiveTrainingState> emit) async {
-    emit(LiveTrainingLoadingState());
     final result = await deleteLiveTraining(event.liveTraining.trainerId);
 
     result!.fold((failure) {
-      // emit(Error(message: _mapFailureToMessage(failure)));
+      emit(LiveTrainingShowErrorActionState(
+          message: mapFailureToMessage(failure)));
     }, (response) {
-      emit(LiveTrainingItemDeletedActionState());
+      emit(const LiveTrainingItemDeletedActionState());
     });
 
     // await dbHelper.deleteLiveTraining(event.LiveTrainingModel.id);
@@ -76,12 +78,13 @@ class LiveTrainingBloc extends Bloc<LiveTrainingEvent, LiveTrainingState> {
   FutureOr<void> liveTrainingAddButtonClickedEvent(
       LiveTrainingAddButtonClickedEvent event,
       Emitter<LiveTrainingState> emit) {
-    emit(LiveTrainingNavigateToAddLiveTrainingActionState());
+    emit(const LiveTrainingNavigateToAddLiveTrainingActionState());
   }
 
   FutureOr<void> liveTrainingTileNavigateEvent(
       LiveTrainingTileNavigateEvent event, Emitter<LiveTrainingState> emit) {
-    emit(LiveTrainingNavigateToDetailPageActionState(event.liveTraining));
+    emit(LiveTrainingNavigateToDetailPageActionState(
+        liveTraining: event.liveTraining));
   }
 
   FutureOr<void> liveTrainingDaySelectEvent(

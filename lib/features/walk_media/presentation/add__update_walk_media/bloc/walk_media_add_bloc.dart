@@ -8,7 +8,7 @@ import 'package:fitness_app/features/walk_media/presentation/add__update_walk_me
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/shared/data/local/db_helper.dart';
 import '../../../domain/usecases/add_walk_media.dart';
 import '../../../domain/usecases/update_walk_media.dart';
 
@@ -20,7 +20,7 @@ class WalkMediaAddBloc extends Bloc<WalkMediaAddEvent, WalkMediaAddState> {
   WalkMediaAddBloc({
     required this.addWalkMedia,
     required this.updateWalkMedia,
-  }) : super(WalkMediaAddInitialState()) {
+  }) : super(const WalkMediaAddInitialState()) {
     on<WalkMediaAddInitialEvent>(walkMediaAddInitialEvent);
     on<WalkMediaAddReadyToUpdateEvent>(walkMediaAddReadyToUpdateEvent);
     on<WalkMediaAddPickFromGalaryButtonPressEvent>(
@@ -42,7 +42,7 @@ class WalkMediaAddBloc extends Bloc<WalkMediaAddEvent, WalkMediaAddState> {
       File image = File(croppedFile.path);
       Uint8List? uint8list = await getBytesFromImage(image);
       String imagePath = await saveImage(uint8list);
-      emit(AddWalkMediaImagePickedFromGalaryState(imagePath));
+      emit(AddWalkMediaImagePickedFromGalaryState(imagePath: imagePath));
     }
   }
 
@@ -74,7 +74,7 @@ class WalkMediaAddBloc extends Bloc<WalkMediaAddEvent, WalkMediaAddState> {
       File image = File(croppedFile.path);
       Uint8List? uint8list = await getBytesFromImage(image);
       String imagePath = await saveImage(uint8list);
-      emit(AddWalkMediaImagePickedFromCameraState(imagePath));
+      emit(AddWalkMediaImagePickedFromCameraState(imagePath: imagePath));
     }
   }
 
@@ -101,29 +101,29 @@ class WalkMediaAddBloc extends Bloc<WalkMediaAddEvent, WalkMediaAddState> {
   FutureOr<void> addWalkMediaSaveButtonPressEvent(
       WalkMediaAddSaveButtonPressEvent event,
       Emitter<WalkMediaAddState> emit) async {
-    emit(AddWalkMediaLoadingState());
+    emit(const AddWalkMediaLoadingState());
     final result = await addWalkMedia(event.newWalkMedia);
     result!.fold((failure) {
-      emit(AddWalkMediaErrorState());
+      emit(const AddWalkMediaErrorState());
     }, (result) {
-      emit(AddWalkMediaSavedState());
+      emit(const AddWalkMediaSavedState());
     });
   }
 
   FutureOr<void> walkMediaAddInitialEvent(
       WalkMediaAddInitialEvent event, Emitter<WalkMediaAddState> emit) {
-    emit(WalkMediaAddInitialState());
+    emit(const WalkMediaAddInitialState());
   }
 
   FutureOr<void> walkMediaAddUpdateButtonPressEvent(
       WalkMediaAddUpdateButtonPressEvent event,
       Emitter<WalkMediaAddState> emit) async {
-    emit(AddWalkMediaLoadingState());
+    emit(const AddWalkMediaLoadingState());
     final result = await updateWalkMedia(event.updatedWalkMedia);
     result!.fold((failure) {
-      emit(AddWalkMediaErrorState());
+      emit(const AddWalkMediaErrorState());
     }, (result) {
-      emit(AddWalkMediaUpdatedState());
+      emit(const AddWalkMediaUpdatedState());
     });
   }
 

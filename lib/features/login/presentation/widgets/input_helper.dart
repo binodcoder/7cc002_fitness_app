@@ -15,7 +15,8 @@ RenderEditable? findRenderEditable(RenderObject root) {
   return renderEditable;
 }
 
-List<TextSelectionPoint> globalize(Iterable<TextSelectionPoint> points, RenderBox box) {
+List<TextSelectionPoint> globalize(
+    Iterable<TextSelectionPoint> points, RenderBox box) {
   return points.map<TextSelectionPoint>((TextSelectionPoint point) {
     return TextSelectionPoint(
       box.localToGlobal(point.point),
@@ -26,7 +27,9 @@ List<TextSelectionPoint> globalize(Iterable<TextSelectionPoint> points, RenderBo
 
 Offset? getCaretPosition(RenderBox box) {
   final RenderEditable? renderEditable = findRenderEditable(box);
-  if (renderEditable == null || !renderEditable.hasFocus || renderEditable.selection == null) {
+  if (renderEditable == null ||
+      !renderEditable.hasFocus ||
+      renderEditable.selection == null) {
     return null;
   }
   final List<TextSelectionPoint> endpoints = globalize(

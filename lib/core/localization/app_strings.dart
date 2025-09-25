@@ -88,6 +88,10 @@ class AppStrings {
   String get onboardingSubtitle4 =>
       _localizations?.onboardingSubtitle4 ?? AppStringsEn.onboardingSubtitle4;
   String get skip => _localizations?.skip ?? AppStringsEn.skip;
+  // These keys are not in generated AppLocalizations yet; fallback to English.
+  String get logOut => AppStringsEn.logOut;
+  String get aboutUs => AppStringsEn.aboutUs;
+  String get meeting => AppStringsEn.meeting;
 }
 
 class AppStringsEn {
@@ -141,4 +145,7 @@ class AppStringsEn {
   static const String onboardingSubtitle4 =
       'Users can design routes on a map, set times, and starting points. Others can view and express interest in joining';
   static const String skip = 'Skip';
+  static const String logOut = 'Log out';
+  static const String aboutUs = 'About Us';
+  static const String meeting = 'Meeting';
 }

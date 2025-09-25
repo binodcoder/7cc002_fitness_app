@@ -1,4 +1,4 @@
-import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/features/live_training/data/models/live_training_model.dart';
 
 abstract class LiveTrainingLocalDataSource {

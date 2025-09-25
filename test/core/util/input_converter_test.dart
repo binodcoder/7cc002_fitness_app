@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:fitness_app/core/util/input_converter.dart';
+import 'package:fitness_app/core/errors/failures.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

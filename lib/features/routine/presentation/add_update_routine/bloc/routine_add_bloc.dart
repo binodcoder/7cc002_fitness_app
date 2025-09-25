@@ -6,7 +6,7 @@ import 'package:fitness_app/features/routine/presentation/add_update_routine/blo
 import 'package:fitness_app/features/routine/presentation/add_update_routine/bloc/routine_add_state.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/shared/data/local/db_helper.dart';
 import '../../../domain/usecases/add_routine.dart';
 import '../../../domain/usecases/update_routine.dart';
 
@@ -17,7 +17,7 @@ class RoutineAddBloc extends Bloc<RoutineAddEvent, RoutineAddState> {
   RoutineAddBloc({
     required this.addRoutine,
     required this.updateRoutine,
-  }) : super(RoutineAddInitialState()) {
+  }) : super(const RoutineAddInitialState()) {
     on<RoutineAddInitialEvent>(routineAddInitialEvent);
     on<RoutineAddReadyToUpdateEvent>(routineAddReadyToUpdateEvent);
     on<RoutineAddPickFromGalaryButtonPressEvent>(
@@ -39,7 +39,7 @@ class RoutineAddBloc extends Bloc<RoutineAddEvent, RoutineAddState> {
       File image = File(pickedFile.path);
       Uint8List? uint8list = await getBytesFromImage(image);
       String imagePath = await saveImage(uint8list);
-      emit(AddRoutineImagePickedFromGalaryState(imagePath));
+      emit(AddRoutineImagePickedFromGalaryState(imagePath: imagePath));
     }
   }
 
@@ -71,36 +71,36 @@ class RoutineAddBloc extends Bloc<RoutineAddEvent, RoutineAddState> {
       File image = File(pickedFile.path);
       Uint8List? uint8list = await getBytesFromImage(image);
       String imagePath = await saveImage(uint8list);
-      emit(AddRoutineImagePickedFromCameraState(imagePath));
+      emit(AddRoutineImagePickedFromCameraState(imagePath: imagePath));
     }
   }
 
   FutureOr<void> addRoutineSaveButtonPressEvent(
       RoutineAddSaveButtonPressEvent event,
       Emitter<RoutineAddState> emit) async {
-    emit(AddRoutineLoadingState());
+    emit(const AddRoutineLoadingState());
     final result = await addRoutine(event.newRoutine);
     result!.fold((failure) {
-      emit(AddRoutineErrorState());
+      emit(const AddRoutineErrorState());
     }, (result) {
-      emit(AddRoutineSavedActionState());
+      emit(const AddRoutineSavedActionState());
     });
   }
 
   FutureOr<void> routineAddInitialEvent(
       RoutineAddInitialEvent event, Emitter<RoutineAddState> emit) {
-    emit(RoutineAddInitialState());
+    emit(const RoutineAddInitialState());
   }
 
   FutureOr<void> routineAddUpdateButtonPressEvent(
       RoutineAddUpdateButtonPressEvent event,
       Emitter<RoutineAddState> emit) async {
-    emit(AddRoutineLoadingState());
+    emit(const AddRoutineLoadingState());
     final result = await updateRoutine(event.updatedRoutine);
     result!.fold((failure) {
-      emit(AddRoutineErrorState());
+      emit(const AddRoutineErrorState());
     }, (result) {
-      emit(AddRoutineUpdatedActionState());
+      emit(const AddRoutineUpdatedActionState());
     });
   }
 

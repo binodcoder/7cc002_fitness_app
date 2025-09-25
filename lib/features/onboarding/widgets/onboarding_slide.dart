@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:fitness_app/features/onboarding/data/models/model.dart';
+import 'package:fitness_app/features/onboarding/models/slider_object.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
 
-class OnBoardingPage extends StatelessWidget {
+class OnboardingSlide extends StatelessWidget {
   final SliderObject sliderObject;
 
-  const OnBoardingPage({
+  const OnboardingSlide({
     super.key,
     required this.sliderObject,
   });
@@ -54,4 +54,3 @@ class OnBoardingPage extends StatelessWidget {
     );
   }
 }
-

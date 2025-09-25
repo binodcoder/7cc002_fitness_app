@@ -54,4 +54,3 @@ class RoleDropdown extends StatelessWidget {
     );
   }
 }
-

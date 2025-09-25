@@ -10,9 +10,13 @@ abstract class RoutineState extends Equatable {
 
 abstract class RoutineActionState extends RoutineState {}
 
-class RoutineInitialState extends RoutineState {}
+class RoutineInitialState extends RoutineState {
+  const RoutineInitialState();
+}
 
-class RoutineLoadingState extends RoutineState {}
+class RoutineLoadingState extends RoutineState {
+  const RoutineLoadingState();
+}
 
 class RoutineLoadedSuccessState extends RoutineState {
   final List<Routine> routines;

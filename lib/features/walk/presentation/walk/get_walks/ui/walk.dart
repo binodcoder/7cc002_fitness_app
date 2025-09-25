@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 import 'package:fitness_app/drawer.dart';
 import 'package:fitness_app/injection_container.dart';
@@ -31,12 +31,12 @@ class _WalkPageState extends State<WalkPage> {
 
   @override
   void initState() {
-    walkBloc.add(WalkInitialEvent());
+    walkBloc.add(const WalkInitialEvent());
     super.initState();
   }
 
   void refreshPage() {
-    walkBloc.add(WalkInitialEvent());
+    walkBloc.add(const WalkInitialEvent());
   }
 
   WalkBloc walkBloc = sl<WalkBloc>();
@@ -76,8 +76,7 @@ class _WalkPageState extends State<WalkPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  AddWalkPage(walk: state.walk),
+              builder: (BuildContext context) => AddWalkPage(walk: state.walk),
               fullscreenDialog: true,
             ),
           ).then(
@@ -87,9 +86,13 @@ class _WalkPageState extends State<WalkPage> {
         } else if (state is WalkItemDeletedActionState) {
         } else if (state is WalkItemsDeletedActionState) {
         } else if (state is WalkJoinedActionState) {
-          walkBloc.add(WalkInitialEvent());
+          walkBloc.add(const WalkInitialEvent());
         } else if (state is WalkLeftActionState) {
-          walkBloc.add(WalkInitialEvent());
+          walkBloc.add(const WalkInitialEvent());
+        } else if (state is WalkShowErrorActionState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
         }
       },
       builder: (context, state) {
@@ -113,7 +116,7 @@ class _WalkPageState extends State<WalkPage> {
                   backgroundColor: ColorManager.primary,
                   child: const Icon(Icons.add),
                   onPressed: () {
-                    walkBloc.add(WalkAddButtonClickedEvent());
+                    walkBloc.add(const WalkAddButtonClickedEvent());
                   },
                 ),
                 appBar: AppBar(
@@ -144,21 +147,20 @@ class _WalkPageState extends State<WalkPage> {
                         );
                       },
                       onJoinTap: () {
-                        WalkParticipant walkParticipant =
-                            WalkParticipant(
+                        WalkParticipant walkParticipant = WalkParticipant(
                           userId: sharedPreferences.getInt("user_id")!,
                           walkId: walk.id!,
                         );
                         if (isJoined) {
                           walkBloc.add(WalkLeaveButtonClickedEvent(
-                              walkParticipant));
+                              walkParticipant: walkParticipant));
                         } else {
-                          walkBloc.add(
-                              WalkJoinButtonClickedEvent(walkParticipant));
+                          walkBloc.add(WalkJoinButtonClickedEvent(
+                              walkParticipant: walkParticipant));
                         }
                       },
                       onEdit: () {
-                        walkBloc.add(WalkEditButtonClickedEvent(walk));
+                        walkBloc.add(WalkEditButtonClickedEvent(walk: walk));
                       },
                       onDelete: () {},
                     );
@@ -167,7 +169,8 @@ class _WalkPageState extends State<WalkPage> {
               ),
             );
           case WalkErrorState:
-            return const Scaffold(body: Center(child: Text('Error')));
+            final error = state as WalkErrorState;
+            return Scaffold(body: Center(child: Text(error.message)));
           default:
             return const SizedBox();
         }

@@ -1,28 +1,51 @@
-abstract class WalkAddState {
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
+
+@immutable
+abstract class WalkAddState extends Equatable {
   final String? imagePath;
-  WalkAddState({this.imagePath});
+  const WalkAddState({this.imagePath});
+
+  @override
+  List<Object?> get props => [imagePath];
 }
 
-abstract class WalkAddActionState extends WalkAddState {}
+@immutable
+abstract class WalkAddActionState extends WalkAddState {
+  const WalkAddActionState({super.imagePath});
+}
 
-class WalkAddInitialState extends WalkAddState {}
+class WalkAddInitialState extends WalkAddState {
+  const WalkAddInitialState({super.imagePath});
+}
 
 class WalkAddReadyToUpdateState extends WalkAddState {
-  WalkAddReadyToUpdateState(imagePath) : super(imagePath: imagePath);
+  const WalkAddReadyToUpdateState({required String imagePath})
+      : super(imagePath: imagePath);
 }
 
 class AddWalkImagePickedFromGalaryState extends WalkAddState {
-  AddWalkImagePickedFromGalaryState(imagePath) : super(imagePath: imagePath);
+  const AddWalkImagePickedFromGalaryState({required String imagePath})
+      : super(imagePath: imagePath);
 }
 
 class AddWalkImagePickedFromCameraState extends WalkAddState {
-  AddWalkImagePickedFromCameraState(imagePath) : super(imagePath: imagePath);
+  const AddWalkImagePickedFromCameraState({required String imagePath})
+      : super(imagePath: imagePath);
 }
 
-class AddWalkLoadingState extends WalkAddActionState {}
+class AddWalkLoadingState extends WalkAddActionState {
+  const AddWalkLoadingState();
+}
 
-class AddWalkSavedState extends WalkAddActionState {}
+class AddWalkSavedState extends WalkAddActionState {
+  const AddWalkSavedState();
+}
 
-class AddWalkUpdatedState extends WalkAddActionState {}
+class AddWalkUpdatedState extends WalkAddActionState {
+  const AddWalkUpdatedState();
+}
 
-class AddWalkErrorState extends WalkAddActionState {}
+class AddWalkErrorState extends WalkAddActionState {
+  const AddWalkErrorState();
+}

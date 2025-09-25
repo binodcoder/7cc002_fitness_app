@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-
-import 'package:fitness_app/core/theme/colour_manager.dart';
+import 'package:fitness_app/core/widgets/app_slidable_list_tile.dart';
 
 class LiveTrainingListTile extends StatelessWidget {
   final String title;
@@ -21,41 +19,12 @@ class LiveTrainingListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return Slidable(
-      endActionPane: ActionPane(
-        extentRatio: 0.46,
-        motion: const ScrollMotion(),
-        children: [
-          SlidableAction(
-            onPressed: (context) => onEdit(),
-            backgroundColor: const Color(0xFF21B7CA),
-            foregroundColor: Colors.white,
-            icon: Icons.edit,
-            label: 'Edit',
-          ),
-          SlidableAction(
-            onPressed: (context) => onDelete(),
-            backgroundColor: const Color(0xFF21B7CA),
-            foregroundColor: Colors.white,
-            icon: Icons.delete,
-            label: 'Delete',
-          )
-        ],
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: ColorManager.white,
-        ),
-        margin: EdgeInsets.all(size.width * 0.02),
-        child: ListTile(
-          onTap: onTap,
-          title: Text(title),
-          subtitle: Text(subtitle),
-        ),
-      ),
+    return AppSlidableListTile(
+      title: title,
+      subtitle: subtitle,
+      onTap: onTap,
+      onEdit: onEdit,
+      onDelete: onDelete,
     );
   }
 }
-

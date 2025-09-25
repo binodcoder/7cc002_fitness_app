@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:fitness_app/features/routine/presentation/get_routines/bloc/routine_event.dart';
 import 'package:fitness_app/features/routine/presentation/get_routines/bloc/routine_state.dart';
-import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/features/routine/domain/entities/routine.dart';
 import 'package:fitness_app/core/usecases/usecase.dart';
 import '../../../domain/usecases/delete_routine.dart';
@@ -14,12 +14,12 @@ class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
   final DatabaseHelper dbHelper = DatabaseHelper();
   List<Routine> selectedRoutines = [];
 
-  RoutineState get initialState => RoutineInitialState();
+  RoutineState get initialState => const RoutineInitialState();
 
   RoutineBloc({
     required this.getRoutines,
     required this.deleteRoutine,
-  }) : super(RoutineInitialState()) {
+  }) : super(const RoutineInitialState()) {
     on<RoutineInitialEvent>(routineInitialEvent);
     on<RoutineEditButtonClickedEvent>(routineEditButtonClickedEvent);
     on<RoutineDeleteButtonClickedEvent>(routineDeleteButtonClickedEvent);
@@ -30,7 +30,7 @@ class RoutineBloc extends Bloc<RoutineEvent, RoutineState> {
 
   FutureOr<void> routineInitialEvent(
       RoutineInitialEvent event, Emitter<RoutineState> emit) async {
-    emit(RoutineLoadingState());
+    emit(const RoutineLoadingState());
     final routineList = await getRoutines(NoParams());
 
     routineList!.fold((failure) {

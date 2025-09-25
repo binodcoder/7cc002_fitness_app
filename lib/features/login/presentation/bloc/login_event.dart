@@ -1,10 +1,23 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fitness_app/features/login/domain/entities/login.dart';
 
-abstract class LoginEvent {}
+@immutable
+abstract class LoginEvent extends Equatable {
+  const LoginEvent();
 
-class LoginInitialEvent extends LoginEvent {}
+  @override
+  List<Object?> get props => const [];
+}
+
+class LoginInitialEvent extends LoginEvent {
+  const LoginInitialEvent();
+}
 
 class LoginButtonPressEvent extends LoginEvent {
   final Login login;
-  LoginButtonPressEvent(this.login);
+  const LoginButtonPressEvent({required this.login});
+
+  @override
+  List<Object?> get props => [login];
 }

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:fitness_app/core/db/db_helper.dart';
-import 'package:fitness_app/features/register/data/models/user_model.dart';
+import 'package:fitness_app/shared/data/local/db_helper.dart';
+import 'package:fitness_app/features/register/domain/entities/user.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
@@ -17,14 +17,15 @@ import '../bloc/user_add_bloc.dart';
 import '../bloc/user_add_event.dart';
 import '../bloc/user_add_state.dart';
 import 'package:fitness_app/features/register/presentation/widgets/role_dropdown.dart';
+import 'package:fitness_app/core/widgets/custom_text_form_field.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({
     super.key,
-    this.userModel,
+    this.user,
   });
 
-  final UserModel? userModel;
+  final User? user;
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -42,21 +43,20 @@ class _RegisterPageState extends State<RegisterPage> {
       TextEditingController();
 
   final DatabaseHelper dbHelper = DatabaseHelper();
-  bool _passwordVisible = false;
-  bool _confirmPasswordVisible = false;
+  // Password visibility handled inside extracted widgets
 
   @override
   void initState() {
-    if (widget.userModel != null) {
-      userNameController.text = widget.userModel!.name;
-      emailController.text = widget.userModel!.email;
-      institutionEmailController.text = widget.userModel!.institutionEmail;
-      genderController.text = widget.userModel!.gender;
-      ageController.text = widget.userModel!.age.toString();
-      passwordController.text = widget.userModel!.password;
-      userAddBloc.add(UserAddReadyToUpdateEvent(widget.userModel!));
+    if (widget.user != null) {
+      userNameController.text = widget.user!.name;
+      emailController.text = widget.user!.email;
+      institutionEmailController.text = widget.user!.institutionEmail;
+      genderController.text = widget.user!.gender;
+      ageController.text = widget.user!.age.toString();
+      passwordController.text = widget.user!.password;
+      userAddBloc.add(UserAddReadyToUpdateEvent(user: widget.user!));
     } else {
-      userAddBloc.add(UserAddInitialEvent());
+      userAddBloc.add(const UserAddInitialEvent());
     }
     super.initState();
   }
@@ -125,92 +125,23 @@ class _RegisterPageState extends State<RegisterPage> {
                     SizedBox(
                       height: AppHeight.h40,
                     ),
-                    Text(
-                      "UserName",
-                      style: getBoldStyle(
-                        fontSize: FontSize.s15,
-                        color: ColorManager.primary,
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h10,
-                    ),
-                    TextFormField(
+                    CustomTextFormField(
+                      label: 'UserName',
                       controller: userNameController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '*Required';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        fillColor: ColorManager.redWhite,
-                        filled: true,
-                        hintText: 'User Name',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: ColorManager.blueGrey),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: ColorManager.primary),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: ColorManager.red),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                      ),
+                      hint: 'User Name',
+                      validator: (v) =>
+                          (v == null || v.isEmpty) ? '*Required' : null,
                     ),
                     SizedBox(
                       height: AppHeight.h10,
                     ),
-                    Text(
-                      "Email",
-                      style: getBoldStyle(
-                        fontSize: FontSize.s15,
-                        color: ColorManager.primary,
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h10,
-                    ),
-                    TextFormField(
+                    CustomTextFormField(
+                      label: 'Email',
                       controller: emailController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '*Required';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        fillColor: ColorManager.redWhite,
-                        filled: true,
-                        hintText: 'Email',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: ColorManager.blueGrey),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: ColorManager.primary),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: ColorManager.red),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                      ),
+                      hint: 'Email',
+                      validator: (v) =>
+                          (v == null || v.isEmpty) ? '*Required' : null,
+                      keyboardType: TextInputType.emailAddress,
                     ),
                     SizedBox(
                       height: AppHeight.h10,
@@ -237,261 +168,61 @@ class _RegisterPageState extends State<RegisterPage> {
                     SizedBox(
                       height: AppHeight.h10,
                     ),
-                    Text(
-                      "Institution Email",
-                      style: getBoldStyle(
-                        fontSize: FontSize.s15,
-                        color: ColorManager.primary,
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h10,
-                    ),
-                    TextFormField(
+                    CustomTextFormField(
+                      label: 'Institution Email',
                       controller: institutionEmailController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        fillColor: ColorManager.redWhite,
-                        filled: true,
-                        hintText: 'Institution Email',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: ColorManager.blueGrey),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: ColorManager.primary),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: ColorManager.red),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                      ),
+                      hint: 'Institution Email',
+                      keyboardType: TextInputType.emailAddress,
                     ),
                     SizedBox(
                       height: AppHeight.h10,
                     ),
-                    Text(
-                      "Gender",
-                      style: getBoldStyle(
-                        fontSize: FontSize.s15,
-                        color: ColorManager.primary,
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h10,
-                    ),
-                    TextFormField(
+                    CustomTextFormField(
+                      label: 'Gender',
                       controller: genderController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '*Required';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        fillColor: ColorManager.redWhite,
-                        filled: true,
-                        hintText: 'Gender',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: ColorManager.blueGrey),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: ColorManager.primary),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: ColorManager.red),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                      ),
+                      hint: 'Gender',
+                      validator: (v) =>
+                          (v == null || v.isEmpty) ? '*Required' : null,
                     ),
                     SizedBox(
                       height: AppHeight.h10,
                     ),
-                    Text(
-                      "Age",
-                      style: getBoldStyle(
-                        fontSize: FontSize.s15,
-                        color: ColorManager.primary,
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h10,
-                    ),
-                    TextFormField(
+                    CustomTextFormField(
+                      label: 'Age',
                       controller: ageController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '*Required';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        fillColor: ColorManager.redWhite,
-                        filled: true,
-                        hintText: 'Age',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: ColorManager.blueGrey),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: ColorManager.primary),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: ColorManager.red),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                      ),
+                      hint: 'Age',
+                      validator: (v) =>
+                          (v == null || v.isEmpty) ? '*Required' : null,
+                      keyboardType: TextInputType.number,
                     ),
                     SizedBox(
                       height: AppHeight.h10,
                     ),
-                    Text(
-                      "Password",
-                      style: getBoldStyle(
-                        fontSize: FontSize.s15,
-                        color: ColorManager.primary,
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h10,
-                    ),
-                    TextFormField(
+                    CustomTextFormField(
+                      label: 'Password',
                       controller: passwordController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '*Required';
-                        }
-                        return null;
-                      },
-                      obscureText: !_passwordVisible,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        fillColor: ColorManager.redWhite,
-                        filled: true,
-                        hintText: 'Password',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _passwordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: ColorManager.blue,
-                          ),
-                          onPressed: () {
-                            setState(
-                              () {
-                                _passwordVisible = !_passwordVisible;
-                              },
-                            );
-                          },
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: ColorManager.blueGrey),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: ColorManager.primary),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: ColorManager.red),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                      ),
+                      hint: 'Password',
+                      isPassword: true,
+                      validator: (v) =>
+                          (v == null || v.isEmpty) ? '*Required' : null,
                     ),
                     SizedBox(
                       height: AppHeight.h10,
                     ),
-                    Text(
-                      "Confirm Password",
-                      style: getBoldStyle(
-                        fontSize: FontSize.s15,
-                        color: ColorManager.primary,
-                      ),
-                    ),
-                    SizedBox(
-                      height: AppHeight.h10,
-                    ),
-                    TextFormField(
+                    CustomTextFormField(
+                      label: 'Confirm Password',
                       controller: conformPasswordController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '*Required';
-                        }
-                        return null;
-                      },
-                      obscureText: !_confirmPasswordVisible,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        fillColor: ColorManager.redWhite,
-                        filled: true,
-                        hintText: 'Confirm Password',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _confirmPasswordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: ColorManager.blue,
-                          ),
-                          onPressed: () {
-                            setState(
-                              () {
-                                _confirmPasswordVisible =
-                                    !_confirmPasswordVisible;
-                              },
-                            );
-                          },
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: ColorManager.blueGrey),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: ColorManager.primary),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: ColorManager.red),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                      ),
+                      hint: 'Confirm Password',
+                      isPassword: true,
+                      validator: (v) =>
+                          (v == null || v.isEmpty) ? '*Required' : null,
                     ),
                     SizedBox(
                       height: AppHeight.h30,
                     ),
                     SigninButton(
                       child: Text(
-                        widget.userModel == null
+                        widget.user == null
                             ? strings.register
                             : strings.updateUser,
                         style: getRegularStyle(
@@ -508,29 +239,43 @@ class _RegisterPageState extends State<RegisterPage> {
                         var password = passwordController.text;
                         var role = selectedRole;
                         if (username.isNotEmpty && email.isNotEmpty) {
-                          if (widget.userModel != null) {
-                            var updatedUser = UserModel(
+                          if (widget.user != null) {
+                            var updatedUser = User(
                               age: int.parse(age),
                               email: email,
                               gender: gender,
-                              id: widget.userModel!.id,
+                              id: widget.user!.id,
+                              institutionEmail: institutionEmail,
+                              name: username,
+                              password: password,
+                              role: role,
+                            );
+                            userAddBloc.add(UserAddUpdateButtonPressEvent(
+                                updatedUser: updatedUser));
+                          } else {
+                            final ageInt = int.tryParse(age);
+                            if (ageInt == null) {
+                              Fluttertoast.cancel();
+                              Fluttertoast.showToast(
+                                msg: 'Please enter a valid age.',
+                                toastLength: Toast.LENGTH_LONG,
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: ColorManager.error,
+                              );
+                              return;
+                            }
+                            final newUser = User(
+                              age: ageInt,
+                              email: email,
+                              gender: gender,
                               institutionEmail: institutionEmail,
                               name: username,
                               password: password,
                               role: role,
                             );
                             userAddBloc.add(
-                                UserAddUpdateButtonPressEvent(updatedUser));
-                          } else {
-                            userAddBloc.add(UserAddSaveButtonPressEvent(
-                              age,
-                              email,
-                              gender,
-                              institutionEmail,
-                              username,
-                              password,
-                              role,
-                            ));
+                              UserAddSaveButtonPressEvent(user: newUser),
+                            );
                           }
                         }
                       },

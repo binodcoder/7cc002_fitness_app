@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/drawer.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
@@ -28,12 +28,12 @@ class _RoutinePageState extends State<RoutinePage> {
 
   @override
   void initState() {
-    postBloc.add(RoutineInitialEvent());
+    postBloc.add(const RoutineInitialEvent());
     super.initState();
   }
 
   void refreshPage() {
-    postBloc.add(RoutineInitialEvent());
+    postBloc.add(const RoutineInitialEvent());
   }
 
   RoutineBloc postBloc = sl<RoutineBloc>();
@@ -109,7 +109,7 @@ class _RoutinePageState extends State<RoutinePage> {
                             backgroundColor: ColorManager.primary,
                             child: const Icon(Icons.add),
                             onPressed: () {
-                              postBloc.add(RoutineAddButtonClickedEvent());
+                              postBloc.add(const RoutineAddButtonClickedEvent());
                             },
                           )
                         : null,
@@ -138,7 +138,7 @@ class _RoutinePageState extends State<RoutinePage> {
                       },
                       onEdit: () {
                         postBloc.add(
-                          RoutineEditButtonClickedEvent(routine),
+                          RoutineEditButtonClickedEvent(routine: routine),
                         );
                       },
                       onDelete: () {},
@@ -148,7 +148,8 @@ class _RoutinePageState extends State<RoutinePage> {
               ),
             );
           case RoutineErrorState:
-            return const Scaffold(body: Center(child: Text('Error')));
+            final error = state as RoutineErrorState;
+            return Scaffold(body: Center(child: Text(error.message)));
           default:
             return const SizedBox();
         }

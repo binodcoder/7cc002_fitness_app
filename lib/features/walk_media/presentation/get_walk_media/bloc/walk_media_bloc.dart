@@ -2,11 +2,12 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:fitness_app/features/walk_media/presentation/get_walk_media/bloc/walk_media_event.dart';
 import 'package:fitness_app/features/walk_media/presentation/get_walk_media/bloc/walk_media_state.dart';
-import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/features/walk_media/domain/entities/walk_media.dart';
 import '../../../domain/usecases/delete_walk_media.dart';
 import '../../../domain/usecases/get_walk_media.dart';
 import '../../../domain/usecases/get_walk_media_by_walk_id.dart';
+import 'package:fitness_app/core/errors/map_failure_to_message.dart';
 
 class WalkMediaBloc extends Bloc<WalkMediaEvent, WalkMediaState> {
   final GetWalkMedia getWalkMedia;
@@ -20,7 +21,7 @@ class WalkMediaBloc extends Bloc<WalkMediaEvent, WalkMediaState> {
     required this.deleteWalkMedia,
     required this.getWalkMediaByWalkId,
     //  required this.updateWalkMedia,
-  }) : super(WalkMediaInitialState()) {
+  }) : super(const WalkMediaInitialState()) {
     on<WalkMediaInitialEvent>(walkMediaInitialEvent);
     on<WalkMediaEditButtonClickedEvent>(walkMediaEditButtonClickedEvent);
     on<WalkMediaDeleteButtonClickedEvent>(walkMediaDeleteButtonClickedEvent);
@@ -32,11 +33,11 @@ class WalkMediaBloc extends Bloc<WalkMediaEvent, WalkMediaState> {
 
   FutureOr<void> walkMediaInitialEvent(
       WalkMediaInitialEvent event, Emitter<WalkMediaState> emit) async {
-    emit(WalkMediaLoadingState());
+    emit(const WalkMediaLoadingState());
     final walkMediaListResult = await getWalkMediaByWalkId(event.walkId);
 
     walkMediaListResult!.fold((failure) {
-      // emit(Error(message: _mapFailureToMessage(failure)));
+      emit(WalkMediaErrorState(message: mapFailureToMessage(failure)));
     }, (walkMediaList) {
       emit(WalkMediaLoadedSuccessState(walkMediaList));
     });
@@ -50,13 +51,13 @@ class WalkMediaBloc extends Bloc<WalkMediaEvent, WalkMediaState> {
   FutureOr<void> walkMediaDeleteButtonClickedEvent(
       WalkMediaDeleteButtonClickedEvent event,
       Emitter<WalkMediaState> emit) async {
-    emit(WalkMediaLoadingState());
     final result = await deleteWalkMedia(event.walkMedia.id!);
 
     result!.fold((failure) {
-      // emit(Error(message: _mapFailureToMessage(failure)));
+      emit(WalkMediaShowErrorActionState(
+          message: mapFailureToMessage(failure)));
     }, (response) {
-      emit(WalkMediaItemDeletedActionState());
+      emit(const WalkMediaItemDeletedActionState());
     });
   }
 

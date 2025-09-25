@@ -28,7 +28,7 @@ void main() {
 
   test('initialState should be RoutineInitialState', () async {
     //assert
-    expect(bloc.initialState, equals(RoutineInitialState()));
+    expect(bloc.initialState, equals(const RoutineInitialState()));
   });
 
   group('GetRoutines', () {
@@ -50,7 +50,7 @@ void main() {
       when(mockGetRoutines(any))
           .thenAnswer((_) async => const Right(tRoutines));
       //act
-      bloc.add(RoutineInitialEvent());
+      bloc.add(const RoutineInitialEvent());
       await untilCalled(mockGetRoutines(any));
 
       //assert
@@ -65,13 +65,13 @@ void main() {
 
       //assert later
       final expected = [
-        RoutineInitialState(),
-        RoutineLoadingState(),
+        const RoutineInitialState(),
+        const RoutineLoadingState(),
         const RoutineLoadedSuccessState(tRoutines)
       ];
       expectLater(bloc, emitsInOrder(expected));
       //act
-      bloc.add(RoutineInitialEvent());
+      bloc.add(const RoutineInitialEvent());
     });
     test('should emits [Loading, Error] when getting data fails', () async* {
       //arrange
@@ -80,13 +80,13 @@ void main() {
 
       //assert later
       final expected = [
-        RoutineInitialState(),
-        RoutineLoadingState(),
+        const RoutineInitialState(),
+        const RoutineLoadingState(),
         const RoutineErrorState(message: AppStringsEn.serverFailure)
       ];
       expectLater(bloc, emitsInOrder(expected));
       //act
-      bloc.add(RoutineInitialEvent());
+      bloc.add(const RoutineInitialEvent());
     });
 
     test(
@@ -98,13 +98,13 @@ void main() {
 
       //assert later
       final expected = [
-        RoutineInitialState(),
-        RoutineLoadingState(),
+        const RoutineInitialState(),
+        const RoutineLoadingState(),
         const RoutineErrorState(message: AppStringsEn.cacheFailure)
       ];
       expectLater(bloc, emitsInOrder(expected));
       //act
-      bloc.add(RoutineInitialEvent());
+      bloc.add(const RoutineInitialEvent());
     });
   });
 
@@ -124,7 +124,7 @@ void main() {
       when(mockDeleteRoutine.call(tRoutine.id!))
           .thenAnswer((_) async => const Right(1));
       //act
-      bloc.add(RoutineDeleteButtonClickedEvent(tRoutine));
+      bloc.add(const RoutineDeleteButtonClickedEvent(tRoutine));
       await untilCalled(mockDeleteRoutine.call(any));
 
       //assert
@@ -138,13 +138,13 @@ void main() {
 
       //assert later
       final expected = [
-        RoutineInitialState(),
-        RoutineLoadingState(),
-        RoutineLoadedSuccessState([tRoutine])
+        const RoutineInitialState(),
+        const RoutineLoadingState(),
+        const RoutineLoadedSuccessState([tRoutine])
       ];
       expectLater(bloc, emitsInOrder(expected));
       //act
-      bloc.add(RoutineDeleteButtonClickedEvent(tRoutine));
+      bloc.add(const RoutineDeleteButtonClickedEvent(tRoutine));
     });
     test('should emits [Loading, Error] when getting data fails', () async* {
       //arrange
@@ -153,13 +153,13 @@ void main() {
 
       //assert later
       final expected = [
-        RoutineInitialState(),
-        RoutineLoadingState(),
+        const RoutineInitialState(),
+        const RoutineLoadingState(),
         const RoutineErrorState(message: AppStringsEn.serverFailure)
       ];
       expectLater(bloc, emitsInOrder(expected));
       //act
-      bloc.add(RoutineDeleteButtonClickedEvent(tRoutine));
+      bloc.add(const RoutineDeleteButtonClickedEvent(tRoutine));
     });
 
     test(
@@ -171,13 +171,13 @@ void main() {
 
       //assert later
       final expected = [
-        RoutineInitialState(),
-        RoutineLoadingState(),
+        const RoutineInitialState(),
+        const RoutineLoadingState(),
         const RoutineErrorState(message: AppStringsEn.cacheFailure)
       ];
       expectLater(bloc, emitsInOrder(expected));
       //act
-      bloc.add(RoutineDeleteButtonClickedEvent(tRoutine));
+      bloc.add(const RoutineDeleteButtonClickedEvent(tRoutine));
     });
   });
 }

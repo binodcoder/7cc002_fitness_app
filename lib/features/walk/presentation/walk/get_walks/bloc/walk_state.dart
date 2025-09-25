@@ -1,43 +1,93 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 
-abstract class WalkState {}
+@immutable
+abstract class WalkState extends Equatable {
+  const WalkState();
 
-abstract class WalkActionState extends WalkState {}
+  @override
+  List<Object?> get props => const [];
+}
 
-class WalkInitialState extends WalkState {}
+@immutable
+abstract class WalkActionState extends WalkState {
+  const WalkActionState();
+}
 
-class WalkLoadingState extends WalkState {}
+class WalkInitialState extends WalkState {
+  const WalkInitialState();
+}
+
+class WalkLoadingState extends WalkState {
+  const WalkLoadingState();
+}
 
 class WalkLoadedSuccessState extends WalkState {
   final List<Walk> walks;
-  WalkLoadedSuccessState(this.walks);
+  const WalkLoadedSuccessState({required this.walks});
   WalkLoadedSuccessState copyWith({List<Walk>? walks}) {
-    return WalkLoadedSuccessState(walks ?? this.walks);
+    return WalkLoadedSuccessState(walks: walks ?? this.walks);
   }
+
+  @override
+  List<Object?> get props => [walks];
 }
 
-class WalkErrorState extends WalkState {}
+class WalkErrorState extends WalkState {
+  final String message;
+  const WalkErrorState({required this.message});
 
-class WalkNavigateToAddWalkActionState extends WalkActionState {}
+  @override
+  List<Object?> get props => [message];
+}
+
+class WalkShowErrorActionState extends WalkActionState {
+  final String message;
+  const WalkShowErrorActionState({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class WalkNavigateToAddWalkActionState extends WalkActionState {
+  const WalkNavigateToAddWalkActionState();
+}
 
 class WalkNavigateToDetailPageActionState extends WalkActionState {
   final Walk walk;
 
-  WalkNavigateToDetailPageActionState(this.walk);
+  const WalkNavigateToDetailPageActionState({required this.walk});
+
+  @override
+  List<Object?> get props => [walk];
 }
 
 class WalkNavigateToUpdatePageActionState extends WalkActionState {
   final Walk walk;
 
-  WalkNavigateToUpdatePageActionState(this.walk);
+  const WalkNavigateToUpdatePageActionState({required this.walk});
+
+  @override
+  List<Object?> get props => [walk];
 }
 
-class WalkItemDeletedActionState extends WalkActionState {}
+class WalkItemDeletedActionState extends WalkActionState {
+  const WalkItemDeletedActionState();
+}
 
-class WalkItemSelectedActionState extends WalkActionState {}
+class WalkItemSelectedActionState extends WalkActionState {
+  const WalkItemSelectedActionState();
+}
 
-class WalkItemsDeletedActionState extends WalkActionState {}
+class WalkItemsDeletedActionState extends WalkActionState {
+  const WalkItemsDeletedActionState();
+}
 
-class WalkJoinedActionState extends WalkActionState {}
+class WalkJoinedActionState extends WalkActionState {
+  const WalkJoinedActionState();
+}
 
-class WalkLeftActionState extends WalkActionState {}
+class WalkLeftActionState extends WalkActionState {
+  const WalkLeftActionState();
+}

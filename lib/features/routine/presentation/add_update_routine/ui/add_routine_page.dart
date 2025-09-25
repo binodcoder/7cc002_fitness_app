@@ -43,9 +43,9 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
       difficultyController.text = widget.routine!.difficulty;
       durationController.text = widget.routine!.duration.toString();
       sourceController.text = widget.routine!.source;
-      routineAddBloc.add(RoutineAddReadyToUpdateEvent(widget.routine!));
+      routineAddBloc.add(RoutineAddReadyToUpdateEvent(routine: widget.routine!));
     } else {
-      routineAddBloc.add(RoutineAddInitialEvent());
+      routineAddBloc.add(const RoutineAddInitialEvent());
     }
     super.initState();
   }
@@ -69,9 +69,11 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
             },
           );
         } else if (state is AddRoutineSavedActionState) {
+          if (!mounted) return;
           Navigator.pop(context);
           Navigator.pop(context);
         } else if (state is AddRoutineUpdatedActionState) {
+          if (!mounted) return;
           Navigator.pop(context);
           Navigator.pop(context);
         } else if (state is AddRoutineErrorState) {
@@ -82,7 +84,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
             gravity: ToastGravity.BOTTOM,
             backgroundColor: ColorManager.error,
           );
-          Navigator.pop(context);
+          if (!mounted) return;
           Navigator.pop(context);
         }
       },
@@ -377,7 +379,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                               );
                               routineAddBloc.add(
                                   RoutineAddUpdateButtonPressEvent(
-                                      updatedRoutine));
+                                      updatedRoutine: updatedRoutine));
                             } else {
                               var newRoutine = Routine(
                                 name: routineName,
@@ -387,7 +389,8 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                                 source: source,
                               );
                               routineAddBloc.add(
-                                  RoutineAddSaveButtonPressEvent(newRoutine));
+                                  RoutineAddSaveButtonPressEvent(
+                                      newRoutine: newRoutine));
                             }
                           }
                         },

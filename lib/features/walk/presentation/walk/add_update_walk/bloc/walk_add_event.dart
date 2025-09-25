@@ -1,24 +1,47 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 
-abstract class WalkAddEvent {}
+@immutable
+abstract class WalkAddEvent extends Equatable {
+  const WalkAddEvent();
 
-class WalkAddInitialEvent extends WalkAddEvent {}
+  @override
+  List<Object?> get props => const [];
+}
 
-class WalkAddPickFromGalaryButtonPressEvent extends WalkAddEvent {}
+class WalkAddInitialEvent extends WalkAddEvent {
+  const WalkAddInitialEvent();
+}
 
-class WalkAddPickFromCameraButtonPressEvent extends WalkAddEvent {}
+class WalkAddPickFromGalaryButtonPressEvent extends WalkAddEvent {
+  const WalkAddPickFromGalaryButtonPressEvent();
+}
+
+class WalkAddPickFromCameraButtonPressEvent extends WalkAddEvent {
+  const WalkAddPickFromCameraButtonPressEvent();
+}
 
 class WalkAddSaveButtonPressEvent extends WalkAddEvent {
   final Walk newWalk;
-  WalkAddSaveButtonPressEvent(this.newWalk);
+  const WalkAddSaveButtonPressEvent({required this.newWalk});
+
+  @override
+  List<Object?> get props => [newWalk];
 }
 
 class WalkAddUpdateButtonPressEvent extends WalkAddEvent {
   final Walk updatedWalk;
-  WalkAddUpdateButtonPressEvent(this.updatedWalk);
+  const WalkAddUpdateButtonPressEvent({required this.updatedWalk});
+
+  @override
+  List<Object?> get props => [updatedWalk];
 }
 
 class WalkAddReadyToUpdateEvent extends WalkAddEvent {
   final Walk walk;
-  WalkAddReadyToUpdateEvent(this.walk);
+  const WalkAddReadyToUpdateEvent({required this.walk});
+
+  @override
+  List<Object?> get props => [walk];
 }

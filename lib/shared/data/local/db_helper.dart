@@ -137,3 +137,4 @@ class DatabaseHelper {
 
   insertUser(UserModel userModel) {}
 }
+

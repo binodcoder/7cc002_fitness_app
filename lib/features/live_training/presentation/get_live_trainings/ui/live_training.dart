@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/drawer.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/features/live_training/presentation/add_update_live_training/ui/add_live_training.dart';
@@ -27,12 +27,12 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
 
   @override
   void initState() {
-    liveTrainingBloc.add(LiveTrainingInitialEvent());
+    liveTrainingBloc.add(const LiveTrainingInitialEvent());
     super.initState();
   }
 
   void refreshPage() {
-    liveTrainingBloc.add(LiveTrainingInitialEvent());
+    liveTrainingBloc.add(const LiveTrainingInitialEvent());
   }
 
   LiveTrainingBloc liveTrainingBloc = sl<LiveTrainingBloc>();
@@ -47,6 +47,7 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
       buildWhen: (previous, current) => current is! LiveTrainingActionState,
       listener: (context, state) {
         if (state is LiveTrainingNavigateToAddLiveTrainingActionState) {
+          if (!mounted) return;
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -57,6 +58,7 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
             (value) => refreshPage(),
           );
         } else if (state is LiveTrainingNavigateToDetailPageActionState) {
+          if (!mounted) return;
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -69,6 +71,7 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
             (value) => refreshPage(),
           );
         } else if (state is LiveTrainingNavigateToUpdatePageActionState) {
+          if (!mounted) return;
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -81,8 +84,13 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
             (value) => refreshPage(),
           );
         } else if (state is LiveTrainingItemDeletedActionState) {
-          liveTrainingBloc.add(LiveTrainingInitialEvent());
-        } else if (state is LiveTrainingItemsDeletedActionState) {}
+          liveTrainingBloc.add(const LiveTrainingInitialEvent());
+        } else if (state is LiveTrainingItemsDeletedActionState) {
+        } else if (state is LiveTrainingShowErrorActionState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        }
       },
       builder: (context, state) {
         switch (state.runtimeType) {
@@ -103,8 +111,8 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
                           backgroundColor: ColorManager.primary,
                           child: const Icon(Icons.add),
                           onPressed: () {
-                            liveTrainingBloc
-                                .add(LiveTrainingAddButtonClickedEvent());
+                            liveTrainingBloc.add(
+                                const LiveTrainingAddButtonClickedEvent());
                           },
                         )
                       : null,
@@ -121,6 +129,7 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
                     title: liveTraining.title,
                     subtitle: liveTraining.description,
                     onTap: () {
+                      if (!mounted) return;
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -133,13 +142,14 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
                     },
                     onEdit: () {
                       liveTrainingBloc.add(
-                        LiveTrainingEditButtonClickedEvent(liveTraining),
+                        LiveTrainingEditButtonClickedEvent(
+                            liveTraining: liveTraining),
                       );
                     },
                     onDelete: () {
                       liveTrainingBloc.add(
                         LiveTrainingDeleteButtonClickedEvent(
-                            liveTraining),
+                            liveTraining: liveTraining),
                       );
                     },
                   );
@@ -147,7 +157,8 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
               ),
             );
           case LiveTrainingErrorState:
-            return const Scaffold(body: Center(child: Text('Error')));
+            final error = state as LiveTrainingErrorState;
+            return Scaffold(body: Center(child: Text(error.message)));
           default:
             return const SizedBox();
         }

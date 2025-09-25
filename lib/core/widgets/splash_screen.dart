@@ -8,14 +8,14 @@ import 'package:fitness_app/core/assets/app_assets.dart';
 import 'package:fitness_app/core/navigation/app_router.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 
-class SplashView extends StatefulWidget {
-  const SplashView({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  State<SplashView> createState() => _SplashViewState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashViewState extends State<SplashView> {
+class _SplashScreenState extends State<SplashScreen> {
   Timer? _timer;
   final SharedPreferences sharedPreferences = sl<SharedPreferences>();
 
@@ -24,9 +24,18 @@ class _SplashViewState extends State<SplashView> {
   }
 
   _goNext() {
-    sharedPreferences.getBool("login") == null
-        ? Navigator.pushReplacementNamed(context, Routes.onBoardingRoute)
-        : Navigator.pushNamed(context, Routes.routineRoute);
+    final seen = sharedPreferences.getBool('seen_onboarding') == true;
+    if (!seen) {
+      Navigator.pushReplacementNamed(context, Routes.onBoardingRoute);
+      return;
+    }
+    // Fake login/session defaults for demo mode
+    sharedPreferences.setBool('login', true);
+    sharedPreferences.setInt('user_id', sharedPreferences.getInt('user_id') ?? 1);
+    sharedPreferences.setString('role', sharedPreferences.getString('role') ?? 'trainer');
+    sharedPreferences.setString('institutionEmail',
+        sharedPreferences.getString('institutionEmail') ?? 'demo@fit.com');
+    Navigator.pushReplacementNamed(context, Routes.routineRoute);
   }
 
   @override
@@ -51,3 +60,4 @@ class _SplashViewState extends State<SplashView> {
     );
   }
 }
+

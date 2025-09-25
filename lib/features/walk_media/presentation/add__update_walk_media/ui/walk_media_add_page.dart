@@ -9,11 +9,13 @@ import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/font_manager.dart';
 import 'package:fitness_app/core/theme/styles_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
+import 'package:fitness_app/core/widgets/custom_text_form_field.dart';
 
 import 'package:fitness_app/features/login/presentation/widgets/sign_in_button.dart';
 import '../bloc/walk_media_add_bloc.dart';
 import '../bloc/walk_media_add_event.dart';
 import '../bloc/walk_media_add_state.dart';
+import '../widgets/image_picker_buttons.dart';
 
 class WalkMediaAddPage extends StatefulWidget {
   const WalkMediaAddPage({super.key, this.walkMedia, this.walkId});
@@ -32,9 +34,10 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
   void initState() {
     if (widget.walkMedia != null) {
       walkMediaUrlController.text = widget.walkMedia!.mediaUrl;
-      walkMediaAddBloc.add(WalkMediaAddReadyToUpdateEvent(widget.walkMedia!));
+      walkMediaAddBloc
+          .add(WalkMediaAddReadyToUpdateEvent(walkMedia: widget.walkMedia!));
     } else {
-      walkMediaAddBloc.add(WalkMediaAddInitialEvent());
+      walkMediaAddBloc.add(const WalkMediaAddInitialEvent());
     }
     super.initState();
   }
@@ -44,7 +47,6 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     final strings = AppStrings.of(context);
     return BlocConsumer<WalkMediaAddBloc, WalkMediaAddState>(
       bloc: walkMediaAddBloc,
@@ -59,13 +61,11 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
             },
           );
         } else if (state is AddWalkMediaSavedState) {
-          // sourceController.clear();
-          // descriptionController.clear();
+          if (!mounted) return;
           Navigator.pop(context);
           Navigator.pop(context);
         } else if (state is AddWalkMediaUpdatedState) {
-          // sourceController.clear();
-          // descriptionController.clear();
+          if (!mounted) return;
           Navigator.pop(context);
           Navigator.pop(context);
         }
@@ -98,41 +98,23 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                     SizedBox(
                       height: AppHeight.h30,
                     ),
-                    _imagePickerButtons(walkMediaAddBloc, context, size),
+                    ImagePickerButtons(
+                      onPickGallery: () => walkMediaAddBloc.add(
+                        const WalkMediaAddPickFromGalaryButtonPressEvent(),
+                      ),
+                      onPickCamera: () => walkMediaAddBloc.add(
+                        const WalkMediaAddPickFromCameraButtonPressEvent(),
+                      ),
+                    ),
                     SizedBox(
                       height: AppHeight.h10,
                     ),
-                    TextFormField(
+                    CustomTextFormField(
+                      label: 'Media URL',
                       controller: walkMediaUrlController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '*Required';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        fillColor: ColorManager.redWhite,
-                        filled: true,
-                        hintText: 'description',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: ColorManager.blueGrey),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: ColorManager.primary),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: ColorManager.red),
-                          borderRadius: BorderRadius.circular(AppRadius.r10),
-                        ),
-                      ),
+                      hint: 'description',
+                      validator: (v) =>
+                          (v == null || v.isEmpty) ? '*Required' : null,
                     ),
                     SizedBox(
                       height: AppHeight.h30,
@@ -162,7 +144,7 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                             );
                             walkMediaAddBloc.add(
                                 WalkMediaAddUpdateButtonPressEvent(
-                                    updatedWalkMedia));
+                                    updatedWalkMedia: updatedWalkMedia));
                           } else {
                             var newWalkMedia = WalkMedia(
                               walkId: walkId!,
@@ -170,7 +152,8 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                               mediaUrl: mediaUrl,
                             );
                             walkMediaAddBloc.add(
-                                WalkMediaAddSaveButtonPressEvent(newWalkMedia));
+                                WalkMediaAddSaveButtonPressEvent(
+                                    newWalkMedia: newWalkMedia));
                           }
                         }
                       },
@@ -186,72 +169,6 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
           ),
         );
       },
-    );
-  }
-
-  Widget _imagePickerButtons(
-      WalkMediaAddBloc walkMediaAddBloc, BuildContext context, Size size) {
-    return Container(
-      decoration: BoxDecoration(
-          color: ColorManager.redWhite,
-          borderRadius: BorderRadius.circular(AppRadius.r10)),
-      margin: const EdgeInsets.only(bottom: 10.0),
-      padding: EdgeInsets.all(size.height * 0.02),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          InkWell(
-            onTap: () async {
-              walkMediaAddBloc
-                  .add(WalkMediaAddPickFromGalaryButtonPressEvent());
-            },
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.file_copy_outlined,
-                  color: Colors.blue,
-                ),
-                const SizedBox(
-                  width: 6.0,
-                ),
-                Text(
-                  AppStrings.of(context).pickGalary,
-                  style: TextStyle(
-                      color: Colors.red[900], fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-          ),
-          const Text(
-            '|',
-            style: TextStyle(
-              fontSize: 30,
-            ),
-          ),
-          InkWell(
-            onTap: () async {
-              walkMediaAddBloc
-                  .add(WalkMediaAddPickFromCameraButtonPressEvent());
-            },
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.camera_enhance_outlined,
-                  color: Colors.blue,
-                ),
-                const SizedBox(
-                  width: 6.0,
-                ),
-                Text(
-                  AppStrings.of(context).camera,
-                  style: TextStyle(
-                      color: Colors.red[900], fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

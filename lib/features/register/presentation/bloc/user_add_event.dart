@@ -1,38 +1,47 @@
-import 'package:fitness_app/features/register/data/models/user_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
+import 'package:fitness_app/features/register/domain/entities/user.dart';
 
-abstract class UserAddEvent {}
+@immutable
+abstract class UserAddEvent extends Equatable {
+  const UserAddEvent();
 
-class UserAddInitialEvent extends UserAddEvent {}
+  @override
+  List<Object?> get props => const [];
+}
 
-class UserAddPickFromGalaryButtonPressEvent extends UserAddEvent {}
+class UserAddInitialEvent extends UserAddEvent {
+  const UserAddInitialEvent();
+}
 
-class UserAddPickFromCameraButtonPressEvent extends UserAddEvent {}
+class UserAddPickFromGalaryButtonPressEvent extends UserAddEvent {
+  const UserAddPickFromGalaryButtonPressEvent();
+}
+
+class UserAddPickFromCameraButtonPressEvent extends UserAddEvent {
+  const UserAddPickFromCameraButtonPressEvent();
+}
 
 class UserAddSaveButtonPressEvent extends UserAddEvent {
-  String age;
-  String email;
-  String gender;
-  String institutionEmail;
-  String name;
-  String password;
-  String role;
-  UserAddSaveButtonPressEvent(
-    this.age,
-    this.email,
-    this.gender,
-    this.institutionEmail,
-    this.name,
-    this.password,
-    this.role,
-  );
+  final User user;
+  const UserAddSaveButtonPressEvent({required this.user});
+
+  @override
+  List<Object?> get props => [user];
 }
 
 class UserAddUpdateButtonPressEvent extends UserAddEvent {
-  final UserModel updatedUser;
-  UserAddUpdateButtonPressEvent(this.updatedUser);
+  final User updatedUser;
+  const UserAddUpdateButtonPressEvent({required this.updatedUser});
+
+  @override
+  List<Object?> get props => [updatedUser];
 }
 
 class UserAddReadyToUpdateEvent extends UserAddEvent {
-  final UserModel userModel;
-  UserAddReadyToUpdateEvent(this.userModel);
+  final User user;
+  const UserAddReadyToUpdateEvent({required this.user});
+
+  @override
+  List<Object?> get props => [user];
 }

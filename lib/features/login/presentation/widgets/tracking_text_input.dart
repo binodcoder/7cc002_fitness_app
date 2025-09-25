@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:fitness_app/core/common/global_declaration.dart';
+import 'package:fitness_app/core/util/global_declaration.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
 

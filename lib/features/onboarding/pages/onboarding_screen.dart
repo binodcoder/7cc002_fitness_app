@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 // Removed direct model import; page widget handles SliderObject usage
@@ -8,50 +9,67 @@ import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/navigation/app_router.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
-import 'onboarding_viewmodel.dart';
-import 'package:fitness_app/features/onboarding/presentation/widgets/onboarding_page.dart';
+import 'package:fitness_app/features/onboarding/widgets/onboarding_slide.dart';
+import 'package:fitness_app/features/onboarding/models/slider_object.dart';
+import 'package:fitness_app/injection_container.dart';
 
-class OnBoardingView extends StatefulWidget {
-  const OnBoardingView({super.key});
+class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({super.key});
 
   @override
-  State<OnBoardingView> createState() => _OnBoardingViewState();
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnBoardingViewState extends State<OnBoardingView> {
+class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController(initialPage: 0);
-  final OnBoardingViewModel _viewModel = OnBoardingViewModel();
-
-  _bind() {
-    _viewModel.start();
-  }
+  int _currentIndex = 0;
+  final SharedPreferences _prefs = sl<SharedPreferences>();
 
   @override
   void initState() {
-    _bind();
     super.initState();
   }
 
   @override
   void dispose() {
-    _viewModel.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<SliderViewObject>(
-      stream: _viewModel.outputSliderViewObject.asBroadcastStream(),
-      builder: (context, snapShot) {
-        return _getContentWidget(snapShot.data);
-      },
-    );
+    final slides = _buildSlides(context);
+    return _getContentWidget(slides);
   }
 
-  Widget _getContentWidget(SliderViewObject? sliderViewObject) {
-    return (sliderViewObject == null)
-        ? Container()
-        : Scaffold(
+  List<SliderObject> _buildSlides(BuildContext context) {
+    final strings = AppStrings.of(context);
+    return [
+      SliderObject(
+        title: strings.onboardingTitle1,
+        subTitle: strings.onboardingSubtitle1,
+        image: ImageAssets.onBoardingLogo1,
+      ),
+      SliderObject(
+        title: strings.onboardingTitle2,
+        subTitle: strings.onboardingSubtitle2,
+        image: ImageAssets.onBoardingLogo2,
+      ),
+      SliderObject(
+        title: strings.onboardingTitle3,
+        subTitle: strings.onboardingSubtitle3,
+        image: ImageAssets.onBoardingLogo3,
+      ),
+      SliderObject(
+        title: strings.onboardingTitle4,
+        subTitle: strings.onboardingSubtitle4,
+        image: ImageAssets.onBoardingLogo4,
+      ),
+    ];
+  }
+
+  Widget _getContentWidget(List<SliderObject> slides) {
+    return Scaffold(
             backgroundColor: ColorManager.white,
             appBar: AppBar(
               backgroundColor: ColorManager.white,
@@ -64,14 +82,16 @@ class _OnBoardingViewState extends State<OnBoardingView> {
             ),
             body: PageView.builder(
               controller: _pageController,
-              itemCount: sliderViewObject.numOfSlides,
+              itemCount: slides.length,
               onPageChanged: (index) {
-                _viewModel.onPageChanged(index);
+                setState(() {
+                  _currentIndex = index;
+                });
               },
               itemBuilder: (context, index) {
                 //return OnBoarding Page
-                return OnBoardingPage(
-                  sliderObject: sliderViewObject.sliderObject!,
+                return OnboardingSlide(
+                  sliderObject: slides[index],
                 );
               },
             ),
@@ -85,7 +105,9 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, Routes.loginRoute);
+                        _prefs.setBool('seen_onboarding', true);
+                        Navigator.pushReplacementNamed(
+                            context, Routes.routineRoute);
                       },
                       child: Text(
                         AppStrings.of(context).skip,
@@ -95,14 +117,14 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                     ),
                   ),
                   //add layout for indicator and arrows
-                  _getBottomSheetWidget(sliderViewObject),
+                  _getBottomSheetWidget(slides),
                 ],
               ),
             ),
           );
   }
 
-  Widget _getBottomSheetWidget(SliderViewObject sliderViewObject) {
+  Widget _getBottomSheetWidget(List<SliderObject> slides) {
     return Container(
       color: ColorManager.primary,
       child: Row(
@@ -119,11 +141,17 @@ class _OnBoardingViewState extends State<OnBoardingView> {
               ),
               onTap: () {
                 //go to previous slide
+                final prev = _currentIndex - 1 < 0
+                    ? slides.length - 1
+                    : _currentIndex - 1;
                 _pageController.animateToPage(
-                  _viewModel.goPrevious(),
+                  prev,
                   duration: const Duration(milliseconds: DurationConstant.d300),
                   curve: Curves.bounceIn,
                 );
+                setState(() {
+                  _currentIndex = prev;
+                });
               },
             ),
           ),
@@ -131,10 +159,10 @@ class _OnBoardingViewState extends State<OnBoardingView> {
           //circles indicator
           Row(
             children: [
-              for (int i = 0; i < sliderViewObject.numOfSlides!; i++)
+              for (int i = 0; i < slides.length; i++)
                 Padding(
                   padding: const EdgeInsets.all(AppPadding.p8),
-                  child: _getProperCircle(i, sliderViewObject.currentIndex!),
+                  child: _getProperCircle(i, _currentIndex),
                 ),
             ],
           ),
@@ -149,12 +177,23 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                 child: SvgPicture.asset(ImageAssets.rightArrow),
               ),
               onTap: () {
-                //go to next slide
+                //go to next slide or finish
+                final isLast = _currentIndex == slides.length - 1;
+                if (isLast) {
+                  _prefs.setBool('seen_onboarding', true);
+                  Navigator.pushReplacementNamed(
+                      context, Routes.routineRoute);
+                  return;
+                }
+                final next = _currentIndex + 1;
                 _pageController.animateToPage(
-                  _viewModel.goNext(),
+                  next,
                   duration: const Duration(milliseconds: DurationConstant.d300),
                   curve: Curves.bounceIn,
                 );
+                setState(() {
+                  _currentIndex = next;
+                });
               },
             ),
           ),
@@ -172,4 +211,4 @@ class _OnBoardingViewState extends State<OnBoardingView> {
   }
 }
 
-// OnBoardingPage moved to widgets/onboarding_page.dart
+// OnboardingSlide lives in widgets/onboarding_slide.dart

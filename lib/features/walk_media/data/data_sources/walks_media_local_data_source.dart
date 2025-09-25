@@ -1,4 +1,4 @@
-import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/features/walk_media/data/models/walk_media_model.dart';
 
 abstract class WalkMediaLocalDataSource {

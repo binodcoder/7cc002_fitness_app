@@ -10,9 +10,8 @@ import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/font_manager.dart';
 import 'package:fitness_app/core/theme/styles_manager.dart';
-import 'package:fitness_app/core/common_widgets/date_picker_field.dart';
-import 'package:fitness_app/core/common_widgets/time_picker_field.dart';
-import 'package:fitness_app/core/common_widgets/text_area_field.dart';
+// Use common text field with labels for date/time inputs
+import 'package:fitness_app/core/widgets/custom_text_form_field.dart';
 import 'package:fitness_app/features/live_training/presentation/add_update_live_training/widgets/title_field.dart';
 
 import 'package:fitness_app/features/login/presentation/widgets/sign_in_button.dart';
@@ -41,17 +40,15 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedStartTime = const TimeOfDay(hour: 00, minute: 00);
   TimeOfDay selectedEndTime = const TimeOfDay(hour: 00, minute: 00);
-  late double _height;
-  late double _width;
-  //late String _setTime, _setDate;
+  final DateFormat _dateFmt = DateFormat('yyyy-MM-dd');
   final _formKey = GlobalKey<FormState>();
-  bool focus = false;
   final LiveTrainingAddBloc liveTrainingAddBloc = sl<LiveTrainingAddBloc>();
   final SharedPreferences sharedPreferences = sl<SharedPreferences>();
 
   setDateTime() {
-    _startTimeController.text = "00:00:00";
-    _endTimeController.text = "00:00:00";
+    _dateController.text = _dateFmt.format(selectedDate);
+    _startTimeController.text = '';
+    _endTimeController.text = '';
   }
 
   void selectDate(BuildContext context) async {
@@ -59,12 +56,12 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
       context: context,
       initialDate: selectedDate,
       firstDate: DateTime(1900),
-      lastDate: DateTime(2025),
+      lastDate: DateTime.now().add(const Duration(days: 3650)),
     );
     if (pickedDate != null && pickedDate != selectedDate) {
       setState(() {
         selectedDate = pickedDate;
-        _dateController.text = DateFormat("yyyy-MM-dd").format(selectedDate);
+        _dateController.text = _dateFmt.format(selectedDate);
       });
     }
   }
@@ -121,15 +118,14 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
     if (widget.liveTraining != null) {
       _titleController.text = widget.liveTraining!.title;
       selectedDate = widget.liveTraining!.trainingDate;
-      _dateController.text = DateFormat('yyyy-MM-dd')
-          .format(widget.liveTraining!.trainingDate);
+      _dateController.text = _dateFmt.format(widget.liveTraining!.trainingDate);
       _startTimeController.text = widget.liveTraining!.startTime;
       _endTimeController.text = widget.liveTraining!.endTime;
       _descriptionController.text = widget.liveTraining!.description;
       // LiveTrainingAddBloc.add(LiveTrainingAddReadyToUpdateEvent(widget.LiveTrainingModel!));
-      liveTrainingAddBloc.add(LiveTrainingAddInitialEvent());
+      liveTrainingAddBloc.add(const LiveTrainingAddInitialEvent());
     } else {
-      liveTrainingAddBloc.add(LiveTrainingAddInitialEvent());
+      liveTrainingAddBloc.add(const LiveTrainingAddInitialEvent());
     }
     super.initState();
   }
@@ -141,16 +137,15 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
     _startTimeController.dispose();
     _endTimeController.dispose();
     _descriptionController.dispose();
+    liveTrainingAddBloc.close();
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     final strings = AppStrings.of(context);
-    _height = size.height;
-    _width = size.width;
     return BlocConsumer<LiveTrainingAddBloc, LiveTrainingAddState>(
       bloc: liveTrainingAddBloc,
       listenWhen: (previous, current) => current is LiveTrainingAddActionState,
@@ -164,13 +159,13 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
             },
           );
         } else if (state is AddLiveTrainingSavedState) {
-          // sourceController.clear();
-          // descriptionController.clear();
+          if (!mounted) return;
+          // Dismiss loader and close dialog
           Navigator.pop(context);
           Navigator.pop(context);
         } else if (state is AddLiveTrainingUpdatedState) {
-          // sourceController.clear();
-          // descriptionController.clear();
+          if (!mounted) return;
+          // Dismiss loader and close dialog stack
           Navigator.pop(context);
           Navigator.pop(context);
         } else if (state is AddLiveTrainingErrorState) {
@@ -181,7 +176,8 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
             gravity: ToastGravity.BOTTOM,
             backgroundColor: ColorManager.error,
           );
-          Navigator.pop(context);
+          // Dismiss loader but keep dialog open for user correction
+          if (!mounted) return;
           Navigator.pop(context);
         }
       },
@@ -211,39 +207,70 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                     height: size.height * 0.03,
                   ),
                   TitleField(controller: _titleController),
-                  DatePickerField(
+                  CustomTextFormField(
+                    label: 'Date',
                     controller: _dateController,
-                    width: _width / 1.7,
-                    height: _height / 9,
+                    hint: 'Tap to select',
+                    readOnly: true,
                     onTap: () => selectDate(context),
+                    suffixIcon: const Icon(Icons.calendar_today,
+                        color: ColorManager.blueGrey),
                   ),
                   SizedBox(
                     height: size.height * 0.03,
                   ),
+                  Text(
+                    'Time',
+                    style: getBoldStyle(
+                      fontSize: FontSize.s14,
+                      color: ColorManager.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TimePickerField(
-                        controller: _startTimeController,
-                        width: _width * 0.45,
-                        height: _height * 0.1,
-                        onTap: () => _selectStartTime(context),
+                      Expanded(
+                        child: CustomTextFormField(
+                          label: 'Start Time',
+                          controller: _startTimeController,
+                          hint: 'Tap to select',
+                          readOnly: true,
+                          onTap: () => _selectStartTime(context),
+                          suffixIcon: const Icon(Icons.schedule,
+                              color: ColorManager.blueGrey),
+                        ),
                       ),
-                      TimePickerField(
-                        controller: _endTimeController,
-                        width: _width * 0.45,
-                        height: _height * 0.1,
-                        onTap: () => _selectEndTime(context),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: CustomTextFormField(
+                          label: 'End Time',
+                          controller: _endTimeController,
+                          hint: 'Tap to select',
+                          readOnly: true,
+                          onTap: () => _selectEndTime(context),
+                          suffixIcon: const Icon(Icons.schedule,
+                              color: ColorManager.blueGrey),
+                        ),
                       ),
                     ],
                   ),
+                  const SizedBox(height: 6),
+                  Text(
+                    '24-hour format',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: ColorManager.blueGrey),
+                  ),
                   SizedBox(
                     height: size.height * 0.03,
                   ),
-                  TextAreaField(
+                  CustomTextFormField(
+                    label: 'Descriptions',
                     controller: _descriptionController,
-                    labelText: 'Descriptions',
-                    hintText: 'Enter Descriptions',
+                    hint: 'Enter Descriptions',
+                    minLines: 3,
+                    maxLines: 5,
                   ),
                   SizedBox(
                     height: size.height * 0.03,
@@ -257,32 +284,76 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                       ),
                     ),
                     onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        if (widget.liveTraining != null) {
-                          var liveTrainingModel = LiveTraining(
-                            trainerId: widget.liveTraining!.trainerId,
-                            title: _titleController.text,
-                            description: _descriptionController.text,
-                            trainingDate: DateTime.now(),
-                            startTime: _startTimeController.text,
-                            endTime: _endTimeController.text,
-                          );
-                          liveTrainingAddBloc.add(
-                              LiveTrainingAddUpdateButtonPressEvent(
-                                  liveTrainingModel));
-                        } else {
-                          var liveTrainingModel = LiveTraining(
-                            trainerId: sharedPreferences.getInt("user_id")!,
-                            title: _titleController.text,
-                            description: _descriptionController.text,
-                            trainingDate: DateTime.now(),
-                            startTime: _startTimeController.text,
-                            endTime: _endTimeController.text,
-                          );
-                          liveTrainingAddBloc.add(
-                              LiveTrainingAddSaveButtonPressEvent(
-                                  liveTrainingModel));
+                      final errors = <String>[];
+                      if (_titleController.text.trim().isEmpty) {
+                        errors.add('Please enter a title.');
+                      }
+                      if (_dateController.text.trim().isEmpty) {
+                        errors.add('Please select a date.');
+                      }
+                      if (_startTimeController.text.trim().isEmpty ||
+                          _endTimeController.text.trim().isEmpty) {
+                        errors.add('Please select start and end time.');
+                      }
+
+                      bool isTimeOrderValid() {
+                        try {
+                          Duration parse(String t) {
+                            final parts = t.split(':');
+                            final h = int.parse(parts[0]);
+                            final m = int.parse(parts[1]);
+                            final s =
+                                parts.length > 2 ? int.parse(parts[2]) : 0;
+                            return Duration(hours: h, minutes: m, seconds: s);
+                          }
+
+                          final sd = parse(_startTimeController.text.trim());
+                          final ed = parse(_endTimeController.text.trim());
+                          return ed > sd;
+                        } catch (_) {
+                          return false;
                         }
+                      }
+
+                      if (!isTimeOrderValid()) {
+                        errors.add('End time must be after start time.');
+                      }
+
+                      if (errors.isNotEmpty) {
+                        Fluttertoast.cancel();
+                        Fluttertoast.showToast(
+                          msg: errors.first,
+                          toastLength: Toast.LENGTH_LONG,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: ColorManager.error,
+                        );
+                        return;
+                      }
+
+                      if (widget.liveTraining != null) {
+                        final liveTrainingModel = LiveTraining(
+                          trainerId: widget.liveTraining!.trainerId,
+                          title: _titleController.text.trim(),
+                          description: _descriptionController.text.trim(),
+                          trainingDate: selectedDate,
+                          startTime: _startTimeController.text,
+                          endTime: _endTimeController.text,
+                        );
+                        liveTrainingAddBloc.add(
+                            LiveTrainingAddUpdateButtonPressEvent(
+                                liveTraining: liveTrainingModel));
+                      } else {
+                        final liveTrainingModel = LiveTraining(
+                          trainerId: sharedPreferences.getInt("user_id") ?? 1,
+                          title: _titleController.text.trim(),
+                          description: _descriptionController.text.trim(),
+                          trainingDate: selectedDate,
+                          startTime: _startTimeController.text,
+                          endTime: _endTimeController.text,
+                        );
+                        liveTrainingAddBloc.add(
+                            LiveTrainingAddSaveButtonPressEvent(
+                                liveTraining: liveTrainingModel));
                       }
                     },
                   ),

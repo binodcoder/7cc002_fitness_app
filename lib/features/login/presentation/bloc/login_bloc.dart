@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:fitness_app/features/register/domain/entities/user.dart' as user_entity;
+import 'package:fitness_app/features/register/domain/entities/user.dart'
+    as user_entity;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fitness_app/core/db/db_helper.dart';
-import 'package:fitness_app/core/mappers/map_failure_to_message.dart';
+import 'package:fitness_app/shared/data/local/db_helper.dart';
+import 'package:fitness_app/core/errors/map_failure_to_message.dart';
 import 'package:fitness_app/features/appointment/data/models/sync_data_model.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/features/appointment/domain/usecases/sync.dart';
@@ -20,24 +21,24 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final DatabaseHelper dbHelper = DatabaseHelper();
 
   LoginBloc({required this.login, required this.sync})
-      : super(LoginInitialState()) {
+      : super(const LoginInitialState()) {
     on<LoginInitialEvent>(loginInitialEvent);
     on<LoginButtonPressEvent>(loginButtonPressEvent);
   }
 
   FutureOr<void> loginInitialEvent(
       LoginInitialEvent event, Emitter<LoginState> emit) {
-    emit(LoginInitialState());
+    emit(const LoginInitialState());
   }
 
   FutureOr<void> loginButtonPressEvent(
       LoginButtonPressEvent event, Emitter<LoginState> emit) async {
-    emit(LoginLoadingState());
+    emit(const LoginLoadingState());
     final result = await login(event.login);
     result!.fold((failure) {
       emit(LoginErrorState(message: mapFailureToMessage(failure)));
     }, (result) {
-      emit(LoggedState());
+      emit(const LoggedState());
       saveUserData(result);
     });
   }

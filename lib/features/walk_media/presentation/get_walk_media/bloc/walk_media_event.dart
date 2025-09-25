@@ -1,30 +1,55 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fitness_app/features/walk_media/domain/entities/walk_media.dart';
 
-abstract class WalkMediaEvent {}
+@immutable
+abstract class WalkMediaEvent extends Equatable {
+  const WalkMediaEvent();
+
+  @override
+  List<Object?> get props => const [];
+}
 
 class WalkMediaInitialEvent extends WalkMediaEvent {
-  int walkId;
-  WalkMediaInitialEvent(this.walkId);
+  final int walkId;
+  const WalkMediaInitialEvent(this.walkId);
+
+  @override
+  List<Object?> get props => [walkId];
 }
 
 class WalkMediaEditButtonClickedEvent extends WalkMediaEvent {
   final WalkMedia walkMedia;
-  WalkMediaEditButtonClickedEvent(this.walkMedia);
+  const WalkMediaEditButtonClickedEvent(this.walkMedia);
+
+  @override
+  List<Object?> get props => [walkMedia];
 }
 
 class WalkMediaDeleteButtonClickedEvent extends WalkMediaEvent {
   final WalkMedia walkMedia;
-  WalkMediaDeleteButtonClickedEvent(this.walkMedia);
+  const WalkMediaDeleteButtonClickedEvent(this.walkMedia);
+
+  @override
+  List<Object?> get props => [walkMedia];
 }
 
-class WalkMediaDeleteAllButtonClickedEvent extends WalkMediaEvent {}
+class WalkMediaDeleteAllButtonClickedEvent extends WalkMediaEvent {
+  const WalkMediaDeleteAllButtonClickedEvent();
+}
 
 class WalkMediaAddButtonClickedEvent extends WalkMediaEvent {
   final int walkId;
-  WalkMediaAddButtonClickedEvent(this.walkId);
+  const WalkMediaAddButtonClickedEvent(this.walkId);
+
+  @override
+  List<Object?> get props => [walkId];
 }
 
 class WalkMediaTileNavigateEvent extends WalkMediaEvent {
   final WalkMedia walkMedia;
-  WalkMediaTileNavigateEvent(this.walkMedia);
+  const WalkMediaTileNavigateEvent(this.walkMedia);
+
+  @override
+  List<Object?> get props => [walkMedia];
 }

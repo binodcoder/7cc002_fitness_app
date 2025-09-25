@@ -310,7 +310,7 @@ class _LoginPageState extends State<LoginPage> {
         email: userNameController.text,
         password: passwordController.text,
       );
-      loginBloc.add(LoginButtonPressEvent(loginModel));
+      loginBloc.add(LoginButtonPressEvent(login: loginModel));
     }
   }
 

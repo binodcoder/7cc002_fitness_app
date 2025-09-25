@@ -1,31 +1,57 @@
+import 'package:equatable/equatable.dart';
 import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
+import 'package:flutter/foundation.dart';
 
-abstract class EventEvent {}
+@immutable
+abstract class EventEvent extends Equatable {
+  const EventEvent();
 
-class EventInitialEvent extends EventEvent {}
+  @override
+  List<Object?> get props => const [];
+}
+
+class EventInitialEvent extends EventEvent {
+  const EventInitialEvent();
+}
 
 class EventEditButtonClickedEvent extends EventEvent {
   final DateTime focusedDay;
   final Appointment appointment;
-  EventEditButtonClickedEvent(this.appointment, this.focusedDay);
+  const EventEditButtonClickedEvent({required this.appointment, required this.focusedDay});
+
+  @override
+  List<Object?> get props => [appointment, focusedDay];
 }
 
 class EventDeleteButtonClickedEvent extends EventEvent {
   final Appointment appointment;
-  EventDeleteButtonClickedEvent(this.appointment);
+  const EventDeleteButtonClickedEvent({required this.appointment});
+
+  @override
+  List<Object?> get props => [appointment];
 }
 
-class EventDeleteAllButtonClickedEvent extends EventEvent {}
+class EventDeleteAllButtonClickedEvent extends EventEvent {
+  const EventDeleteAllButtonClickedEvent();
+}
 
-class EventAddButtonClickedEvent extends EventEvent {}
+class EventAddButtonClickedEvent extends EventEvent {
+  const EventAddButtonClickedEvent();
+}
 
 class EventTileNavigateEvent extends EventEvent {
   final Appointment appointment;
-  EventTileNavigateEvent(this.appointment);
+  const EventTileNavigateEvent({required this.appointment});
+
+  @override
+  List<Object?> get props => [appointment];
 }
 
 class EventDaySelectEvent extends EventEvent {
-  List<Appointment> appointments;
+  final List<Appointment> appointments;
   final DateTime selectedDay;
-  EventDaySelectEvent(this.selectedDay, this.appointments);
+  const EventDaySelectEvent({required this.selectedDay, required this.appointments});
+
+  @override
+  List<Object?> get props => [selectedDay, appointments];
 }

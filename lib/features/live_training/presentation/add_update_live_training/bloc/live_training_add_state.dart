@@ -1,23 +1,43 @@
-abstract class LiveTrainingAddState {}
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 
-abstract class LiveTrainingAddActionState extends LiveTrainingAddState {}
+@immutable
+abstract class LiveTrainingAddState extends Equatable {
+  const LiveTrainingAddState();
 
-class LiveTrainingAddLoadingState extends LiveTrainingAddActionState {}
-
-class LiveTrainingAddLoadedSuccessState extends LiveTrainingAddState {
-  // final SyncModel syncModel;
-  // LiveTrainingAddLoadedSuccessState(this.syncModel);
-  // LiveTrainingAddLoadedSuccessState copyWith({SyncModel? syncModel}) {
-  //   return LiveTrainingAddLoadedSuccessState(syncModel ?? this.syncModel);
-  // }
+  @override
+  List<Object?> get props => const [];
 }
 
-class LiveTrainingAddInitialState extends LiveTrainingAddState {}
+@immutable
+abstract class LiveTrainingAddActionState extends LiveTrainingAddState {
+  const LiveTrainingAddActionState();
+}
 
-class LiveTrainingAddReadyToUpdateState extends LiveTrainingAddState {}
+class LiveTrainingAddLoadingState extends LiveTrainingAddActionState {
+  const LiveTrainingAddLoadingState();
+}
 
-class AddLiveTrainingSavedState extends LiveTrainingAddActionState {}
+class LiveTrainingAddLoadedSuccessState extends LiveTrainingAddState {
+  const LiveTrainingAddLoadedSuccessState();
+}
 
-class AddLiveTrainingUpdatedState extends LiveTrainingAddActionState {}
+class LiveTrainingAddInitialState extends LiveTrainingAddState {
+  const LiveTrainingAddInitialState();
+}
 
-class AddLiveTrainingErrorState extends LiveTrainingAddActionState {}
+class LiveTrainingAddReadyToUpdateState extends LiveTrainingAddState {
+  const LiveTrainingAddReadyToUpdateState();
+}
+
+class AddLiveTrainingSavedState extends LiveTrainingAddActionState {
+  const AddLiveTrainingSavedState();
+}
+
+class AddLiveTrainingUpdatedState extends LiveTrainingAddActionState {
+  const AddLiveTrainingUpdatedState();
+}
+
+class AddLiveTrainingErrorState extends LiveTrainingAddActionState {
+  const AddLiveTrainingErrorState();
+}

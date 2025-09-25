@@ -2,12 +2,13 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:fitness_app/core/db/db_helper.dart';
+import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/core/usecases/usecase.dart';
 import '../../../domain/usecases/delete_appointment.dart';
 import '../../../domain/usecases/get_appointments.dart';
 import 'calender_event.dart';
 import 'calender_state.dart';
+import 'package:fitness_app/core/errors/map_failure_to_message.dart';
 
 class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
   final GetAppointments getAppointments;
@@ -17,7 +18,7 @@ class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
   CalenderBloc({
     required this.getAppointments,
     required this.deleteAppointment,
-  }) : super(CalenderInitialState()) {
+  }) : super(const CalenderInitialState()) {
     on<CalenderInitialEvent>(calenderInitialEvent);
     on<CalenderEditButtonClickedEvent>(calenderEditButtonClickedEvent);
     on<CalenderDeleteButtonClickedEvent>(calenderDeleteButtonClickedEvent);
@@ -30,13 +31,13 @@ class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
 
   FutureOr<void> calenderInitialEvent(
       CalenderInitialEvent event, Emitter<CalenderState> emit) async {
-    emit(CalenderLoadingState());
+    emit(const CalenderLoadingState());
     final appointmentsResult = await getAppointments(NoParams());
 
     appointmentsResult!.fold((failure) {
-      // emit(Error(message: _mapFailureToMessage(failure)));
+      emit(CalenderErrorState(message: mapFailureToMessage(failure)));
     }, (appointments) {
-      emit(CalenderLoadedSuccessState(appointments));
+      emit(CalenderLoadedSuccessState(appointments: appointments));
     });
   }
 
@@ -46,13 +47,13 @@ class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
   FutureOr<void> calenderDeleteButtonClickedEvent(
       CalenderDeleteButtonClickedEvent event,
       Emitter<CalenderState> emit) async {
-    emit(CalenderLoadingState());
     final result = await deleteAppointment(event.appointment.id!);
 
     result!.fold((failure) {
-      // emit(Error(message: _mapFailureToMessage(failure)));
+      emit(CalenderShowErrorActionState(
+          message: mapFailureToMessage(failure)));
     }, (response) {
-      emit(CalenderItemDeletedActionState());
+      emit(const CalenderItemDeletedActionState());
     });
 
     // await dbHelper.deleteCalender(event.CalenderModel.id);
@@ -72,19 +73,22 @@ class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
 
   FutureOr<void> calenderAddButtonClickedEvent(
       CalenderAddButtonClickedEvent event, Emitter<CalenderState> emit) {
-    emit(CalenderNavigateToAddCalenderActionState(event.selectedDay));
+    emit(CalenderNavigateToAddCalenderActionState(
+        focusedDay: event.selectedDay));
   }
 
   FutureOr<void> calenderTileNavigateEvent(
       CalenderTileNavigateEvent event, Emitter<CalenderState> emit) {
-    emit(CalenderNavigateToDetailPageActionState(event.appointment));
+    emit(CalenderNavigateToDetailPageActionState(
+        appointment: event.appointment));
   }
 
   FutureOr<void> calenderDaySelectEvent(
       CalenderDaySelectEvent e, Emitter<CalenderState> emit) {
     // emit(CalenderLoadedSuccessState(e.appointmentModels.where((event) => isSameDay(event.date, e.selectedDay)).toList()));
-    emit(CalenderDaySelectedState(e.appointments
-        .where((event) => isSameDay(event.date, e.selectedDay))
-        .toList()));
+    emit(CalenderDaySelectedState(
+        appointments: e.appointments
+            .where((event) => isSameDay(event.date, e.selectedDay))
+            .toList()));
   }
 }

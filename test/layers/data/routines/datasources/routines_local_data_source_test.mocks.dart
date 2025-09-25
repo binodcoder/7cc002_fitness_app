@@ -5,7 +5,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i4;
 
-import 'package:fitness_app/core/db/db_helper.dart' as _i3;
+import 'package:fitness_app/shared/data/local/db_helper.dart' as _i3;
 import 'package:fitness_app/features/live_training/data/models/live_training_model.dart'
     as _i6;
 import 'package:fitness_app/features/register/data/models/user_model.dart'

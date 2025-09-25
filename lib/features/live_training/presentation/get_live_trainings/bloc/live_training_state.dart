@@ -1,42 +1,95 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fitness_app/features/live_training/domain/entities/live_training.dart';
 
-abstract class LiveTrainingState {}
+@immutable
+abstract class LiveTrainingState extends Equatable {
+  const LiveTrainingState();
 
-abstract class LiveTrainingActionState extends LiveTrainingState {}
+  @override
+  List<Object?> get props => const [];
+}
 
-class LiveTrainingInitialState extends LiveTrainingState {}
+@immutable
+abstract class LiveTrainingActionState extends LiveTrainingState {
+  const LiveTrainingActionState();
+}
 
-class LiveTrainingLoadingState extends LiveTrainingState {}
+class LiveTrainingInitialState extends LiveTrainingState {
+  const LiveTrainingInitialState();
+}
+
+class LiveTrainingLoadingState extends LiveTrainingState {
+  const LiveTrainingLoadingState();
+}
 
 class LiveTrainingLoadedSuccessState extends LiveTrainingState {
   final List<LiveTraining> liveTrainings;
-  LiveTrainingLoadedSuccessState(this.liveTrainings);
+  const LiveTrainingLoadedSuccessState({required this.liveTrainings});
   LiveTrainingLoadedSuccessState copyWith({List<LiveTraining>? liveTrainings}) {
-    return LiveTrainingLoadedSuccessState(liveTrainings ?? this.liveTrainings);
+    return LiveTrainingLoadedSuccessState(
+        liveTrainings: liveTrainings ?? this.liveTrainings);
   }
+
+  @override
+  List<Object?> get props => [liveTrainings];
 }
 
-class LiveTrainingErrorState extends LiveTrainingState {}
+class LiveTrainingErrorState extends LiveTrainingState {
+  final String message;
+  const LiveTrainingErrorState({required this.message});
 
-class LiveTrainingNavigateToAddLiveTrainingActionState extends LiveTrainingActionState {}
+  @override
+  List<Object?> get props => [message];
+}
 
-class LiveTrainingNavigateToDetailPageActionState extends LiveTrainingActionState {
+class LiveTrainingShowErrorActionState extends LiveTrainingActionState {
+  final String message;
+  const LiveTrainingShowErrorActionState({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class LiveTrainingNavigateToAddLiveTrainingActionState
+    extends LiveTrainingActionState {
+  const LiveTrainingNavigateToAddLiveTrainingActionState();
+}
+
+class LiveTrainingNavigateToDetailPageActionState
+    extends LiveTrainingActionState {
   final LiveTraining liveTraining;
 
-  LiveTrainingNavigateToDetailPageActionState(this.liveTraining);
+  const LiveTrainingNavigateToDetailPageActionState(
+      {required this.liveTraining});
+
+  @override
+  List<Object?> get props => [liveTraining];
 }
 
-class LiveTrainingNavigateToUpdatePageActionState extends LiveTrainingActionState {
+class LiveTrainingNavigateToUpdatePageActionState
+    extends LiveTrainingActionState {
   final LiveTraining liveTraining;
-  LiveTrainingNavigateToUpdatePageActionState(this.liveTraining);
+  const LiveTrainingNavigateToUpdatePageActionState(
+      {required this.liveTraining});
+
+  @override
+  List<Object?> get props => [liveTraining];
 }
 
-class LiveTrainingItemDeletedActionState extends LiveTrainingActionState {}
+class LiveTrainingItemDeletedActionState extends LiveTrainingActionState {
+  const LiveTrainingItemDeletedActionState();
+}
 
 class LiveTrainingDaySelectedState extends LiveTrainingState {
   final List<LiveTraining> liveTrainings;
 
-  LiveTrainingDaySelectedState(this.liveTrainings);
+  const LiveTrainingDaySelectedState({required this.liveTrainings});
+
+  @override
+  List<Object?> get props => [liveTrainings];
 }
 
-class LiveTrainingItemsDeletedActionState extends LiveTrainingActionState {}
+class LiveTrainingItemsDeletedActionState extends LiveTrainingActionState {
+  const LiveTrainingItemsDeletedActionState();
+}

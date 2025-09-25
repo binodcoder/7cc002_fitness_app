@@ -1,17 +1,40 @@
-abstract class LoginState {}
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 
-abstract class LoginActionState extends LoginState {}
+@immutable
+abstract class LoginState extends Equatable {
+  const LoginState();
 
-class LoginInitialState extends LoginState {}
+  @override
+  List<Object?> get props => const [];
+}
 
-class LoginLoadingState extends LoginActionState {}
+@immutable
+abstract class LoginActionState extends LoginState {
+  const LoginActionState();
+}
 
-class ReadyToLoginState extends LoginState {}
+class LoginInitialState extends LoginState {
+  const LoginInitialState();
+}
 
-class LoggedState extends LoginActionState {}
+class LoginLoadingState extends LoginActionState {
+  const LoginLoadingState();
+}
+
+class ReadyToLoginState extends LoginState {
+  const ReadyToLoginState();
+}
+
+class LoggedState extends LoginActionState {
+  const LoggedState();
+}
 
 class LoginErrorState extends LoginActionState {
   final String message;
 
-  LoginErrorState({required this.message});
+  const LoginErrorState({required this.message});
+
+  @override
+  List<Object?> get props => [message];
 }

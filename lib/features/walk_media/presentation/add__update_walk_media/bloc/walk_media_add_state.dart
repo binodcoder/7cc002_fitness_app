@@ -1,28 +1,51 @@
-abstract class WalkMediaAddState {
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
+
+@immutable
+abstract class WalkMediaAddState extends Equatable {
   final String? imagePath;
-  WalkMediaAddState({this.imagePath});
+  const WalkMediaAddState({this.imagePath});
+
+  @override
+  List<Object?> get props => [imagePath];
 }
 
-abstract class WalkMediaAddActionState extends WalkMediaAddState {}
+@immutable
+abstract class WalkMediaAddActionState extends WalkMediaAddState {
+  const WalkMediaAddActionState({super.imagePath});
+}
 
-class WalkMediaAddInitialState extends WalkMediaAddState {}
+class WalkMediaAddInitialState extends WalkMediaAddState {
+  const WalkMediaAddInitialState({super.imagePath});
+}
 
 class WalkMediaAddReadyToUpdateState extends WalkMediaAddState {
-  WalkMediaAddReadyToUpdateState(imagePath) : super(imagePath: imagePath);
+  const WalkMediaAddReadyToUpdateState({required String imagePath})
+      : super(imagePath: imagePath);
 }
 
 class AddWalkMediaImagePickedFromGalaryState extends WalkMediaAddState {
-  AddWalkMediaImagePickedFromGalaryState(imagePath) : super(imagePath: imagePath);
+  const AddWalkMediaImagePickedFromGalaryState({required String imagePath})
+      : super(imagePath: imagePath);
 }
 
 class AddWalkMediaImagePickedFromCameraState extends WalkMediaAddState {
-  AddWalkMediaImagePickedFromCameraState(imagePath) : super(imagePath: imagePath);
+  const AddWalkMediaImagePickedFromCameraState({required String imagePath})
+      : super(imagePath: imagePath);
 }
 
-class AddWalkMediaLoadingState extends WalkMediaAddActionState {}
+class AddWalkMediaLoadingState extends WalkMediaAddActionState {
+  const AddWalkMediaLoadingState();
+}
 
-class AddWalkMediaSavedState extends WalkMediaAddActionState {}
+class AddWalkMediaSavedState extends WalkMediaAddActionState {
+  const AddWalkMediaSavedState();
+}
 
-class AddWalkMediaUpdatedState extends WalkMediaAddActionState {}
+class AddWalkMediaUpdatedState extends WalkMediaAddActionState {
+  const AddWalkMediaUpdatedState();
+}
 
-class AddWalkMediaErrorState extends WalkMediaAddActionState {}
+class AddWalkMediaErrorState extends WalkMediaAddActionState {
+  const AddWalkMediaErrorState();
+}

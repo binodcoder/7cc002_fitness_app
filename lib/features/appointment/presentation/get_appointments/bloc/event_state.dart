@@ -1,46 +1,81 @@
+import 'package:equatable/equatable.dart';
 import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
+import 'package:flutter/foundation.dart';
 
-abstract class EventState {}
+@immutable
+abstract class EventState extends Equatable {
+  const EventState();
 
-abstract class EventActionState extends EventState {}
+  @override
+  List<Object?> get props => const [];
+}
 
-class EventInitialState extends EventState {}
+@immutable
+abstract class EventActionState extends EventState {
+  const EventActionState();
+}
 
-class EventLoadingState extends EventState {}
+class EventInitialState extends EventState {
+  const EventInitialState();
+}
+
+class EventLoadingState extends EventState {
+  const EventLoadingState();
+}
 
 class EventLoadedSuccessState extends EventState {
   final List<Appointment> appointments;
-  EventLoadedSuccessState(this.appointments);
+  const EventLoadedSuccessState({required this.appointments});
   EventLoadedSuccessState copyWith({List<Appointment>? appointments}) {
-    return EventLoadedSuccessState(appointments ?? this.appointments);
+    return EventLoadedSuccessState(appointments: appointments ?? this.appointments);
   }
+
+  @override
+  List<Object?> get props => [appointments];
 }
 
-class EventErrorState extends EventState {}
+class EventErrorState extends EventState {
+  final String message;
+  const EventErrorState({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
 
 class EventNavigateToAddEventActionState extends EventActionState {
-  // final AppointmentModel appointmentModel;
-  // final DateTime focusedDay;
-  // EventNavigateToAddEventActionState(this.appointmentModel, this.focusedDay);
+  const EventNavigateToAddEventActionState();
 }
 
 class EventNavigateToDetailPageActionState extends EventActionState {
   final Appointment appointment;
 
-  EventNavigateToDetailPageActionState(this.appointment);
+  const EventNavigateToDetailPageActionState({required this.appointment});
+
+  @override
+  List<Object?> get props => [appointment];
 }
 
 class EventNavigateToUpdatePageActionState extends EventActionState {
   final Appointment appointment;
   final DateTime focusedDay;
-  EventNavigateToUpdatePageActionState(this.appointment, this.focusedDay);
+  const EventNavigateToUpdatePageActionState({required this.appointment, required this.focusedDay});
+
+  @override
+  List<Object?> get props => [appointment, focusedDay];
 }
 
-class EventItemDeletedActionState extends EventActionState {}
+class EventItemDeletedActionState extends EventActionState {
+  const EventItemDeletedActionState();
+}
 
 class EventDaySelectedState extends EventState {
   final List<Appointment> appointments;
-  EventDaySelectedState(this.appointments);
+  const EventDaySelectedState({required this.appointments});
+
+  @override
+  List<Object?> get props => [appointments];
 }
 
-class EventItemsDeletedActionState extends EventActionState {}
+class EventItemsDeletedActionState extends EventActionState {
+  const EventItemsDeletedActionState();
+}

@@ -1,6 +1,8 @@
 import 'package:fitness_app/features/live_training/presentation/get_live_trainings/ui/live_training.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
+import 'package:fitness_app/core/theme/font_manager.dart';
+import 'package:fitness_app/core/theme/styles_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -11,8 +13,8 @@ import 'features/appointment/presentation/get_appointments/ui/calender.dart';
 import 'features/login/presentation/ui/login_screen.dart';
 import 'features/routine/presentation/get_routines/ui/routine.dart';
 import 'features/walk/presentation/walk/get_walks/ui/walk.dart';
-import 'package:fitness_app/core/common_widgets/app_drawer_header.dart';
-import 'package:fitness_app/core/common_widgets/drawer_nav_tile.dart';
+import 'package:fitness_app/core/widgets/app_drawer_header.dart';
+import 'package:fitness_app/core/widgets/app_slidable_list_tile.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({Key? key}) : super(key: key);
@@ -36,9 +38,15 @@ class _MyDrawerState extends State<MyDrawer> {
         child: ListView(
           children: [
             const AppDrawerHeader(),
-            DrawerNavTile(
-              icon: CupertinoIcons.alarm,
+            AppSlidableListTile(
+              leading:
+                  const Icon(CupertinoIcons.alarm, color: ColorManager.primary),
               title: strings.titleRoutineLabel,
+              titleStyle: getSemiBoldStyle(
+                color: ColorManager.darkGrey,
+                fontSize: FontSize.s14,
+              ),
+              titleScaler: const TextScaler.linear(1.2),
               onTap: () {
                 Navigator.push(
                   context,
@@ -48,9 +56,15 @@ class _MyDrawerState extends State<MyDrawer> {
                 );
               },
             ),
-            DrawerNavTile(
-              icon: CupertinoIcons.calendar,
+            AppSlidableListTile(
+              leading: const Icon(CupertinoIcons.calendar,
+                  color: ColorManager.primary),
               title: strings.titleAppointmentLabel,
+              titleStyle: getSemiBoldStyle(
+                color: ColorManager.darkGrey,
+                fontSize: FontSize.s14,
+              ),
+              titleScaler: const TextScaler.linear(1.2),
               onTap: () {
                 Navigator.push(
                   context,
@@ -63,9 +77,15 @@ class _MyDrawerState extends State<MyDrawer> {
             sharedPreferences.getString('institutionEmail') == null ||
                     sharedPreferences.getString('institutionEmail') == ""
                 ? const SizedBox()
-                : DrawerNavTile(
-                    icon: FontAwesomeIcons.personWalking,
+                : AppSlidableListTile(
+                    leading: const Icon(FontAwesomeIcons.personWalking,
+                        color: ColorManager.primary),
                     title: strings.walk,
+                    titleStyle: getSemiBoldStyle(
+                      color: ColorManager.darkGrey,
+                      fontSize: FontSize.s14,
+                    ),
+                    titleScaler: const TextScaler.linear(1.2),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -75,9 +95,15 @@ class _MyDrawerState extends State<MyDrawer> {
                       );
                     },
                   ),
-            DrawerNavTile(
-              icon: FontAwesomeIcons.towerBroadcast,
+            AppSlidableListTile(
+              leading: const Icon(FontAwesomeIcons.towerBroadcast,
+                  color: ColorManager.primary),
               title: strings.titleLiveTrainingLabel,
+              titleStyle: getSemiBoldStyle(
+                color: ColorManager.darkGrey,
+                fontSize: FontSize.s14,
+              ),
+              titleScaler: const TextScaler.linear(1.2),
               onTap: () {
                 Navigator.push(
                   context,
@@ -87,13 +113,25 @@ class _MyDrawerState extends State<MyDrawer> {
                 );
               },
             ),
-            const DrawerNavTile(
-              icon: CupertinoIcons.video_camera,
-              title: 'Meeting',
+            AppSlidableListTile(
+              leading: const Icon(CupertinoIcons.video_camera,
+                  color: ColorManager.primary),
+              title: strings.meeting,
+              titleStyle: getSemiBoldStyle(
+                color: ColorManager.darkGrey,
+                fontSize: FontSize.s14,
+              ),
+              titleScaler: const TextScaler.linear(1.2),
             ),
-            DrawerNavTile(
-              icon: Icons.logout_outlined,
-              title: 'Log out',
+            AppSlidableListTile(
+              leading: const Icon(Icons.logout_outlined,
+                  color: ColorManager.primary),
+              title: strings.logOut,
+              titleStyle: getSemiBoldStyle(
+                color: ColorManager.darkGrey,
+                fontSize: FontSize.s14,
+              ),
+              titleScaler: const TextScaler.linear(1.2),
               onTap: () {
                 sharedPreferences.clear();
                 Navigator.pushReplacement(
@@ -105,9 +143,15 @@ class _MyDrawerState extends State<MyDrawer> {
                 );
               },
             ),
-            DrawerNavTile(
-              icon: CupertinoIcons.building_2_fill,
-              title: 'About Us',
+            AppSlidableListTile(
+              leading: const Icon(CupertinoIcons.building_2_fill,
+                  color: ColorManager.primary),
+              title: strings.aboutUs,
+              titleStyle: getSemiBoldStyle(
+                color: ColorManager.darkGrey,
+                fontSize: FontSize.s14,
+              ),
+              titleScaler: const TextScaler.linear(1.2),
               onTap: () {},
             ),
           ],

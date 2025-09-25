@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
-import 'package:fitness_app/features/appointment/domain/entities/sync.dart' as entity;
+import 'package:fitness_app/features/appointment/domain/entities/sync.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
@@ -17,9 +17,8 @@ import '../bloc/appointment_add_bloc.dart';
 import '../bloc/appointment_add_event.dart';
 import '../bloc/appointment_add_state.dart';
 import 'package:fitness_app/features/appointment/presentation/add_update_appointment/widgets/trainer_dropdown.dart';
-import 'package:fitness_app/core/common_widgets/date_picker_field.dart';
-import 'package:fitness_app/core/common_widgets/time_picker_field.dart';
-import 'package:fitness_app/core/common_widgets/text_area_field.dart';
+// Use common text field for date/time with labels
+import 'package:fitness_app/core/widgets/custom_text_form_field.dart';
 
 class AddAppointmentDialog extends StatefulWidget {
   final Appointment? appointment;
@@ -38,24 +37,22 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
   final TextEditingController _startTimeController = TextEditingController();
   final TextEditingController _endTimeController = TextEditingController();
   final TextEditingController _remarkController = TextEditingController();
-  final TextEditingController _trainerController = TextEditingController();
-  entity.TrainerEntity? selectedTrainer;
+  TrainerEntity? selectedTrainer;
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedStartTime = const TimeOfDay(hour: 00, minute: 00);
   TimeOfDay selectedEndTime = const TimeOfDay(hour: 00, minute: 00);
-  late double _height;
-  late double _width;
-  // late String _setTime, _setDate;
+  final DateFormat _dateFmt = DateFormat('yyyy-MM-dd');
   final _formKey = GlobalKey<FormState>();
-  bool focus = false;
   final AppointmentAddBloc appointmentAddBloc = sl<AppointmentAddBloc>();
   final SharedPreferences sharedPreferences = sl<SharedPreferences>();
 
   setDateTime() {
-    selectedDate = widget.focusedDay!;
-    _dateController.text = DateFormat('yyyy-MM-dd').format(widget.focusedDay!);
-    _startTimeController.text = "00:00:00";
-    _endTimeController.text = "00:00:00";
+    // Use focusedDay when provided, otherwise default to today
+    selectedDate = widget.focusedDay ?? DateTime.now();
+    _dateController.text = _dateFmt.format(selectedDate);
+    // Leave time empty so hints show and UI feels lighter
+    _startTimeController.text = '';
+    _endTimeController.text = '';
   }
 
   void selectDate(BuildContext context) async {
@@ -63,12 +60,12 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
       context: context,
       initialDate: selectedDate,
       firstDate: DateTime(1900),
-      lastDate: DateTime(2025),
+      lastDate: DateTime.now().add(const Duration(days: 3650)),
     );
     if (pickedDate != null && pickedDate != selectedDate) {
       setState(() {
         selectedDate = pickedDate;
-        _dateController.text = DateFormat("yyyy-MM-dd").format(selectedDate);
+        _dateController.text = _dateFmt.format(selectedDate);
       });
     }
   }
@@ -121,20 +118,17 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
 
   @override
   void initState() {
-    setDateTime();
+    super.initState();
     if (widget.appointment != null) {
       selectedDate = widget.appointment!.date;
-      _dateController.text =
-          DateFormat('yyyy-MM-dd').format(widget.appointment!.date);
+      _dateController.text = _dateFmt.format(widget.appointment!.date);
       _startTimeController.text = widget.appointment!.startTime;
       _endTimeController.text = widget.appointment!.endTime;
-      _remarkController.text = widget.appointment!.remark.toString();
-      // appointmentAddBloc.add(AppointmentAddReadyToUpdateEvent(widget.appointmentModel!));
-      appointmentAddBloc.add(AppointmentAddInitialEvent());
+      _remarkController.text = widget.appointment!.remark?.toString() ?? '';
     } else {
-      appointmentAddBloc.add(AppointmentAddInitialEvent());
+      setDateTime();
     }
-    super.initState();
+    appointmentAddBloc.add(const AppointmentAddInitialEvent());
   }
 
   @override
@@ -143,41 +137,32 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
     _startTimeController.dispose();
     _endTimeController.dispose();
     _remarkController.dispose();
-    _trainerController.dispose();
+    // Close bloc since it's provided as a factory
+    appointmentAddBloc.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final strings = AppStrings.of(context);
-    Size size = MediaQuery.of(context).size;
-    _height = size.height;
-    _width = size.width;
+    final size = MediaQuery.of(context).size;
     return BlocConsumer<AppointmentAddBloc, AppointmentAddState>(
       bloc: appointmentAddBloc,
       listenWhen: (previous, current) => current is AppointmentAddActionState,
       buildWhen: (previous, current) => current is! AppointmentAddActionState,
       listener: (context, state) {
         if (state is AppointmentAddLoadingState) {
-          // showDialog(
-          //   context: context,
-          //   builder: (BuildContext context) {
-          //     return const Center(child: CircularProgressIndicator());
-          //   },
-          // );
         } else if (state is AddAppointmentSavedState) {
-          // sourceController.clear();
-          // descriptionController.clear();
+          if (!mounted) return;
           Navigator.pop(context);
         } else if (state is AddAppointmentUpdatedState) {
-          // sourceController.clear();
-          // descriptionController.clear();
+          if (!mounted) return;
           Navigator.pop(context);
           Navigator.pop(context);
         } else if (state is AddAppointmentErrorState) {
           Fluttertoast.cancel();
           Fluttertoast.showToast(
-            msg: 'Error while adding appointment',
+            msg: state.message,
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: ColorManager.error,
@@ -197,11 +182,9 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
             final successState = state as AppointmentAddLoadedSuccessState;
             if (widget.appointment != null) {
               selectedTrainer = successState.syncModel.data.trainers
-                  .where((entity.TrainerEntity element) =>
+                  .where((TrainerEntity element) =>
                       element.id == widget.appointment!.trainerId)
                   .first;
-              // _trainerController.text =
-              //     successState.syncModel.data.trainers.where((Trainer element) => element.id == widget.appointmentModel!.trainerId).first.name;
             }
 
             return Scaffold(
@@ -214,9 +197,9 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                   },
                 ),
                 centerTitle: true,
-                title: const Text(
-                  'New Appointment',
-                  style: TextStyle(fontSize: 16.0),
+                title: Text(
+                  strings.addAppointment,
+                  style: const TextStyle(fontSize: 16.0),
                 ),
               ),
               body: Padding(
@@ -240,39 +223,71 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                       SizedBox(
                         height: size.height * 0.03,
                       ),
-                      DatePickerField(
+                      CustomTextFormField(
+                        label: 'Date',
                         controller: _dateController,
-                        width: _width / 1.7,
-                        height: _height / 9,
+                        hint: 'Tap to select',
+                        readOnly: true,
                         onTap: () => selectDate(context),
+                        suffixIcon: const Icon(Icons.calendar_today,
+                            color: ColorManager.blueGrey),
                       ),
                       SizedBox(
                         height: size.height * 0.03,
                       ),
+                      // Time section
+                      Text(
+                        'Time',
+                        style: getBoldStyle(
+                          fontSize: FontSize.s14,
+                          color: ColorManager.primary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          TimePickerField(
-                            controller: _startTimeController,
-                            width: _width * 0.45,
-                            height: _height * 0.1,
-                            onTap: () => _selectStartTime(context),
+                          Expanded(
+                            child: CustomTextFormField(
+                              label: 'Start Time',
+                              controller: _startTimeController,
+                              hint: 'Tap to select',
+                              readOnly: true,
+                              onTap: () => _selectStartTime(context),
+                              suffixIcon: const Icon(Icons.schedule,
+                                  color: ColorManager.blueGrey),
+                            ),
                           ),
-                          TimePickerField(
-                            controller: _endTimeController,
-                            width: _width * 0.45,
-                            height: _height * 0.1,
-                            onTap: () => _selectEndTime(context),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: CustomTextFormField(
+                              label: 'End Time',
+                              controller: _endTimeController,
+                              hint: 'Tap to select',
+                              readOnly: true,
+                              onTap: () => _selectEndTime(context),
+                              suffixIcon: const Icon(Icons.schedule,
+                                  color: ColorManager.blueGrey),
+                            ),
                           ),
                         ],
                       ),
+                      const SizedBox(height: 6),
+                      Text(
+                        '24-hour format',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(color: ColorManager.blueGrey),
+                      ),
                       SizedBox(
                         height: size.height * 0.03,
                       ),
-                      TextAreaField(
+                      CustomTextFormField(
+                        label: 'Remarks',
                         controller: _remarkController,
-                        labelText: 'Remarks',
-                        hintText: 'Enter remarks',
+                        hint: 'Enter remarks',
+                        minLines: 3,
+                        maxLines: 5,
                       ),
                       SizedBox(
                         height: size.height * 0.03,
@@ -286,34 +301,83 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
                           ),
                         ),
                         onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            if (widget.appointment != null) {
-                              var appointmentModel = Appointment(
-                                id: widget.appointment!.id,
-                                date: selectedDate,
-                                endTime: _endTimeController.text,
-                                startTime: _startTimeController.text,
-                                trainerId: selectedTrainer!.id,
-                                userId: sharedPreferences.getInt("user_id")!,
-                                remark: _remarkController.text,
-                              );
-                              appointmentAddBloc.add(
-                                  AppointmentAddUpdateButtonPressEvent(
-                                      appointmentModel));
-                            } else {
-                              var appointmentModel = Appointment(
-                                date: selectedDate,
-                                endTime: _endTimeController.text,
-                                startTime: _startTimeController.text,
-                                trainerId: selectedTrainer?.id ?? 1,
-                                userId:
-                                    sharedPreferences.getInt("user_id") ?? 1,
-                                remark: _remarkController.text,
-                              );
-                              appointmentAddBloc.add(
-                                  AppointmentAddSaveButtonPressEvent(
-                                      appointmentModel));
+                          // Run basic checks even if form validators are absent
+                          final errors = <String>[];
+                          if (selectedTrainer == null) {
+                            errors.add('Please select a trainer.');
+                          }
+                          if (_dateController.text.trim().isEmpty) {
+                            errors.add('Please select a date.');
+                          }
+                          if (_startTimeController.text.trim().isEmpty ||
+                              _endTimeController.text.trim().isEmpty) {
+                            errors.add('Please select start and end time.');
+                          }
+
+                          // Validate time ordering when both provided
+                          bool isTimeOrderValid() {
+                            try {
+                              final st = _startTimeController.text.trim();
+                              final et = _endTimeController.text.trim();
+                              if (st.isEmpty || et.isEmpty) return false;
+                              Duration parse(String t) {
+                                final parts = t.split(':');
+                                final h = int.parse(parts[0]);
+                                final m = int.parse(parts[1]);
+                                final s =
+                                    parts.length > 2 ? int.parse(parts[2]) : 0;
+                                return Duration(
+                                    hours: h, minutes: m, seconds: s);
+                              }
+
+                              final sd = parse(st);
+                              final ed = parse(et);
+                              return ed > sd;
+                            } catch (_) {
+                              return false;
                             }
+                          }
+
+                          if (!isTimeOrderValid()) {
+                            errors.add('End time must be after start time.');
+                          }
+
+                          if (errors.isNotEmpty) {
+                            Fluttertoast.cancel();
+                            Fluttertoast.showToast(
+                              msg: errors.first,
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: ColorManager.error,
+                            );
+                            return;
+                          }
+
+                          if (widget.appointment != null) {
+                            final appointmentModel = Appointment(
+                              id: widget.appointment!.id,
+                              date: selectedDate,
+                              endTime: _endTimeController.text,
+                              startTime: _startTimeController.text,
+                              trainerId: selectedTrainer!.id,
+                              userId: sharedPreferences.getInt("user_id") ?? 1,
+                              remark: _remarkController.text,
+                            );
+                            appointmentAddBloc.add(
+                                AppointmentAddUpdateButtonPressEvent(
+                                    appointment: appointmentModel));
+                          } else {
+                            final appointmentModel = Appointment(
+                              date: selectedDate,
+                              endTime: _endTimeController.text,
+                              startTime: _startTimeController.text,
+                              trainerId: selectedTrainer!.id,
+                              userId: sharedPreferences.getInt("user_id") ?? 1,
+                              remark: _remarkController.text,
+                            );
+                            appointmentAddBloc.add(
+                                AppointmentAddSaveButtonPressEvent(
+                                    appointment: appointmentModel));
                           }
                         },
                       ),
@@ -326,7 +390,8 @@ class AddAppointmentDialogState extends State<AddAppointmentDialog> {
               ),
             );
           case AddAppointmentErrorState:
-            return const Scaffold(body: Center(child: Text('Error')));
+            final error = state as AddAppointmentErrorState;
+            return Scaffold(body: Center(child: Text(error.message)));
           default:
             return const SizedBox();
         }

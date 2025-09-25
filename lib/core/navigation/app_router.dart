@@ -7,12 +7,12 @@ import 'package:fitness_app/features/live_training/presentation/add_update_live_
 import 'package:fitness_app/features/live_training/presentation/get_live_trainings/ui/live_training.dart';
 import 'package:fitness_app/features/live_training/presentation/get_live_trainings/ui/live_training_details.dart';
 import 'package:fitness_app/features/login/presentation/ui/login_screen.dart';
-import 'package:fitness_app/features/onboarding/presentation/onboarding.dart';
+import 'package:fitness_app/features/onboarding/pages/onboarding_screen.dart';
 import 'package:fitness_app/features/register/presentation/ui/register_page.dart';
 import 'package:fitness_app/features/routine/presentation/add_update_routine/ui/add_routine_page.dart';
 import 'package:fitness_app/features/routine/presentation/get_routines/ui/routine.dart';
 import 'package:fitness_app/features/routine/presentation/get_routines/ui/routine_details.dart';
-import 'package:fitness_app/features/splash/presentation/splash.dart';
+import 'package:fitness_app/core/widgets/splash_screen.dart';
 import '../localization/app_strings.dart';
 
 class Routes {
@@ -40,8 +40,8 @@ class AppRouter {
   const AppRouter._();
 
   static final Map<String, WidgetBuilder> _routeTable = <String, WidgetBuilder>{
-    Routes.splashRoute: (_) => const SplashView(),
-    Routes.onBoardingRoute: (_) => const OnBoardingView(),
+    Routes.splashRoute: (_) => const SplashScreen(),
+    Routes.onBoardingRoute: (_) => const OnboardingScreen(),
     Routes.loginRoute: (_) => const LoginPage(),
     Routes.registerRoute: (_) => const RegisterPage(),
     Routes.routineRoute: (_) => const RoutinePage(),
