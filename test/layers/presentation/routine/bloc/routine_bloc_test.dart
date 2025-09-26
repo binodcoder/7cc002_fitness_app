@@ -124,7 +124,7 @@ void main() {
       when(mockDeleteRoutine.call(tRoutine.id!))
           .thenAnswer((_) async => const Right(1));
       //act
-      bloc.add(const RoutineDeleteButtonClickedEvent(tRoutine));
+      bloc.add(const RoutineDeleteButtonClickedEvent(routine: tRoutine));
       await untilCalled(mockDeleteRoutine.call(any));
 
       //assert
@@ -144,7 +144,7 @@ void main() {
       ];
       expectLater(bloc, emitsInOrder(expected));
       //act
-      bloc.add(const RoutineDeleteButtonClickedEvent(tRoutine));
+      bloc.add(const RoutineDeleteButtonClickedEvent(routine: tRoutine));
     });
     test('should emits [Loading, Error] when getting data fails', () async* {
       //arrange
@@ -159,7 +159,7 @@ void main() {
       ];
       expectLater(bloc, emitsInOrder(expected));
       //act
-      bloc.add(const RoutineDeleteButtonClickedEvent(tRoutine));
+      bloc.add(const RoutineDeleteButtonClickedEvent(routine: tRoutine));
     });
 
     test(
@@ -177,7 +177,7 @@ void main() {
       ];
       expectLater(bloc, emitsInOrder(expected));
       //act
-      bloc.add(const RoutineDeleteButtonClickedEvent(tRoutine));
+      bloc.add(const RoutineDeleteButtonClickedEvent(routine: tRoutine));
     });
   });
 }

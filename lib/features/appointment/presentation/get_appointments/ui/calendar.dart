@@ -7,9 +7,9 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 import 'package:fitness_app/drawer.dart';
 import 'package:fitness_app/injection_container.dart';
-import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/calender_bloc.dart';
-import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/calender_event.dart';
-import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/calender_state.dart';
+import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/calendar_bloc.dart';
+import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/calendar_event.dart';
+import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/calendar_state.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/event_bloc.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/event_event.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/event_state.dart';
@@ -19,7 +19,7 @@ import 'package:fitness_app/features/appointment/presentation/get_appointments/w
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 
-import '../../add_update_appointment/ui/add_appointment.dart';
+import '../../appointment_form/ui/appointment_form_dialog.dart';
 import 'package:fitness_app/features/appointment/domain/usecases/sync.dart';
 import 'package:fitness_app/features/appointment/domain/entities/sync.dart';
 
@@ -32,19 +32,19 @@ class CalendarPage extends StatefulWidget {
 
 class _CalendarPageState extends State<CalendarPage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
-  final CalenderBloc calenderBloc = sl<CalenderBloc>();
+  final CalendarBloc calendarBloc = sl<CalendarBloc>();
   final EventBloc eventBloc = sl<EventBloc>();
   final Sync _sync = sl<Sync>();
 
   @override
   void initState() {
     super.initState();
-    calenderBloc.add(const CalenderInitialEvent());
+    calendarBloc.add(const CalendarInitialized());
     _loadTrainerMap();
   }
 
   void refreshPage() {
-    calenderBloc.add(const CalenderInitialEvent());
+    calendarBloc.add(const CalendarInitialized());
   }
 
   Future<void> _loadTrainerMap() async {
@@ -69,7 +69,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   void dispose() {
-    calenderBloc.close();
+    calendarBloc.close();
     eventBloc.close();
     super.dispose();
   }
@@ -91,8 +91,8 @@ class _CalendarPageState extends State<CalendarPage> {
           backgroundColor: ColorManager.primary,
           child: const Icon(Icons.add),
           onPressed: () {
-            calenderBloc
-                .add(CalenderAddButtonClickedEvent(selectedDay: _focusedDay));
+            calendarBloc
+                .add(CalendarAddButtonClicked(selectedDay: _focusedDay));
           },
         ),
         appBar: AppBar(
@@ -109,20 +109,20 @@ class _CalendarPageState extends State<CalendarPage> {
             physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
               children: <Widget>[
-                BlocConsumer<CalenderBloc, CalenderState>(
-                    bloc: calenderBloc,
+                BlocConsumer<CalendarBloc, CalendarState>(
+                    bloc: calendarBloc,
                     listenWhen: (previous, current) =>
-                        current is CalenderActionState,
+                        current is CalendarActionState,
                     buildWhen: (previous, current) =>
-                        current is! CalenderActionState,
+                        current is! CalendarActionState,
                     listener: (context, state) {
-                      if (state is CalenderNavigateToAddCalenderActionState) {
+                      if (state is CalendarNavigateToAddActionState) {
                         if (!mounted) return;
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (BuildContext context) =>
-                                AddAppointmentDialog(
+                                AppointmentFormDialog(
                                     focusedDay: state.focusedDay),
                             fullscreenDialog: true,
                           ),
@@ -130,7 +130,7 @@ class _CalendarPageState extends State<CalendarPage> {
                           (value) => refreshPage(),
                         );
                       } else if (state
-                          is CalenderNavigateToDetailPageActionState) {
+                          is CalendarNavigateToDetailPageActionState) {
                         if (!mounted) return;
                         Navigator.push(
                           context,
@@ -145,11 +145,11 @@ class _CalendarPageState extends State<CalendarPage> {
                           (value) => refreshPage(),
                         );
                       } else if (state
-                          is CalenderNavigateToUpdatePageActionState) {
-                      } else if (state is CalenderItemDeletedActionState) {
-                        calenderBloc.add(const CalenderInitialEvent());
-                      } else if (state is CalenderItemsDeletedActionState) {
-                      } else if (state is CalenderShowErrorActionState) {
+                          is CalendarNavigateToUpdatePageActionState) {
+                      } else if (state is CalendarItemDeletedActionState) {
+                        calendarBloc.add(const CalendarInitialized());
+                      } else if (state is CalendarItemsDeletedActionState) {
+                      } else if (state is CalendarShowErrorActionState) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(state.message)),
                         );
@@ -157,14 +157,14 @@ class _CalendarPageState extends State<CalendarPage> {
                     },
                     builder: (context, state) {
                       switch (state.runtimeType) {
-                        case CalenderLoadingState:
+                        case CalendarLoadingState:
                           return const Center(
                             child: LinearProgressIndicator(),
                           );
 
-                        case CalenderLoadedSuccessState:
+                        case CalendarLoadedSuccessState:
                           final successState =
-                              state as CalenderLoadedSuccessState;
+                              state as CalendarLoadedSuccessState;
                           final List<Appointment> allEvents =
                               successState.appointments;
                           eventBloc.add(EventDaySelectEvent(
@@ -201,8 +201,8 @@ class _CalendarPageState extends State<CalendarPage> {
                                 : null,
                           );
 
-                        case CalenderErrorState:
-                          final error = state as CalenderErrorState;
+                        case CalendarErrorState:
+                          final error = state as CalendarErrorState;
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 24.0),
                             child: Center(child: Text(error.message)),
@@ -225,7 +225,7 @@ class _CalendarPageState extends State<CalendarPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    AddAppointmentDialog(
+                                    AppointmentFormDialog(
                                   focusedDay: state.focusedDay,
                                   appointment: state.appointment,
                                 ),
@@ -297,8 +297,8 @@ class _CalendarPageState extends State<CalendarPage> {
                                           focusedDay: _focusedDay));
                                     },
                                     onDelete: () {
-                                      calenderBloc.add(
-                                          CalenderDeleteButtonClickedEvent(
+                                      calendarBloc.add(
+                                          CalendarDeleteButtonClicked(
                                               appointment: appointmentModel));
                                     },
                                   );

@@ -92,6 +92,7 @@ class AppStrings {
   String get logOut => AppStringsEn.logOut;
   String get aboutUs => AppStringsEn.aboutUs;
   String get meeting => AppStringsEn.meeting;
+  String get chat => AppStringsEn.chat;
 }
 
 class AppStringsEn {
@@ -148,4 +149,5 @@ class AppStringsEn {
   static const String logOut = 'Log out';
   static const String aboutUs = 'About Us';
   static const String meeting = 'Meeting';
+  static const String chat = 'Chat';
 }

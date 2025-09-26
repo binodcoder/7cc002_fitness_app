@@ -58,8 +58,8 @@ import 'features/live_training/domain/usecases/add_live_training.dart';
 import 'features/live_training/domain/usecases/delete_live_training.dart';
 import 'features/live_training/domain/usecases/get_live_trainings.dart';
 import 'features/live_training/domain/usecases/update_live_training.dart';
-import 'features/appointment/presentation/add_update_appointment/bloc/appointment_add_bloc.dart';
-import 'features/appointment/presentation/get_appointments/bloc/calender_bloc.dart';
+import 'features/appointment/presentation/appointment_form/bloc/appointment_form_bloc.dart';
+import 'features/appointment/presentation/get_appointments/bloc/calendar_bloc.dart';
 import 'features/live_training/presentation/get_live_trainings/bloc/live_training_bloc.dart';
 import 'features/login/presentation/bloc/login_bloc.dart';
 import 'features/register/presentation/bloc/user_add_bloc.dart';
@@ -94,10 +94,10 @@ Future<void> init() async {
       () => SyncRemoteDataSourceImpl(client: sl()));
 
   //appointment
-  sl.registerFactory(() => AppointmentAddBloc(
+  sl.registerFactory(() => AppointmentFormBloc(
       addAppointment: sl(), updateAppointment: sl(), sync: sl()));
   sl.registerFactory(
-      () => CalenderBloc(getAppointments: sl(), deleteAppointment: sl()));
+      () => CalendarBloc(getAppointments: sl(), deleteAppointment: sl()));
   sl.registerFactory(
       () => EventBloc(getAppointments: sl(), deleteAppointment: sl()));
 

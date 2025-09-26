@@ -9,7 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'injection_container.dart';
-import 'features/appointment/presentation/get_appointments/ui/calender.dart';
+import 'features/appointment/presentation/get_appointments/ui/calendar.dart';
+import 'features/chat/chat_page.dart';
 import 'features/login/presentation/ui/login_screen.dart';
 import 'features/routine/presentation/get_routines/ui/routine.dart';
 import 'features/walk/presentation/walk/get_walks/ui/walk.dart';
@@ -38,6 +39,23 @@ class _MyDrawerState extends State<MyDrawer> {
         child: ListView(
           children: [
             const AppDrawerHeader(),
+            AppSlidableListTile(
+              leading: const Icon(Icons.chat_outlined, color: ColorManager.primary),
+              title: strings.chat,
+              titleStyle: getSemiBoldStyle(
+                color: ColorManager.darkGrey,
+                fontSize: FontSize.s14,
+              ),
+              titleScaler: const TextScaler.linear(1.2),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const ChatPage(),
+                  ),
+                );
+              },
+            ),
             AppSlidableListTile(
               leading:
                   const Icon(CupertinoIcons.alarm, color: ColorManager.primary),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:fitness_app/features/appointment/presentation/add_update_appointment/ui/add_appointment.dart';
+import 'package:fitness_app/features/appointment/presentation/appointment_form/ui/appointment_form_dialog.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/ui/appointment_details.dart';
-import 'package:fitness_app/features/appointment/presentation/get_appointments/ui/calender.dart';
+import 'package:fitness_app/features/appointment/presentation/get_appointments/ui/calendar.dart';
 import 'package:fitness_app/features/live_training/presentation/add_update_live_training/ui/add_live_training.dart';
 import 'package:fitness_app/features/live_training/presentation/get_live_trainings/ui/live_training.dart';
 import 'package:fitness_app/features/live_training/presentation/get_live_trainings/ui/live_training_details.dart';
@@ -52,7 +52,7 @@ class AppRouter {
     Routes.addLiveTraining: (_) => const AddLiveTrainingDialog(),
     Routes.calendar: (_) => const CalendarPage(),
     Routes.appointmentDetails: (_) => const AppointmentDetailsPage(),
-    Routes.addAppointment: (_) => const AddAppointmentDialog(),
+    Routes.addAppointment: (_) => const AppointmentFormDialog(),
   };
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
