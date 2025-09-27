@@ -14,12 +14,9 @@ class AppointmentRepositoriesImpl implements AppointmentRepositories {
   });
 
   @override
-  Future<Either<Failure, int>>? addAppointment(
-      Appointment appointmentModel) async {
+  Future<Either<Failure, int>>? addAppointment(Appointment appointment) async {
     try {
-      final model = appointmentModel is AppointmentModel
-          ? appointmentModel
-          : AppointmentModel.fromEntity(appointmentModel);
+      final model = AppointmentModel.fromEntity(appointment);
       int response = await appointmentRemoteDataSource.addAppointment(model);
       return Right(response);
     } on ServerException {
@@ -29,11 +26,9 @@ class AppointmentRepositoriesImpl implements AppointmentRepositories {
 
   @override
   Future<Either<Failure, int>>? updateAppointment(
-      Appointment appointmentModel) async {
+      Appointment appointment) async {
     try {
-      final model = appointmentModel is AppointmentModel
-          ? appointmentModel
-          : AppointmentModel.fromEntity(appointmentModel);
+      final model = AppointmentModel.fromEntity(appointment);
       int response = await appointmentRemoteDataSource.updateAppointment(model);
       return Right(response);
     } on ServerException {
@@ -57,7 +52,7 @@ class AppointmentRepositoriesImpl implements AppointmentRepositories {
     try {
       List<AppointmentModel> response =
           await appointmentRemoteDataSource.getAppointments();
-      return Right(response.cast<Appointment>());
+      return Right(response);
     } on ServerException {
       return Left(ServerFailure());
     }

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
-// Removed unused theme imports after extracting body widgets
 import 'package:fitness_app/features/appointment/presentation/get_appointments/widgets/appointment_details_body.dart';
 
 class AppointmentDetailsPage extends StatefulWidget {

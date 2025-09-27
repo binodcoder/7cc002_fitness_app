@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:fitness_app/core/errors/failures.dart';
-import 'package:fitness_app/features/appointment/data/models/sync_data_model.dart';
 import 'package:fitness_app/features/appointment/domain/entities/sync.dart'
     as sync_entity;
 import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
@@ -247,7 +246,7 @@ class FakeSyncRepository implements SyncRepository {
   @override
   Future<Either<Failure, sync_entity.SyncEntity>>? sync(String email) async {
     final trainers = [
-      const TrainerModel(
+      const sync_entity.TrainerEntity(
           id: 1,
           name: 'Alex Trainer',
           email: 'alex@fit.com',
@@ -256,7 +255,7 @@ class FakeSyncRepository implements SyncRepository {
           gender: 'M',
           age: 30,
           role: 'trainer'),
-      const TrainerModel(
+      const sync_entity.TrainerEntity(
           id: 2,
           name: 'Sam Coach',
           email: 'sam@fit.com',
@@ -266,14 +265,14 @@ class FakeSyncRepository implements SyncRepository {
           age: 28,
           role: 'trainer'),
     ];
-    const company = CompanyModel(
+    const company = sync_entity.CompanyEntity(
         id: 1,
         name: 'Fit Co',
         email: 'info@fit.co',
         phone: '000',
         address: 'Earth');
-    final data =
-        SyncDataModel(trainers: trainers, company: company, message: 'ok');
+    final data = sync_entity.SyncDataEntity(
+        trainers: trainers, company: company, message: 'ok');
     return Right<Failure, sync_entity.SyncEntity>(
         sync_entity.SyncEntity(data: data));
   }
