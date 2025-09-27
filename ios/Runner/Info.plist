@@ -47,5 +47,10 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Location permission descriptions for map centering -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app uses your location to center the map and help pick walking routes.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app uses your location to center the map and help pick walking routes.</string>
 </dict>
 </plist>

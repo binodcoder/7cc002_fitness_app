@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart' as geocoding;
+import 'package:geolocator/geolocator.dart' as geolocator;
 
 class RoutePickerPage extends StatefulWidget {
   const RoutePickerPage({super.key});
@@ -26,6 +27,9 @@ class _RoutePickerPageState extends State<RoutePickerPage> {
   LatLng? _end;
   String? _startName;
   String? _endName;
+  LatLng? _userLocation;
+  bool _hasCenteredToUser = false;
+  bool _myLocationEnabled = false;
 
   static const CameraPosition _initialCamera = CameraPosition(
     target: LatLng(51.5072, -0.1276), // London
@@ -41,6 +45,7 @@ class _RoutePickerPageState extends State<RoutePickerPage> {
     _endFocus.addListener(() {
       if (_endFocus.hasFocus) setState(() => _editingStart = false);
     });
+    _initCurrentLocation();
   }
 
   @override
@@ -50,6 +55,44 @@ class _RoutePickerPageState extends State<RoutePickerPage> {
     _startFocus.dispose();
     _endFocus.dispose();
     super.dispose();
+  }
+
+  Future<void> _initCurrentLocation() async {
+    try {
+      final serviceEnabled = await geolocator.Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        // Don't block UI; simply skip centering and keep default.
+        return;
+      }
+      var permission = await geolocator.Geolocator.checkPermission();
+      if (permission == geolocator.LocationPermission.denied) {
+        permission = await geolocator.Geolocator.requestPermission();
+      }
+      if (permission == geolocator.LocationPermission.denied ||
+          permission == geolocator.LocationPermission.deniedForever) {
+        // Permission denied, keep defaults.
+        return;
+      }
+
+      final pos = await geolocator.Geolocator.getCurrentPosition(
+        desiredAccuracy: geolocator.LocationAccuracy.best,
+      );
+      if (!mounted) return;
+      setState(() {
+        _userLocation = LatLng(pos.latitude, pos.longitude);
+        _myLocationEnabled = true;
+      });
+
+      // Center camera if map ready
+      if (_controller != null && !_hasCenteredToUser && _userLocation != null) {
+        _controller!.animateCamera(
+          CameraUpdate.newLatLngZoom(_userLocation!, 14),
+        );
+        _hasCenteredToUser = true;
+      }
+    } catch (_) {
+      // Ignore errors; keep default camera.
+    }
   }
 
   void _addPoint(LatLng latLng) {
@@ -286,12 +329,22 @@ class _RoutePickerPageState extends State<RoutePickerPage> {
       ),
       body: GoogleMap(
         initialCameraPosition: _initialCamera,
-        onMapCreated: (c) => _controller = c,
+        onMapCreated: (c) async {
+          _controller = c;
+          // If we already have the user location, center once.
+          if (_userLocation != null && !_hasCenteredToUser) {
+            await Future.delayed(const Duration(milliseconds: 200));
+            _controller!.animateCamera(
+              CameraUpdate.newLatLngZoom(_userLocation!, 14),
+            );
+            _hasCenteredToUser = true;
+          }
+        },
         onTap: _addPoint,
         polylines: _polylines,
         markers: _markers,
-        myLocationButtonEnabled: false,
-        myLocationEnabled: false,
+        myLocationButtonEnabled: true,
+        myLocationEnabled: _myLocationEnabled,
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(12.0),

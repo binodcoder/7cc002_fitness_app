@@ -18,7 +18,7 @@ class _RoutePreviewState extends State<RoutePreview> {
   LatLng? _start;
   LatLng? _end;
   Set<Polyline> _polylines = {};
-  Set<Marker> _markers = {};
+  final Set<Marker> _markers = {};
 
   @override
   void initState() {
@@ -28,20 +28,25 @@ class _RoutePreviewState extends State<RoutePreview> {
       final start = map['start'] as Map<String, dynamic>?;
       final end = map['end'] as Map<String, dynamic>?;
       if (start != null) {
-        _start = LatLng((start['lat'] as num).toDouble(), (start['lng'] as num).toDouble());
+        _start = LatLng(
+            (start['lat'] as num).toDouble(), (start['lng'] as num).toDouble());
         _markers.add(Marker(
           markerId: const MarkerId('start'),
           position: _start!,
-          infoWindow: InfoWindow(title: 'Start', snippet: start['name']?.toString()),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          infoWindow:
+              InfoWindow(title: 'Start', snippet: start['name']?.toString()),
+          icon:
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
         ));
       }
       if (end != null) {
-        _end = LatLng((end['lat'] as num).toDouble(), (end['lng'] as num).toDouble());
+        _end = LatLng(
+            (end['lat'] as num).toDouble(), (end['lng'] as num).toDouble());
         _markers.add(Marker(
           markerId: const MarkerId('end'),
           position: _end!,
-          infoWindow: InfoWindow(title: 'End', snippet: end['name']?.toString()),
+          infoWindow:
+              InfoWindow(title: 'End', snippet: end['name']?.toString()),
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
         ));
       }
@@ -66,7 +71,8 @@ class _RoutePreviewState extends State<RoutePreview> {
   @override
   Widget build(BuildContext context) {
     // Fallback camera
-    final camera = CameraPosition(target: _start ?? _end ?? const LatLng(51.5072, -0.1276), zoom: 12);
+    final camera = CameraPosition(
+        target: _start ?? _end ?? const LatLng(51.5072, -0.1276), zoom: 12);
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: SizedBox(
@@ -84,14 +90,16 @@ class _RoutePreviewState extends State<RoutePreview> {
             await Future.delayed(const Duration(milliseconds: 200));
             if (_start != null && _end != null) {
               final bounds = _boundsFrom(_start!, _end!);
-              _controller?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 48));
+              _controller
+                  ?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 48));
             } else if (_start != null) {
-              _controller?.animateCamera(CameraUpdate.newLatLngZoom(_start!, 14));
+              _controller
+                  ?.animateCamera(CameraUpdate.newLatLngZoom(_start!, 14));
             } else if (_end != null) {
               _controller?.animateCamera(CameraUpdate.newLatLngZoom(_end!, 14));
             }
           },
-          gestureRecognizers: {},
+          gestureRecognizers: const {},
         ),
       ),
     );
