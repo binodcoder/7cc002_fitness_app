@@ -5,7 +5,12 @@ gradle-wrapper.jar
 /gradlew.bat
 /local.properties
 GeneratedPluginRegistrant.java
+# Native build outputs (CMake/NDK)
 .cxx/
+**/.cxx/
+
+# Module build directories
+**/build/
 
 # Remember to never publicly share your keystore.
 # See https://flutter.dev/to/reference-keystore
