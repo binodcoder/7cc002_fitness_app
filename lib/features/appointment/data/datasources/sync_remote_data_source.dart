@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/features/appointment/domain/entities/sync.dart';
@@ -17,9 +16,8 @@ class SyncRemoteDataSourceImpl implements SyncRemoteDataSource {
     final response = await client
         .get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
-      final map = json.decode(response.body) as Map<String, dynamic>;
-      final dto = SyncDto.fromJson(map);
-      return dto.toEntity();
+      // Parse into model which extends domain entity
+      return syncModelFromJson(response.body);
     } else {
       throw ServerException();
     }

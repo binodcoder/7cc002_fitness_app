@@ -1,88 +1,75 @@
 import 'dart:convert';
 import 'package:fitness_app/features/appointment/domain/entities/sync.dart';
 
-// Data-layer DTOs (do not extend domain). Provide JSON parsing and mapping.
+// Keep Model naming and extend domain entities, while keeping robust parsing.
 
-SyncDto syncDtoFromJsonStr(String str) => SyncDto.fromJson(json.decode(str));
-String syncDtoToJsonStr(SyncDto dto) => json.encode(dto.toJson());
+// Decode JSON string to a data-layer model (which extends domain entity)
+SyncModel syncModelFromJson(String str) =>
+    SyncModel.fromJson(json.decode(str) as Map<String, dynamic>);
 
-class SyncDto {
-  final SyncDataDto data;
+// Encode model to JSON string
+String syncModelToJson(SyncModel data) => json.encode(data.toJson());
 
-  const SyncDto({required this.data});
+class SyncModel extends SyncEntity {
+  const SyncModel({required super.data});
 
-  factory SyncDto.fromJson(Map<String, dynamic> json) {
-    final dataMap = (json['data'] as Map?)?.cast<String, dynamic>() ?? const {};
-    return SyncDto(data: SyncDataDto.fromJson(dataMap));
-  }
+  factory SyncModel.fromJson(Map<String, dynamic> json) => SyncModel(
+        data: SyncDataModel.fromJson(
+            (json['data'] as Map?)?.cast<String, dynamic>() ?? const {}),
+      );
 
-  factory SyncDto.fromEntity(SyncEntity e) =>
-      SyncDto(data: SyncDataDto.fromEntity(e.data));
+  factory SyncModel.fromEntity(SyncEntity e) =>
+      SyncModel(data: SyncDataModel.fromEntity(e.data));
 
   Map<String, dynamic> toJson() => {
-        'data': data.toJson(),
+        'data': (data as SyncDataModel).toJson(),
       };
-
-  SyncEntity toEntity() => SyncEntity(data: data.toEntity());
 }
 
-class SyncDataDto {
-  final List<TrainerDto> trainers;
-  final CompanyDto company;
-  final String message;
+class SyncDataModel extends SyncDataEntity {
+  const SyncDataModel({
+    required super.trainers,
+    required super.company,
+    required super.message,
+  });
 
-  const SyncDataDto(
-      {required this.trainers, required this.company, required this.message});
-
-  factory SyncDataDto.fromJson(Map<String, dynamic> json) {
+  factory SyncDataModel.fromJson(Map<String, dynamic> json) {
     final trainersList = (json['trainers'] as List?) ?? const [];
-    return SyncDataDto(
+    return SyncDataModel(
       trainers: trainersList
           .whereType<dynamic>()
-          .map((e) => TrainerDto.fromJson(
+          .map((e) => TrainerModel.fromJson(
               (e as Map?)?.cast<String, dynamic>() ?? const {}))
           .toList(),
-      company:
-          CompanyDto.fromJson((json['company'] as Map?)?.cast<String, dynamic>() ?? const {}),
+      company: CompanyModel.fromJson(
+          (json['company'] as Map?)?.cast<String, dynamic>() ?? const {}),
       message: (json['message'] ?? '').toString(),
     );
   }
 
-  factory SyncDataDto.fromEntity(SyncDataEntity e) => SyncDataDto(
-        trainers: e.trainers.map((t) => TrainerDto.fromEntity(t)).toList(),
-        company: CompanyDto.fromEntity(e.company),
+  factory SyncDataModel.fromEntity(SyncDataEntity e) => SyncDataModel(
+        trainers: e.trainers.map((t) => TrainerModel.fromEntity(t)).toList(),
+        company: CompanyModel.fromEntity(e.company),
         message: e.message,
       );
 
   Map<String, dynamic> toJson() => {
-        'trainers': trainers.map((e) => e.toJson()).toList(),
-        'company': company.toJson(),
+        'trainers': trainers.map((e) => (e as TrainerModel).toJson()).toList(),
+        'company': (company as CompanyModel).toJson(),
         'message': message,
       };
-
-  SyncDataEntity toEntity() => SyncDataEntity(
-        trainers: trainers.map((t) => t.toEntity()).toList(),
-        company: company.toEntity(),
-        message: message,
-      );
 }
 
-class CompanyDto {
-  final int id;
-  final String name;
-  final String email;
-  final String phone;
-  final String address;
-
-  const CompanyDto({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.phone,
-    required this.address,
+class CompanyModel extends CompanyEntity {
+  const CompanyModel({
+    required super.id,
+    required super.name,
+    required super.email,
+    required super.phone,
+    required super.address,
   });
 
-  factory CompanyDto.fromJson(Map<String, dynamic> json) => CompanyDto(
+  factory CompanyModel.fromJson(Map<String, dynamic> json) => CompanyModel(
         id: _asInt(json['id']),
         name: (json['name'] ?? '').toString(),
         email: (json['email'] ?? '').toString(),
@@ -90,7 +77,7 @@ class CompanyDto {
         address: (json['address'] ?? '').toString(),
       );
 
-  factory CompanyDto.fromEntity(CompanyEntity e) => CompanyDto(
+  factory CompanyModel.fromEntity(CompanyEntity e) => CompanyModel(
         id: e.id,
         name: e.name,
         email: e.email,
@@ -105,38 +92,21 @@ class CompanyDto {
         'phone': phone,
         'address': address,
       };
-
-  CompanyEntity toEntity() => CompanyEntity(
-        id: id,
-        name: name,
-        email: email,
-        phone: phone,
-        address: address,
-      );
 }
 
-class TrainerDto {
-  final int id;
-  final String name;
-  final String email;
-  final String password;
-  final String institutionEmail;
-  final String gender;
-  final int age;
-  final String role;
-
-  const TrainerDto({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.password,
-    required this.institutionEmail,
-    required this.gender,
-    required this.age,
-    required this.role,
+class TrainerModel extends TrainerEntity {
+  const TrainerModel({
+    required super.id,
+    required super.name,
+    required super.email,
+    required super.password,
+    required super.institutionEmail,
+    required super.gender,
+    required super.age,
+    required super.role,
   });
 
-  factory TrainerDto.fromJson(Map<String, dynamic> json) => TrainerDto(
+  factory TrainerModel.fromJson(Map<String, dynamic> json) => TrainerModel(
         id: _asInt(json['id']),
         name: (json['name'] ?? '').toString(),
         email: (json['email'] ?? '').toString(),
@@ -147,7 +117,7 @@ class TrainerDto {
         role: (json['role'] ?? '').toString(),
       );
 
-  factory TrainerDto.fromEntity(TrainerEntity e) => TrainerDto(
+  factory TrainerModel.fromEntity(TrainerEntity e) => TrainerModel(
         id: e.id,
         name: e.name,
         email: e.email,
@@ -168,17 +138,6 @@ class TrainerDto {
         'age': age,
         'role': role,
       };
-
-  TrainerEntity toEntity() => TrainerEntity(
-        id: id,
-        name: name,
-        email: email,
-        password: password,
-        institutionEmail: institutionEmail,
-        gender: gender,
-        age: age,
-        role: role,
-      );
 }
 
 int _asInt(dynamic v) {
