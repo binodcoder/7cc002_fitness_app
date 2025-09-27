@@ -1,2 +1,0 @@
-/Users/binodcoder/dev/flutter/7cc002_fitness_app/android/app/.cxx/Debug/19m3a304/arm64-v8a/CMakeFiles/edit_cache.dir
-/Users/binodcoder/dev/flutter/7cc002_fitness_app/android/app/.cxx/Debug/19m3a304/arm64-v8a/CMakeFiles/rebuild_cache.dir
