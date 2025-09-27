@@ -12,8 +12,8 @@ import 'package:fitness_app/features/routine/domain/entities/routine.dart';
 import 'package:fitness_app/features/routine/domain/repositories/routine_repositories.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 import 'package:fitness_app/features/walk/domain/repositories/walk_repositories.dart';
-import 'package:fitness_app/features/walk_media/domain/entities/walk_media.dart';
-import 'package:fitness_app/features/walk_media/domain/repositories/walk_media_repositories.dart';
+import 'package:fitness_app/features/walk/domain/entities/walk_media.dart';
+import 'package:fitness_app/features/walk/domain/repositories/walk_media_repositories.dart';
 
 class _InMemoryDB {
   static final _InMemoryDB _instance = _InMemoryDB._();
@@ -274,6 +274,7 @@ class FakeSyncRepository implements SyncRepository {
         address: 'Earth');
     final data =
         SyncDataModel(trainers: trainers, company: company, message: 'ok');
-    return Right<Failure, sync_entity.SyncEntity>(SyncModel(data: data));
+    return Right<Failure, sync_entity.SyncEntity>(
+        sync_entity.SyncEntity(data: data));
   }
 }

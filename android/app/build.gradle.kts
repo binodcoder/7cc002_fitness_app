@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -5,8 +7,17 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Load local.properties to fetch secrets like MAPS_API_KEY in development
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+val mapsApiKey: String = (localProps.getProperty("MAPS_API_KEY")
+    ?: (project.findProperty("MAPS_API_KEY") as String?)
+    ?: "")
+
 android {
-    namespace = "com.example.fitness_app"
+    namespace = "com.binodcoder.fitness_app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -21,13 +32,15 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.fitness_app"
+        applicationId = "com.binodcoder.fitness_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // Expose Google Maps API key via manifest placeholders
+        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
 
     buildTypes {

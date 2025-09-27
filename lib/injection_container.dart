@@ -1,9 +1,9 @@
 import 'package:fitness_app/shared/data/local/db_helper.dart';
-import 'package:fitness_app/features/walk_media/domain/usecases/add_walk_media.dart';
-import 'package:fitness_app/features/walk_media/domain/usecases/delete_walk_media.dart';
-import 'package:fitness_app/features/walk_media/domain/usecases/get_walk_media.dart';
-import 'package:fitness_app/features/walk_media/domain/usecases/get_walk_media_by_walk_id.dart';
-import 'package:fitness_app/features/walk_media/domain/usecases/update_walk_media.dart';
+import 'package:fitness_app/features/walk/domain/usecases/add_walk_media.dart';
+import 'package:fitness_app/features/walk/domain/usecases/delete_walk_media.dart';
+import 'package:fitness_app/features/walk/domain/usecases/get_walk_media.dart';
+import 'package:fitness_app/features/walk/domain/usecases/get_walk_media_by_walk_id.dart';
+import 'package:fitness_app/features/walk/domain/usecases/update_walk_media.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/event_bloc.dart';
 import 'package:fitness_app/features/live_training/presentation/add_update_live_training/bloc/live_training_add_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -15,6 +15,12 @@ import 'package:http/http.dart' as http;
 import 'features/appointment/data/datasources/appointment_remote_data_source.dart';
 import 'features/appointment/data/datasources/sync_remote_data_source.dart';
 import 'core/fakes/fake_repositories.dart';
+import 'features/appointment/data/repositories/appointment_repositories_impl.dart';
+import 'features/appointment/data/repositories/sync_repositories_impl.dart';
+import 'features/walk/data/repositories/walk_repository_impl.dart';
+import 'features/walk/data/repositories/walk_media_repository_impl.dart';
+import 'features/routine/data/repositories/routine_repository_impl.dart';
+import 'features/live_training/data/repositories/live_training_repository_impl.dart';
 import 'features/live_training/data/datasources/live_training_local_data_source.dart';
 import 'features/live_training/data/datasources/live_training_remote_data_source.dart';
 import 'features/login/data/datasources/login_remote_data_source.dart';
@@ -26,8 +32,8 @@ import 'features/routine/data/data_sources/routines_local_data_source.dart';
 import 'features/routine/data/data_sources/routines_remote_data_source.dart';
 import 'features/walk/data/data_sources/walks_local_data_source.dart';
 import 'features/walk/data/data_sources/walks_remote_data_source.dart';
-import 'features/walk_media/data/data_sources/walks_media_local_data_source.dart';
-import 'features/walk_media/data/data_sources/walks_media_remote_data_source.dart';
+import 'features/walk/data/data_sources/walks_media_local_data_source.dart';
+import 'features/walk/data/data_sources/walks_media_remote_data_source.dart';
 import 'features/appointment/domain/repositories/appointment_repositories.dart';
 import 'features/appointment/domain/repositories/sync_repositories.dart';
 import 'features/appointment/domain/usecases/add_appointment.dart';
@@ -52,7 +58,7 @@ import 'features/walk/domain/usecases/get_walks.dart';
 import 'features/walk/domain/usecases/join_walk.dart';
 import 'features/walk/domain/usecases/leave_walk.dart';
 import 'features/walk/domain/usecases/update_walk.dart';
-import 'features/walk_media/domain/repositories/walk_media_repositories.dart';
+import 'features/walk/domain/repositories/walk_media_repositories.dart';
 import 'features/live_training/domain/repositories/live_training_repositories.dart';
 import 'features/live_training/domain/usecases/add_live_training.dart';
 import 'features/live_training/domain/usecases/delete_live_training.dart';
@@ -65,14 +71,19 @@ import 'features/login/presentation/bloc/login_bloc.dart';
 import 'features/register/presentation/bloc/user_add_bloc.dart';
 import 'features/routine/presentation/add_update_routine/bloc/routine_add_bloc.dart';
 import 'features/routine/presentation/get_routines/bloc/routine_bloc.dart';
-import 'features/walk/presentation/walk/add_update_walk/bloc/walk_add_bloc.dart';
-import 'features/walk/presentation/walk/get_walks/bloc/walk_bloc.dart';
-import 'features/walk_media/presentation/add__update_walk_media/bloc/walk_media_add_bloc.dart';
-import 'features/walk_media/presentation/get_walk_media/bloc/walk_media_bloc.dart';
+import 'core/services/image_picker_service.dart';
+import 'features/walk/presentation/walk_form/bloc/walk_form_bloc.dart';
+import 'features/walk/presentation/walk_list/bloc/walk_list_bloc.dart';
+import 'features/walk/presentation/walk_media/add__update_walk_media/bloc/walk_media_add_bloc.dart';
+import 'features/walk/presentation/walk_media/get_walk_media/bloc/walk_media_bloc.dart';
 
 final sl = GetIt.instance;
 
+bool _useFakeData() => true; // flip to false to use real backends
+
 Future<void> init() async {
+  // Toggle fake data for local testing without backend
+  final bool kUseFakeData = _useFakeData();
   //login
   sl.registerFactory(() => LoginBloc(login: sl(), sync: sl()));
 
@@ -88,7 +99,9 @@ Future<void> init() async {
 
   //sync
   sl.registerLazySingleton(() => Sync(sl()));
-  sl.registerLazySingleton<SyncRepository>(() => FakeSyncRepository());
+  sl.registerLazySingleton<SyncRepository>(() => kUseFakeData
+      ? FakeSyncRepository()
+      : SyncRepositoryImpl(syncRemoteDataSource: sl()));
 
   sl.registerLazySingleton<SyncRemoteDataSource>(
       () => SyncRemoteDataSourceImpl(client: sl()));
@@ -105,16 +118,18 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateAppointment(sl()));
   sl.registerLazySingleton(() => GetAppointments(sl()));
   sl.registerLazySingleton(() => DeleteAppointment(sl()));
-  sl.registerLazySingleton<AppointmentRepositories>(
-      () => FakeAppointmentRepositories());
+  sl.registerLazySingleton<AppointmentRepositories>(() => kUseFakeData
+      ? FakeAppointmentRepositories()
+      : AppointmentRepositoriesImpl(appointmentRemoteDataSource: sl()));
 
   sl.registerLazySingleton<AppointmentRemoteDataSource>(
       () => AppointmentRemoteDataSourceImpl(client: sl()));
 
   //walk
-  sl.registerFactory(() => WalkBloc(
+  sl.registerFactory(() => WalkListBloc(
       getWalks: sl(), deleteWalk: sl(), joinWalk: sl(), leaveWalk: sl()));
-  sl.registerFactory(() => WalkAddBloc(addWalk: sl(), updateWalk: sl()));
+  sl.registerFactory(() =>
+      WalkFormBloc(addWalk: sl(), updateWalk: sl(), imagePickerService: sl()));
 
   sl.registerLazySingleton(() => GetWalks(sl()));
   sl.registerLazySingleton(() => DeleteWalk(sl()));
@@ -122,7 +137,13 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateWalk(sl()));
   sl.registerLazySingleton(() => JoinWalk(sl()));
   sl.registerLazySingleton(() => LeaveWalk(sl()));
-  sl.registerLazySingleton<WalkRepository>(() => FakeWalkRepository());
+  sl.registerLazySingleton<WalkRepository>(() => kUseFakeData
+      ? FakeWalkRepository()
+      : WalkRepositoryImpl(
+          walkLocalDataSource: sl(),
+          walkRemoteDataSource: sl(),
+          networkInfo: sl(),
+        ));
 
   sl.registerLazySingleton<WalkRemoteDataSource>(
       () => WalkRemoteDataSourceImpl(client: sl()));
@@ -140,8 +161,13 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateWalkMedia(sl()));
   sl.registerLazySingleton(() => AddWalkMedia(sl()));
   sl.registerLazySingleton(() => GetWalkMediaByWalkId(sl()));
-  sl.registerLazySingleton<WalkMediaRepository>(
-      () => FakeWalkMediaRepository());
+  sl.registerLazySingleton<WalkMediaRepository>(() => kUseFakeData
+      ? FakeWalkMediaRepository()
+      : WalkMediaRepositoryImpl(
+          walkMediaLocalDataSource: sl(),
+          walkMediaRemoteDataSource: sl(),
+          networkInfo: sl(),
+        ));
 
   sl.registerLazySingleton<WalkMediaRemoteDataSource>(
       () => WalkMediaRemoteDataSourceImpl(client: sl()));
@@ -156,7 +182,13 @@ Future<void> init() async {
   sl.registerLazySingleton(() => DeleteRoutine(sl()));
   sl.registerLazySingleton(() => AddRoutine(sl()));
   sl.registerLazySingleton(() => UpdateRoutine(sl()));
-  sl.registerLazySingleton<RoutineRepository>(() => FakeRoutineRepository());
+  sl.registerLazySingleton<RoutineRepository>(() => kUseFakeData
+      ? FakeRoutineRepository()
+      : RoutineRepositoryImpl(
+          routineLocalDataSource: sl(),
+          routineRemoteDataSource: sl(),
+          networkInfo: sl(),
+        ));
   sl.registerLazySingleton<RoutinesLocalDataSource>(
       () => RoutinesLocalDataSourceImpl(sl()));
   sl.registerLazySingleton<RoutineRemoteDataSource>(
@@ -172,8 +204,13 @@ Future<void> init() async {
   sl.registerLazySingleton(() => DeleteLiveTraining(sl()));
   sl.registerLazySingleton(() => AddLiveTraining(sl()));
   sl.registerLazySingleton(() => UpdateLiveTraining(sl()));
-  sl.registerLazySingleton<LiveTrainingRepository>(
-      () => FakeLiveTrainingRepository());
+  sl.registerLazySingleton<LiveTrainingRepository>(() => kUseFakeData
+      ? FakeLiveTrainingRepository()
+      : LiveTrainingRepositoryImpl(
+            liveTrainingLocalDataSource: sl(),
+            liveTrainingRemoteDataSource: sl(),
+            networkInfo: sl(),
+          ));
   sl.registerLazySingleton<LiveTrainingLocalDataSource>(
       () => LiveTrainingLocalDataSourceImpl());
   sl.registerLazySingleton<LiveTrainingRemoteDataSource>(
@@ -209,4 +246,5 @@ Future<void> init() async {
   sl.registerLazySingleton(() => sharedPreferences);
   sl.registerLazySingleton(() => http.Client());
   sl.registerLazySingleton(() => InternetConnectionChecker());
+  sl.registerLazySingleton<ImagePickerService>(() => ImagePickerServiceImpl());
 }

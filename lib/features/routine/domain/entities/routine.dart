@@ -21,6 +21,6 @@ class Routine extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, name, description, difficulty, duration, source, exercises];
+  List<Object?> get props =>
+      [id, name, description, difficulty, duration, source, exercises];
 }
-

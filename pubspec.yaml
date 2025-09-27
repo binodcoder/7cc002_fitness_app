@@ -67,6 +67,8 @@ dependencies:
   image_cropper: ^9.1.0
   flutter_chat_ui: ^2.9.0
   flutter_chat_core: ^2.0.0
+  google_maps_flutter: ^2.7.0
+  geocoding: ^2.1.1
 
 
 dev_dependencies:

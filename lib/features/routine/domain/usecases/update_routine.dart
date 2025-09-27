@@ -10,7 +10,7 @@ class UpdateRoutine implements UseCase<int, Routine> {
   UpdateRoutine(this.routineRepository);
 
   @override
-  Future<Either<Failure, int>?> call(Routine routineModel) async {
-    return await routineRepository.updateRoutine(routineModel);
+  Future<Either<Failure, int>?> call(Routine routine) async {
+    return await routineRepository.updateRoutine(routine);
   }
 }

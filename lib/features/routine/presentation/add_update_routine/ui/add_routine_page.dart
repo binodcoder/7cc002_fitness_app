@@ -11,7 +11,7 @@ import 'package:fitness_app/core/theme/font_manager.dart';
 import 'package:fitness_app/core/theme/styles_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
 
-import 'package:fitness_app/features/login/presentation/widgets/sign_in_button.dart';
+import 'package:fitness_app/core/widgets/custom_button.dart';
 import '../bloc/routine_add_bloc.dart';
 import '../bloc/routine_add_event.dart';
 import '../bloc/routine_add_state.dart';
@@ -351,7 +351,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                       SizedBox(
                         height: AppHeight.h30,
                       ),
-                      SigninButton(
+                      CustomButton(
                         child: Text(
                           widget.routine == null
                               ? strings.addRoutine

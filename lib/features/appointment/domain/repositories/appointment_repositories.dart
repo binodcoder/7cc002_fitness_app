@@ -4,7 +4,7 @@ import 'package:fitness_app/core/errors/failures.dart';
 
 abstract class AppointmentRepositories {
   Future<Either<Failure, List<Appointment>>>? getAppointments();
-  Future<Either<Failure, int>>? addAppointment(Appointment appointmentModel);
-  Future<Either<Failure, int>>? updateAppointment(Appointment userModel);
+  Future<Either<Failure, int>>? addAppointment(Appointment appointment);
+  Future<Either<Failure, int>>? updateAppointment(Appointment appointment);
   Future<Either<Failure, int>>? deleteAppointment(int appointmentId);
 }

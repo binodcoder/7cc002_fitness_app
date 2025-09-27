@@ -11,7 +11,7 @@ class AddRoutine implements UseCase<int, Routine> {
   AddRoutine(this.addRoutineRepository);
 
   @override
-  Future<Either<Failure, int>?> call(Routine routineModel) async {
-    return await addRoutineRepository.addRoutine(routineModel);
+  Future<Either<Failure, int>?> call(Routine routine) async {
+    return await addRoutineRepository.addRoutine(routine);
   }
 }

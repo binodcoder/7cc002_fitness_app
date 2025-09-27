@@ -11,7 +11,7 @@ class JoinWalk implements UseCase<int, WalkParticipant> {
   JoinWalk(this.walkRepository);
 
   @override
-  Future<Either<Failure, int>?> call(WalkParticipant walkParticipantModel) async {
-    return await walkRepository.joinWalk(walkParticipantModel);
+  Future<Either<Failure, int>?> call(WalkParticipant walkParticipant) async {
+    return await walkRepository.joinWalk(walkParticipant);
   }
 }

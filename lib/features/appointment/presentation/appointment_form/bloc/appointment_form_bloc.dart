@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:fitness_app/core/errors/map_failure_to_message.dart';
-import 'package:fitness_app/features/appointment/data/models/sync_data_model.dart';
 import '../../../domain/usecases/add_appointment.dart';
 import '../../../domain/usecases/sync.dart';
 import '../../../domain/usecases/update_appointment.dart';
 import 'appointment_form_event.dart';
 import 'appointment_form_state.dart';
 
-class AppointmentFormBloc extends Bloc<AppointmentFormEvent, AppointmentFormState> {
+class AppointmentFormBloc
+    extends Bloc<AppointmentFormEvent, AppointmentFormState> {
   final AddAppointment addAppointment;
   final UpdateAppointment updateAppointment;
   final Sync sync;
@@ -23,19 +23,19 @@ class AppointmentFormBloc extends Bloc<AppointmentFormEvent, AppointmentFormStat
     on<AppointmentUpdateRequested>(_onUpdateRequested);
   }
 
-  FutureOr<void> _onInitialized(
-      AppointmentFormInitialized event, Emitter<AppointmentFormState> emit) async {
+  FutureOr<void> _onInitialized(AppointmentFormInitialized event,
+      Emitter<AppointmentFormState> emit) async {
     emit(const AppointmentFormLoading());
     final syncResult = await sync("donotdeleteordublicate@wlv.ac.uk");
     syncResult!.fold((failure) {
       emit(AppointmentFormError(message: mapFailureToMessage(failure)));
     }, (syncData) {
-      emit(AppointmentFormLoaded(syncModel: syncData as SyncModel));
+      emit(AppointmentFormLoaded(syncEntity: syncData));
     });
   }
 
-  FutureOr<void> _onCreateRequested(
-      AppointmentCreateRequested event, Emitter<AppointmentFormState> emit) async {
+  FutureOr<void> _onCreateRequested(AppointmentCreateRequested event,
+      Emitter<AppointmentFormState> emit) async {
     emit(const AppointmentFormLoading());
     final result = await addAppointment(event.appointment);
     result!.fold((failure) {
@@ -45,8 +45,8 @@ class AppointmentFormBloc extends Bloc<AppointmentFormEvent, AppointmentFormStat
     });
   }
 
-  FutureOr<void> _onUpdateRequested(
-      AppointmentUpdateRequested event, Emitter<AppointmentFormState> emit) async {
+  FutureOr<void> _onUpdateRequested(AppointmentUpdateRequested event,
+      Emitter<AppointmentFormState> emit) async {
     emit(const AppointmentFormLoading());
     final result = await updateAppointment(event.appointment);
     result!.fold((failure) {
@@ -56,4 +56,3 @@ class AppointmentFormBloc extends Bloc<AppointmentFormEvent, AppointmentFormStat
     });
   }
 }
-

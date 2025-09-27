@@ -5,7 +5,8 @@ import 'package:fitness_app/features/register/domain/entities/user.dart'
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/core/errors/map_failure_to_message.dart';
-import 'package:fitness_app/features/appointment/data/models/sync_data_model.dart';
+import 'package:fitness_app/features/appointment/domain/entities/sync.dart'
+    as sync_entity;
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/features/appointment/domain/usecases/sync.dart';
 import '../../domain/usecases/login.dart';
@@ -15,7 +16,7 @@ import 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final Login login;
   final Sync sync;
-  late SyncModel syncModel;
+  late sync_entity.SyncEntity syncModel;
   final SharedPreferences sharedPreferences = sl<SharedPreferences>();
 
   final DatabaseHelper dbHelper = DatabaseHelper();

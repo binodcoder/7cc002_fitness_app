@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:fitness_app/features/live_training/data/models/live_training_model.dart';
 import 'package:fitness_app/features/routine/data/models/routine_model.dart';
-import 'package:fitness_app/features/walk_media/data/models/walk_media_model.dart';
+import 'package:fitness_app/features/walk/data/models/walk_media_model.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -137,4 +137,3 @@ class DatabaseHelper {
 
   insertUser(UserModel userModel) {}
 }
-

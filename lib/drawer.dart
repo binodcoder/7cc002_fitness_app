@@ -13,7 +13,7 @@ import 'features/appointment/presentation/get_appointments/ui/calendar.dart';
 import 'features/chat/chat_page.dart';
 import 'features/login/presentation/ui/login_screen.dart';
 import 'features/routine/presentation/get_routines/ui/routine.dart';
-import 'features/walk/presentation/walk/get_walks/ui/walk.dart';
+import 'features/walk/presentation/walk_list/ui/walk_list_page.dart';
 import 'package:fitness_app/core/widgets/app_drawer_header.dart';
 import 'package:fitness_app/core/widgets/app_slidable_list_tile.dart';
 
@@ -40,7 +40,8 @@ class _MyDrawerState extends State<MyDrawer> {
           children: [
             const AppDrawerHeader(),
             AppSlidableListTile(
-              leading: const Icon(Icons.chat_outlined, color: ColorManager.primary),
+              leading:
+                  const Icon(Icons.chat_outlined, color: ColorManager.primary),
               title: strings.chat,
               titleStyle: getSemiBoldStyle(
                 color: ColorManager.darkGrey,
@@ -92,10 +93,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 );
               },
             ),
-            sharedPreferences.getString('institutionEmail') == null ||
-                    sharedPreferences.getString('institutionEmail') == ""
-                ? const SizedBox()
-                : AppSlidableListTile(
+            AppSlidableListTile(
                     leading: const Icon(FontAwesomeIcons.personWalking,
                         color: ColorManager.primary),
                     title: strings.walk,
@@ -108,7 +106,8 @@ class _MyDrawerState extends State<MyDrawer> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (BuildContext context) => const WalkPage(),
+                          builder: (BuildContext context) =>
+                              const WalkListPage(),
                         ),
                       );
                     },

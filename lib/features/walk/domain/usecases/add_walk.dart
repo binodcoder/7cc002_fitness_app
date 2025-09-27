@@ -11,7 +11,7 @@ class AddWalk implements UseCase<int, Walk> {
   AddWalk(this.walkRepository);
 
   @override
-  Future<Either<Failure, int>?> call(Walk walkModel) async {
-    return await walkRepository.addWalk(walkModel);
+  Future<Either<Failure, int>?> call(Walk walk) async {
+    return await walkRepository.addWalk(walk);
   }
 }

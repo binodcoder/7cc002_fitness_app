@@ -4,9 +4,9 @@ import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 
 abstract class WalkRepository {
   Future<Either<Failure, List<Walk>>>? getWalks();
-  Future<Either<Failure, int>>? addWalk(Walk walkModel);
-  Future<Either<Failure, int>>? updateWalk(Walk walkModel);
+  Future<Either<Failure, int>>? addWalk(Walk walk);
+  Future<Either<Failure, int>>? updateWalk(Walk walk);
   Future<Either<Failure, int>>? deleteWalk(int userId);
-  Future<Either<Failure, int>>? joinWalk(WalkParticipant walkParticipantModel);
-  Future<Either<Failure, int>>? leaveWalk(WalkParticipant walkParticipantModel);
+  Future<Either<Failure, int>>? joinWalk(WalkParticipant walkParticipant);
+  Future<Either<Failure, int>>? leaveWalk(WalkParticipant walkParticipant);
 }

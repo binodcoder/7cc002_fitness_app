@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:fitness_app/features/appointment/data/models/sync_data_model.dart';
+import 'package:fitness_app/features/appointment/domain/entities/sync.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
@@ -20,14 +20,14 @@ class AppointmentFormLoading extends AppointmentFormState {
 }
 
 class AppointmentFormLoaded extends AppointmentFormState {
-  final SyncModel syncModel;
-  const AppointmentFormLoaded({required this.syncModel});
-  AppointmentFormLoaded copyWith({SyncModel? syncModel}) {
-    return AppointmentFormLoaded(syncModel: syncModel ?? this.syncModel);
+  final SyncEntity syncEntity;
+  const AppointmentFormLoaded({required this.syncEntity});
+  AppointmentFormLoaded copyWith({SyncEntity? syncEntity}) {
+    return AppointmentFormLoaded(syncEntity: syncEntity ?? this.syncEntity);
   }
 
   @override
-  List<Object?> get props => [syncModel];
+  List<Object?> get props => [syncEntity];
 }
 
 class AppointmentFormInitial extends AppointmentFormState {
@@ -49,4 +49,3 @@ class AppointmentFormError extends AppointmentFormActionState {
   @override
   List<Object?> get props => [message];
 }
-

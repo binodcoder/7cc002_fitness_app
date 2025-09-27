@@ -3,33 +3,42 @@
 //     final syncModel = syncModelFromJson(jsonString);
 
 import 'dart:convert';
-import 'package:fitness_app/features/appointment/domain/entities/sync.dart' as entity;
+import 'package:fitness_app/features/appointment/domain/entities/sync.dart';
 
-SyncModel syncModelFromJson(String str) => SyncModel.fromJson(json.decode(str));
+// Decode JSON into a domain entity via model adapters
+SyncEntity syncModelFromJson(String str) =>
+    SyncModel.fromJson(json.decode(str));
 
-String syncModelToJson(SyncModel data) => json.encode(data.toJson());
+// Encode any SyncEntity to JSON using the model adapter
+String syncModelToJson(SyncEntity data) => json.encode(
+    (data is SyncModel ? data : SyncModel.fromEntity(data)).toJson());
 
-class SyncModel extends entity.SyncEntity {
+class SyncModel extends SyncEntity {
   const SyncModel({required super.data});
 
   factory SyncModel.fromJson(Map<String, dynamic> json) =>
       SyncModel(data: SyncDataModel.fromJson(json["data"]));
 
-  factory SyncModel.fromEntity(entity.SyncEntity e) => SyncModel(data: SyncDataModel.fromEntity(e.data));
+  factory SyncModel.fromEntity(SyncEntity e) =>
+      SyncModel(data: SyncDataModel.fromEntity(e.data));
 
   Map<String, dynamic> toJson() => {"data": (data as SyncDataModel).toJson()};
 }
 
-class SyncDataModel extends entity.SyncDataEntity {
-  const SyncDataModel({required super.trainers, required super.company, required super.message});
+class SyncDataModel extends SyncDataEntity {
+  const SyncDataModel(
+      {required super.trainers,
+      required super.company,
+      required super.message});
 
   factory SyncDataModel.fromJson(Map<String, dynamic> json) => SyncDataModel(
-        trainers: List<TrainerModel>.from(json["trainers"].map((x) => TrainerModel.fromJson(x))),
+        trainers: List<TrainerModel>.from(
+            json["trainers"].map((x) => TrainerModel.fromJson(x))),
         company: CompanyModel.fromJson(json["company"]),
         message: json["message"],
       );
 
-  factory SyncDataModel.fromEntity(entity.SyncDataEntity e) => SyncDataModel(
+  factory SyncDataModel.fromEntity(SyncDataEntity e) => SyncDataModel(
         trainers: e.trainers.map((t) => TrainerModel.fromEntity(t)).toList(),
         company: CompanyModel.fromEntity(e.company),
         message: e.message,
@@ -42,8 +51,13 @@ class SyncDataModel extends entity.SyncDataEntity {
       };
 }
 
-class CompanyModel extends entity.CompanyEntity {
-  const CompanyModel({required super.id, required super.name, required super.email, required super.phone, required super.address});
+class CompanyModel extends CompanyEntity {
+  const CompanyModel(
+      {required super.id,
+      required super.name,
+      required super.email,
+      required super.phone,
+      required super.address});
 
   factory CompanyModel.fromJson(Map<String, dynamic> json) => CompanyModel(
         id: json["id"],
@@ -53,12 +67,23 @@ class CompanyModel extends entity.CompanyEntity {
         address: json["address"],
       );
 
-  factory CompanyModel.fromEntity(entity.CompanyEntity e) => CompanyModel(id: e.id, name: e.name, email: e.email, phone: e.phone, address: e.address);
+  factory CompanyModel.fromEntity(CompanyEntity e) => CompanyModel(
+      id: e.id,
+      name: e.name,
+      email: e.email,
+      phone: e.phone,
+      address: e.address);
 
-  Map<String, dynamic> toJson() => {"id": id, "name": name, "email": email, "phone": phone, "address": address};
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+        "email": email,
+        "phone": phone,
+        "address": address
+      };
 }
 
-class TrainerModel extends entity.TrainerEntity {
+class TrainerModel extends TrainerEntity {
   const TrainerModel({
     required super.id,
     required super.name,
@@ -81,7 +106,7 @@ class TrainerModel extends entity.TrainerEntity {
         role: json["role"],
       );
 
-  factory TrainerModel.fromEntity(entity.TrainerEntity e) => TrainerModel(
+  factory TrainerModel.fromEntity(TrainerEntity e) => TrainerModel(
         id: e.id,
         name: e.name,
         email: e.email,

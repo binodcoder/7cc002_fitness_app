@@ -1,16 +1,19 @@
 import 'dart:convert';
-import 'package:fitness_app/features/routine/domain/entities/routine.dart' as entity;
+import 'package:fitness_app/features/routine/domain/entities/routine.dart';
 import 'exercise_model.dart';
 
-RoutineModel routineModelFromJson(String str) => RoutineModel.fromJson(json.decode(str));
+RoutineModel routineModelFromJson(String str) =>
+    RoutineModel.fromJson(json.decode(str));
 
 String routineModelToJson(RoutineModel data) => json.encode(data.toJson());
 
-List<RoutineModel> routineModelsFromJson(String str) => List<RoutineModel>.from(json.decode(str).map((x) => RoutineModel.fromJson(x)));
+List<RoutineModel> routineModelsFromJson(String str) => List<RoutineModel>.from(
+    json.decode(str).map((x) => RoutineModel.fromJson(x)));
 
-String routineModelsToJson(List<RoutineModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String routineModelsToJson(List<RoutineModel> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class RoutineModel extends entity.Routine {
+class RoutineModel extends Routine {
   const RoutineModel({
     super.id,
     required super.name,
@@ -29,18 +32,22 @@ class RoutineModel extends entity.Routine {
         duration: json["duration"],
         source: json["source"],
         exercises: json["exercises"] != null
-            ? List<ExerciseModel>.from(json["exercises"].map((x) => ExerciseModel.fromJson(x)))
+            ? List<ExerciseModel>.from(
+                json["exercises"].map((x) => ExerciseModel.fromJson(x)))
             : const [],
       );
 
-  factory RoutineModel.fromEntity(entity.Routine e) => RoutineModel(
+  factory RoutineModel.fromEntity(Routine e) => RoutineModel(
         id: e.id,
         name: e.name,
         description: e.description,
         difficulty: e.difficulty,
         duration: e.duration,
         source: e.source,
-        exercises: e.exercises.map((ex) => ex is ExerciseModel ? ex : ExerciseModel.fromEntity(ex)).toList(),
+        exercises: e.exercises
+            .map(
+                (ex) => ex is ExerciseModel ? ex : ExerciseModel.fromEntity(ex))
+            .toList(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -50,6 +57,7 @@ class RoutineModel extends entity.Routine {
         "difficulty": difficulty,
         "duration": duration,
         "source": source,
-        "exercises": exercises.map((x) => (x as ExerciseModel).toJson()).toList(),
+        "exercises":
+            exercises.map((x) => (x as ExerciseModel).toJson()).toList(),
       };
 }

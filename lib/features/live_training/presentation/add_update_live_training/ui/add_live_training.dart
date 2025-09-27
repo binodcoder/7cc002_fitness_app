@@ -14,7 +14,7 @@ import 'package:fitness_app/core/theme/styles_manager.dart';
 import 'package:fitness_app/core/widgets/custom_text_form_field.dart';
 import 'package:fitness_app/features/live_training/presentation/add_update_live_training/widgets/title_field.dart';
 
-import 'package:fitness_app/features/login/presentation/widgets/sign_in_button.dart';
+import 'package:fitness_app/core/widgets/custom_button.dart';
 import '../bloc/live_training_add_bloc.dart';
 import '../bloc/live_training_add_event.dart';
 import '../bloc/live_training_add_state.dart';
@@ -275,7 +275,7 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                   SizedBox(
                     height: size.height * 0.03,
                   ),
-                  SigninButton(
+                  CustomButton(
                     child: Text(
                       strings.save,
                       style: getRegularStyle(

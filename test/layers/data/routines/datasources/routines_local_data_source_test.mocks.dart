@@ -13,8 +13,7 @@ import 'package:fitness_app/features/register/data/models/user_model.dart'
 import 'package:fitness_app/features/routine/data/models/routine_model.dart'
     as _i5;
 import 'package:fitness_app/features/walk/data/models/walk_model.dart' as _i7;
-import 'package:fitness_app/features/walk_media/data/models/walk_media_model.dart'
-    as _i8;
+import 'package:fitness_app/features/walk/data/models/walk_media_model.dart' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:sqflite/sqflite.dart' as _i2;
 

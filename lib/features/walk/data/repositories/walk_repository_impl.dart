@@ -3,7 +3,7 @@ import 'package:fitness_app/features/walk/data/models/walk_participant_model.dar
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/core/errors/failures.dart';
 import 'package:fitness_app/features/walk/data/models/walk_model.dart';
-import 'package:fitness_app/features/walk/domain/entities/walk.dart' as entity;
+import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 import 'package:fitness_app/core/network/network_info.dart';
 import '../../domain/repositories/walk_repositories.dart';
 import '../data_sources/walks_local_data_source.dart';
@@ -21,18 +21,18 @@ class WalkRepositoryImpl implements WalkRepository {
   });
 
   @override
-  Future<Either<Failure, List<entity.Walk>>> getWalks() async {
+  Future<Either<Failure, List<Walk>>> getWalks() async {
     if (await networkInfo.isConnected) {
       try {
         List<WalkModel> walkModelList = await walkRemoteDataSource.getWalks();
-        return Right(walkModelList.cast<entity.Walk>());
+        return Right(walkModelList.cast<Walk>());
       } on ServerException {
         return Left(ServerFailure());
       }
     } else {
       try {
         List<WalkModel> walkModelList = await walkLocalDataSource.getWalks();
-        return Right(walkModelList.cast<entity.Walk>());
+        return Right(walkModelList.cast<Walk>());
       } on CacheException {
         return Left(CacheFailure());
       }
@@ -40,7 +40,7 @@ class WalkRepositoryImpl implements WalkRepository {
   }
 
   @override
-  Future<Either<Failure, int>>? addWalk(entity.Walk walkModel) async {
+  Future<Either<Failure, int>>? addWalk(Walk walkModel) async {
     try {
       final model =
           walkModel is WalkModel ? walkModel : WalkModel.fromEntity(walkModel);
@@ -52,10 +52,9 @@ class WalkRepositoryImpl implements WalkRepository {
   }
 
   @override
-  Future<Either<Failure, int>>? updateWalk(entity.Walk walkModel) async {
+  Future<Either<Failure, int>>? updateWalk(Walk walk) async {
     try {
-      final model =
-          walkModel is WalkModel ? walkModel : WalkModel.fromEntity(walkModel);
+      final model = walk is WalkModel ? walk : WalkModel.fromEntity(walk);
       int response = await walkRemoteDataSource.updateWalk(model);
       return Right(response);
     } on ServerException {
@@ -75,7 +74,7 @@ class WalkRepositoryImpl implements WalkRepository {
 
   @override
   Future<Either<Failure, int>>? joinWalk(
-      entity.WalkParticipant walkParticipantModel) async {
+      WalkParticipant walkParticipantModel) async {
     try {
       final model = walkParticipantModel is WalkParticipantModel
           ? walkParticipantModel
@@ -89,7 +88,7 @@ class WalkRepositoryImpl implements WalkRepository {
 
   @override
   Future<Either<Failure, int>>? leaveWalk(
-      entity.WalkParticipant walkParticipantModel) async {
+      WalkParticipant walkParticipantModel) async {
     try {
       final model = walkParticipantModel is WalkParticipantModel
           ? walkParticipantModel

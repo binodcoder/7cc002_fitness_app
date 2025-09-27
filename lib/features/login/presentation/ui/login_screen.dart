@@ -17,7 +17,7 @@ import '../bloc/login_bloc.dart';
 import '../bloc/login_event.dart';
 import '../bloc/login_state.dart';
 import '../widgets/bear_log_in_controller.dart';
-import '../widgets/sign_in_button.dart';
+import 'package:fitness_app/core/widgets/custom_button.dart';
 import '../widgets/tracking_text_input.dart';
 
 class LoginPage extends StatefulWidget {
@@ -81,8 +81,15 @@ class _LoginPageState extends State<LoginPage> {
         }
       },
       builder: (context, state) {
-        return WillPopScope(
-          onWillPop: showExitPopup,
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) async {
+            if (didPop) return;
+            final ok = await showExitPopup();
+            if (ok && context.mounted) {
+              Navigator.of(context).pop();
+            }
+          },
           child: AnnotatedRegion<SystemUiOverlayStyle>(
             value: const SystemUiOverlayStyle(
               statusBarColor: Colors.transparent,
@@ -253,7 +260,7 @@ class _LoginPageState extends State<LoginPage> {
                                             }
                                           },
                                         ),
-                                        SigninButton(
+                                        CustomButton(
                                           child: Text(
                                             "Login",
                                             style: getRegularStyle(

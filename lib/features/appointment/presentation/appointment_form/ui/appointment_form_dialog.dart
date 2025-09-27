@@ -13,7 +13,7 @@ import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/font_manager.dart';
 import 'package:fitness_app/core/theme/styles_manager.dart';
 
-import 'package:fitness_app/features/login/presentation/widgets/sign_in_button.dart';
+import 'package:fitness_app/core/widgets/custom_button.dart';
 import '../bloc/appointment_form_bloc.dart';
 import '../bloc/appointment_form_state.dart';
 import 'package:fitness_app/features/appointment/presentation/appointment_form/widgets/trainer_dropdown.dart';
@@ -179,7 +179,7 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
           case AppointmentFormLoaded:
             final successState = state as AppointmentFormLoaded;
             if (widget.appointment != null) {
-              _selectedTrainer = successState.syncModel.data.trainers
+              _selectedTrainer = successState.syncEntity.data.trainers
                   .where((TrainerEntity element) =>
                       element.id == widget.appointment!.trainerId)
                   .first;
@@ -210,7 +210,7 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                         height: size.height * 0.03,
                       ),
                       TrainerDropdown(
-                        trainers: successState.syncModel.data.trainers,
+                        trainers: successState.syncEntity.data.trainers,
                         selectedTrainer: _selectedTrainer,
                         onChanged: (newValue) {
                           setState(() {
@@ -290,7 +290,7 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                       SizedBox(
                         height: size.height * 0.03,
                       ),
-                      SigninButton(
+                      CustomButton(
                         child: Text(
                           strings.save,
                           style: getRegularStyle(
@@ -320,8 +320,10 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                                 final parts = t.split(':');
                                 final h = int.parse(parts[0]);
                                 final m = int.parse(parts[1]);
-                                final s = parts.length > 2 ? int.parse(parts[2]) : 0;
-                                return Duration(hours: h, minutes: m, seconds: s);
+                                final s =
+                                    parts.length > 2 ? int.parse(parts[2]) : 0;
+                                return Duration(
+                                    hours: h, minutes: m, seconds: s);
                               }
 
                               final sd = parse(st);
@@ -357,8 +359,8 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                               userId: sharedPreferences.getInt("user_id") ?? 1,
                               remark: _remarksController.text,
                             );
-                            formBloc.add(
-                                AppointmentUpdateRequested(appointment: appointmentModel));
+                            formBloc.add(AppointmentUpdateRequested(
+                                appointment: appointmentModel));
                           } else {
                             final appointmentModel = Appointment(
                               date: _selectedDate,
@@ -368,8 +370,8 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                               userId: sharedPreferences.getInt("user_id") ?? 1,
                               remark: _remarksController.text,
                             );
-                            formBloc.add(
-                                AppointmentCreateRequested(appointment: appointmentModel));
+                            formBloc.add(AppointmentCreateRequested(
+                                appointment: appointmentModel));
                           }
                         },
                       ),
@@ -389,4 +391,3 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
     );
   }
 }
-

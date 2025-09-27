@@ -10,7 +10,7 @@ class LeaveWalk implements UseCase<int, WalkParticipant> {
   LeaveWalk(this.walkRepository);
 
   @override
-  Future<Either<Failure, int>?> call(WalkParticipant walkParticipantModel) async {
-    return await walkRepository.leaveWalk(walkParticipantModel);
+  Future<Either<Failure, int>?> call(WalkParticipant walkParticipant) async {
+    return await walkRepository.leaveWalk(walkParticipant);
   }
 }

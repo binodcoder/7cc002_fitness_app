@@ -12,7 +12,7 @@ import 'package:fitness_app/core/theme/styles_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
 
 import 'package:fitness_app/features/login/presentation/ui/login_screen.dart';
-import 'package:fitness_app/features/login/presentation/widgets/sign_in_button.dart';
+import 'package:fitness_app/core/widgets/custom_button.dart';
 import '../bloc/user_add_bloc.dart';
 import '../bloc/user_add_event.dart';
 import '../bloc/user_add_state.dart';
@@ -220,7 +220,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     SizedBox(
                       height: AppHeight.h30,
                     ),
-                    SigninButton(
+                    CustomButton(
                       child: Text(
                         widget.user == null
                             ? strings.register
