@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
@@ -22,7 +21,6 @@ class WalkMediaPage extends StatefulWidget {
 }
 
 class _WalkMediaPageState extends State<WalkMediaPage> {
-  final DatabaseHelper dbHelper = DatabaseHelper();
 
   @override
   void initState() {
@@ -150,4 +148,3 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
     );
   }
 }
-

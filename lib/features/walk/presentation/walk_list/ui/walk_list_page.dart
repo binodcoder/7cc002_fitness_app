@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 import 'package:fitness_app/drawer.dart';
 import 'package:fitness_app/injection_container.dart';
@@ -27,7 +26,6 @@ class WalkListPage extends StatefulWidget {
 }
 
 class _WalkListPageState extends State<WalkListPage> {
-  final DatabaseHelper dbHelper = DatabaseHelper();
 
   @override
   void initState() {
@@ -149,7 +147,8 @@ class _WalkListPageState extends State<WalkListPage> {
                       },
                       onJoinTap: () {
                         WalkParticipant walkParticipant = WalkParticipant(
-                          userId: sharedPreferences.getInt("user_id")!,
+                          // If not cached yet, pass 0; Firebase DS will resolve current user id
+                          userId: sharedPreferences.getInt("user_id") ?? 0,
                           walkId: walk.id!,
                         );
                         if (isJoined) {

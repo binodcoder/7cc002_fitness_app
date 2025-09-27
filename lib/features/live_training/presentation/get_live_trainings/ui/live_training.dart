@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/drawer.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/features/live_training/presentation/add_update_live_training/ui/add_live_training.dart';
@@ -23,7 +22,6 @@ class LiveTrainingPage extends StatefulWidget {
 }
 
 class _LiveTrainingPageState extends State<LiveTrainingPage> {
-  final DatabaseHelper dbHelper = DatabaseHelper();
 
   @override
   void initState() {

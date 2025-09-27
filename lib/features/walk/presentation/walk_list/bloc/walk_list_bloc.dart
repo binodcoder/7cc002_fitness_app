@@ -3,7 +3,6 @@ import 'package:bloc/bloc.dart';
 import 'package:fitness_app/features/walk/domain/usecases/leave_walk.dart';
 import 'package:fitness_app/features/walk/presentation/walk_list/bloc/walk_list_event.dart';
 import 'package:fitness_app/features/walk/presentation/walk_list/bloc/walk_list_state.dart';
-import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 import 'package:fitness_app/core/usecases/usecase.dart';
 import 'package:fitness_app/features/walk/domain/usecases/delete_walk.dart';
@@ -16,7 +15,6 @@ class WalkListBloc extends Bloc<WalkListEvent, WalkListState> {
   final DeleteWalk deleteWalk;
   final JoinWalk joinWalk;
   final LeaveWalk leaveWalk;
-  final DatabaseHelper dbHelper = DatabaseHelper();
   List<Walk> selectedWalks = [];
   WalkListBloc({
     required this.getWalks,

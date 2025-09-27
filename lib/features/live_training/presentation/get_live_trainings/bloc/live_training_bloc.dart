@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/features/live_training/domain/entities/live_training.dart';
 import 'package:fitness_app/core/usecases/usecase.dart';
 import '../../../domain/usecases/delete_live_training.dart';
@@ -12,7 +11,6 @@ import 'package:fitness_app/core/errors/map_failure_to_message.dart';
 class LiveTrainingBloc extends Bloc<LiveTrainingEvent, LiveTrainingState> {
   final GetLiveTrainings getLiveTrainings;
   final DeleteLiveTraining deleteLiveTraining;
-  final DatabaseHelper dbHelper = DatabaseHelper();
   List<LiveTraining> selectedLiveTrainings = [];
   LiveTrainingBloc({
     required this.getLiveTrainings,

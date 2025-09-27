@@ -10,7 +10,7 @@ class AddLiveTraining implements UseCase<int, LiveTraining> {
   AddLiveTraining(this.addLiveTrainingRepository);
 
   @override
-  Future<Either<Failure, int>?> call(LiveTraining liveTrainingModel) async {
-    return await addLiveTrainingRepository.addLiveTraining(liveTrainingModel);
+  Future<Either<Failure, int>?> call(LiveTraining liveTraining) async {
+    return await addLiveTrainingRepository.addLiveTraining(liveTraining);
   }
 }

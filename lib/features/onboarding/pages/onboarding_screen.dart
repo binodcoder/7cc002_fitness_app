@@ -6,12 +6,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 // Removed direct model import; page widget handles SliderObject usage
 import 'package:fitness_app/core/assets/app_assets.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
-import 'package:fitness_app/core/navigation/app_router.dart';
+import 'package:fitness_app/core/navigation/routes.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
 import 'package:fitness_app/features/onboarding/widgets/onboarding_slide.dart';
 import 'package:fitness_app/features/onboarding/models/slider_object.dart';
 import 'package:fitness_app/injection_container.dart';
+import 'package:go_router/go_router.dart';
+import 'package:fitness_app/core/config/backend_config.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -106,8 +109,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: TextButton(
                       onPressed: () {
                         _prefs.setBool('seen_onboarding', true);
-                        Navigator.pushReplacementNamed(
-                            context, Routes.routineRoute);
+                        if (BackendConfig.isFirebase &&
+                            fb.FirebaseAuth.instance.currentUser == null) {
+                          context.go(Routes.loginRoute);
+                        } else {
+                          context.go(Routes.routineRoute);
+                        }
                       },
                       child: Text(
                         AppStrings.of(context).skip,
@@ -181,8 +188,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 final isLast = _currentIndex == slides.length - 1;
                 if (isLast) {
                   _prefs.setBool('seen_onboarding', true);
-                  Navigator.pushReplacementNamed(
-                      context, Routes.routineRoute);
+                  if (BackendConfig.isFirebase &&
+                      fb.FirebaseAuth.instance.currentUser == null) {
+                    context.go(Routes.loginRoute);
+                  } else {
+                    context.go(Routes.routineRoute);
+                  }
                   return;
                 }
                 final next = _currentIndex + 1;

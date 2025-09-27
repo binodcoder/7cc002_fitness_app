@@ -10,7 +10,7 @@ class UpdateLiveTraining implements UseCase<int, LiveTraining> {
   UpdateLiveTraining(this.liveTrainingRepository);
 
   @override
-  Future<Either<Failure, int>?> call(LiveTraining liveTrainingModel) async {
-    return await liveTrainingRepository.updateLiveTraining(liveTrainingModel);
+  Future<Either<Failure, int>?> call(LiveTraining liveTraining) async {
+    return await liveTrainingRepository.updateLiveTraining(liveTraining);
   }
 }

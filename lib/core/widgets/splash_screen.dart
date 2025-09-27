@@ -5,8 +5,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/assets/app_assets.dart';
-import 'package:fitness_app/core/navigation/app_router.dart';
+import 'package:fitness_app/core/navigation/routes.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
+import 'package:go_router/go_router.dart';
+import 'package:fitness_app/core/config/backend_config.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -26,16 +29,28 @@ class _SplashScreenState extends State<SplashScreen> {
   _goNext() {
     final seen = sharedPreferences.getBool('seen_onboarding') == true;
     if (!seen) {
-      Navigator.pushReplacementNamed(context, Routes.onBoardingRoute);
+      if (!mounted) return;
+      context.go(Routes.onBoardingRoute);
       return;
     }
-    // Fake login/session defaults for demo mode
-    sharedPreferences.setBool('login', true);
-    sharedPreferences.setInt('user_id', sharedPreferences.getInt('user_id') ?? 1);
-    sharedPreferences.setString('role', sharedPreferences.getString('role') ?? 'trainer');
-    sharedPreferences.setString('institutionEmail',
-        sharedPreferences.getString('institutionEmail') ?? 'demo@fit.com');
-    Navigator.pushReplacementNamed(context, Routes.routineRoute);
+    // If using Firebase backend, send unauthenticated users to login
+    if (BackendConfig.isFirebase) {
+      final current = fb.FirebaseAuth.instance.currentUser;
+      if (current == null) {
+        if (!mounted) return;
+        context.go(Routes.loginRoute);
+        return;
+      }
+    } else if (BackendConfig.isFake) {
+      // Fake login/session defaults only for demo mode
+      sharedPreferences.setBool('login', true);
+      sharedPreferences.setInt('user_id', sharedPreferences.getInt('user_id') ?? 1);
+      sharedPreferences.setString('role', sharedPreferences.getString('role') ?? 'trainer');
+      sharedPreferences.setString('institutionEmail',
+          sharedPreferences.getString('institutionEmail') ?? 'demo@fit.com');
+    }
+    if (!mounted) return;
+    context.go(Routes.routineRoute);
   }
 
   @override
@@ -60,4 +75,3 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
-

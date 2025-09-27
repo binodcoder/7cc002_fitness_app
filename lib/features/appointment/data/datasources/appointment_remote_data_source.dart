@@ -15,7 +15,8 @@ class AppointmentRemoteDataSourceImpl implements AppointmentRemoteDataSource {
   AppointmentRemoteDataSourceImpl({required this.client});
 
   Future<List<AppointmentModel>> _getAppointments(String url) async {
-    final response = await client.get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
+    final response = await client
+        .get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       return appointmentModelListFromJson(response.body);
       //   return RoutineModel.fromJson(json.decode(response.body));
@@ -24,7 +25,8 @@ class AppointmentRemoteDataSourceImpl implements AppointmentRemoteDataSource {
     }
   }
 
-  Future<int> _addAppointment(String url, AppointmentModel appointmentModel) async {
+  Future<int> _addAppointment(
+      String url, AppointmentModel appointmentModel) async {
     final response = await client.post(
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
@@ -39,7 +41,8 @@ class AppointmentRemoteDataSourceImpl implements AppointmentRemoteDataSource {
     }
   }
 
-  Future<int> _updateAppointmentToRemote(String url, AppointmentModel appointmentModel) async {
+  Future<int> _updateAppointmentToRemote(
+      String url, AppointmentModel appointmentModel) async {
     final response = await client.put(
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
@@ -70,17 +73,23 @@ class AppointmentRemoteDataSourceImpl implements AppointmentRemoteDataSource {
 
   @override
   Future<int> addAppointment(AppointmentModel appointmentModel) =>
-      _addAppointment("https://wlv-c4790072fbf0.herokuapp.com/api/v1/appointments", appointmentModel);
+      _addAppointment(
+          "https://wlv-c4790072fbf0.herokuapp.com/api/v1/appointments",
+          appointmentModel);
 
   @override
   Future<int> updateAppointment(AppointmentModel appointmentModel) =>
-      _updateAppointmentToRemote("https://wlv-c4790072fbf0.herokuapp.com/api/v1/appointments/${appointmentModel.id}", appointmentModel);
+      _updateAppointmentToRemote(
+          "https://wlv-c4790072fbf0.herokuapp.com/api/v1/appointments/${appointmentModel.id}",
+          appointmentModel);
 
   @override
-  Future<int> deleteAppointment(int appointmentId) => _deleteAppointmentFromRemote(
+  Future<int> deleteAppointment(int appointmentId) =>
+      _deleteAppointmentFromRemote(
         "https://wlv-c4790072fbf0.herokuapp.com/api/v1/appointments/$appointmentId",
       );
 
   @override
-  Future<List<AppointmentModel>> getAppointments() => _getAppointments("https://wlv-c4790072fbf0.herokuapp.com/api/v1/appointments");
+  Future<List<AppointmentModel>> getAppointments() => _getAppointments(
+      "https://wlv-c4790072fbf0.herokuapp.com/api/v1/appointments");
 }

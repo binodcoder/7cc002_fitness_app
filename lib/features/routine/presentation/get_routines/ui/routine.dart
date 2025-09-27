@@ -3,18 +3,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/drawer.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
-import 'package:fitness_app/features/routine/presentation/add_update_routine/ui/add_routine_page.dart';
+import 'package:fitness_app/features/routine/presentation/routine_form/ui/routine_form_page.dart';
 import 'package:fitness_app/features/routine/presentation/get_routines/ui/routine_details.dart';
 import 'package:fitness_app/features/routine/presentation/get_routines/widgets/routine_list_tile.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 
-import '../bloc/routine_bloc.dart';
-import '../bloc/routine_event.dart';
-import '../bloc/routine_state.dart';
+import '../bloc/routine_list_bloc.dart';
+import '../bloc/routine_list_event.dart';
+import '../bloc/routine_list_state.dart';
 
 class RoutinePage extends StatefulWidget {
   const RoutinePage({super.key});
@@ -24,41 +23,40 @@ class RoutinePage extends StatefulWidget {
 }
 
 class _RoutinePageState extends State<RoutinePage> {
-  final DatabaseHelper dbHelper = DatabaseHelper();
 
   @override
   void initState() {
-    postBloc.add(const RoutineInitialEvent());
+    listBloc.add(const RoutineListInitialEvent());
     super.initState();
   }
 
   void refreshPage() {
-    postBloc.add(const RoutineInitialEvent());
+    listBloc.add(const RoutineListInitialEvent());
   }
 
-  RoutineBloc postBloc = sl<RoutineBloc>();
+  RoutineListBloc listBloc = sl<RoutineListBloc>();
   final SharedPreferences sharedPreferences = sl<SharedPreferences>();
 
   @override
   Widget build(BuildContext context) {
     final strings = AppStrings.of(context);
 
-    return BlocConsumer<RoutineBloc, RoutineState>(
-      bloc: postBloc,
-      listenWhen: (previous, current) => current is RoutineActionState,
-      buildWhen: (previous, current) => current is! RoutineActionState,
+    return BlocConsumer<RoutineListBloc, RoutineListState>(
+      bloc: listBloc,
+      listenWhen: (previous, current) => current is RoutineListActionState,
+      buildWhen: (previous, current) => current is! RoutineListActionState,
       listener: (context, state) {
-        if (state is RoutineNavigateToAddRoutineActionState) {
+        if (state is RoutineListNavigateToAddRoutineActionState) {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => const AddRoutinePage(),
+              builder: (BuildContext context) => const RoutineFormPage(),
               fullscreenDialog: true,
             ),
           ).then(
             (value) => refreshPage(),
           );
-        } else if (state is RoutineNavigateToDetailPageActionState) {
+        } else if (state is RoutineListNavigateToDetailPageActionState) {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -70,11 +68,11 @@ class _RoutinePageState extends State<RoutinePage> {
           ).then(
             (value) => refreshPage(),
           );
-        } else if (state is RoutineNavigateToUpdatePageActionState) {
+        } else if (state is RoutineListNavigateToUpdatePageActionState) {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => AddRoutinePage(
+              builder: (BuildContext context) => RoutineFormPage(
                 routine: state.routine,
               ),
               fullscreenDialog: true,
@@ -82,20 +80,20 @@ class _RoutinePageState extends State<RoutinePage> {
           ).then(
             (value) => refreshPage(),
           );
-        } else if (state is RoutineItemSelectedActionState) {
-        } else if (state is RoutineItemDeletedActionState) {
-        } else if (state is RoutineItemsDeletedActionState) {}
+        } else if (state is RoutineListItemSelectedActionState) {
+        } else if (state is RoutineListItemDeletedActionState) {
+        } else if (state is RoutineListItemsDeletedActionState) {}
       },
       builder: (context, state) {
         switch (state.runtimeType) {
-          case RoutineLoadingState:
+          case RoutineListLoadingState:
             return const Scaffold(
               body: Center(
                 child: CircularProgressIndicator(),
               ),
             );
-          case RoutineLoadedSuccessState:
-            final successState = state as RoutineLoadedSuccessState;
+          case RoutineListLoadedSuccessState:
+            final successState = state as RoutineListLoadedSuccessState;
             return AnnotatedRegion<SystemUiOverlayStyle>(
               value: const SystemUiOverlayStyle(
                 statusBarColor: Colors.transparent,
@@ -103,52 +101,66 @@ class _RoutinePageState extends State<RoutinePage> {
               child: Scaffold(
                 backgroundColor: ColorManager.darkWhite,
                 drawer: const MyDrawer(),
-                floatingActionButton:
-                    sharedPreferences.getString('role') == "trainer"
-                        ? FloatingActionButton(
-                            backgroundColor: ColorManager.primary,
-                            child: const Icon(Icons.add),
-                            onPressed: () {
-                              postBloc.add(const RoutineAddButtonClickedEvent());
-                            },
-                          )
-                        : null,
+                floatingActionButton: sharedPreferences.getString('role') ==
+                        "trainer"
+                    ? FloatingActionButton(
+                        backgroundColor: ColorManager.primary,
+                        child: const Icon(Icons.add),
+                        onPressed: () {
+                          listBloc
+                              .add(const RoutineListAddButtonClickedEvent());
+                        },
+                      )
+                    : null,
                 appBar: AppBar(
                   backgroundColor: ColorManager.primary,
                   title: Text(strings.titleRoutineLabel),
                 ),
-                body: ListView.builder(
-                  itemCount: successState.routines.length,
-                  itemBuilder: (context, index) {
-                    var routine = successState.routines[index];
-                    return RoutineListTile(
-                      title: routine.name,
-                      subtitle: routine.description,
-                      trailing: routine.difficulty,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                RoutineDetailsPage(
-                              routine: routine,
-                            ),
-                          ),
-                        );
-                      },
-                      onEdit: () {
-                        postBloc.add(
-                          RoutineEditButtonClickedEvent(routine: routine),
-                        );
-                      },
-                      onDelete: () {},
-                    );
+                body: RefreshIndicator(
+                  onRefresh: () async {
+                    refreshPage();
                   },
+                  child: successState.routines.isEmpty
+                      ? ListView(
+                          children: const [
+                            SizedBox(height: 200),
+                            Center(child: Text('No routines available')),
+                          ],
+                        )
+                      : ListView.builder(
+                          itemCount: successState.routines.length,
+                          itemBuilder: (context, index) {
+                            var routine = successState.routines[index];
+                            return RoutineListTile(
+                              title: routine.name,
+                              subtitle: routine.description,
+                              trailing: routine.difficulty,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        RoutineDetailsPage(
+                                      routine: routine,
+                                    ),
+                                  ),
+                                );
+                              },
+                              onEdit: () {
+                                listBloc.add(
+                                  RoutineListEditButtonClickedEvent(
+                                      routine: routine),
+                                );
+                              },
+                              onDelete: () {},
+                            );
+                          },
+                        ),
                 ),
               ),
             );
-          case RoutineErrorState:
-            final error = state as RoutineErrorState;
+          case RoutineListErrorState:
+            final error = state as RoutineListErrorState;
             return Scaffold(body: Center(child: Text(error.message)));
           default:
             return const SizedBox();

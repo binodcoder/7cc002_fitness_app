@@ -29,7 +29,8 @@ class RoutineModel extends Routine {
         name: json["name"],
         description: json["description"],
         difficulty: json["difficulty"],
-        duration: json["duration"],
+        // Accept numeric duration as int or double in payloads
+        duration: (json["duration"] as num).toInt(),
         source: json["source"],
         exercises: json["exercises"] != null
             ? List<ExerciseModel>.from(

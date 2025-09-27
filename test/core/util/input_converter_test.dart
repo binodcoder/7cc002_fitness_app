@@ -10,7 +10,9 @@ void main() {
   });
 
   group('stringToUnsignedInt', () {
-    test('should return an integer when the string represents an unsigned integer', () async {
+    test(
+        'should return an integer when the string represents an unsigned integer',
+        () async {
       //arrange
       const str = '123';
       //act
@@ -28,7 +30,8 @@ void main() {
       expect(result, equals(Left(InvalidInputFailure())));
     });
 
-    test('should return a Failure when the string is a negative integer', () async {
+    test('should return a Failure when the string is a negative integer',
+        () async {
       //arrange
       const str = '-123';
       //act

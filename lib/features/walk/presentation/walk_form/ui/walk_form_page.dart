@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
@@ -41,7 +40,6 @@ class _WalkFormPageState extends State<WalkFormPage> {
   final TextEditingController startLocationController = TextEditingController();
   final TextEditingController endLocationController = TextEditingController();
 
-  final DatabaseHelper dbHelper = DatabaseHelper();
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   String? _routeDataJson;
@@ -289,8 +287,10 @@ class _WalkFormPageState extends State<WalkFormPage> {
                         ),
                         onPressed: () async {
                           if (!_formKey.currentState!.validate()) return;
+                          // proposerId may be null if user profile not cached in prefs yet.
+                          // Default to 0; Firebase DS will resolve to current user's numeric id.
                           final proposerId =
-                              sharedPreferences.getInt("user_id");
+                              sharedPreferences.getInt("user_id") ?? 0;
                           if (_routeDataJson == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -307,7 +307,7 @@ class _WalkFormPageState extends State<WalkFormPage> {
                             if (widget.walk != null) {
                               var updatedWalk = Walk(
                                 id: widget.walk!.id,
-                                proposerId: proposerId!,
+                                proposerId: proposerId,
                                 routeData: routeData,
                                 date: selectedDate,
                                 startTime: startTime,
@@ -317,7 +317,7 @@ class _WalkFormPageState extends State<WalkFormPage> {
                                   updatedWalk: updatedWalk));
                             } else {
                               var newWalk = Walk(
-                                proposerId: proposerId!,
+                                proposerId: proposerId,
                                 routeData: routeData,
                                 date: selectedDate,
                                 startTime: startTime,

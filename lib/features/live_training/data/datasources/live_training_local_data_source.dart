@@ -1,4 +1,3 @@
-import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/features/live_training/data/models/live_training_model.dart';
 
 abstract class LiveTrainingLocalDataSource {
@@ -6,14 +5,8 @@ abstract class LiveTrainingLocalDataSource {
 }
 
 class LiveTrainingLocalDataSourceImpl implements LiveTrainingLocalDataSource {
-  final DatabaseHelper dbHelper = DatabaseHelper();
   LiveTrainingLocalDataSourceImpl();
 
   @override
-  Future<List<LiveTrainingModel>> getLiveTrainings() => _getLiveTrainingFromLocal();
-
-  Future<List<LiveTrainingModel>> _getLiveTrainingFromLocal() async {
-    List<LiveTrainingModel> liveTrainingModelList = await dbHelper.getLiveTraining();
-    return liveTrainingModelList;
-  }
+  Future<List<LiveTrainingModel>> getLiveTrainings() async => [];
 }

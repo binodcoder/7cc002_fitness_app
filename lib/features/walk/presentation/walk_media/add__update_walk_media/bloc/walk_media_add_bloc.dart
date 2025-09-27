@@ -8,7 +8,6 @@ import 'package:fitness_app/features/walk/presentation/walk_media/add__update_wa
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/features/walk/domain/usecases/add_walk_media.dart';
 import 'package:fitness_app/features/walk/domain/usecases/update_walk_media.dart';
 
@@ -16,7 +15,6 @@ class WalkMediaAddBloc extends Bloc<WalkMediaAddEvent, WalkMediaAddState> {
   final AddWalkMedia addWalkMedia;
   final UpdateWalkMedia updateWalkMedia;
 
-  final DatabaseHelper dbHelper = DatabaseHelper();
   WalkMediaAddBloc({
     required this.addWalkMedia,
     required this.updateWalkMedia,
@@ -130,4 +128,3 @@ class WalkMediaAddBloc extends Bloc<WalkMediaAddEvent, WalkMediaAddState> {
     // emit(walkMediaAddReadyToUpdateState(event.walkMediaModel.imagePath));
   }
 }
-

@@ -1,4 +1,3 @@
-import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/features/walk/data/models/walk_model.dart';
 
 abstract class WalksLocalDataSource {
@@ -6,14 +5,8 @@ abstract class WalksLocalDataSource {
 }
 
 class WalksLocalDataSourceImpl implements WalksLocalDataSource {
-  final DatabaseHelper dbHelper = DatabaseHelper();
   WalksLocalDataSourceImpl();
 
   @override
-  Future<List<WalkModel>> getWalks() => _getWalksFromLocal();
-
-  Future<List<WalkModel>> _getWalksFromLocal() async {
-   List<WalkModel> walkModelList = await dbHelper.getWalks();
-   return walkModelList;
-  }
+  Future<List<WalkModel>> getWalks() async => [];
 }

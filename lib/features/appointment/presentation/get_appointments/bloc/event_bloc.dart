@@ -3,7 +3,6 @@ import 'package:bloc/bloc.dart';
 import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 import 'package:fitness_app/core/errors/map_failure_to_message.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:fitness_app/shared/data/local/db_helper.dart';
 import 'package:fitness_app/core/usecases/usecase.dart';
 import '../../../domain/usecases/delete_appointment.dart';
 import '../../../domain/usecases/get_appointments.dart';
@@ -13,7 +12,6 @@ import 'event_state.dart';
 class EventBloc extends Bloc<EventEvent, EventState> {
   final GetAppointments getAppointments;
   final DeleteAppointment deleteAppointment;
-  final DatabaseHelper dbHelper = DatabaseHelper();
   List<Appointment> selectedEvents = [];
   EventBloc({
     required this.getAppointments,

@@ -2,8 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/core/errors/failures.dart';
 import 'package:fitness_app/features/routine/data/models/routine_model.dart';
-import 'package:fitness_app/features/routine/domain/entities/routine.dart'
-    as entity;
+import 'package:fitness_app/features/routine/domain/entities/routine.dart';
 import 'package:fitness_app/core/network/network_info.dart';
 import '../../domain/repositories/routine_repositories.dart';
 import '../data_sources/routines_local_data_source.dart';
@@ -21,20 +20,30 @@ class RoutineRepositoryImpl implements RoutineRepository {
   });
 
   @override
-  Future<Either<Failure, List<entity.Routine>>> getRoutines() async {
+  Future<Either<Failure, List<Routine>>> getRoutines() async {
     if (await networkInfo.isConnected) {
       try {
-        List<RoutineModel> routineModelList =
-            await routineRemoteDataSource.getRoutines();
-        return Right(routineModelList.cast<entity.Routine>());
+        final routineModelList = await routineRemoteDataSource.getRoutines();
+        // Cache fresh routines locally for offline use
+        await routineLocalDataSource.clearRoutines();
+        await routineLocalDataSource.cacheRoutines(routineModelList);
+        return Right(routineModelList.cast<Routine>());
       } on ServerException {
+        // Fallback to local cache if available
+        try {
+          final cached = await routineLocalDataSource.getLastRoutines();
+          if (cached.isNotEmpty) {
+            return Right(cached.cast<Routine>());
+          }
+        } on CacheException {
+          // ignore and return failure below
+        }
         return Left(ServerFailure());
       }
     } else {
       try {
-        List<RoutineModel> routineModelList =
-            await routineLocalDataSource.getLastRoutines();
-        return Right(routineModelList.cast<entity.Routine>());
+        final routineModelList = await routineLocalDataSource.getLastRoutines();
+        return Right(routineModelList.cast<Routine>());
       } on CacheException {
         return Left(CacheFailure());
       }
@@ -42,12 +51,12 @@ class RoutineRepositoryImpl implements RoutineRepository {
   }
 
   @override
-  Future<Either<Failure, int>>? addRoutine(entity.Routine routineModel) async {
+  Future<Either<Failure, int>>? addRoutine(Routine routine) async {
     try {
-      final model = routineModel is RoutineModel
-          ? routineModel
-          : RoutineModel.fromEntity(routineModel);
+      final model = RoutineModel.fromEntity(routine);
       int response = await routineRemoteDataSource.addRoutine(model);
+      // Best-effort cache update
+      await routineLocalDataSource.cacheRoutine(model);
       return Right(response);
     } on ServerException {
       return Left(ServerFailure());
@@ -65,13 +74,12 @@ class RoutineRepositoryImpl implements RoutineRepository {
   }
 
   @override
-  Future<Either<Failure, int>>? updateRoutine(
-      entity.Routine routineModel) async {
+  Future<Either<Failure, int>>? updateRoutine(Routine routine) async {
     try {
-      final model = routineModel is RoutineModel
-          ? routineModel
-          : RoutineModel.fromEntity(routineModel);
+      final model = RoutineModel.fromEntity(routine);
       int response = await routineRemoteDataSource.updateRoutine(model);
+      // Cache updated routine
+      await routineLocalDataSource.cacheRoutine(model);
       return Right(response);
     } on ServerException {
       return Left(ServerFailure());

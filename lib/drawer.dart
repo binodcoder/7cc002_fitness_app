@@ -11,11 +11,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'injection_container.dart';
 import 'features/appointment/presentation/get_appointments/ui/calendar.dart';
 import 'features/chat/chat_page.dart';
-import 'features/login/presentation/ui/login_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:fitness_app/core/navigation/routes.dart';
 import 'features/routine/presentation/get_routines/ui/routine.dart';
 import 'features/walk/presentation/walk_list/ui/walk_list_page.dart';
 import 'package:fitness_app/core/widgets/app_drawer_header.dart';
 import 'package:fitness_app/core/widgets/app_slidable_list_tile.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fitness_app/features/auth/presentation/auth/bloc/auth_bloc.dart';
+import 'package:fitness_app/features/auth/presentation/auth/bloc/auth_event.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({Key? key}) : super(key: key);
@@ -94,24 +98,23 @@ class _MyDrawerState extends State<MyDrawer> {
               },
             ),
             AppSlidableListTile(
-                    leading: const Icon(FontAwesomeIcons.personWalking,
-                        color: ColorManager.primary),
-                    title: strings.walk,
-                    titleStyle: getSemiBoldStyle(
-                      color: ColorManager.darkGrey,
-                      fontSize: FontSize.s14,
-                    ),
-                    titleScaler: const TextScaler.linear(1.2),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              const WalkListPage(),
-                        ),
-                      );
-                    },
+              leading: const Icon(FontAwesomeIcons.personWalking,
+                  color: ColorManager.primary),
+              title: strings.walk,
+              titleStyle: getSemiBoldStyle(
+                color: ColorManager.darkGrey,
+                fontSize: FontSize.s14,
+              ),
+              titleScaler: const TextScaler.linear(1.2),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const WalkListPage(),
                   ),
+                );
+              },
+            ),
             AppSlidableListTile(
               leading: const Icon(FontAwesomeIcons.towerBroadcast,
                   color: ColorManager.primary),
@@ -149,15 +152,11 @@ class _MyDrawerState extends State<MyDrawer> {
                 fontSize: FontSize.s14,
               ),
               titleScaler: const TextScaler.linear(1.2),
-              onTap: () {
-                sharedPreferences.clear();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => const LoginPage(),
-                    fullscreenDialog: true,
-                  ),
-                );
+              onTap: () async {
+                // Close drawer first
+                await Navigator.of(context).maybePop();
+                // Sign out via use case (handles Firebase or no-op for REST)
+                context.read<AuthBloc>().add(const LogoutRequested());
               },
             ),
             AppSlidableListTile(
