@@ -127,4 +127,19 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
     await _auth.signOut();
     return 1;
   }
+
+  @override
+  Future<int> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return 1;
+    } on fb.FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        return 1;
+      }
+      throw ServerException();
+    } on FirebaseException {
+      throw ServerException();
+    }
+  }
 }

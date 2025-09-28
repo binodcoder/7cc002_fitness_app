@@ -18,6 +18,9 @@ import 'package:fitness_app/features/auth/application/auth/auth_event.dart';
 import '../widgets/bear_log_in_controller.dart';
 import 'package:fitness_app/core/widgets/custom_button.dart';
 import '../widgets/tracking_text_input.dart';
+import 'package:fitness_app/features/auth/application/reset_password/reset_password_bloc.dart';
+import 'package:fitness_app/features/auth/application/reset_password/reset_password_event.dart';
+import 'package:fitness_app/features/auth/application/reset_password/reset_password_state.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -297,9 +300,15 @@ class _LoginPageState extends State<LoginPage> {
                                         SizedBox(
                                           height: AppHeight.h10,
                                         ),
-                                        Align(
-                                          alignment: Alignment.bottomRight,
-                                          child: TextButton(
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            TextButton(
+                                              onPressed: _showForgotPasswordDialog,
+                                              child: const Text('Forgot Password?'),
+                                            ),
+                                            TextButton(
                                               onPressed: () {
                                                 Navigator.push(
                                                   context,
@@ -309,9 +318,9 @@ class _LoginPageState extends State<LoginPage> {
                                                   ),
                                                 );
                                               },
-                                              child: const Text(
-                                                'Register',
-                                              )),
+                                              child: const Text('Register'),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -389,5 +398,126 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ) ??
         false; //if showDialouge had returned null, then return false
+  }
+
+  void _showForgotPasswordDialog() {
+    final emailController =
+        TextEditingController(text: userNameController.text.trim());
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return BlocProvider(
+          create: (_) => sl<ResetPasswordBloc>(),
+          child: BlocConsumer<ResetPasswordBloc, ResetPasswordState>(
+            listenWhen: (p, c) => p.status != c.status || p.errorMessage != c.errorMessage,
+            listener: (context, state) {
+              if (state.status == ResetPasswordStatus.success) {
+                Navigator.of(context).pop();
+                Fluttertoast.showToast(
+                  msg: 'If an account exists, a reset email has been sent.',
+                  toastLength: Toast.LENGTH_LONG,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: ColorManager.green,
+                );
+              } else if (state.status == ResetPasswordStatus.failure) {
+                Fluttertoast.showToast(
+                  msg: state.errorMessage ?? 'Something went wrong. Please try again.',
+                  toastLength: Toast.LENGTH_LONG,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: ColorManager.error,
+                );
+              }
+            },
+            builder: (context, state) {
+              final isSending = state.isLoading;
+              return AlertDialog(
+                title: Text(
+                  'Reset Password',
+                  style: getBoldStyle(
+                    fontSize: FontSize.s18,
+                    color: ColorManager.primary,
+                  ),
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Enter your email to receive a reset link.',
+                      style: getRegularStyle(
+                        fontSize: FontSize.s14,
+                        color: ColorManager.black,
+                      ),
+                    ),
+                    SizedBox(height: AppHeight.h10),
+                    TextField(
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        hintText: 'Email',
+                      ),
+                    ),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: isSending
+                        ? null
+                        : () {
+                            Navigator.of(context).pop();
+                          },
+                    child: Text(
+                      'Cancel',
+                      style: getRegularStyle(
+                        fontSize: FontSize.s14,
+                        color: ColorManager.error,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: isSending
+                        ? null
+                        : () {
+                            final email = emailController.text.trim();
+                            if (email.isEmpty || !_isValidEmail(email)) {
+                              Fluttertoast.showToast(
+                                msg: 'Invalid email address.',
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: ColorManager.error,
+                              );
+                              return;
+                            }
+                            context
+                                .read<ResetPasswordBloc>()
+                                .add(ResetPasswordSubmitted(email));
+                          },
+                    child: isSending
+                        ? const SizedBox(
+                            height: 16,
+                            width: 16,
+                            child:
+                                CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Text(
+                            'Send',
+                            style: getRegularStyle(
+                              fontSize: FontSize.s14,
+                              color: ColorManager.green,
+                            ),
+                          ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  bool _isValidEmail(String email) {
+    final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    return regex.hasMatch(email);
   }
 }

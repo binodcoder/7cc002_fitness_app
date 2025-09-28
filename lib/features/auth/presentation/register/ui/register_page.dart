@@ -1,3 +1,4 @@
+import 'package:fitness_app/features/auth/application/register/register_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -12,9 +13,8 @@ import 'package:fitness_app/core/theme/values_manager.dart';
 
 import 'package:fitness_app/features/auth/presentation/login/ui/login_screen.dart';
 import 'package:fitness_app/core/widgets/custom_button.dart';
-import 'package:fitness_app/features/auth/application/register/user_add_bloc.dart';
-import 'package:fitness_app/features/auth/application/register/user_add_event.dart';
-import 'package:fitness_app/features/auth/application/register/user_add_state.dart';
+import 'package:fitness_app/features/auth/application/register/register_bloc.dart';
+import 'package:fitness_app/features/auth/application/register/register_state.dart';
 import 'package:fitness_app/features/auth/presentation/register/widgets/role_dropdown.dart';
 import 'package:fitness_app/core/widgets/custom_text_form_field.dart';
 
@@ -60,7 +60,7 @@ class _RegisterPageState extends State<RegisterPage> {
     super.initState();
   }
 
-  final UserAddBloc userAddBloc = sl<UserAddBloc>();
+  final RegisterBloc userAddBloc = sl<RegisterBloc>();
   final List<String> role = <String>["trainer", "standard"];
   String selectedRole = "standard";
 
@@ -81,14 +81,14 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     final strings = AppStrings.of(context);
     // var size = MediaQuery.of(context).size;
-    return BlocConsumer<UserAddBloc, UserAddState>(
+    return BlocConsumer<RegisterBloc, RegisterState>(
       bloc: userAddBloc,
       listenWhen: (previous, current) =>
           previous.status != current.status ||
           previous.errorMessage != current.errorMessage,
       buildWhen: (previous, current) => previous != current,
       listener: (context, state) {
-        if (state.status == UserAddStatus.saving && !_isDialogVisible) {
+        if (state.status == RegisterStatus.saving && !_isDialogVisible) {
           _isDialogVisible = true;
           showDialog<void>(
             context: context,
@@ -108,7 +108,7 @@ class _RegisterPageState extends State<RegisterPage> {
           _isDialogVisible = false;
         }
 
-        if (state.status == UserAddStatus.saved) {
+        if (state.status == RegisterStatus.saved) {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -116,9 +116,9 @@ class _RegisterPageState extends State<RegisterPage> {
               fullscreenDialog: true,
             ),
           );
-        } else if (state.status == UserAddStatus.updated) {
+        } else if (state.status == RegisterStatus.updated) {
           Navigator.pop(context);
-        } else if (state.status == UserAddStatus.failure &&
+        } else if (state.status == RegisterStatus.failure &&
             state.errorMessage != null) {
           Fluttertoast.showToast(
             msg: state.errorMessage!,

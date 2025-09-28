@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-enum UserAddStatus {
+enum RegisterStatus {
   initial,
   editing,
   pickingImage,
@@ -10,28 +10,28 @@ enum UserAddStatus {
   failure,
 }
 
-class UserAddState extends Equatable {
-  const UserAddState({
-    this.status = UserAddStatus.initial,
+class RegisterState extends Equatable {
+  const RegisterState({
+    this.status = RegisterStatus.initial,
     this.imagePath,
     this.errorMessage,
   });
 
-  final UserAddStatus status;
+  final RegisterStatus status;
   final String? imagePath;
   final String? errorMessage;
 
   bool get isBusy =>
-      status == UserAddStatus.pickingImage || status == UserAddStatus.saving;
+      status == RegisterStatus.pickingImage || status == RegisterStatus.saving;
 
-  UserAddState copyWith({
-    UserAddStatus? status,
+  RegisterState copyWith({
+    RegisterStatus? status,
     String? imagePath,
     bool clearImage = false,
     String? errorMessage,
     bool clearError = false,
   }) {
-    return UserAddState(
+    return RegisterState(
       status: status ?? this.status,
       imagePath: clearImage ? null : (imagePath ?? this.imagePath),
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),

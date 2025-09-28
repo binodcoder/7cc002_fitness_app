@@ -89,4 +89,10 @@ class AuthRemoteDataSourceImpl implements AuthDataSource {
     // No server session to revoke in this REST stub; treat as success.
     return 1;
   }
+
+  @override
+  Future<int> resetPassword(String email) async {
+    // No REST endpoint configured; treat as success for now.
+    return 1;
+  }
 }

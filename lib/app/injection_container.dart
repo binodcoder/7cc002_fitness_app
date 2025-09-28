@@ -51,6 +51,7 @@ import '../features/auth/domain/usecases/login.dart';
 import '../features/auth/domain/usecases/logout.dart';
 import '../features/auth/domain/usecases/add_user.dart';
 import '../features/auth/domain/usecases/update_user.dart';
+import '../features/auth/domain/usecases/reset_password.dart';
 import '../features/routine/domain/repositories/routine_repositories.dart';
 import '../features/routine/domain/usecases/add_routine.dart';
 import '../features/routine/domain/usecases/delete_routine.dart';
@@ -73,7 +74,8 @@ import '../features/appointment/presentation/appointment_form/bloc/appointment_f
 import '../features/appointment/presentation/get_appointments/bloc/calendar_bloc.dart';
 import '../features/live_training/presentation/get_live_trainings/bloc/live_training_bloc.dart';
 import '../features/auth/application/login/login_bloc.dart';
-import '../features/auth/application/register/user_add_bloc.dart';
+import '../features/auth/application/reset_password/reset_password_bloc.dart';
+import '../features/auth/application/register/register_bloc.dart';
 import '../features/auth/application/auth/auth_bloc.dart';
 import '../features/routine/presentation/routine_form/bloc/routine_form_bloc.dart';
 import '../features/routine/presentation/get_routines/bloc/routine_list_bloc.dart';
@@ -118,8 +120,9 @@ Future<void> init() async {
   await sl.isReady<Database>();
   // auth
   sl.registerFactory(() => LoginBloc(login: sl()));
+  sl.registerFactory(() => ResetPasswordBloc(resetPassword: sl()));
   sl.registerFactory(() => AuthBloc(logout: sl(), sessionManager: sl()));
-  sl.registerFactory(() => UserAddBloc(
+  sl.registerFactory(() => RegisterBloc(
         addUser: sl(),
         updateUser: sl(),
         imagePickerService: sl(),
@@ -134,6 +137,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => AddUser(sl()));
   sl.registerLazySingleton(() => UpdateUser(sl()));
   sl.registerLazySingleton(() => DeleteUser(sl()));
+  sl.registerLazySingleton(() => ResetPassword(sl()));
   // chat
   sl.registerLazySingleton(() => StreamMessages(sl()));
   sl.registerLazySingleton(() => SendMessage(sl()));

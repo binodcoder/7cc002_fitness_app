@@ -7,4 +7,5 @@ abstract class AuthDataSource {
   Future<int> deleteUser(int userId);
   Future<UserModel> login(LoginCredentialsModel loginModel);
   Future<int> signOut();
+  Future<int> resetPassword(String email);
 }
