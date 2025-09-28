@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:fitness_app/features/auth/data/datasources/auth_data_source.dart';
 import 'package:fitness_app/features/auth/data/models/login_credentials_model.dart';
 import 'package:fitness_app/features/auth/data/models/user_model.dart';
 import 'package:fitness_app/features/auth/domain/entities/login_credentials.dart';
@@ -7,11 +8,10 @@ import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/core/errors/failures.dart';
 import 'package:fitness_app/features/auth/domain/repositories/auth_repositories.dart';
 import 'package:fitness_app/features/auth/data/datasources/auth_local_data_sources.dart';
-import 'package:fitness_app/features/auth/data/datasources/auth_remote_data_source.dart';
 
 class AuthRepositoriesImpl implements AuthRepository {
   final AuthLocalDataSources authLocalDataSources;
-  final AuthRemoteDataSource authRemoteDataSource;
+  final AuthDataSource authRemoteDataSource;
   AuthRepositoriesImpl({
     required this.authLocalDataSources,
     required this.authRemoteDataSource,

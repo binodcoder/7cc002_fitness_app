@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final userModel = userModelFromJson(jsonString);
-
 import 'dart:convert';
 import 'package:fitness_app/features/auth/domain/entities/user.dart' as entity;
 

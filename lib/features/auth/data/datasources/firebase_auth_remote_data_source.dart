@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:fitness_app/core/errors/exceptions.dart';
-import 'package:fitness_app/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:fitness_app/features/auth/data/datasources/auth_data_source.dart';
 import 'package:fitness_app/features/auth/data/models/login_credentials_model.dart';
 import 'package:fitness_app/features/auth/data/models/user_model.dart';
 
-class FirebaseAuthRemoteDataSourceImpl implements AuthRemoteDataSource {
+class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
   final fb.FirebaseAuth _auth = fb.FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -92,22 +92,22 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<int> updateUser(UserModel userModel) async {
-      try {
-        final uid = _auth.currentUser?.uid;
-        if (uid == null) throw ServerException();
-        await _usersCol.doc(uid).set({
-          'email': userModel.email,
-          'name': userModel.name,
-          'age': userModel.age,
-          'gender': userModel.gender,
-          'institutionEmail': userModel.institutionEmail,
-          'role': userModel.role,
-          'updatedAt': FieldValue.serverTimestamp(),
-        }, SetOptions(merge: true));
-        return 1;
-      } on FirebaseException {
-        throw ServerException();
-      }
+    try {
+      final uid = _auth.currentUser?.uid;
+      if (uid == null) throw ServerException();
+      await _usersCol.doc(uid).set({
+        'email': userModel.email,
+        'name': userModel.name,
+        'age': userModel.age,
+        'gender': userModel.gender,
+        'institutionEmail': userModel.institutionEmail,
+        'role': userModel.role,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+      return 1;
+    } on FirebaseException {
+      throw ServerException();
+    }
   }
 
   @override
@@ -116,7 +116,6 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final uid = _auth.currentUser?.uid;
       if (uid == null) throw ServerException();
       await _usersCol.doc(uid).delete();
-      // Deleting Firebase Auth user requires recent sign-in; leave to UI.
       return 1;
     } on FirebaseException {
       throw ServerException();

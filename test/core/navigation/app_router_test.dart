@@ -4,13 +4,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fitness_app/app/app_router.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/l10n/app_localizations.dart';
-import 'package:fitness_app/injection_container.dart' as di;
+import 'package:fitness_app/app/injection_container.dart' as di;
 import 'package:fitness_app/core/widgets/splash_screen.dart';
 import 'package:fitness_app/features/auth/presentation/login/ui/login_screen.dart';
 import 'package:fitness_app/features/onboarding/pages/onboarding_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
-import 'package:fitness_app/features/auth/domain/entities/user.dart' as user_entity;
+import 'package:fitness_app/features/auth/domain/entities/user.dart'
+    as user_entity;
 
 class _FakeSessionManager implements SessionManager {
   bool seenOnboarding = false;

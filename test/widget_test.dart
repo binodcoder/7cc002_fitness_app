@@ -7,7 +7,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fitness_app/injection_container.dart' as di;
+import 'package:fitness_app/app/injection_container.dart' as di;
 import 'package:fitness_app/features/auth/application/auth/auth_bloc.dart';
 import 'package:fitness_app/features/auth/domain/usecases/logout.dart';
 import 'package:fitness_app/features/auth/application/login/login_bloc.dart';
@@ -90,7 +90,8 @@ void main() {
 
     final splashFinder = find.byType(SplashScreen);
     final loginFinder = find.byType(LoginPage);
-    expect(splashFinder.evaluate().isNotEmpty || loginFinder.evaluate().isNotEmpty,
+    expect(
+        splashFinder.evaluate().isNotEmpty || loginFinder.evaluate().isNotEmpty,
         true);
   });
 }

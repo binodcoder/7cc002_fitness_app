@@ -1,15 +1,12 @@
+import 'package:fitness_app/features/appointment/data/datasources/appointment_data_source.dart';
 import 'package:fitness_app/features/appointment/data/models/appointment_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:fitness_app/core/errors/exceptions.dart';
 
-abstract class AppointmentRemoteDataSource {
-  Future<int> addAppointment(AppointmentModel appointmentModel);
-  Future<int> updateAppointment(AppointmentModel appointmentModel);
-  Future<int> deleteAppointment(int appointmentId);
-  Future<List<AppointmentModel>> getAppointments();
-}
+// Backwards-compatible alias for tests that reference AppointmentRemoteDataSource
+typedef AppointmentRemoteDataSource = AppointmentDataSource;
 
-class AppointmentRemoteDataSourceImpl implements AppointmentRemoteDataSource {
+class AppointmentRemoteDataSourceImpl implements AppointmentDataSource {
   final http.Client client;
 
   AppointmentRemoteDataSourceImpl({required this.client});

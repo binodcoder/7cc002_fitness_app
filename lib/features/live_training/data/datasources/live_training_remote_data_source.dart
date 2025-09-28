@@ -1,21 +1,19 @@
+import 'package:fitness_app/features/live_training/data/datasources/live_training_data_source.dart';
 import 'package:http/http.dart' as http;
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/features/live_training/data/models/live_training_model.dart';
 
-abstract class LiveTrainingRemoteDataSource {
-  Future<List<LiveTrainingModel>> getLiveTrainings();
-  Future<int> addLiveTraining(LiveTrainingModel liveTrainingModel);
-  Future<int> updateLiveTraining(LiveTrainingModel liveTrainingModel);
-  Future<int> deleteLiveTraining(int liveTrainingId);
-}
+// Backwards-compatible alias for tests that reference LiveTrainingRemoteDataSource
+typedef LiveTrainingRemoteDataSource = LiveTrainingDataSource;
 
-class LiveTrainingRemoteDataSourceImpl implements LiveTrainingRemoteDataSource {
+class LiveTrainingRemoteDataSourceImpl implements LiveTrainingDataSource {
   final http.Client client;
 
   LiveTrainingRemoteDataSourceImpl({required this.client});
 
   Future<List<LiveTrainingModel>> _getLiveTrainings(String url) async {
-    final response = await client.get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
+    final response = await client
+        .get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       return liveTrainingModelsFromJson(response.body);
     } else {
@@ -23,7 +21,8 @@ class LiveTrainingRemoteDataSourceImpl implements LiveTrainingRemoteDataSource {
     }
   }
 
-  Future<int> _addLiveTraining(String url, LiveTrainingModel liveTrainingModel) async {
+  Future<int> _addLiveTraining(
+      String url, LiveTrainingModel liveTrainingModel) async {
     final response = await client.post(
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
@@ -36,7 +35,8 @@ class LiveTrainingRemoteDataSourceImpl implements LiveTrainingRemoteDataSource {
     }
   }
 
-  Future<int> _updateLiveTraining(String url, LiveTrainingModel liveTrainingModel) async {
+  Future<int> _updateLiveTraining(
+      String url, LiveTrainingModel liveTrainingModel) async {
     final response = await client.put(
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
@@ -50,7 +50,8 @@ class LiveTrainingRemoteDataSourceImpl implements LiveTrainingRemoteDataSource {
   }
 
   Future<int> _deleteLiveTraining(String url) async {
-    final response = await client.delete(Uri.parse(url), headers: {'Content-Type': 'application/json'});
+    final response = await client
+        .delete(Uri.parse(url), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       return 1;
     } else {
@@ -59,17 +60,22 @@ class LiveTrainingRemoteDataSourceImpl implements LiveTrainingRemoteDataSource {
   }
 
   @override
-  Future<List<LiveTrainingModel>> getLiveTrainings() => _getLiveTrainings("https://wlv-c4790072fbf0.herokuapp.com/api/v1/live-trainings");
+  Future<List<LiveTrainingModel>> getLiveTrainings() => _getLiveTrainings(
+      "https://wlv-c4790072fbf0.herokuapp.com/api/v1/live-trainings");
 
   @override
   Future<int> addLiveTraining(LiveTrainingModel liveTrainingModel) =>
-      _addLiveTraining("https://wlv-c4790072fbf0.herokuapp.com/api/v1/live-trainings", liveTrainingModel);
+      _addLiveTraining(
+          "https://wlv-c4790072fbf0.herokuapp.com/api/v1/live-trainings",
+          liveTrainingModel);
 
   @override
-  Future<int> deleteLiveTraining(int liveTrainingId) =>
-      _deleteLiveTraining("https://wlv-c4790072fbf0.herokuapp.com/api/v1/live-trainings/$liveTrainingId");
+  Future<int> deleteLiveTraining(int liveTrainingId) => _deleteLiveTraining(
+      "https://wlv-c4790072fbf0.herokuapp.com/api/v1/live-trainings/$liveTrainingId");
 
   @override
   Future<int> updateLiveTraining(LiveTrainingModel liveTrainingModel) =>
-      _updateLiveTraining("https://wlv-c4790072fbf0.herokuapp.com/api/v1/live-trainings/${liveTrainingModel.trainerId}", liveTrainingModel);
+      _updateLiveTraining(
+          "https://wlv-c4790072fbf0.herokuapp.com/api/v1/live-trainings/${liveTrainingModel.trainerId}",
+          liveTrainingModel);
 }

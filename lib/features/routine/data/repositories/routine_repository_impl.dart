@@ -1,16 +1,16 @@
 import 'package:dartz/dartz.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/core/errors/failures.dart';
+import 'package:fitness_app/features/routine/data/data_sources/routine_data_source.dart';
 import 'package:fitness_app/features/routine/data/models/routine_model.dart';
 import 'package:fitness_app/features/routine/domain/entities/routine.dart';
 import 'package:fitness_app/core/network/network_info.dart';
 import '../../domain/repositories/routine_repositories.dart';
 import '../data_sources/routines_local_data_source.dart';
-import '../data_sources/routines_remote_data_source.dart';
 
 class RoutineRepositoryImpl implements RoutineRepository {
   final RoutinesLocalDataSource routineLocalDataSource;
-  final RoutineRemoteDataSource routineRemoteDataSource;
+  final RoutineDataSource routineRemoteDataSource;
   final NetworkInfo networkInfo;
 
   RoutineRepositoryImpl({

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:fitness_app/drawer.dart';
-import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/app/drawer.dart';
+import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/features/live_training/presentation/add_update_live_training/ui/add_live_training.dart';
 import 'package:fitness_app/features/live_training/presentation/get_live_trainings/ui/live_training_details.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
@@ -22,7 +22,6 @@ class LiveTrainingPage extends StatefulWidget {
 }
 
 class _LiveTrainingPageState extends State<LiveTrainingPage> {
-
   @override
   void initState() {
     liveTrainingBloc.add(const LiveTrainingInitialEvent());
@@ -109,8 +108,8 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
                           backgroundColor: ColorManager.primary,
                           child: const Icon(Icons.add),
                           onPressed: () {
-                            liveTrainingBloc.add(
-                                const LiveTrainingAddButtonClickedEvent());
+                            liveTrainingBloc
+                                .add(const LiveTrainingAddButtonClickedEvent());
                           },
                         )
                       : null,
@@ -118,11 +117,10 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
                 backgroundColor: ColorManager.primary,
                 title: Text(strings.titleLiveTrainingLabel),
               ),
-                body: ListView.builder(
+              body: ListView.builder(
                 itemCount: successState.liveTrainings.length,
                 itemBuilder: (context, index) {
-                  var liveTraining =
-                      successState.liveTrainings[index];
+                  var liveTraining = successState.liveTrainings[index];
                   return LiveTrainingListTile(
                     title: liveTraining.title,
                     subtitle: liveTraining.description,

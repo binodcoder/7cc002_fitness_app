@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:fitness_app/core/errors/exceptions.dart';
-import 'package:fitness_app/features/appointment/data/datasources/appointment_remote_data_source.dart';
+import 'package:fitness_app/features/appointment/data/datasources/appointment_data_source.dart';
 import 'package:fitness_app/features/appointment/data/models/appointment_model.dart';
 
-class FirebaseAppointmentRemoteDataSource
-    implements AppointmentRemoteDataSource {
+class FirebaseAppointmentRemoteDataSource implements AppointmentDataSource {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final fb.FirebaseAuth _auth = fb.FirebaseAuth.instance;
 

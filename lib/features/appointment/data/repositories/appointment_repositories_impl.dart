@@ -1,13 +1,13 @@
 import 'package:dartz/dartz.dart';
+import 'package:fitness_app/features/appointment/data/datasources/appointment_data_source.dart';
 import 'package:fitness_app/features/appointment/data/models/appointment_model.dart';
 import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/core/errors/failures.dart';
 import '../../domain/repositories/appointment_repositories.dart';
-import '../datasources/appointment_remote_data_source.dart';
 
 class AppointmentRepositoriesImpl implements AppointmentRepositories {
-  final AppointmentRemoteDataSource appointmentRemoteDataSource;
+  final AppointmentDataSource appointmentRemoteDataSource;
 
   AppointmentRepositoriesImpl({
     required this.appointmentRemoteDataSource,

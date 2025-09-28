@@ -5,8 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
-import 'package:fitness_app/drawer.dart';
-import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/app/drawer.dart';
+import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/features/walk/presentation/walk_form/ui/walk_form_page.dart';
@@ -26,7 +26,6 @@ class WalkListPage extends StatefulWidget {
 }
 
 class _WalkListPageState extends State<WalkListPage> {
-
   @override
   void initState() {
     walkBloc.add(const WalkListInitialized());
@@ -74,8 +73,7 @@ class _WalkListPageState extends State<WalkListPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  WalkFormPage(walk: state.walk),
+              builder: (BuildContext context) => WalkFormPage(walk: state.walk),
               fullscreenDialog: true,
             ),
           ).then(

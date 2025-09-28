@@ -6,7 +6,7 @@ import 'package:dartz/dartz.dart';
 import '../repositories/appointment_repositories.dart';
 
 class AddAppointment implements UseCase<int, Appointment> {
-  final  AppointmentRepositories addAppointmentRepositories;
+  final AppointmentRepositories addAppointmentRepositories;
 
   AddAppointment(this.addAppointmentRepositories);
 

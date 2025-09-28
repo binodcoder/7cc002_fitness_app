@@ -14,13 +14,25 @@ void main() {
     final db = await AppDatabase().database;
     final ds = AuthLocalDataSourcesImpl(db: db);
     const user = UserModel(
-      name: 'n', email: 'e', password: 'p', age: 1, gender: 'g', institutionEmail: 'i', role: 'r',
+      name: 'n',
+      email: 'e',
+      password: 'p',
+      age: 1,
+      gender: 'g',
+      institutionEmail: 'i',
+      role: 'r',
     );
     final id = await ds.addUser(user);
     expect(id, isNonZero);
     final updated = await ds.updateUser(UserModel(
       id: id,
-      name: 'n2', email: 'e', password: 'p', age: 1, gender: 'g', institutionEmail: 'i', role: 'r',
+      name: 'n2',
+      email: 'e',
+      password: 'p',
+      age: 1,
+      gender: 'g',
+      institutionEmail: 'i',
+      role: 'r',
     ));
     expect(updated, 1);
   });

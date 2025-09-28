@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/ui/walk_media_details.dart';
@@ -21,7 +21,6 @@ class WalkMediaPage extends StatefulWidget {
 }
 
 class _WalkMediaPageState extends State<WalkMediaPage> {
-
   @override
   void initState() {
     walkMediaBloc.add(WalkMediaInitialEvent(widget.walkId));
@@ -99,8 +98,8 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                 backgroundColor: ColorManager.primary,
                 child: const Icon(Icons.add),
                 onPressed: () {
-                  walkMediaBloc.add(
-                      WalkMediaAddButtonClickedEvent(successState.walkMediaList.first.id!));
+                  walkMediaBloc.add(WalkMediaAddButtonClickedEvent(
+                      successState.walkMediaList.first.id!));
                 },
               ),
               appBar: AppBar(

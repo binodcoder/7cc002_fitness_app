@@ -27,7 +27,8 @@ void main() {
         );
       });
       final ds = AuthRemoteDataSourceImpl(client: client);
-      final res = await ds.login(const LoginCredentialsModel(email: 'e', password: 'p'));
+      final res = await ds
+          .login(const LoginCredentialsModel(email: 'e', password: 'p'));
       expect(res, isA<UserModel>());
       expect(res.email, 'e');
     });
@@ -35,7 +36,9 @@ void main() {
     test('login throws LoginException on non-200', () async {
       final client = MockClient((request) async => http.Response('no', 401));
       final ds = AuthRemoteDataSourceImpl(client: client);
-      expect(() => ds.login(const LoginCredentialsModel(email: 'e', password: 'p')),
+      expect(
+          () =>
+              ds.login(const LoginCredentialsModel(email: 'e', password: 'p')),
           throwsA(isA<LoginException>()));
     });
 
@@ -43,7 +46,13 @@ void main() {
       final client = MockClient((request) async => http.Response('', 201));
       final ds = AuthRemoteDataSourceImpl(client: client);
       final res = await ds.addUser(const UserModel(
-        name: 'n', email: 'e', password: 'p', age: 0, gender: 'g', institutionEmail: 'i', role: 'r',
+        name: 'n',
+        email: 'e',
+        password: 'p',
+        age: 0,
+        gender: 'g',
+        institutionEmail: 'i',
+        role: 'r',
       ));
       expect(res, 1);
     });
@@ -53,7 +62,13 @@ void main() {
       final ds = AuthRemoteDataSourceImpl(client: client);
       expect(
         () => ds.addUser(const UserModel(
-          name: 'n', email: 'e', password: 'p', age: 0, gender: 'g', institutionEmail: 'i', role: 'r',
+          name: 'n',
+          email: 'e',
+          password: 'p',
+          age: 0,
+          gender: 'g',
+          institutionEmail: 'i',
+          role: 'r',
         )),
         throwsA(isA<ServerException>()),
       );
@@ -63,7 +78,14 @@ void main() {
       final client = MockClient((request) async => http.Response('', 201));
       final ds = AuthRemoteDataSourceImpl(client: client);
       final res = await ds.updateUser(const UserModel(
-        id: 1, name: 'n', email: 'e', password: 'p', age: 0, gender: 'g', institutionEmail: 'i', role: 'r',
+        id: 1,
+        name: 'n',
+        email: 'e',
+        password: 'p',
+        age: 0,
+        gender: 'g',
+        institutionEmail: 'i',
+        role: 'r',
       ));
       expect(res, 1);
     });
@@ -76,4 +98,3 @@ void main() {
     });
   });
 }
-

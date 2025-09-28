@@ -1,5 +1,5 @@
 import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
-import 'package:fitness_app/features/auth/data/services/session_manager_impl.dart';
+import 'package:fitness_app/features/auth/infrastructure/services/session_manager_impl.dart';
 import 'package:fitness_app/features/auth/domain/entities/user.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';

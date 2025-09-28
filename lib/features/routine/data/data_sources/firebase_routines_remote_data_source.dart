@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
-import 'package:fitness_app/features/routine/data/data_sources/routines_remote_data_source.dart';
+import 'package:fitness_app/features/routine/data/data_sources/routine_data_source.dart';
 import 'package:fitness_app/features/routine/data/models/routine_model.dart';
 
-class FirebaseRoutineRemoteDataSourceImpl implements RoutineRemoteDataSource {
+class FirebaseRoutineRemoteDataSourceImpl implements RoutineDataSource {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   CollectionReference<Map<String, dynamic>> get _col =>
@@ -54,7 +54,8 @@ class FirebaseRoutineRemoteDataSourceImpl implements RoutineRemoteDataSource {
   Future<int> updateRoutine(RoutineModel routineModel) async {
     try {
       if (routineModel.id == null) throw ServerException();
-      final qs = await _col.where('id', isEqualTo: routineModel.id).limit(1).get();
+      final qs =
+          await _col.where('id', isEqualTo: routineModel.id).limit(1).get();
       if (qs.docs.isEmpty) throw ServerException();
       await qs.docs.first.reference.update({
         'name': routineModel.name,
@@ -82,4 +83,3 @@ class FirebaseRoutineRemoteDataSourceImpl implements RoutineRemoteDataSource {
     }
   }
 }
-

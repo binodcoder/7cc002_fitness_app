@@ -18,8 +18,10 @@ class BackendConfig {
       case 'firebase':
         return BackendFlavor.firebase;
       case 'fake':
-      default:
         return BackendFlavor.fake;
+      default:
+        // Fallback to Firebase if the env value is unrecognized
+        return BackendFlavor.firebase;
     }
   }
 }

@@ -5,8 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
-import 'package:fitness_app/drawer.dart';
-import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/app/drawer.dart';
+import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/calendar_bloc.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/calendar_event.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/calendar_state.dart';
@@ -307,7 +307,8 @@ class _CalendarPageState extends State<CalendarPage> {
                             case EventErrorState:
                               final error = state as EventErrorState;
                               return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 24.0),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 24.0),
                                 child: Center(child: Text(error.message)),
                               );
                             default:

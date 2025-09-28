@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:fitness_app/core/errors/exceptions.dart';
-import 'package:fitness_app/features/live_training/data/datasources/live_training_remote_data_source.dart';
+import 'package:fitness_app/features/live_training/data/datasources/live_training_data_source.dart';
 import 'package:fitness_app/features/live_training/data/models/live_training_model.dart';
 
-class FirebaseLiveTrainingRemoteDataSource implements LiveTrainingRemoteDataSource {
+class FirebaseLiveTrainingRemoteDataSource implements LiveTrainingDataSource {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final fb.FirebaseAuth _auth = fb.FirebaseAuth.instance;
 
@@ -22,7 +22,9 @@ class FirebaseLiveTrainingRemoteDataSource implements LiveTrainingRemoteDataSour
       return qs.docs.map((d) {
         final data = d.data();
         final dt = data['trainingDate'];
-        final date = dt is Timestamp ? dt.toDate() : DateTime.tryParse((dt ?? '').toString()) ?? DateTime.now();
+        final date = dt is Timestamp
+            ? dt.toDate()
+            : DateTime.tryParse((dt ?? '').toString()) ?? DateTime.now();
         return LiveTrainingModel(
           trainerId: (data['trainerId'] as num?)?.toInt() ?? 0,
           title: (data['title'] as String?) ?? '',
@@ -46,7 +48,9 @@ class FirebaseLiveTrainingRemoteDataSource implements LiveTrainingRemoteDataSour
       final userDoc = await _firestore.collection('users').doc(uid).get();
       final numericId = _currentUserNumericId(userDoc.data());
       await _col.add({
-        'trainerId': liveTrainingModel.trainerId != 0 ? liveTrainingModel.trainerId : numericId,
+        'trainerId': liveTrainingModel.trainerId != 0
+            ? liveTrainingModel.trainerId
+            : numericId,
         'title': liveTrainingModel.title,
         'description': liveTrainingModel.description,
         'trainingDate': Timestamp.fromDate(liveTrainingModel.trainingDate),
@@ -65,7 +69,10 @@ class FirebaseLiveTrainingRemoteDataSource implements LiveTrainingRemoteDataSour
   Future<int> updateLiveTraining(LiveTrainingModel liveTrainingModel) async {
     try {
       // Mirror existing behavior: update first doc with matching trainerId
-      final qs = await _col.where('trainerId', isEqualTo: liveTrainingModel.trainerId).limit(1).get();
+      final qs = await _col
+          .where('trainerId', isEqualTo: liveTrainingModel.trainerId)
+          .limit(1)
+          .get();
       if (qs.docs.isEmpty) throw ServerException();
       await qs.docs.first.reference.update({
         'title': liveTrainingModel.title,
@@ -85,7 +92,10 @@ class FirebaseLiveTrainingRemoteDataSource implements LiveTrainingRemoteDataSour
   Future<int> deleteLiveTraining(int liveTrainingId) async {
     try {
       // Mirror existing behavior: delete first doc with matching trainerId
-      final qs = await _col.where('trainerId', isEqualTo: liveTrainingId).limit(1).get();
+      final qs = await _col
+          .where('trainerId', isEqualTo: liveTrainingId)
+          .limit(1)
+          .get();
       if (qs.docs.isEmpty) throw ServerException();
       await qs.docs.first.reference.delete();
       return 1;
@@ -94,4 +104,3 @@ class FirebaseLiveTrainingRemoteDataSource implements LiveTrainingRemoteDataSour
     }
   }
 }
-

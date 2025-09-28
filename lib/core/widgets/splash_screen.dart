@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
 import 'package:fitness_app/features/auth/domain/entities/user.dart';
-import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/core/assets/app_assets.dart';
 import 'package:fitness_app/core/navigation/routes.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';

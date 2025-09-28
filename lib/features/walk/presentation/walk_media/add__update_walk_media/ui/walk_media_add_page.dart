@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:fitness_app/features/walk/domain/entities/walk_media.dart';
-import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/font_manager.dart';
@@ -104,7 +104,8 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                       label: 'Media URL',
                       controller: walkMediaUrlController,
                       hint: 'description',
-                      validator: (v) => (v == null || v.isEmpty) ? '*Required' : null,
+                      validator: (v) =>
+                          (v == null || v.isEmpty) ? '*Required' : null,
                     ),
                     SizedBox(height: AppHeight.h30),
                     CustomButton(
@@ -157,4 +158,3 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
     );
   }
 }
-

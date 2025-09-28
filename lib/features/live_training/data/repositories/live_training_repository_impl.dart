@@ -1,17 +1,17 @@
 import 'package:dartz/dartz.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/core/errors/failures.dart';
+import 'package:fitness_app/features/live_training/data/datasources/live_training_data_source.dart';
 import 'package:fitness_app/features/live_training/data/models/live_training_model.dart';
 import 'package:fitness_app/features/live_training/domain/entities/live_training.dart'
     as entity;
 import 'package:fitness_app/core/network/network_info.dart';
 import '../../domain/repositories/live_training_repositories.dart';
 import '../datasources/live_training_local_data_source.dart';
-import '../datasources/live_training_remote_data_source.dart';
 
 class LiveTrainingRepositoryImpl implements LiveTrainingRepository {
   final LiveTrainingLocalDataSource liveTrainingLocalDataSource;
-  final LiveTrainingRemoteDataSource liveTrainingRemoteDataSource;
+  final LiveTrainingDataSource liveTrainingRemoteDataSource;
   final NetworkInfo networkInfo;
 
   LiveTrainingRepositoryImpl({

@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:fitness_app/drawer.dart';
-import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/app/drawer.dart';
+import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/features/routine/presentation/routine_form/ui/routine_form_page.dart';
 import 'package:fitness_app/features/routine/presentation/get_routines/ui/routine_details.dart';
@@ -23,7 +23,6 @@ class RoutinePage extends StatefulWidget {
 }
 
 class _RoutinePageState extends State<RoutinePage> {
-
   @override
   void initState() {
     listBloc.add(const RoutineListInitialEvent());

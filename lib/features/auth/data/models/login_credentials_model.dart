@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'package:fitness_app/features/auth/domain/entities/login_credentials.dart';
 
-LoginCredentialsModel loginModelFromJson(String str) =>
-    LoginCredentialsModel.fromJson(json.decode(str));
+LoginCredentialsModel loginModelFromJson(String str) => LoginCredentialsModel.fromJson(json.decode(str));
 
-String loginModelToJson(LoginCredentialsModel data) =>
-    json.encode(data.toJson());
+String loginModelToJson(LoginCredentialsModel data) => json.encode(data.toJson());
 
 class LoginCredentialsModel extends LoginCredentials {
   const LoginCredentialsModel({required super.email, required super.password});

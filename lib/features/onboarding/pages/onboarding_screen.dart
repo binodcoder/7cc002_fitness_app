@@ -11,7 +11,7 @@ import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
 import 'package:fitness_app/features/onboarding/widgets/onboarding_slide.dart';
 import 'package:fitness_app/features/onboarding/models/slider_object.dart';
-import 'package:fitness_app/injection_container.dart';
+import 'package:fitness_app/app/injection_container.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fitness_app/core/config/backend_config.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
@@ -73,62 +73,62 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Widget _getContentWidget(List<SliderObject> slides) {
     return Scaffold(
-            backgroundColor: ColorManager.white,
-            appBar: AppBar(
-              backgroundColor: ColorManager.white,
-              elevation: AppSize.s0,
-              systemOverlayStyle: const SystemUiOverlayStyle(
-                statusBarColor: ColorManager.white,
-                statusBarBrightness: Brightness.dark,
-                statusBarIconBrightness: Brightness.dark,
-              ),
-            ),
-            body: PageView.builder(
-              controller: _pageController,
-              itemCount: slides.length,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-              itemBuilder: (context, index) {
-                //return OnBoarding Page
-                return OnboardingSlide(
-                  sliderObject: slides[index],
-                );
-              },
-            ),
-            bottomSheet: Container(
-              color: ColorManager.white,
-              height: AppSize.s100,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        _prefs.setBool('seen_onboarding', true);
-                        if (BackendConfig.isFirebase &&
-                            fb.FirebaseAuth.instance.currentUser == null) {
-                          context.go(Routes.loginRoute);
-                        } else {
-                          context.go(Routes.routineRoute);
-                        }
-                      },
-                      child: Text(
-                        AppStrings.of(context).skip,
-                        textAlign: TextAlign.end,
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                    ),
-                  ),
-                  //add layout for indicator and arrows
-                  _getBottomSheetWidget(slides),
-                ],
-              ),
-            ),
+      backgroundColor: ColorManager.white,
+      appBar: AppBar(
+        backgroundColor: ColorManager.white,
+        elevation: AppSize.s0,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: ColorManager.white,
+          statusBarBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.dark,
+        ),
+      ),
+      body: PageView.builder(
+        controller: _pageController,
+        itemCount: slides.length,
+        onPageChanged: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        itemBuilder: (context, index) {
+          //return OnBoarding Page
+          return OnboardingSlide(
+            sliderObject: slides[index],
           );
+        },
+      ),
+      bottomSheet: Container(
+        color: ColorManager.white,
+        height: AppSize.s100,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {
+                  _prefs.setBool('seen_onboarding', true);
+                  if (BackendConfig.isFirebase &&
+                      fb.FirebaseAuth.instance.currentUser == null) {
+                    context.go(Routes.loginRoute);
+                  } else {
+                    context.go(Routes.routineRoute);
+                  }
+                },
+                child: Text(
+                  AppStrings.of(context).skip,
+                  textAlign: TextAlign.end,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
+            ),
+            //add layout for indicator and arrows
+            _getBottomSheetWidget(slides),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _getBottomSheetWidget(List<SliderObject> slides) {

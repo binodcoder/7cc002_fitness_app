@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fitness_app/app/app.dart';
-import 'injection_container.dart' as di;
+import 'app/injection_container.dart' as di;
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'core/config/backend_config.dart';
