@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:mockito/annotations.dart';
 import 'package:dartz/dartz.dart';
 import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 import 'package:fitness_app/core/usecases/usecase.dart';
@@ -10,7 +9,8 @@ import 'package:fitness_app/features/appointment/domain/usecases/update_appointm
 import 'package:fitness_app/features/appointment/domain/usecases/delete_appointment.dart';
 import 'package:fitness_app/features/appointment/domain/usecases/get_appointments.dart';
 
-class MockAppointmentRepository extends Mock implements AppointmentRepositories {}
+class MockAppointmentRepository extends Mock
+    implements AppointmentRepositories {}
 
 void main() {
   final repo = MockAppointmentRepository();
@@ -31,7 +31,8 @@ void main() {
 
   test('add/update/delete/get', () async {
     when(repo.addAppointment(entity)).thenAnswer((_) async => const Right(1));
-    when(repo.updateAppointment(entity)).thenAnswer((_) async => const Right(1));
+    when(repo.updateAppointment(entity))
+        .thenAnswer((_) async => const Right(1));
     when(repo.deleteAppointment(1)).thenAnswer((_) async => const Right(1));
     when(repo.getAppointments()).thenAnswer((_) async => Right([entity]));
 

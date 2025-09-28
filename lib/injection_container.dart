@@ -72,12 +72,14 @@ import 'features/live_training/domain/usecases/update_live_training.dart';
 import 'features/appointment/presentation/appointment_form/bloc/appointment_form_bloc.dart';
 import 'features/appointment/presentation/get_appointments/bloc/calendar_bloc.dart';
 import 'features/live_training/presentation/get_live_trainings/bloc/live_training_bloc.dart';
-import 'features/auth/presentation/login/bloc/login_bloc.dart';
-import 'features/auth/presentation/register/bloc/user_add_bloc.dart';
-import 'features/auth/presentation/auth/bloc/auth_bloc.dart';
+import 'features/auth/application/login/login_bloc.dart';
+import 'features/auth/application/register/user_add_bloc.dart';
+import 'features/auth/application/auth/auth_bloc.dart';
 import 'features/routine/presentation/routine_form/bloc/routine_form_bloc.dart';
 import 'features/routine/presentation/get_routines/bloc/routine_list_bloc.dart';
 import 'core/services/image_picker_service.dart';
+import 'features/auth/domain/services/session_manager.dart';
+import 'features/auth/data/services/session_manager_impl.dart';
 import 'features/walk/presentation/walk_form/bloc/walk_form_bloc.dart';
 import 'features/walk/presentation/walk_list/bloc/walk_list_bloc.dart';
 import 'features/walk/presentation/walk_media/add__update_walk_media/bloc/walk_media_add_bloc.dart';
@@ -85,6 +87,21 @@ import 'features/walk/presentation/walk_media/get_walk_media/bloc/walk_media_blo
 import 'core/config/backend_config.dart';
 import 'features/auth/data/datasources/firebase_auth_remote_data_source.dart';
 // auth service removed; using 3-layer structure
+// chat
+import 'features/chat/domain/repositories/chat_repository.dart';
+import 'features/chat/domain/usecases/send_message.dart';
+import 'features/chat/domain/usecases/stream_messages.dart';
+import 'features/chat/domain/usecases/mark_room_read.dart';
+import 'features/chat/data/datasources/chat_remote_data_source.dart';
+import 'features/chat/data/datasources/firebase_chat_remote_data_source.dart';
+import 'features/chat/data/repositories/chat_repository_impl.dart';
+import 'features/chat/application/chat/bloc/chat_bloc.dart';
+import 'features/chat/domain/repositories/chat_directory_repository.dart';
+import 'features/chat/domain/usecases/get_chat_users.dart';
+import 'features/chat/data/datasources/chat_directory_remote_data_source.dart';
+import 'features/chat/data/datasources/firebase_chat_directory_remote_data_source.dart';
+import 'features/chat/data/repositories/chat_directory_repository_impl.dart';
+import 'features/chat/application/users/bloc/chat_users_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -98,19 +115,28 @@ Future<void> init() async {
   sl.registerSingletonAsync<Database>(() async => await AppDatabase().database);
   await sl.isReady<Database>();
   // auth
-  sl.registerFactory(() => LoginBloc(login: sl(), sync: sl()));
-  sl.registerFactory(() => AuthBloc(logout: sl()));
+  sl.registerFactory(() => LoginBloc(login: sl()));
+  sl.registerFactory(() => AuthBloc(logout: sl(), sessionManager: sl()));
   sl.registerFactory(() => UserAddBloc(
         addUser: sl(),
         updateUser: sl(),
-        inputConverter: sl(),
+        imagePickerService: sl(),
       ));
+  // chat
+  sl.registerFactory(() => ChatBloc(streamMessages: sl(), sendMessage: sl()));
+  sl.registerFactory(
+      () => ChatUsersBloc(getChatUsers: sl(), sessionManager: sl()));
 
   sl.registerLazySingleton(() => Login(sl()));
   sl.registerLazySingleton(() => Logout(sl()));
   sl.registerLazySingleton(() => AddUser(sl()));
   sl.registerLazySingleton(() => UpdateUser(sl()));
   sl.registerLazySingleton(() => DeleteUser(sl()));
+  // chat
+  sl.registerLazySingleton(() => StreamMessages(sl()));
+  sl.registerLazySingleton(() => SendMessage(sl()));
+  sl.registerLazySingleton(() => MarkRoomRead(sl()));
+  sl.registerLazySingleton(() => GetChatUsers(sl()));
 
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoriesImpl(
@@ -123,6 +149,16 @@ Future<void> init() async {
   sl.registerLazySingleton<AuthRemoteDataSource>(() => BackendConfig.isFirebase
       ? FirebaseAuthRemoteDataSourceImpl()
       : AuthRemoteDataSourceImpl(client: sl()));
+  // chat repos and sources
+  sl.registerLazySingleton<ChatRepository>(
+      () => ChatRepositoryImpl(remote: sl()));
+  sl.registerLazySingleton<ChatRemoteDataSource>(() =>
+      // Chat relies on Firestore; if not Firebase, still provide the same class (no network used elsewhere)
+      FirebaseChatRemoteDataSource());
+  sl.registerLazySingleton<ChatDirectoryRepository>(
+      () => ChatDirectoryRepositoryImpl(remote: sl()));
+  sl.registerLazySingleton<ChatDirectoryRemoteDataSource>(
+      () => FirebaseChatDirectoryRemoteDataSource());
 
   //utils
 
@@ -155,9 +191,10 @@ Future<void> init() async {
       ? FakeAppointmentRepositories()
       : AppointmentRepositoriesImpl(appointmentRemoteDataSource: sl()));
 
-  sl.registerLazySingleton<AppointmentRemoteDataSource>(() => BackendConfig.isFirebase
-      ? FirebaseAppointmentRemoteDataSource()
-      : AppointmentRemoteDataSourceImpl(client: sl()));
+  sl.registerLazySingleton<AppointmentRemoteDataSource>(() =>
+      BackendConfig.isFirebase
+          ? FirebaseAppointmentRemoteDataSource()
+          : AppointmentRemoteDataSourceImpl(client: sl()));
 
   //walk
   sl.registerFactory(() => WalkListBloc(
@@ -252,13 +289,15 @@ Future<void> init() async {
         ));
   sl.registerLazySingleton<LiveTrainingLocalDataSource>(
       () => LiveTrainingLocalDataSourceImpl());
-  sl.registerLazySingleton<LiveTrainingRemoteDataSource>(() => BackendConfig.isFirebase
-      ? FirebaseLiveTrainingRemoteDataSource()
-      : LiveTrainingRemoteDataSourceImpl(client: sl()));
+  sl.registerLazySingleton<LiveTrainingRemoteDataSource>(() =>
+      BackendConfig.isFirebase
+          ? FirebaseLiveTrainingRemoteDataSource()
+          : LiveTrainingRemoteDataSourceImpl(client: sl()));
 
   //! External
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => sharedPreferences);
+  sl.registerLazySingleton<SessionManager>(() => SessionManagerImpl(sl()));
   sl.registerLazySingleton(() => http.Client());
   sl.registerLazySingleton(() => InternetConnectionChecker());
   sl.registerLazySingleton<ImagePickerService>(() => ImagePickerServiceImpl());

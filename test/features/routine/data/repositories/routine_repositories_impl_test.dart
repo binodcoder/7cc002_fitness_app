@@ -109,7 +109,7 @@ void main() {
         //assert
         verify(mockRemoteDataSource.getRoutines());
         expect(result, isNotNull);
-        result!.fold(
+        result.fold(
           (l) => fail('Expected Right but got Left'),
           (r) => expect(r, tRoutineModel),
         );

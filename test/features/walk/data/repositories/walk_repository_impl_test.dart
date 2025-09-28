@@ -8,8 +8,19 @@ import 'package:fitness_app/features/walk/data/models/walk_model.dart';
 import 'package:fitness_app/features/walk/data/repositories/walk_repository_impl.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 
-class FakeNet implements NetworkInfo { FakeNet(this.connected); bool connected; @override Future<bool> get isConnected async => connected; }
-class FakeLocal implements WalksLocalDataSource { List<WalkModel> items = const []; @override Future<List<WalkModel>> getWalks() async => items; }
+class FakeNet implements NetworkInfo {
+  FakeNet(this.connected);
+  bool connected;
+  @override
+  Future<bool> get isConnected async => connected;
+}
+
+class FakeLocal implements WalksLocalDataSource {
+  List<WalkModel> items = const [];
+  @override
+  Future<List<WalkModel>> getWalks() async => items;
+}
+
 class FakeRemoteOk implements WalkRemoteDataSource {
   @override
   Future<int> addWalk(WalkModel walkModel) async => 1;
@@ -24,6 +35,7 @@ class FakeRemoteOk implements WalkRemoteDataSource {
   @override
   Future<int> leaveWalk(walkParticipantModel) async => 1;
 }
+
 class FakeRemoteFail implements WalkRemoteDataSource {
   @override
   Future<int> addWalk(WalkModel walkModel) async => throw ServerException();
@@ -41,10 +53,13 @@ class FakeRemoteFail implements WalkRemoteDataSource {
 
 void main() {
   test('online maps remote', () async {
-    final repo = WalkRepositoryImpl(walkLocalDataSource: FakeLocal(), walkRemoteDataSource: FakeRemoteOk(), networkInfo: FakeNet(true));
+    final repo = WalkRepositoryImpl(
+        walkLocalDataSource: FakeLocal(),
+        walkRemoteDataSource: FakeRemoteOk(),
+        networkInfo: FakeNet(true));
     final res = await repo.getWalks();
     expect(res, isNotNull);
-    res!.fold((l) => fail('Expected Right'), (r) => expect(r, []));
+    res.fold((l) => fail('Expected Right'), (r) => expect(r, []));
     expect(
       await repo.addWalk(WalkModel(
         id: 1,
@@ -69,12 +84,18 @@ void main() {
           startLocation: 'Campus',
         )
       ];
-    final repo = WalkRepositoryImpl(walkLocalDataSource: local, walkRemoteDataSource: FakeRemoteOk(), networkInfo: FakeNet(false));
+    final repo = WalkRepositoryImpl(
+        walkLocalDataSource: local,
+        walkRemoteDataSource: FakeRemoteOk(),
+        networkInfo: FakeNet(false));
     final res = await repo.getWalks();
-    expect(res!.isRight(), true);
+    expect(res.isRight(), true);
   });
   test('remote failure maps Left', () async {
-    final repo = WalkRepositoryImpl(walkLocalDataSource: FakeLocal(), walkRemoteDataSource: FakeRemoteFail(), networkInfo: FakeNet(true));
+    final repo = WalkRepositoryImpl(
+        walkLocalDataSource: FakeLocal(),
+        walkRemoteDataSource: FakeRemoteFail(),
+        networkInfo: FakeNet(true));
     expect(await repo.getWalks(), Left(ServerFailure()));
   });
 }

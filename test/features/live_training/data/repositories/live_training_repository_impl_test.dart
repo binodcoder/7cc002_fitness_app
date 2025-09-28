@@ -8,7 +8,12 @@ import 'package:fitness_app/features/live_training/data/models/live_training_mod
 import 'package:fitness_app/features/live_training/data/repositories/live_training_repository_impl.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 
-class FakeNet implements NetworkInfo { FakeNet(this.connected); bool connected; @override Future<bool> get isConnected async => connected; }
+class FakeNet implements NetworkInfo {
+  FakeNet(this.connected);
+  bool connected;
+  @override
+  Future<bool> get isConnected async => connected;
+}
 
 class FakeLocal implements LiveTrainingLocalDataSource {
   List<LiveTrainingModel> items = const [];
@@ -24,18 +29,23 @@ class FakeRemoteOk implements LiveTrainingRemoteDataSource {
   @override
   Future<List<LiveTrainingModel>> getLiveTrainings() async => const [];
   @override
-  Future<int> updateLiveTraining(LiveTrainingModel liveTrainingModel) async => 1;
+  Future<int> updateLiveTraining(LiveTrainingModel liveTrainingModel) async =>
+      1;
 }
 
 class FakeRemoteFail implements LiveTrainingRemoteDataSource {
   @override
-  Future<int> addLiveTraining(LiveTrainingModel liveTrainingModel) async => throw ServerException();
+  Future<int> addLiveTraining(LiveTrainingModel liveTrainingModel) async =>
+      throw ServerException();
   @override
-  Future<int> deleteLiveTraining(int liveTrainingId) async => throw ServerException();
+  Future<int> deleteLiveTraining(int liveTrainingId) async =>
+      throw ServerException();
   @override
-  Future<List<LiveTrainingModel>> getLiveTrainings() async => throw ServerException();
+  Future<List<LiveTrainingModel>> getLiveTrainings() async =>
+      throw ServerException();
   @override
-  Future<int> updateLiveTraining(LiveTrainingModel liveTrainingModel) async => throw ServerException();
+  Future<int> updateLiveTraining(LiveTrainingModel liveTrainingModel) async =>
+      throw ServerException();
 }
 
 void main() {
@@ -47,18 +57,27 @@ void main() {
     );
     final res = await repo.getLiveTrainings();
     expect(res, isNotNull);
-    res!.fold((l) => fail('Expected Right'), (r) => expect(r, []));
+    res.fold((l) => fail('Expected Right'), (r) => expect(r, []));
   });
 
   test('offline returns local list', () async {
-    final local = FakeLocal()..items = [LiveTrainingModel(trainerId: 1, title: 't', description: 'd', trainingDate: DateTime(2025, 1, 1), startTime: '09:00', endTime: '10:00')];
+    final local = FakeLocal()
+      ..items = [
+        LiveTrainingModel(
+            trainerId: 1,
+            title: 't',
+            description: 'd',
+            trainingDate: DateTime(2025, 1, 1),
+            startTime: '09:00',
+            endTime: '10:00')
+      ];
     final repo = LiveTrainingRepositoryImpl(
       liveTrainingLocalDataSource: local,
       liveTrainingRemoteDataSource: FakeRemoteOk(),
       networkInfo: FakeNet(false),
     );
     final res = await repo.getLiveTrainings();
-    expect(res!.isRight(), true);
+    expect(res.isRight(), true);
   });
 
   test('remote failures map to Left', () async {
@@ -68,6 +87,14 @@ void main() {
       networkInfo: FakeNet(true),
     );
     expect(await repo.getLiveTrainings(), Left(ServerFailure()));
-    expect(await repo.addLiveTraining(LiveTrainingModel(trainerId: 1, title: 't', description: 'd', trainingDate: DateTime(2025, 1, 1), startTime: '09:00', endTime: '10:00')), Left(ServerFailure()));
+    expect(
+        await repo.addLiveTraining(LiveTrainingModel(
+            trainerId: 1,
+            title: 't',
+            description: 'd',
+            trainingDate: DateTime(2025, 1, 1),
+            startTime: '09:00',
+            endTime: '10:00')),
+        Left(ServerFailure()));
   });
 }

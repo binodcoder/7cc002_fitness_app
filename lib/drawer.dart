@@ -1,4 +1,5 @@
-import 'package:fitness_app/features/live_training/presentation/get_live_trainings/ui/live_training.dart';
+import 'package:fitness_app/app/app_router.dart';
+import 'package:fitness_app/core/navigation/routes.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/font_manager.dart';
@@ -7,19 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'injection_container.dart';
-import 'features/appointment/presentation/get_appointments/ui/calendar.dart';
-import 'features/chat/chat_page.dart';
-import 'package:go_router/go_router.dart';
-import 'package:fitness_app/core/navigation/routes.dart';
-import 'features/routine/presentation/get_routines/ui/routine.dart';
-import 'features/walk/presentation/walk_list/ui/walk_list_page.dart';
 import 'package:fitness_app/core/widgets/app_drawer_header.dart';
 import 'package:fitness_app/core/widgets/app_slidable_list_tile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fitness_app/features/auth/presentation/auth/bloc/auth_bloc.dart';
-import 'package:fitness_app/features/auth/presentation/auth/bloc/auth_event.dart';
+import 'package:fitness_app/features/auth/application/auth/auth_bloc.dart';
+import 'package:fitness_app/features/auth/application/auth/auth_event.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({Key? key}) : super(key: key);
@@ -28,7 +21,7 @@ class MyDrawer extends StatefulWidget {
 }
 
 class _MyDrawerState extends State<MyDrawer> {
-  final SharedPreferences sharedPreferences = sl<SharedPreferences>();
+  // final SharedPreferences sharedPreferences = sl<SharedPreferences>();
 
   @override
   Widget build(BuildContext context) {
@@ -52,13 +45,12 @@ class _MyDrawerState extends State<MyDrawer> {
                 fontSize: FontSize.s14,
               ),
               titleScaler: const TextScaler.linear(1.2),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => const ChatPage(),
-                  ),
-                );
+              onTap: () async {
+                // Close drawer first so back brings you here
+                await Navigator.of(context).maybePop();
+                if (!context.mounted) return;
+                // Push so a back arrow appears
+                AppRouter.router.push(Routes.chat);
               },
             ),
             AppSlidableListTile(
@@ -71,12 +63,7 @@ class _MyDrawerState extends State<MyDrawer> {
               ),
               titleScaler: const TextScaler.linear(1.2),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => const RoutinePage(),
-                  ),
-                );
+                AppRouter.router.go(Routes.routineRoute);
               },
             ),
             AppSlidableListTile(
@@ -89,12 +76,7 @@ class _MyDrawerState extends State<MyDrawer> {
               ),
               titleScaler: const TextScaler.linear(1.2),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => const CalendarPage(),
-                  ),
-                );
+                AppRouter.router.go(Routes.calendar);
               },
             ),
             AppSlidableListTile(
@@ -107,12 +89,7 @@ class _MyDrawerState extends State<MyDrawer> {
               ),
               titleScaler: const TextScaler.linear(1.2),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => const WalkListPage(),
-                  ),
-                );
+                AppRouter.router.go(Routes.walkList);
               },
             ),
             AppSlidableListTile(
@@ -125,12 +102,7 @@ class _MyDrawerState extends State<MyDrawer> {
               ),
               titleScaler: const TextScaler.linear(1.2),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => const LiveTrainingPage(),
-                  ),
-                );
+                AppRouter.router.go(Routes.liveTraining);
               },
             ),
             AppSlidableListTile(
@@ -155,8 +127,9 @@ class _MyDrawerState extends State<MyDrawer> {
               onTap: () async {
                 // Close drawer first
                 await Navigator.of(context).maybePop();
+                if (!context.mounted) return;
                 // Sign out via use case (handles Firebase or no-op for REST)
-                context.read<AuthBloc>().add(const LogoutRequested());
+                context.read<AuthBloc>().add(const AuthLogoutRequested());
               },
             ),
             AppSlidableListTile(

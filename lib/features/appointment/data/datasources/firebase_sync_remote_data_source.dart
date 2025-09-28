@@ -27,7 +27,7 @@ class FirebaseSyncRemoteDataSource implements SyncRemoteDataSource {
         );
       }).toList();
 
-      final company = CompanyModel(
+      const company = CompanyModel(
         id: 1,
         name: 'Fitness Company',
         email: 'support@fitness.app',
@@ -46,4 +46,3 @@ class FirebaseSyncRemoteDataSource implements SyncRemoteDataSource {
     }
   }
 }
-

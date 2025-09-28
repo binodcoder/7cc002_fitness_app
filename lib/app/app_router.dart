@@ -1,3 +1,6 @@
+// import 'package:fitness_app/features/chat/chat_page.dart';
+import 'package:fitness_app/features/chat/chat_users_page.dart';
+import 'package:fitness_app/features/walk/presentation/walk_list/ui/walk_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -81,6 +84,14 @@ class AppRouter {
       GoRoute(
         path: Routes.addAppointment,
         builder: (context, state) => const AppointmentFormDialog(),
+      ),
+      GoRoute(
+        path: Routes.chat,
+        builder: (context, state) => const ChatUsersPage(),
+      ),
+      GoRoute(
+        path: Routes.walkList,
+        builder: (context, state) => const WalkListPage(),
       ),
     ],
     errorBuilder: (context, state) => const _RouteNotFoundView(),

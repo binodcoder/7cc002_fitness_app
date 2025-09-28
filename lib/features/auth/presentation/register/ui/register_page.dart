@@ -12,9 +12,9 @@ import 'package:fitness_app/core/theme/values_manager.dart';
 
 import 'package:fitness_app/features/auth/presentation/login/ui/login_screen.dart';
 import 'package:fitness_app/core/widgets/custom_button.dart';
-import 'package:fitness_app/features/auth/presentation/register/bloc/user_add_bloc.dart';
-import 'package:fitness_app/features/auth/presentation/register/bloc/user_add_event.dart';
-import 'package:fitness_app/features/auth/presentation/register/bloc/user_add_state.dart';
+import 'package:fitness_app/features/auth/application/register/user_add_bloc.dart';
+import 'package:fitness_app/features/auth/application/register/user_add_event.dart';
+import 'package:fitness_app/features/auth/application/register/user_add_state.dart';
 import 'package:fitness_app/features/auth/presentation/register/widgets/role_dropdown.dart';
 import 'package:fitness_app/core/widgets/custom_text_form_field.dart';
 
@@ -40,6 +40,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController conformPasswordController =
       TextEditingController();
+  bool _isDialogVisible = false;
 
   // Password visibility handled inside extracted widgets
 
@@ -64,22 +65,50 @@ class _RegisterPageState extends State<RegisterPage> {
   String selectedRole = "standard";
 
   @override
+  void dispose() {
+    userNameController.dispose();
+    emailController.dispose();
+    institutionEmailController.dispose();
+    genderController.dispose();
+    ageController.dispose();
+    passwordController.dispose();
+    conformPasswordController.dispose();
+    userAddBloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final strings = AppStrings.of(context);
     // var size = MediaQuery.of(context).size;
     return BlocConsumer<UserAddBloc, UserAddState>(
       bloc: userAddBloc,
-      listenWhen: (previous, current) => current is UserAddActionState,
-      buildWhen: (previous, current) => current is! UserAddActionState,
+      listenWhen: (previous, current) =>
+          previous.status != current.status ||
+          previous.errorMessage != current.errorMessage,
+      buildWhen: (previous, current) => previous != current,
       listener: (context, state) {
-        if (state is AddUserLoadingState) {
-          showDialog(
+        if (state.status == UserAddStatus.saving && !_isDialogVisible) {
+          _isDialogVisible = true;
+          showDialog<void>(
             context: context,
+            barrierDismissible: false,
             builder: (BuildContext context) {
               return const Center(child: CircularProgressIndicator());
             },
-          );
-        } else if (state is AddUserSavedState) {
+          ).whenComplete(() => _isDialogVisible = false);
+          return;
+        }
+
+        if (_isDialogVisible) {
+          final navigator = Navigator.of(context, rootNavigator: true);
+          if (navigator.canPop()) {
+            navigator.pop();
+          }
+          _isDialogVisible = false;
+        }
+
+        if (state.status == UserAddStatus.saved) {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -87,14 +116,12 @@ class _RegisterPageState extends State<RegisterPage> {
               fullscreenDialog: true,
             ),
           );
-        } else if (state is AddUserUpdatedState) {
-          // sourceController.clear();
-          // descriptionController.clear();
+        } else if (state.status == UserAddStatus.updated) {
           Navigator.pop(context);
-        } else if (state is AddUserErrorState) {
-          Navigator.pop(context);
+        } else if (state.status == UserAddStatus.failure &&
+            state.errorMessage != null) {
           Fluttertoast.showToast(
-            msg: state.message,
+            msg: state.errorMessage!,
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: ColorManager.error,

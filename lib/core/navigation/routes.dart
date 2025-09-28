@@ -17,5 +17,6 @@ class Routes {
   static const String calendar = '/calendar';
   static const String appointmentDetails = '/appointmentDetails';
   static const String addAppointment = '/addAppointment';
+  static const String chat = '/chat';
+  static const String walkList = '/chatList';
 }
-

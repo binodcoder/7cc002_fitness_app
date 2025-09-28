@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
+import 'package:fitness_app/features/auth/domain/entities/user.dart';
 import 'package:fitness_app/injection_container.dart';
 import 'package:fitness_app/core/assets/app_assets.dart';
 import 'package:fitness_app/core/navigation/routes.dart';
@@ -20,14 +20,14 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   Timer? _timer;
-  final SharedPreferences sharedPreferences = sl<SharedPreferences>();
+  final SessionManager sessionManager = sl<SessionManager>();
 
   _startDelay() {
     _timer = Timer(const Duration(seconds: 2), _goNext);
   }
 
-  _goNext() {
-    final seen = sharedPreferences.getBool('seen_onboarding') == true;
+  void _goNext() async {
+    final seen = sessionManager.hasSeenOnboarding();
     if (!seen) {
       if (!mounted) return;
       context.go(Routes.onBoardingRoute);
@@ -42,12 +42,27 @@ class _SplashScreenState extends State<SplashScreen> {
         return;
       }
     } else if (BackendConfig.isFake) {
-      // Fake login/session defaults only for demo mode
-      sharedPreferences.setBool('login', true);
-      sharedPreferences.setInt('user_id', sharedPreferences.getInt('user_id') ?? 1);
-      sharedPreferences.setString('role', sharedPreferences.getString('role') ?? 'trainer');
-      sharedPreferences.setString('institutionEmail',
-          sharedPreferences.getString('institutionEmail') ?? 'demo@fit.com');
+      final cachedUser = sessionManager.getCurrentUser();
+      if (cachedUser == null) {
+        const demoUser = User(
+          id: 1,
+          age: 25,
+          email: 'demo@fit.com',
+          gender: 'unspecified',
+          institutionEmail: 'demo@fit.com',
+          name: 'Demo User',
+          password: '',
+          role: 'trainer',
+        );
+        await sessionManager.persistUser(demoUser);
+      }
+    } else {
+      final loggedIn = await sessionManager.isLoggedIn();
+      if (!loggedIn) {
+        if (!mounted) return;
+        context.go(Routes.loginRoute);
+        return;
+      }
     }
     if (!mounted) return;
     context.go(Routes.routineRoute);

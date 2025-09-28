@@ -10,10 +10,11 @@ import 'package:fitness_app/core/theme/font_manager.dart';
 import 'package:fitness_app/core/theme/styles_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
 import 'package:fitness_app/features/auth/presentation/register/ui/register_page.dart';
-import 'package:fitness_app/features/routine/presentation/get_routines/ui/routine.dart';
-import 'package:fitness_app/features/auth/presentation/login/bloc/login_bloc.dart';
-import 'package:fitness_app/features/auth/presentation/login/bloc/login_event.dart';
-import 'package:fitness_app/features/auth/presentation/login/bloc/login_state.dart';
+import 'package:fitness_app/features/auth/application/login/login_bloc.dart';
+import 'package:fitness_app/features/auth/application/login/login_event.dart';
+import 'package:fitness_app/features/auth/application/login/login_state.dart';
+import 'package:fitness_app/features/auth/application/auth/auth_bloc.dart';
+import 'package:fitness_app/features/auth/application/auth/auth_event.dart';
 import '../widgets/bear_log_in_controller.dart';
 import 'package:fitness_app/core/widgets/custom_button.dart';
 import '../widgets/tracking_text_input.dart';
@@ -29,6 +30,7 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
 
   bool _passwordVisible = false;
+  bool _isDialogVisible = false;
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   late BearLogInController bearLogInController;
@@ -38,9 +40,18 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     bearLogInController = BearLogInController();
+    loginBloc.add(const LoginInitialEvent());
   }
 
   final LoginBloc loginBloc = sl<LoginBloc>();
+
+  @override
+  void dispose() {
+    userNameController.dispose();
+    passwordController.dispose();
+    loginBloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,28 +61,41 @@ class _LoginPageState extends State<LoginPage> {
 
     return BlocConsumer<LoginBloc, LoginState>(
       bloc: loginBloc,
-      listenWhen: (previous, current) => current is LoginActionState,
-      buildWhen: (previous, current) => current is! LoginActionState,
+      listenWhen: (previous, current) =>
+          previous.status != current.status ||
+          previous.errorMessage != current.errorMessage,
+      buildWhen: (previous, current) => previous != current,
       listener: (context, state) {
-        if (state is LoginLoadingState) {
-          showDialog(
+        if (state.status == LoginStatus.loading && !_isDialogVisible) {
+          _isDialogVisible = true;
+          showDialog<void>(
             context: context,
+            barrierDismissible: false,
             builder: (BuildContext context) {
               return const Center(child: CircularProgressIndicator());
             },
-          );
-        } else if (state is LoggedState) {
+          ).whenComplete(() => _isDialogVisible = false);
+          return;
+        }
+
+        if (_isDialogVisible) {
+          final navigator = Navigator.of(context, rootNavigator: true);
+          if (navigator.canPop()) {
+            navigator.pop();
+          }
+          _isDialogVisible = false;
+        }
+
+        if (state.status == LoginStatus.success && state.user != null) {
           userNameController.clear();
           passwordController.clear();
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => const RoutinePage(),
-            ),
-          );
-        } else if (state is LoginErrorState) {
-          Navigator.pop(context);
+          if (!mounted) return;
+          context.read<AuthBloc>().add(AuthLoggedIn(state.user!));
+          // Navigation is driven by AuthBloc listener in MyApp.
+        } else if (state.status == LoginStatus.failure &&
+            state.errorMessage != null) {
           Fluttertoast.showToast(
-            msg: state.message,
+            msg: state.errorMessage!,
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: ColorManager.error,
