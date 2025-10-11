@@ -58,8 +58,7 @@ class TrainerDropdown extends StatelessWidget {
         );
       }).toList(),
       onChanged: onChanged,
-      value: selectedTrainer,
+      initialValue: selectedTrainer,
     );
   }
 }
-

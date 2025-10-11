@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
 import 'package:fitness_app/app/injection_container.dart';
-import 'application/chat/bloc/chat_bloc.dart';
-import 'application/chat/bloc/chat_event.dart';
-import 'application/chat/bloc/chat_state.dart';
+import 'application/chat/chat_bloc.dart';
+import 'application/chat/chat_event.dart';
+import 'application/chat/chat_state.dart';
 import 'domain/usecases/mark_room_read.dart';
 
 class ChatPage extends StatefulWidget {

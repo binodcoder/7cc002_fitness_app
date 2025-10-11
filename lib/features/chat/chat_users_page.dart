@@ -5,9 +5,9 @@ import 'package:fitness_app/features/auth/domain/entities/user.dart' as entity;
 import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
-import 'application/users/bloc/chat_users_bloc.dart';
-import 'application/users/bloc/chat_users_event.dart';
-import 'application/users/bloc/chat_users_state.dart';
+import 'application/users/chat_users_bloc.dart';
+import 'application/users/chat_users_event.dart';
+import 'application/users/chat_users_state.dart';
 import 'chat_page.dart';
 
 class ChatUsersPage extends StatefulWidget {

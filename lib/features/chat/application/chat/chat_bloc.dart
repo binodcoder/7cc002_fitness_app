@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:fitness_app/core/errors/map_failure_to_message.dart';
-import '../../../domain/entities/chat_message.dart';
-import '../../../domain/usecases/send_message.dart';
-import '../../../domain/usecases/stream_messages.dart';
+import '../../domain/entities/chat_message.dart';
+import '../../domain/usecases/send_message.dart';
+import '../../domain/usecases/stream_messages.dart';
 import 'chat_event.dart';
 import 'chat_state.dart';
 

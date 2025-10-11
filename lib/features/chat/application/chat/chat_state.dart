@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../../domain/entities/chat_message.dart';
+import '../../domain/entities/chat_message.dart';
 
 class ChatState extends Equatable {
   final bool loading;

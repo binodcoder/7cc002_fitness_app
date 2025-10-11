@@ -50,7 +50,7 @@ class RoleDropdown extends StatelessWidget {
         );
       }).toList(),
       onChanged: onChanged,
-      value: selectedRole,
+      initialValue: selectedRole,
     );
   }
 }
