@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:fitness_app/app/drawer.dart';
 import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/features/live_training/presentation/add_update_live_training/ui/add_live_training.dart';
 import 'package:fitness_app/features/live_training/presentation/get_live_trainings/ui/live_training_details.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
+import 'package:fitness_app/core/widgets/user_avatar_action.dart';
+import 'package:fitness_app/app/app_router.dart';
+import 'package:fitness_app/core/navigation/routes.dart';
 
 import '../bloc/live_training_bloc.dart';
 import '../bloc/live_training_event.dart';
@@ -101,10 +103,10 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
             final successState = state as LiveTrainingLoadedSuccessState;
             return Scaffold(
               backgroundColor: ColorManager.darkWhite,
-              drawer: const MyDrawer(),
               floatingActionButton:
                   sharedPreferences.getString('role') == "trainer"
                       ? FloatingActionButton(
+                          heroTag: 'liveTrainingFab',
                           backgroundColor: ColorManager.primary,
                           child: const Icon(Icons.add),
                           onPressed: () {
@@ -116,6 +118,18 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
               appBar: AppBar(
                 backgroundColor: ColorManager.primary,
                 title: Text(strings.titleLiveTrainingLabel),
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    final nav = Navigator.of(context);
+                    if (nav.canPop()) {
+                      nav.pop();
+                    } else {
+                      AppRouter.router.go(Routes.routineRoute);
+                    }
+                  },
+                ),
+                actions: const [UserAvatarAction()],
               ),
               body: ListView.builder(
                 itemCount: successState.liveTrainings.length,

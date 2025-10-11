@@ -15,7 +15,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noRouteFound => 'No Route Found';
 
   @override
-  String get titleRoutine => 'Routines';
+  String get titleRoutine => 'Home';
 
   @override
   String get titleWalk => 'Purposed Walks';

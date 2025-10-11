@@ -34,7 +34,7 @@ Future<void> _pumpUntilFound(
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('Firebase login E2E navigates to Routines', (tester) async {
+  testWidgets('Firebase login E2E navigates to Home', (tester) async {
     // If credentials not provided, no-op this test to avoid failures.
     if (_testEmail.isEmpty || _testPassword.isEmpty) {
       // Nothing to assert; treat as a pass when not configured.
@@ -62,9 +62,8 @@ void main() {
     await tester.tap(find.text('Login'));
     await tester.pump(const Duration(milliseconds: 200));
 
-    // Wait for navigation to the routines list (AppBar title 'Routines').
-    await _pumpUntilFound(tester, find.text('Routines'));
-    expect(find.text('Routines'), findsOneWidget);
+    // Wait for navigation to the home list (AppBar title 'Home').
+    await _pumpUntilFound(tester, find.text('Home'));
+    expect(find.text('Home'), findsOneWidget);
   });
 }
-

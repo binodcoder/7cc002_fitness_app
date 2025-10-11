@@ -1,6 +1,9 @@
 // import 'package:fitness_app/features/chat/chat_page.dart';
 import 'package:fitness_app/features/chat/chat_users_page.dart';
 import 'package:fitness_app/features/walk/presentation/walk_list/ui/walk_list_page.dart';
+import 'package:fitness_app/app/home_scaffold.dart';
+import 'package:fitness_app/features/account/presentation/account_page.dart';
+import 'package:fitness_app/app/main_menu_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -49,10 +52,55 @@ class AppRouter {
         path: Routes.registerRoute,
         builder: (context, state) => const RegisterPage(),
       ),
-      GoRoute(
-        path: Routes.routineRoute,
-        builder: (context, state) => const RoutinePage(),
-      ),
+      // Bottom navigation shell with persistent state
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return HomeScaffold(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.routineRoute,
+                builder: (context, state) => const RoutinePage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.calendar,
+                builder: (context, state) => const CalendarPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.walkList,
+                builder: (context, state) => const WalkListPage(),
+              ),
+            ],
+          ),
+      ],
+    ),
+    // Detail / dialog routes remain outside the shell
+    GoRoute(
+      path: Routes.liveTraining,
+      builder: (context, state) => const LiveTrainingPage(),
+    ),
+    GoRoute(
+      path: Routes.chat,
+      builder: (context, state) => const ChatUsersPage(),
+    ),
+    GoRoute(
+      path: Routes.mainMenu,
+      builder: (context, state) => const MainMenuPage(),
+    ),
+    GoRoute(
+      path: Routes.account,
+      builder: (context, state) => const AccountPage(),
+    ),
       GoRoute(
         path: Routes.routineDetails,
         builder: (context, state) => const RoutineDetailsPage(),
@@ -60,10 +108,6 @@ class AppRouter {
       GoRoute(
         path: Routes.addRoutine,
         builder: (context, state) => const RoutineFormPage(),
-      ),
-      GoRoute(
-        path: Routes.liveTraining,
-        builder: (context, state) => const LiveTrainingPage(),
       ),
       GoRoute(
         path: Routes.liveTrainingDetails,
@@ -74,24 +118,12 @@ class AppRouter {
         builder: (context, state) => const AddLiveTrainingDialog(),
       ),
       GoRoute(
-        path: Routes.calendar,
-        builder: (context, state) => const CalendarPage(),
-      ),
-      GoRoute(
         path: Routes.appointmentDetails,
         builder: (context, state) => const AppointmentDetailsPage(),
       ),
       GoRoute(
         path: Routes.addAppointment,
         builder: (context, state) => const AppointmentFormDialog(),
-      ),
-      GoRoute(
-        path: Routes.chat,
-        builder: (context, state) => const ChatUsersPage(),
-      ),
-      GoRoute(
-        path: Routes.walkList,
-        builder: (context, state) => const WalkListPage(),
       ),
     ],
     errorBuilder: (context, state) => const _RouteNotFoundView(),

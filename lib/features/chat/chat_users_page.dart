@@ -4,11 +4,13 @@ import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/features/auth/domain/entities/user.dart' as entity;
 import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:go_router/go_router.dart';
 import 'application/users/chat_users_bloc.dart';
 import 'application/users/chat_users_event.dart';
 import 'application/users/chat_users_state.dart';
 import 'chat_page.dart';
+import 'package:fitness_app/core/widgets/user_avatar_action.dart';
+import 'package:fitness_app/app/app_router.dart';
+import 'package:fitness_app/core/navigation/routes.dart';
 
 class ChatUsersPage extends StatefulWidget {
   const ChatUsersPage({super.key});
@@ -36,17 +38,19 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text('People'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            if (context.canPop()) {
-              context.pop();
+            final nav = Navigator.of(context);
+            if (nav.canPop()) {
+              nav.pop();
             } else {
-              Navigator.of(context).maybePop();
+              AppRouter.router.go(Routes.routineRoute);
             }
           },
         ),
-        title: const Text('People'),
+        actions: const [UserAvatarAction()],
       ),
       body: BlocBuilder<ChatUsersBloc, ChatUsersState>(
         bloc: _bloc,

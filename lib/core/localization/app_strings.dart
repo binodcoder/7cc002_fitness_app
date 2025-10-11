@@ -93,6 +93,8 @@ class AppStrings {
   String get aboutUs => AppStringsEn.aboutUs;
   String get meeting => AppStringsEn.meeting;
   String get chat => AppStringsEn.chat;
+  String get menu => AppStringsEn.menu;
+  String get account => AppStringsEn.account;
 }
 
 class AppStringsEn {
@@ -100,7 +102,7 @@ class AppStringsEn {
 
   static const String appTitle = 'Fitness App';
   static const String noRouteFound = 'No Route Found';
-  static const String titleRoutine = 'Routines';
+  static const String titleRoutine = 'Home';
   static const String titleWalk = 'Purposed Walks';
   static const String titleAppointment = 'Appointments';
   static const String titleWalkMedia = 'Walk Media';
@@ -150,4 +152,6 @@ class AppStringsEn {
   static const String aboutUs = 'About Us';
   static const String meeting = 'Meeting';
   static const String chat = 'Chat';
+  static const String account = 'Account';
+  static const String menu = 'Menu';
 }

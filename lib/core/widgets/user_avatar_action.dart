@@ -1,0 +1,35 @@
+import 'package:flutter/material.dart';
+import 'package:fitness_app/app/app_router.dart';
+import 'package:fitness_app/core/navigation/routes.dart';
+import 'package:fitness_app/core/theme/colour_manager.dart';
+import 'package:fitness_app/app/injection_container.dart';
+import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
+
+class UserAvatarAction extends StatelessWidget {
+  const UserAvatarAction({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final session = sl<SessionManager>();
+    final user = session.getCurrentUser();
+    final String initials = (user?.name.trim().isNotEmpty ?? false)
+        ? user!.name.trim()[0].toUpperCase()
+        : '';
+    return IconButton(
+      onPressed: () => AppRouter.router.push(Routes.account),
+      icon: CircleAvatar(
+        radius: 14,
+        backgroundColor: Colors.white,
+        foregroundColor: ColorManager.primary,
+        child: initials.isEmpty
+            ? const Icon(Icons.person, size: 18)
+            : Text(
+                initials,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+      ),
+      tooltip: 'Account',
+    );
+  }
+}
+

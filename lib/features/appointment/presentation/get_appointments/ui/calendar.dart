@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
-import 'package:fitness_app/app/drawer.dart';
 import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/calendar_bloc.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/calendar_event.dart';
@@ -18,6 +17,8 @@ import 'package:fitness_app/features/appointment/presentation/get_appointments/w
 import 'package:fitness_app/features/appointment/presentation/get_appointments/widgets/appointment_calendar.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
+import 'package:fitness_app/core/widgets/user_avatar_action.dart';
+import 'package:fitness_app/core/widgets/main_menu_button.dart';
 
 import '../../appointment_form/ui/appointment_form_dialog.dart';
 import 'package:fitness_app/features/appointment/domain/usecases/sync.dart';
@@ -86,8 +87,8 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
       child: Scaffold(
         backgroundColor: ColorManager.darkWhite,
-        drawer: const MyDrawer(),
         floatingActionButton: FloatingActionButton(
+          heroTag: 'calendarFab',
           backgroundColor: ColorManager.primary,
           child: const Icon(Icons.add),
           onPressed: () {
@@ -99,6 +100,8 @@ class _CalendarPageState extends State<CalendarPage> {
           backgroundColor: ColorManager.primary,
           title: Text(strings.titleAppointmentLabel),
           centerTitle: true,
+          leading: const MainMenuButton(),
+          actions: const [UserAvatarAction()],
         ),
         body: RefreshIndicator(
           onRefresh: () async {

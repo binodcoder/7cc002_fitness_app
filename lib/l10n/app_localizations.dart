@@ -109,7 +109,7 @@ abstract class AppLocalizations {
   /// No description provided for @titleRoutine.
   ///
   /// In en, this message translates to:
-  /// **'Routines'**
+  /// **'Home'**
   String get titleRoutine;
 
   /// No description provided for @titleWalk.

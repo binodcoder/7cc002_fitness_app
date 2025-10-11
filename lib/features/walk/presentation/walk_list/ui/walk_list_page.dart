@@ -5,10 +5,11 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
-import 'package:fitness_app/app/drawer.dart';
 import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
+import 'package:fitness_app/core/widgets/user_avatar_action.dart';
+import 'package:fitness_app/core/widgets/main_menu_button.dart';
 import 'package:fitness_app/features/walk/presentation/walk_form/ui/walk_form_page.dart';
 import 'package:fitness_app/features/walk/presentation/walk_list/ui/walk_details_page.dart';
 import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/ui/walk_media.dart';
@@ -108,8 +109,8 @@ class _WalkListPageState extends State<WalkListPage> {
               ),
               child: Scaffold(
                 backgroundColor: ColorManager.darkWhite,
-                drawer: const MyDrawer(),
                 floatingActionButton: FloatingActionButton(
+                  heroTag: 'walkFab',
                   backgroundColor: ColorManager.primary,
                   child: const Icon(Icons.add),
                   onPressed: () {
@@ -119,6 +120,8 @@ class _WalkListPageState extends State<WalkListPage> {
                 appBar: AppBar(
                   backgroundColor: ColorManager.primary,
                   title: Text(strings.titleWalkLabel),
+                  leading: const MainMenuButton(),
+                  actions: const [UserAvatarAction()],
                 ),
                 body: ListView.builder(
                   itemCount: successState.walks.length,

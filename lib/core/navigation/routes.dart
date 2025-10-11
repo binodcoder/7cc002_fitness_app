@@ -19,4 +19,6 @@ class Routes {
   static const String addAppointment = '/addAppointment';
   static const String chat = '/chat';
   static const String walkList = '/chatList';
+  static const String account = '/account';
+  static const String mainMenu = '/menu';
 }

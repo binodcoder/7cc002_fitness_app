@@ -1,7 +1,7 @@
 import 'package:fitness_app/features/appointment/infrastructure/di/appointment_injection.dart';
-// auth di entry
 import 'package:fitness_app/features/auth/infrastructure/di/auth_injection.dart';
 import 'package:fitness_app/features/chat/infrastructure/di/chat_injection.dart';
+import 'package:fitness_app/features/live_training/infrastructure/di/live_training_injection.dart';
 import 'package:fitness_app/features/routine/infrastructure/di/routine_injection.dart';
 import 'package:fitness_app/features/walk/infrastructure/di/walk_injection.dart';
 import 'package:get_it/get_it.dart';
@@ -18,7 +18,6 @@ import '../features/appointment/data/repositories/sync_repositories_impl.dart';
 import '../core/database/app_database.dart';
 import '../features/appointment/domain/repositories/sync_repositories.dart';
 import '../features/appointment/domain/usecases/sync.dart';
-// auth application layer registrations moved to features/auth/infrastructure/di
 import '../core/services/image_picker_service.dart';
 import '../features/auth/domain/services/session_manager.dart';
 import '../features/auth/infrastructure/services/session_manager_impl.dart';
@@ -39,6 +38,8 @@ Future<void> init() async {
 
   registerWalkInfrastructureDependencies(sl, kUseFakeData, kUseFirebaseData);
   registerRoutineInfrastructureDependencies(sl, kUseFakeData, kUseFirebaseData);
+  registerLiveTrainingInfrastructureDependencies(
+      sl, kUseFakeData, kUseFirebaseData);
 
   // database
   sl.registerSingletonAsync<Database>(() async => await AppDatabase().database);

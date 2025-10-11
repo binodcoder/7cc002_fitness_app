@@ -3,13 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:fitness_app/app/drawer.dart';
 import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/features/routine/presentation/routine_form/ui/routine_form_page.dart';
 import 'package:fitness_app/features/routine/presentation/get_routines/ui/routine_details.dart';
 import 'package:fitness_app/features/routine/presentation/get_routines/widgets/routine_list_tile.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
+import 'package:fitness_app/core/widgets/user_avatar_action.dart';
+import 'package:fitness_app/core/widgets/main_menu_button.dart';
 
 import '../bloc/routine_list_bloc.dart';
 import '../bloc/routine_list_event.dart';
@@ -99,10 +100,10 @@ class _RoutinePageState extends State<RoutinePage> {
               ),
               child: Scaffold(
                 backgroundColor: ColorManager.darkWhite,
-                drawer: const MyDrawer(),
                 floatingActionButton: sharedPreferences.getString('role') ==
                         "trainer"
                     ? FloatingActionButton(
+                        heroTag: 'routineFab',
                         backgroundColor: ColorManager.primary,
                         child: const Icon(Icons.add),
                         onPressed: () {
@@ -114,6 +115,8 @@ class _RoutinePageState extends State<RoutinePage> {
                 appBar: AppBar(
                   backgroundColor: ColorManager.primary,
                   title: Text(strings.titleRoutineLabel),
+                  leading: const MainMenuButton(),
+                  actions: const [UserAvatarAction()],
                 ),
                 body: RefreshIndicator(
                   onRefresh: () async {
