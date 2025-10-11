@@ -105,7 +105,7 @@ class AppTheme {
           fontWeight: AppTypography.semiBold,
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: scheme.surface,
         shadowColor: scheme.shadow,
         elevation: AppSizeTokens.elevation,

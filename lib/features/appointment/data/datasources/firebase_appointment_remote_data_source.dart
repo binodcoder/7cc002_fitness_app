@@ -5,8 +5,8 @@ import 'package:fitness_app/features/appointment/data/datasources/appointment_da
 import 'package:fitness_app/features/appointment/data/models/appointment_model.dart';
 
 class FirebaseAppointmentRemoteDataSource implements AppointmentDataSource {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final fb.FirebaseAuth _auth = fb.FirebaseAuth.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
+  fb.FirebaseAuth get _auth => fb.FirebaseAuth.instance;
 
   CollectionReference<Map<String, dynamic>> _col(String uid) =>
       _firestore.collection('users').doc(uid).collection('appointments');

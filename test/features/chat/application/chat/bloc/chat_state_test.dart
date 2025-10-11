@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fitness_app/features/chat/application/chat/bloc/chat_state.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

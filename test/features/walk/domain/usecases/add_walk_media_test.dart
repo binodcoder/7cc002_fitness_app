@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fitness_app/features/walk/domain/usecases/add_walk_media.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

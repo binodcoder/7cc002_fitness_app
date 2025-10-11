@@ -5,7 +5,7 @@ import 'chat_directory_remote_data_source.dart';
 
 class FirebaseChatDirectoryRemoteDataSource
     implements ChatDirectoryRemoteDataSource {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
 
   @override
   Future<List<entity.User>> getUsers() async {

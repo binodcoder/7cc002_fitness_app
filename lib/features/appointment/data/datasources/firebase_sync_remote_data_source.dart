@@ -4,7 +4,7 @@ import 'package:fitness_app/features/appointment/data/datasources/sync_remote_da
 import 'package:fitness_app/features/appointment/data/models/sync_data_model.dart';
 
 class FirebaseSyncRemoteDataSource implements SyncRemoteDataSource {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
 
   @override
   Future<SyncModel> sync(String email) async {

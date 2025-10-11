@@ -4,7 +4,7 @@ import 'package:fitness_app/features/routine/data/data_sources/routine_data_sour
 import 'package:fitness_app/features/routine/data/models/routine_model.dart';
 
 class FirebaseRoutineRemoteDataSourceImpl implements RoutineDataSource {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
 
   CollectionReference<Map<String, dynamic>> get _col =>
       _firestore.collection('routines');

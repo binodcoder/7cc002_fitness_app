@@ -56,6 +56,9 @@ class _FakeAuthRepository implements AuthRepository {
       const Right(1);
   @override
   Future<Either<Failure, int>>? deleteUser(int userId) async => const Right(1);
+  @override
+  Future<Either<Failure, int>>? resetPassword(String email) async =>
+      const Right(1);
 }
 
 void main() {

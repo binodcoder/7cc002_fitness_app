@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fitness_app/features/walk/data/models/walk_participant_model.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

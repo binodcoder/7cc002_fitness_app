@@ -5,8 +5,8 @@ import 'package:fitness_app/features/live_training/data/datasources/live_trainin
 import 'package:fitness_app/features/live_training/data/models/live_training_model.dart';
 
 class FirebaseLiveTrainingRemoteDataSource implements LiveTrainingDataSource {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final fb.FirebaseAuth _auth = fb.FirebaseAuth.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
+  fb.FirebaseAuth get _auth => fb.FirebaseAuth.instance;
 
   CollectionReference<Map<String, dynamic>> get _col =>
       _firestore.collection('live_trainings');

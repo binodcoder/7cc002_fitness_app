@@ -13,6 +13,7 @@ import 'package:flutter_test/flutter_test.dart';
 class _StubAuthRepository implements AuthRepository {
   Either<Failure, User>? loginResult;
   Either<Failure, int>? logoutResult;
+  Either<Failure, int>? resetPasswordResult;
 
   @override
   Future<Either<Failure, User>>? login(LoginCredentials loginCredentials) {
@@ -37,6 +38,13 @@ class _StubAuthRepository implements AuthRepository {
   @override
   Future<Either<Failure, int>>? deleteUser(int userId) {
     throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure, int>>? resetPassword(String email) {
+    return resetPasswordResult == null
+        ? Future.value(const Right(1))
+        : Future.value(resetPasswordResult);
   }
 }
 
@@ -121,7 +129,7 @@ void main() {
 
     bloc
       ..add(const AuthStatusRequested())
-      ..add(AuthLoggedIn(user))
+      ..add(const AuthLoggedIn(user))
       ..add(const AuthLogoutRequested());
 
     await expectLater(
@@ -144,7 +152,7 @@ void main() {
 
     bloc
       ..add(const AuthStatusRequested())
-      ..add(AuthLoggedIn(user))
+      ..add(const AuthLoggedIn(user))
       ..add(const AuthLogoutRequested());
 
     await expectLater(

@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fitness_app/features/appointment/presentation/appointment_form/ui/appointment_form_dialog.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fitness_app/features/live_training/domain/usecases/add_live_training.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

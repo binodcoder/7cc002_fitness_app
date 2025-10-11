@@ -4,7 +4,7 @@ import '../../domain/entities/chat_message.dart';
 import 'chat_remote_data_source.dart';
 
 class FirebaseChatRemoteDataSource implements ChatRemoteDataSource {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
 
   @override
   Stream<List<ChatMessage>> streamMessages(String roomId) {

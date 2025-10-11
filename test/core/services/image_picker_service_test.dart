@@ -1,10 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:cross_file/cross_file.dart';
 import 'package:fitness_app/core/services/image_picker_service.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 

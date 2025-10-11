@@ -108,7 +108,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginFailure => 'Invalid Username or Password';
 
   @override
-  String get invalidInputFailure => 'Invalid Input - The number must be a positive integer.';
+  String get invalidInputFailure =>
+      'Invalid Input - The number must be a positive integer.';
 
   @override
   String get onboardingTitle1 => 'FITNESS CONTENT';
@@ -123,16 +124,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingTitle4 => 'WALK FEATURE';
 
   @override
-  String get onboardingSubtitle1 => 'The app provides pre-loaded fitness routines';
+  String get onboardingSubtitle1 =>
+      'The app provides pre-loaded fitness routines';
 
   @override
-  String get onboardingSubtitle2 => 'Users can join real-time workout sessions led by either group trainers or book individual trainers';
+  String get onboardingSubtitle2 =>
+      'Users can join real-time workout sessions led by either group trainers or book individual trainers';
 
   @override
-  String get onboardingSubtitle3 => 'A calendar feature for users to schedule one-on-one sessions with personal trainers';
+  String get onboardingSubtitle3 =>
+      'A calendar feature for users to schedule one-on-one sessions with personal trainers';
 
   @override
-  String get onboardingSubtitle4 => 'Users can design routes on a map, set times, and starting points. Others can view and express interest in joining';
+  String get onboardingSubtitle4 =>
+      'Users can design routes on a map, set times, and starting points. Others can view and express interest in joining';
 
   @override
   String get skip => 'Skip';

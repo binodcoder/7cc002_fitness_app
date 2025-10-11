@@ -6,8 +6,8 @@ import 'package:fitness_app/features/walk/data/models/walk_model.dart';
 import 'package:fitness_app/features/walk/data/models/walk_participant_model.dart';
 
 class FirebaseWalkRemoteDataSource implements WalkRemoteDataSource {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final fb.FirebaseAuth _auth = fb.FirebaseAuth.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
+  fb.FirebaseAuth get _auth => fb.FirebaseAuth.instance;
 
   CollectionReference<Map<String, dynamic>> get _col =>
       _firestore.collection('walks');

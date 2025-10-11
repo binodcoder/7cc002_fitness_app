@@ -6,8 +6,8 @@ import 'package:fitness_app/features/auth/data/models/login_credentials_model.da
 import 'package:fitness_app/features/auth/data/models/user_model.dart';
 
 class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
-  final fb.FirebaseAuth _auth = fb.FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  fb.FirebaseAuth get _auth => fb.FirebaseAuth.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
 
   CollectionReference<Map<String, dynamic>> get _usersCol =>
       _firestore.collection('users');
