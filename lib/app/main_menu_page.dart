@@ -3,7 +3,6 @@ import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/app/app_router.dart';
 import 'package:fitness_app/core/navigation/routes.dart';
-import 'package:fitness_app/core/widgets/user_avatar_action.dart';
 
 class MainMenuPage extends StatelessWidget {
   const MainMenuPage({super.key});
@@ -23,7 +22,6 @@ class MainMenuPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: ColorManager.primary,
         title: Text(strings.menu),
-        actions: const [UserAvatarAction()],
       ),
       body: ListView(
         children: [

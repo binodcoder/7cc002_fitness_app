@@ -1,4 +1,3 @@
-// import 'package:fitness_app/features/chat/chat_page.dart';
 import 'package:fitness_app/features/chat/chat_users_page.dart';
 import 'package:fitness_app/features/walk/presentation/walk_list/ui/walk_list_page.dart';
 import 'package:fitness_app/app/home_scaffold.dart';
@@ -82,25 +81,25 @@ class AppRouter {
               ),
             ],
           ),
-      ],
-    ),
-    // Detail / dialog routes remain outside the shell
-    GoRoute(
-      path: Routes.liveTraining,
-      builder: (context, state) => const LiveTrainingPage(),
-    ),
-    GoRoute(
-      path: Routes.chat,
-      builder: (context, state) => const ChatUsersPage(),
-    ),
-    GoRoute(
-      path: Routes.mainMenu,
-      builder: (context, state) => const MainMenuPage(),
-    ),
-    GoRoute(
-      path: Routes.account,
-      builder: (context, state) => const AccountPage(),
-    ),
+        ],
+      ),
+      // Detail / dialog routes remain outside the shell
+      GoRoute(
+        path: Routes.liveTraining,
+        builder: (context, state) => const LiveTrainingPage(),
+      ),
+      GoRoute(
+        path: Routes.chat,
+        builder: (context, state) => const ChatUsersPage(),
+      ),
+      GoRoute(
+        path: Routes.mainMenu,
+        builder: (context, state) => const MainMenuPage(),
+      ),
+      GoRoute(
+        path: Routes.account,
+        builder: (context, state) => const AccountPage(),
+      ),
       GoRoute(
         path: Routes.routineDetails,
         builder: (context, state) => const RoutineDetailsPage(),

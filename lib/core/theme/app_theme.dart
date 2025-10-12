@@ -105,6 +105,11 @@ class AppTheme {
           fontWeight: AppTypography.semiBold,
         ),
       ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: scheme.primary,
+        foregroundColor: scheme.onPrimary,
+        elevation: AppSizeTokens.elevation,
+      ),
       cardTheme: CardThemeData(
         color: scheme.surface,
         shadowColor: scheme.shadow,
@@ -122,6 +127,17 @@ class AppTheme {
             vertical: AppSpacing.sm,
           ),
           shape: RoundedRectangleBorder(borderRadius: AppRadiusTokens.lg),
+        ),
+      ),
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: scheme.primary,
+        linearTrackColor: scheme.surfaceContainerHighest,
+        circularTrackColor: scheme.surfaceContainerHighest,
+      ),
+      dropdownMenuTheme: DropdownMenuThemeData(
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: scheme.surface,
         ),
       ),
       textButtonTheme: TextButtonThemeData(

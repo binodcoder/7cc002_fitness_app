@@ -10,6 +10,7 @@ import 'package:fitness_app/features/auth/data/repositories/auth_repositories_im
 import 'package:fitness_app/features/auth/domain/repositories/auth_repositories.dart';
 
 import 'package:fitness_app/features/auth/domain/usecases/login.dart';
+import 'package:fitness_app/features/auth/domain/usecases/sign_in_with_google.dart';
 import 'package:fitness_app/features/auth/domain/usecases/logout.dart';
 import 'package:fitness_app/features/auth/domain/usecases/add_user.dart';
 import 'package:fitness_app/features/auth/domain/usecases/update_user.dart';
@@ -41,6 +42,7 @@ void registerAuthInfrastructureDependencies(GetIt sl) {
 
   // Use cases
   sl.registerLazySingleton(() => Login(sl()));
+  sl.registerLazySingleton(() => SignInWithGoogle(sl()));
   sl.registerLazySingleton(() => Logout(sl()));
   sl.registerLazySingleton(() => AddUser(sl()));
   sl.registerLazySingleton(() => UpdateUser(sl()));
@@ -48,7 +50,7 @@ void registerAuthInfrastructureDependencies(GetIt sl) {
   sl.registerLazySingleton(() => ResetPassword(sl()));
 
   // Blocs
-  sl.registerFactory(() => LoginBloc(login: sl()));
+  sl.registerFactory(() => LoginBloc(login: sl(), signInWithGoogle: sl()));
   sl.registerFactory(() => ResetPasswordBloc(resetPassword: sl()));
   sl.registerFactory(() => AuthBloc(logout: sl(), sessionManager: sl()));
   sl.registerFactory(() => RegisterBloc(

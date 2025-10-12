@@ -16,13 +16,14 @@ class DatePickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
       child: Container(
         width: width,
         height: height,
         alignment: Alignment.center,
-        decoration: BoxDecoration(color: Colors.grey[200]),
+        decoration: BoxDecoration(color: scheme.surfaceVariant),
         child: TextFormField(
           style: const TextStyle(fontSize: 40),
           textAlign: TextAlign.center,
@@ -38,4 +39,3 @@ class DatePickerField extends StatelessWidget {
     );
   }
 }
-

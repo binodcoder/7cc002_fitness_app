@@ -7,7 +7,6 @@ import 'package:fitness_app/features/live_training/presentation/add_update_live_
 import 'package:fitness_app/features/live_training/presentation/get_live_trainings/ui/live_training_details.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
-import 'package:fitness_app/core/widgets/user_avatar_action.dart';
 import 'package:fitness_app/app/app_router.dart';
 import 'package:fitness_app/core/navigation/routes.dart';
 
@@ -129,7 +128,6 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
                     }
                   },
                 ),
-                actions: const [UserAvatarAction()],
               ),
               body: ListView.builder(
                 itemCount: successState.liveTrainings.length,

@@ -18,10 +18,12 @@ class TrainerDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return DropdownButtonFormField<TrainerEntity>(
       decoration: InputDecoration(
-        fillColor: Colors.grey[10],
         filled: true,
+        fillColor: scheme.surface,
         labelText: '  Select Trainer',
         contentPadding: EdgeInsets.symmetric(
           horizontal: AppWidth.w4,
@@ -36,7 +38,7 @@ class TrainerDropdown extends StatelessWidget {
       ),
       isExpanded: true,
       icon: const Icon(Icons.arrow_drop_down),
-      iconEnabledColor: ColorManager.blue,
+      iconEnabledColor: scheme.primary,
       iconSize: 30,
       items: trainers.map((item) {
         return DropdownMenuItem<TrainerEntity>(
@@ -49,8 +51,8 @@ class TrainerDropdown extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(
               item.name,
-              style: const TextStyle(
-                color: ColorManager.primary,
+              style: textTheme.titleSmall?.copyWith(
+                color: scheme.primary,
                 fontWeight: FontWeight.bold,
               ),
             ),

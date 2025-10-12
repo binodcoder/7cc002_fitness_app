@@ -121,7 +121,6 @@ class _WalkFormPageState extends State<WalkFormPage> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            backgroundColor: ColorManager.primary,
             title: Text(
                 widget.walk == null ? strings.addWalk : strings.updateWalk),
           ),
@@ -183,8 +182,8 @@ class _WalkFormPageState extends State<WalkFormPage> {
                               ListTile(
                                 contentPadding: EdgeInsets.zero,
                                 dense: true,
-                                leading: const Icon(Icons.place,
-                                    color: Colors.green),
+                                leading: Icon(Icons.place,
+                                    color: Theme.of(context).colorScheme.primary),
                                 title: const Text('Start'),
                                 subtitle: Text(
                                   startLocationController.text.isEmpty
@@ -201,7 +200,7 @@ class _WalkFormPageState extends State<WalkFormPage> {
                                 contentPadding: EdgeInsets.zero,
                                 dense: true,
                                 leading:
-                                    const Icon(Icons.flag, color: Colors.red),
+                                    Icon(Icons.flag, color: Theme.of(context).colorScheme.error),
                                 title: const Text('End'),
                                 subtitle: Text(
                                   endLocationController.text.isEmpty
@@ -283,7 +282,7 @@ class _WalkFormPageState extends State<WalkFormPage> {
                               : strings.updateWalk,
                           style: getRegularStyle(
                             fontSize: FontSize.s16,
-                            color: ColorManager.white,
+                            color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
                         onPressed: () async {

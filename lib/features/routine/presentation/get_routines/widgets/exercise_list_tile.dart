@@ -19,6 +19,7 @@ class ExerciseListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final scheme = Theme.of(context).colorScheme;
     return Slidable(
       endActionPane: ActionPane(
         extentRatio: 0.46,
@@ -26,15 +27,15 @@ class ExerciseListTile extends StatelessWidget {
         children: [
           SlidableAction(
             onPressed: (context) => onEdit(),
-            backgroundColor: const Color(0xFF21B7CA),
-            foregroundColor: Colors.white,
+            backgroundColor: scheme.primary,
+            foregroundColor: scheme.onPrimary,
             icon: Icons.edit,
             label: 'Edit',
           ),
           SlidableAction(
             onPressed: (context) => onDelete(),
-            backgroundColor: const Color(0xFF21B7CA),
-            foregroundColor: Colors.white,
+            backgroundColor: scheme.primary,
+            foregroundColor: scheme.onPrimary,
             icon: Icons.delete,
             label: 'Delete',
           )
@@ -43,7 +44,7 @@ class ExerciseListTile extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: ColorManager.white,
+          color: scheme.surface,
         ),
         margin: EdgeInsets.all(size.width * 0.02),
         child: ListTile(

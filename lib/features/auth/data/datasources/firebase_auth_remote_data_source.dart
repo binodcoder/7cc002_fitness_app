@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/features/auth/data/datasources/auth_data_source.dart';
 import 'package:fitness_app/features/auth/data/models/login_credentials_model.dart';
@@ -50,6 +52,67 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
         email: (data['email'] as String?) ?? user.email ?? '',
         name: (data['name'] as String?) ?? '',
         password: loginModel.password,
+        age: (data['age'] as num?)?.toInt() ?? 0,
+        gender: (data['gender'] as String?) ?? '',
+        institutionEmail: (data['institutionEmail'] as String?) ?? '',
+        role: (data['role'] as String?) ?? 'standard',
+      );
+    } on fb.FirebaseAuthException {
+      throw LoginException();
+    } on FirebaseException {
+      throw LoginException();
+    }
+  }
+
+  @override
+  Future<UserModel> signInWithGoogle() async {
+    try {
+      fb.UserCredential cred;
+      if (kIsWeb) {
+        final provider = fb.GoogleAuthProvider();
+        provider.addScope('email');
+        cred = await _auth.signInWithPopup(provider);
+      } else {
+        final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+        if (googleUser == null) {
+          throw LoginException();
+        }
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+        final fb.OAuthCredential credential = fb.GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        cred = await _auth.signInWithCredential(credential);
+      }
+
+      final user = cred.user;
+      if (user == null) throw LoginException();
+
+      final docRef = _usersCol.doc(user.uid);
+      final snap = await docRef.get();
+      if (!snap.exists) {
+        final numericId = DateTime.now().millisecondsSinceEpoch;
+        await docRef.set({
+          'id': numericId,
+          'email': user.email ?? '',
+          'name': user.displayName ?? '',
+          'age': 0,
+          'gender': '',
+          'institutionEmail': '',
+          'role': 'standard',
+          'createdAt': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+      } else {
+        await docRef.update({'updatedAt': FieldValue.serverTimestamp()});
+      }
+      final data = (await docRef.get()).data() ?? {};
+      return UserModel(
+        id: (data['id'] as num?)?.toInt(),
+        email: (data['email'] as String?) ?? user.email ?? '',
+        name: (data['name'] as String?) ?? user.displayName ?? '',
+        password: '',
         age: (data['age'] as num?)?.toInt() ?? 0,
         gender: (data['gender'] as String?) ?? '',
         institutionEmail: (data['institutionEmail'] as String?) ?? '',

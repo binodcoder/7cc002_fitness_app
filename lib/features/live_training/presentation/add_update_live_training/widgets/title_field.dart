@@ -20,7 +20,10 @@ class TitleField extends StatelessWidget {
           contentPadding:
               const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
           border: OutlineInputBorder(
-            borderSide: const BorderSide(width: 1.5, color: Colors.blue),
+            borderSide: BorderSide(
+              width: 1.5,
+              color: Theme.of(context).colorScheme.primary,
+            ),
             borderRadius: BorderRadius.circular(AppRadius.r4),
           ),
           labelText: 'Title',

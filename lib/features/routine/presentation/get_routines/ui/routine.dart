@@ -99,12 +99,10 @@ class _RoutinePageState extends State<RoutinePage> {
                 statusBarColor: Colors.transparent,
               ),
               child: Scaffold(
-                backgroundColor: ColorManager.darkWhite,
                 floatingActionButton: sharedPreferences.getString('role') ==
                         "trainer"
                     ? FloatingActionButton(
                         heroTag: 'routineFab',
-                        backgroundColor: ColorManager.primary,
                         child: const Icon(Icons.add),
                         onPressed: () {
                           listBloc
@@ -113,7 +111,6 @@ class _RoutinePageState extends State<RoutinePage> {
                       )
                     : null,
                 appBar: AppBar(
-                  backgroundColor: ColorManager.primary,
                   title: Text(strings.titleRoutineLabel),
                   leading: const MainMenuButton(),
                   actions: const [UserAvatarAction()],

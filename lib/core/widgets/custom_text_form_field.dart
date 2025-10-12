@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fitness_app/core/theme/colour_manager.dart';
-import 'package:fitness_app/core/theme/styles_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
-import 'package:fitness_app/core/theme/font_manager.dart';
 
 class CustomTextFormField extends StatefulWidget {
   final String label;
@@ -58,13 +55,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.label,
-          style: getBoldStyle(
-            fontSize: FontSize.s15,
-            color: ColorManager.primary,
-          ),
-        ),
+        Text(widget.label, style: Theme.of(context).textTheme.titleSmall),
         SizedBox(height: AppHeight.h10),
         TextFormField(
           controller: widget.controller,
@@ -81,19 +72,12 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           enabled: widget.enabled,
           obscureText: widget.isPassword ? !_visible : false,
           decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            fillColor: ColorManager.redWhite,
-            filled: true,
             hintText: widget.hint,
             prefixIcon: widget.prefixIcon,
             suffixIcon: widget.isPassword
                 ? IconButton(
                     icon: Icon(
                       _visible ? Icons.visibility : Icons.visibility_off,
-                      color: ColorManager.blue,
                     ),
                     onPressed: () {
                       setState(() {
@@ -102,18 +86,6 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                     },
                   )
                 : widget.suffixIcon,
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: ColorManager.blueGrey),
-              borderRadius: BorderRadius.circular(AppRadius.r10),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: ColorManager.primary),
-              borderRadius: BorderRadius.circular(AppRadius.r10),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: ColorManager.red),
-              borderRadius: BorderRadius.circular(AppRadius.r10),
-            ),
           ),
         ),
       ],

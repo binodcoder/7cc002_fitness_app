@@ -55,6 +55,8 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(title: Text(widget.peerName ?? 'Chat')),
       body: Column(
@@ -81,8 +83,9 @@ class _ChatPageState extends State<ChatPage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color:
-                              isMe ? Colors.blueAccent : Colors.grey.shade300,
+                          color: isMe
+                              ? scheme.primary
+                              : scheme.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Column(
@@ -90,18 +93,18 @@ class _ChatPageState extends State<ChatPage> {
                           children: [
                             Text(
                               m.text,
-                              style: TextStyle(
-                                color: isMe ? Colors.white : Colors.black87,
+                              style: textTheme.bodyMedium?.copyWith(
+                                color: isMe ? scheme.onPrimary : scheme.onSurface,
                               ),
                             ),
                             const SizedBox(height: 2),
                             Text(
                               _formatTime(m.createdAt),
-                              style: TextStyle(
-                                fontSize: 11,
+                              style: textTheme.bodySmall?.copyWith(
                                 color: isMe
-                                    ? Colors.white70
-                                    : Colors.grey.shade700,
+                                    ? scheme.onPrimary.withOpacity(0.85)
+                                    : scheme.onSurfaceVariant,
+                                fontSize: 11,
                               ),
                             ),
                           ],

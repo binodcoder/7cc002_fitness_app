@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:fitness_app/core/theme/colour_manager.dart';
-import 'package:fitness_app/core/theme/values_manager.dart';
 
 class RoleDropdown extends StatelessWidget {
   final List<String> roles;
@@ -17,24 +15,11 @@ class RoleDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return DropdownButtonFormField<String>(
-      decoration: InputDecoration(
-        fillColor: Colors.grey[10],
-        filled: true,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: AppWidth.w4,
-          vertical: AppHeight.h12,
-        ),
-        border: OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.all(
-            Radius.circular(AppRadius.r10),
-          ),
-        ),
-      ),
       isExpanded: true,
       icon: const Icon(Icons.arrow_drop_down),
-      iconEnabledColor: ColorManager.blue,
+      iconEnabledColor: scheme.primary,
       iconSize: 30,
       items: roles.map((item) {
         return DropdownMenuItem<String>(

@@ -6,6 +6,7 @@ abstract class AuthDataSource {
   Future<int> updateUser(UserModel userModel);
   Future<int> deleteUser(int userId);
   Future<UserModel> login(LoginCredentialsModel loginModel);
+  Future<UserModel> signInWithGoogle();
   Future<int> signOut();
   Future<int> resetPassword(String email);
 }

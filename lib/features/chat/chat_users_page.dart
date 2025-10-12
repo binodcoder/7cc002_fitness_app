@@ -8,7 +8,6 @@ import 'application/users/chat_users_bloc.dart';
 import 'application/users/chat_users_event.dart';
 import 'application/users/chat_users_state.dart';
 import 'chat_page.dart';
-import 'package:fitness_app/core/widgets/user_avatar_action.dart';
 import 'package:fitness_app/app/app_router.dart';
 import 'package:fitness_app/core/navigation/routes.dart';
 
@@ -50,7 +49,6 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
             }
           },
         ),
-        actions: const [UserAvatarAction()],
       ),
       body: BlocBuilder<ChatUsersBloc, ChatUsersState>(
         bloc: _bloc,
@@ -89,8 +87,8 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
                     final unread = lastAt > lastRead && lastText.isNotEmpty;
                     if (lastText.isNotEmpty) subtitle = lastText;
                     trailing = unread
-                        ? const Icon(Icons.brightness_1,
-                            color: Colors.red, size: 10)
+                        ? Icon(Icons.brightness_1,
+                            color: Theme.of(context).colorScheme.error, size: 10)
                         : const Icon(Icons.chevron_right);
                   } else {
                     trailing = const Icon(Icons.chevron_right);

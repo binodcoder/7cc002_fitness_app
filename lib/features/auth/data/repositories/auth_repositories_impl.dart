@@ -34,6 +34,20 @@ class AuthRepositoriesImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, User>>? signInWithGoogle() async {
+    try {
+      UserModel response = await authRemoteDataSource.signInWithGoogle();
+      return Right(response);
+    } on CacheException {
+      return Left(CacheFailure());
+    } on LoginException {
+      return Left(LoginFailure());
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, int>>? addUser(User user) async {
     try {
       final model = UserModel.fromEntity(user);

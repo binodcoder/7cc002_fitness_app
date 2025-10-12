@@ -12,13 +12,10 @@ class AccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final strings = AppStrings.of(context);
+    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: ColorManager.darkWhite,
-      appBar: AppBar(
-        backgroundColor: ColorManager.primary,
-        title: Text(strings.account),
-      ),
+      appBar: AppBar(title: Text(strings.account)),
       body: ListView(
         children: [
           const SizedBox(height: 8),
@@ -29,7 +26,7 @@ class AccountPage extends StatelessWidget {
           ),
           const Divider(height: 1),
           ListTile(
-            leading: const Icon(Icons.logout_outlined, color: Colors.redAccent),
+            leading: Icon(Icons.logout_outlined, color: scheme.error),
             title: Text(strings.logOut),
             onTap: () {
               context.read<AuthBloc>().add(const AuthLogoutRequested());
@@ -40,4 +37,3 @@ class AccountPage extends StatelessWidget {
     );
   }
 }
-

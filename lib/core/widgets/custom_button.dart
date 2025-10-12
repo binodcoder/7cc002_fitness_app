@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:fitness_app/core/theme/colour_manager.dart';
-
 class CustomButton extends StatelessWidget {
   final Widget child;
   final double width;
@@ -22,16 +20,17 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
         borderRadius: borderRadius,
         gradient: gradient ??
-            const LinearGradient(
+            LinearGradient(
               colors: <Color>[
-                ColorManager.primary,
-                ColorManager.primaryOpacity70,
+                scheme.primary,
+                scheme.primary.withAlpha(99),
               ],
             ),
       ),

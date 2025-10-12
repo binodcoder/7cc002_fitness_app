@@ -21,6 +21,7 @@ import '../widgets/tracking_text_input.dart';
 import 'package:fitness_app/features/auth/application/reset_password/reset_password_bloc.dart';
 import 'package:fitness_app/features/auth/application/reset_password/reset_password_event.dart';
 import 'package:fitness_app/features/auth/application/reset_password/reset_password_state.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -101,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
             msg: state.errorMessage!,
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
-            backgroundColor: ColorManager.error,
+            backgroundColor: Theme.of(context).colorScheme.error,
           );
         }
       },
@@ -128,14 +129,17 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     Positioned.fill(
                       child: Container(
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topRight,
                             end: Alignment.bottomLeft,
                             stops: [0.0, 1.0],
                             colors: [
-                              ColorManager.primary,
-                              ColorManager.primaryOpacity70,
+                              Theme.of(context).colorScheme.primary,
+                              Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.85),
                             ],
                           ),
                         ),
@@ -156,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                                 "Fitness App",
                                 style: getBoldStyle(
                                   fontSize: FontSize.s30,
-                                  color: ColorManager.white,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                               ),
                             ),
@@ -174,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             Container(
                               decoration: BoxDecoration(
-                                color: ColorManager.white,
+                                color: Theme.of(context).colorScheme.surface,
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(AppRadius.r25),
                                 ),
@@ -183,12 +187,15 @@ class _LoginPageState extends State<LoginPage> {
                                 key: formKey,
                                 child: Padding(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: AppWidth.w20),
+                                    horizontal: AppWidth.w20,
+                                  ),
                                   child: Container(
                                     padding: EdgeInsets.symmetric(
-                                        horizontal: AppWidth.w20),
+                                      horizontal: AppWidth.w20,
+                                      vertical: AppHeight.h20,
+                                    ),
                                     decoration: BoxDecoration(
-                                      color: ColorManager.white,
+                                      color: Theme.of(context).colorScheme.surface,
                                       borderRadius: BorderRadius.circular(
                                         AppRadius.r20,
                                       ),
@@ -200,13 +207,13 @@ class _LoginPageState extends State<LoginPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         SizedBox(
-                                          height: AppHeight.h20,
+                                          height: AppHeight.h10,
                                         ),
                                         Text(
                                           "UserName",
                                           style: getBoldStyle(
                                             fontSize: FontSize.s15,
-                                            color: ColorManager.primary,
+                                            color: Theme.of(context).colorScheme.primary,
                                           ),
                                         ),
                                         SizedBox(
@@ -219,9 +226,9 @@ class _LoginPageState extends State<LoginPage> {
                                           isObscured: false,
                                           icon: IconButton(
                                             onPressed: () {},
-                                            icon: const Icon(
+                                            icon: Icon(
                                               Icons.person,
-                                              color: ColorManager.blue,
+                                              color: Theme.of(context).colorScheme.primary,
                                               size: FontSize.s20,
                                             ),
                                           ),
@@ -236,7 +243,7 @@ class _LoginPageState extends State<LoginPage> {
                                           "Password",
                                           style: getBoldStyle(
                                             fontSize: FontSize.s15,
-                                            color: ColorManager.primary,
+                                            color: Theme.of(context).colorScheme.primary,
                                           ),
                                         ),
                                         SizedBox(
@@ -252,7 +259,8 @@ class _LoginPageState extends State<LoginPage> {
                                               _passwordVisible
                                                   ? Icons.visibility
                                                   : Icons.visibility_off,
-                                              color: ColorManager.blue,
+                                              color:
+                                                  Theme.of(context).colorScheme.primary,
                                             ),
                                             onPressed: () {
                                               setState(
@@ -290,7 +298,7 @@ class _LoginPageState extends State<LoginPage> {
                                             "Login",
                                             style: getRegularStyle(
                                               fontSize: FontSize.s16,
-                                              color: ColorManager.white,
+                                              color: Theme.of(context).colorScheme.onPrimary,
                                             ),
                                           ),
                                           onPressed: () {
@@ -298,7 +306,7 @@ class _LoginPageState extends State<LoginPage> {
                                           },
                                         ),
                                         SizedBox(
-                                          height: AppHeight.h10,
+                                          height: AppHeight.h16,
                                         ),
                                         Row(
                                           mainAxisAlignment:
@@ -321,6 +329,64 @@ class _LoginPageState extends State<LoginPage> {
                                               child: const Text('Register'),
                                             ),
                                           ],
+                                        ),
+                                        SizedBox(height: AppHeight.h10),
+                                        // Divider with text: Or continue with
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Divider(
+                                                color: Theme.of(context).colorScheme.outlineVariant,
+                                                thickness: 1,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: AppWidth.w10),
+                                              child: Text(
+                                                'Or continue with',
+                                                style: getRegularStyle(
+                                                  fontSize: FontSize.s14,
+                                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                                                ),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Divider(
+                                                color: Theme.of(context).colorScheme.outlineVariant,
+                                                thickness: 1,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: AppHeight.h10),
+                                        OutlinedButton.icon(
+                                          icon: const FaIcon(
+                                            FontAwesomeIcons.google,
+                                            size: 20,
+                                            color: Color(0xFF4285F4),
+                                          ),
+                                          label: Text(
+                                            'Sign in with Google',
+                                            style: getRegularStyle(
+                                              fontSize: FontSize.s16,
+                                              color: const Color(0xFF3C4043),
+                                            ),
+                                          ),
+                                          style: OutlinedButton.styleFrom(
+                                            backgroundColor: Colors.white,
+                                            side: const BorderSide(color: Color(0xFFDADCE0)),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: AppHeight.h12,
+                                              horizontal: AppWidth.w20,
+                                            ),
+                                            minimumSize: Size(double.infinity, AppHeight.h50),
+                                          ),
+                                          onPressed: () {
+                                            loginBloc.add(const GoogleSignInPressed());
+                                          },
                                         ),
                                       ],
                                     ),
@@ -417,14 +483,14 @@ class _LoginPageState extends State<LoginPage> {
                   msg: 'If an account exists, a reset email has been sent.',
                   toastLength: Toast.LENGTH_LONG,
                   gravity: ToastGravity.BOTTOM,
-                  backgroundColor: ColorManager.green,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                 );
               } else if (state.status == ResetPasswordStatus.failure) {
                 Fluttertoast.showToast(
                   msg: state.errorMessage ?? 'Something went wrong. Please try again.',
                   toastLength: Toast.LENGTH_LONG,
                   gravity: ToastGravity.BOTTOM,
-                  backgroundColor: ColorManager.error,
+                  backgroundColor: Theme.of(context).colorScheme.error,
                 );
               }
             },
@@ -470,7 +536,7 @@ class _LoginPageState extends State<LoginPage> {
                       'Cancel',
                       style: getRegularStyle(
                         fontSize: FontSize.s14,
-                        color: ColorManager.error,
+                        color: Theme.of(context).colorScheme.error,
                       ),
                     ),
                   ),
@@ -484,7 +550,7 @@ class _LoginPageState extends State<LoginPage> {
                                 msg: 'Invalid email address.',
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.BOTTOM,
-                                backgroundColor: ColorManager.error,
+                                backgroundColor: Theme.of(context).colorScheme.error,
                               );
                               return;
                             }
@@ -503,7 +569,7 @@ class _LoginPageState extends State<LoginPage> {
                             'Send',
                             style: getRegularStyle(
                               fontSize: FontSize.s14,
-                              color: ColorManager.green,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                   ),

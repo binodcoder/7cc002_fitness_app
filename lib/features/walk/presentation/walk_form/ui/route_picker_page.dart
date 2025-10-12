@@ -141,7 +141,7 @@ class _RoutePickerPageState extends State<RoutePickerPage> {
       _polylines.add(Polyline(
         polylineId: const PolylineId('route'),
         points: _points,
-        color: Colors.blue,
+        color: Theme.of(context).colorScheme.primary,
         width: 4,
       ));
     }
@@ -271,6 +271,7 @@ class _RoutePickerPageState extends State<RoutePickerPage> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select Route'),
@@ -295,8 +296,9 @@ class _RoutePickerPageState extends State<RoutePickerPage> {
                   decoration: InputDecoration(
                     hintText: 'Search start location',
                     filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: const Icon(Icons.place, color: Colors.green),
+                    fillColor: scheme.surface,
+                    prefixIcon:
+                        Icon(Icons.place, color: scheme.primary),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(24),
@@ -313,8 +315,8 @@ class _RoutePickerPageState extends State<RoutePickerPage> {
                   decoration: InputDecoration(
                     hintText: 'Search end location',
                     filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: const Icon(Icons.flag, color: Colors.red),
+                    fillColor: scheme.surface,
+                    prefixIcon: Icon(Icons.flag, color: scheme.error),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(24),

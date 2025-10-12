@@ -58,7 +58,7 @@ class _RoutePreviewState extends State<RoutePreview> {
           Polyline(
             polylineId: const PolylineId('preview'),
             points: points,
-            color: Colors.blue,
+            color: Theme.of(context).colorScheme.primary,
             width: 4,
           )
         };

@@ -85,6 +85,11 @@ class AuthRemoteDataSourceImpl implements AuthDataSource {
       "https://wlv-c4790072fbf0.herokuapp.com/api/v1/users/login", loginModel);
 
   @override
+  Future<UserModel> signInWithGoogle() async {
+    throw UnimplementedError('Google Sign-In not supported for REST backend');
+  }
+
+  @override
   Future<int> signOut() async {
     // No server session to revoke in this REST stub; treat as success.
     return 1;
