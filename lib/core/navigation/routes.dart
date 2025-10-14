@@ -22,4 +22,5 @@ class Routes {
   static const String account = '/account';
   static const String profile = '/profile';
   static const String mainMenu = '/menu';
+  static const String settings = '/settings';
 }

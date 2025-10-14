@@ -30,6 +30,12 @@ class AccountPage extends StatelessWidget {
             subtitle: const Text('View and update your profile'),
             onTap: () => context.push(Routes.profile),
           ),
+          ListTile(
+            leading: const Icon(Icons.settings_outlined),
+            title: const Text('Settings'),
+            subtitle: const Text('Units, notifications, and more'),
+            onTap: () => context.push(Routes.settings),
+          ),
           const Divider(height: 1),
           ListTile(
             leading: Icon(Icons.logout_outlined, color: scheme.error),
