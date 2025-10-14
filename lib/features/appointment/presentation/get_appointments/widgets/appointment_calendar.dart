@@ -11,6 +11,7 @@ class AppointmentCalendar extends StatelessWidget {
   final void Function(DateTime focusedDay) onPageChanged;
   final void Function(CalendarFormat format) onFormatChanged;
   final List<dynamic> Function(DateTime day)? eventLoader;
+  final Set<DateTime>? availabilityDays; // days with at least one available slot
 
   const AppointmentCalendar({
     super.key,
@@ -21,6 +22,7 @@ class AppointmentCalendar extends StatelessWidget {
     required this.onPageChanged,
     required this.onFormatChanged,
     required this.eventLoader,
+    this.availabilityDays,
   });
 
   @override
@@ -109,24 +111,50 @@ class AppointmentCalendar extends StatelessWidget {
         calendarBuilders: CalendarBuilders(
           // Show a compact counter pill for events
           markerBuilder: (context, day, events) {
-            if (events.isEmpty) return const SizedBox.shrink();
-            return Align(
-              alignment: Alignment.bottomRight,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                margin: const EdgeInsets.only(right: 2, bottom: 2),
-                decoration: BoxDecoration(
-                  color: scheme.secondary.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  '${events.length}',
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelSmall!
-                      .copyWith(color: Colors.white),
-                ),
-              ),
+            final hasEvents = events.isNotEmpty;
+            final hasAvailability = availabilityDays?.any(
+                  (d) => isSameDay(d, day),
+                ) ==
+                true;
+            if (!hasEvents && !hasAvailability) {
+              return const SizedBox.shrink();
+            }
+            return Stack(
+              children: [
+                if (hasEvents)
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 2),
+                      margin: const EdgeInsets.only(right: 2, bottom: 2),
+                      decoration: BoxDecoration(
+                        color: scheme.secondary.withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        '${events.length}',
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelSmall!
+                            .copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                if (hasAvailability)
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      margin: const EdgeInsets.only(left: 4, bottom: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade600,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+              ],
             );
           },
         ),

@@ -17,10 +17,32 @@ class FirebaseAppointmentRemoteDataSource implements AppointmentDataSource {
     return u.uid;
   }
 
+  Future<Map<String, String>> _trainerUidEmailByNumericId(int trainerId) async {
+    try {
+      final qs = await _firestore
+          .collection('users')
+          .where('id', isEqualTo: trainerId)
+          .limit(1)
+          .get();
+      if (qs.docs.isEmpty) return {'uid': '', 'email': ''};
+      final d = qs.docs.first;
+      final email = (d.data()['email'] as String?) ?? '';
+      return {'uid': d.id, 'email': email};
+    } on FirebaseException {
+      return {'uid': '', 'email': ''};
+    }
+  }
+
   Future<int> _currentUserNumericId() async {
     final uid = _uidOrThrow();
     final snap = await _firestore.collection('users').doc(uid).get();
     return (snap.data()?['id'] as num?)?.toInt() ?? 0;
+  }
+
+  Future<String> _currentUserRole() async {
+    final uid = _uidOrThrow();
+    final snap = await _firestore.collection('users').doc(uid).get();
+    return (snap.data()?['role'] as String?) ?? 'standard';
   }
 
   @override
@@ -31,6 +53,9 @@ class FirebaseAppointmentRemoteDataSource implements AppointmentDataSource {
       final numericUserId = appointmentModel.userId == 0
           ? await _currentUserNumericId()
           : appointmentModel.userId;
+      // enrich with trainer uid/email for robust trainer-side querying
+      final trainerInfo =
+          await _trainerUidEmailByNumericId(appointmentModel.trainerId);
       await _col(uid).doc(id.toString()).set({
         'id': id,
         'ownerUid': uid,
@@ -38,8 +63,13 @@ class FirebaseAppointmentRemoteDataSource implements AppointmentDataSource {
         'startTime': appointmentModel.startTime,
         'endTime': appointmentModel.endTime,
         'trainerId': appointmentModel.trainerId,
+        'trainerUid': trainerInfo['uid'] ?? '',
+        'trainerEmail': trainerInfo['email'] ?? '',
         'userId': numericUserId,
         'remark': appointmentModel.remark,
+        'status': appointmentModel.status.isEmpty
+            ? 'pending'
+            : appointmentModel.status,
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
       });
@@ -52,16 +82,28 @@ class FirebaseAppointmentRemoteDataSource implements AppointmentDataSource {
   @override
   Future<int> updateAppointment(AppointmentModel appointmentModel) async {
     try {
-      final uid = _uidOrThrow();
       if (appointmentModel.id == null) throw ServerException();
-      final doc = _col(uid).doc(appointmentModel.id.toString());
-      await doc.update({
+      // Locate the appointment document across users by unique id
+      final qs = await _firestore
+          .collectionGroup('appointments')
+          .where('id', isEqualTo: appointmentModel.id)
+          .limit(1)
+          .get();
+      if (qs.docs.isEmpty) throw ServerException();
+      final docRef = qs.docs.first.reference;
+      // keep trainer uid/email in sync in case trainer changes
+      final trainerInfo =
+          await _trainerUidEmailByNumericId(appointmentModel.trainerId);
+      await docRef.update({
         'date': Timestamp.fromDate(appointmentModel.date),
         'startTime': appointmentModel.startTime,
         'endTime': appointmentModel.endTime,
         'trainerId': appointmentModel.trainerId,
+        'trainerUid': trainerInfo['uid'] ?? '',
+        'trainerEmail': trainerInfo['email'] ?? '',
         'userId': appointmentModel.userId,
         'remark': appointmentModel.remark,
+        'status': appointmentModel.status,
         'updatedAt': FieldValue.serverTimestamp(),
       });
       return 1;
@@ -85,7 +127,89 @@ class FirebaseAppointmentRemoteDataSource implements AppointmentDataSource {
   Future<List<AppointmentModel>> getAppointments() async {
     try {
       final uid = _uidOrThrow();
-      final qs = await _col(uid).orderBy('date', descending: true).get();
+      final role = await _currentUserRole();
+
+      QuerySnapshot<Map<String, dynamic>> qs;
+      if (role == 'trainer') {
+        // Fetch all appointments assigned to this trainer across users.
+        // Prefer matching by trainerUid; include numeric id as a fallback.
+        final trainerNumericId = await _currentUserNumericId();
+        final String myUid = uid;
+
+        Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> byUid() async {
+          try {
+            final q = await _firestore
+                .collectionGroup('appointments')
+                .where('trainerUid', isEqualTo: myUid)
+                .get();
+            return q.docs;
+          } on FirebaseException catch (e) {
+            if (e.code == 'permission-denied') {
+              return <QueryDocumentSnapshot<Map<String, dynamic>>>[];
+            }
+            rethrow;
+          }
+        }
+
+        Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> byNumericId() async {
+          try {
+            final q = await _firestore
+                .collectionGroup('appointments')
+                .where('trainerId', isEqualTo: trainerNumericId)
+                .get();
+            return q.docs;
+          } on FirebaseException catch (e) {
+            if (e.code == 'permission-denied') {
+              return <QueryDocumentSnapshot<Map<String, dynamic>>>[];
+            }
+            rethrow;
+          }
+        }
+
+        final docsByUid = await byUid();
+        final docsById = trainerNumericId == 0 ? <dynamic>[] : await byNumericId();
+        // Deduplicate by logical appointment id
+        final byId = <int, Map<String, dynamic>>{};
+        void addAll(List<QueryDocumentSnapshot<Map<String, dynamic>>> docs) {
+          for (final d in docs) {
+            final m = d.data();
+            final aid = (m['id'] as num?)?.toInt();
+            if (aid != null) byId[aid] = m;
+          }
+        }
+        addAll(List<QueryDocumentSnapshot<Map<String, dynamic>>>.from(docsByUid));
+        addAll(List<QueryDocumentSnapshot<Map<String, dynamic>>>.from(docsById));
+
+        final list = byId.values.toList()
+          ..sort((a, b) {
+            final ad = a['date'];
+            final bd = b['date'];
+            DateTime toDate(dynamic ts) => ts is Timestamp
+                ? ts.toDate()
+                : DateTime.tryParse((ts ?? '').toString()) ?? DateTime(1970);
+            return toDate(bd).compareTo(toDate(ad));
+          });
+
+        return list.map((data) {
+          final ts = data['date'];
+          final date = ts is Timestamp
+              ? ts.toDate()
+              : DateTime.tryParse((ts ?? '').toString()) ?? DateTime.now();
+          return AppointmentModel(
+            id: (data['id'] as num?)?.toInt(),
+            date: date,
+            startTime: (data['startTime'] as String?) ?? '',
+            endTime: (data['endTime'] as String?) ?? '',
+            trainerId: (data['trainerId'] as num?)?.toInt() ?? 0,
+            userId: (data['userId'] as num?)?.toInt() ?? 0,
+            remark: (data['remark'] as String?),
+            status: (data['status'] as String?) ?? 'pending',
+          );
+        }).toList();
+      } else {
+        qs = await _col(uid).orderBy('date', descending: true).get();
+      }
+
       return qs.docs.map((d) {
         final data = d.data();
         final ts = data['date'];
@@ -100,6 +224,7 @@ class FirebaseAppointmentRemoteDataSource implements AppointmentDataSource {
           trainerId: (data['trainerId'] as num?)?.toInt() ?? 0,
           userId: (data['userId'] as num?)?.toInt() ?? 0,
           remark: (data['remark'] as String?),
+          status: (data['status'] as String?) ?? 'pending',
         );
       }).toList();
     } on FirebaseException {

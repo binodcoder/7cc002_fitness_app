@@ -46,6 +46,18 @@ class CalendarTileNavigate extends CalendarEvent {
   List<Object?> get props => [appointment];
 }
 
+class CalendarStatusChangeRequested extends CalendarEvent {
+  final Appointment appointment;
+  final String status; // 'accepted' | 'declined' | 'pending'
+  const CalendarStatusChangeRequested({
+    required this.appointment,
+    required this.status,
+  });
+
+  @override
+  List<Object?> get props => [appointment, status];
+}
+
 class CalendarDaySelected extends CalendarEvent {
   final List<Appointment> appointments;
   final DateTime selectedDay;

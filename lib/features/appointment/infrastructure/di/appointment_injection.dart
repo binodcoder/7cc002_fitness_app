@@ -12,14 +12,15 @@ import 'package:fitness_app/features/appointment/presentation/appointment_form/b
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/calendar_bloc.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/event_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:fitness_app/features/appointment/infrastructure/services/availability_service.dart';
 
 void registerAppointmentInfrastructureDependencies(
     GetIt sl, bool kUseFakeData, bool kUseFirebaseData) {
   //appointment
   sl.registerFactory(() => AppointmentFormBloc(
       addAppointment: sl(), updateAppointment: sl(), sync: sl()));
-  sl.registerFactory(
-      () => CalendarBloc(getAppointments: sl(), deleteAppointment: sl()));
+  sl.registerFactory(() => CalendarBloc(
+      getAppointments: sl(), deleteAppointment: sl(), updateAppointment: sl()));
   sl.registerFactory(
       () => EventBloc(getAppointments: sl(), deleteAppointment: sl()));
 
@@ -34,4 +35,8 @@ void registerAppointmentInfrastructureDependencies(
   sl.registerLazySingleton<AppointmentDataSource>(() => kUseFirebaseData
       ? FirebaseAppointmentRemoteDataSource()
       : AppointmentRemoteDataSourceImpl(client: sl()));
+
+  // Availability service for trainer slots
+  sl.registerLazySingleton<AppointmentAvailabilityService>(
+      () => AppointmentAvailabilityService());
 }

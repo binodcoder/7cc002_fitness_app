@@ -9,6 +9,14 @@ class AppointmentEventTile extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
+  final Widget? trailing;
+  final String? editLabel;
+  final String? deleteLabel;
+  final IconData? editIcon;
+  final IconData? deleteIcon;
+  final Color? editActionColor;
+  final Color? deleteActionColor;
+  final Color? actionForegroundColor;
 
   const AppointmentEventTile({
     super.key,
@@ -19,6 +27,14 @@ class AppointmentEventTile extends StatelessWidget {
     required this.onTap,
     this.onEdit,
     this.onDelete,
+    this.trailing,
+    this.editLabel,
+    this.deleteLabel,
+    this.editIcon,
+    this.deleteIcon,
+    this.editActionColor,
+    this.deleteActionColor,
+    this.actionForegroundColor,
   });
 
   @override
@@ -33,9 +49,17 @@ class AppointmentEventTile extends StatelessWidget {
       subtitle: computedSubtitle,
       subtitleStyle: theme.textTheme.bodySmall,
       leading: _TimeBadge(time: startHM),
+      trailing: trailing,
       onTap: onTap,
       onEdit: onEdit,
       onDelete: onDelete,
+      editLabel: editLabel,
+      deleteLabel: deleteLabel,
+      editIcon: editIcon,
+      deleteIcon: deleteIcon,
+      editActionColor: editActionColor,
+      deleteActionColor: deleteActionColor,
+      actionForegroundColor: actionForegroundColor,
     );
   }
 

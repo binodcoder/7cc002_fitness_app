@@ -20,6 +20,7 @@ import 'package:fitness_app/core/widgets/main_menu_button.dart';
 import '../../appointment_form/ui/appointment_form_dialog.dart';
 import 'package:fitness_app/features/appointment/domain/usecases/sync.dart';
 import 'package:fitness_app/features/appointment/domain/entities/sync.dart';
+import 'package:fitness_app/features/appointment/infrastructure/services/availability_service.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({Key? key}) : super(key: key);
@@ -33,6 +34,8 @@ class _CalendarPageState extends State<CalendarPage> {
   final CalendarBloc calendarBloc = sl<CalendarBloc>();
   final EventBloc eventBloc = sl<EventBloc>();
   final Sync _sync = sl<Sync>();
+  final AppointmentAvailabilityService availabilityService =
+      sl<AppointmentAvailabilityService>();
 
   @override
   void initState() {
@@ -47,7 +50,9 @@ class _CalendarPageState extends State<CalendarPage> {
 
   Future<void> _loadTrainerMap() async {
     try {
-      final result = await _sync("donotdeleteordublicate@wlv.ac.uk");
+      // Use the signed-in user's email (value is unused by backend, but avoids magic strings)
+      final email = sharedPreferences.getString('user_email') ?? '';
+      final result = await _sync(email);
       result?.fold((failure) {
         // ignore failure; fallback titles will be used
       }, (syncEntity) {
@@ -64,12 +69,34 @@ class _CalendarPageState extends State<CalendarPage> {
   DateTime _focusedDay = DateTime.now();
   final SharedPreferences sharedPreferences = sl<SharedPreferences>();
   Map<int, String> _trainerNameById = {};
+  Set<DateTime> _availabilityDays = {};
+  int? _selectedTrainerFilterId;
 
   @override
   void dispose() {
     calendarBloc.close();
     eventBloc.close();
     super.dispose();
+  }
+
+  DateTime _monthStart(DateTime d) => DateTime(d.year, d.month, 1);
+  DateTime _monthEnd(DateTime d) => DateTime(d.year, d.month + 1, 0);
+
+  Future<void> _loadAvailabilityForVisibleMonth(DateTime focus) async {
+    try {
+      final start = _monthStart(focus).subtract(const Duration(days: 7));
+      final end = _monthEnd(focus).add(const Duration(days: 7));
+      Set<DateTime> set;
+      if (_selectedTrainerFilterId != null) {
+        set = await availabilityService.listAvailableDatesInRangeForTrainer(
+            trainerId: _selectedTrainerFilterId!, start: start, end: end);
+      } else {
+        set =
+            await availabilityService.listAvailableDatesInRange(start: start, end: end);
+      }
+      if (!mounted) return;
+      setState(() => _availabilityDays = set);
+    } catch (_) {}
   }
 
   @override
@@ -84,7 +111,7 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
       child: Scaffold(
         backgroundColor: ColorManager.darkWhite,
-        floatingActionButton: isTrainer
+        floatingActionButton: !isTrainer
             ? FloatingActionButton(
                 heroTag: 'calendarFab',
                 backgroundColor: ColorManager.primary,
@@ -115,7 +142,6 @@ class _CalendarPageState extends State<CalendarPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       OutlinedButton.icon(
                         icon: const Icon(Icons.today),
@@ -127,9 +153,47 @@ class _CalendarPageState extends State<CalendarPage> {
                             _selectedDay = now;
                           });
                           calendarBloc.add(const CalendarInitialized());
+                          _loadAvailabilityForVisibleMonth(now);
                         },
                       ),
-                      if (isTrainer)
+                      const SizedBox(width: 12),
+                      if (!isTrainer)
+                        Expanded(
+                          child: InputDecorator(
+                            decoration: const InputDecoration(
+                              labelText: 'Filter by trainer',
+                              border: OutlineInputBorder(),
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                            ),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<int?>(
+                                value: _selectedTrainerFilterId,
+                                isDense: true,
+                                isExpanded: true,
+                                items: [
+                                  const DropdownMenuItem<int?>(
+                                    value: null,
+                                    child: Text('All trainers'),
+                                  ),
+                                  ..._trainerNameById.entries.map((e) =>
+                                      DropdownMenuItem<int?>(
+                                        value: e.key,
+                                        child: Text(e.value.isEmpty
+                                            ? 'Trainer #${e.key}'
+                                            : e.value),
+                                      )),
+                                ],
+                                onChanged: (v) {
+                                  setState(() => _selectedTrainerFilterId = v);
+                                  _loadAvailabilityForVisibleMonth(_focusedDay);
+                                },
+                              ),
+                            ),
+                          ),
+                        )
+                      else
                         Text(
                           'Trainer mode',
                           style: Theme.of(context)
@@ -154,7 +218,9 @@ class _CalendarPageState extends State<CalendarPage> {
                           MaterialPageRoute(
                             builder: (BuildContext context) =>
                                 AppointmentFormDialog(
-                                    focusedDay: state.focusedDay),
+                              focusedDay: state.focusedDay,
+                              preselectedTrainerId: _selectedTrainerFilterId,
+                            ),
                             fullscreenDialog: true,
                           ),
                         ).then(
@@ -183,6 +249,8 @@ class _CalendarPageState extends State<CalendarPage> {
                           is CalendarNavigateToUpdatePageActionState) {
                       } else if (state is CalendarItemDeletedActionState) {
                         calendarBloc.add(const CalendarInitialized());
+                      } else if (state is CalendarItemUpdatedActionState) {
+                        calendarBloc.add(const CalendarInitialized());
                       } else if (state is CalendarItemsDeletedActionState) {
                       } else if (state is CalendarShowErrorActionState) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -202,17 +270,35 @@ class _CalendarPageState extends State<CalendarPage> {
                               state as CalendarLoadedSuccessState;
                           final List<Appointment> allEvents =
                               successState.appointments;
+                          // Apply trainer filter (if any) to visible events
+                          final List<Appointment> visibleEvents =
+                              _selectedTrainerFilterId == null
+                                  ? allEvents
+                                  : allEvents
+                                      .where((e) =>
+                                          e.trainerId == _selectedTrainerFilterId)
+                                      .toList();
                           eventBloc.add(EventDaySelectEvent(
                               selectedDay: _focusedDay,
-                              appointments: allEvents));
+                              appointments: visibleEvents));
+                          // Load availability around the current page focus
+                          _loadAvailabilityForVisibleMonth(_focusedDay);
                           return AppointmentCalendar(
                             focusedDay: _focusedDay,
                             selectedDay: _selectedDay,
                             calendarFormat: _calendarFormat,
                             onDaySelected: (selectedDay, focusedDay) {
+                              // Respect trainer filter when switching days
+                              final List<Appointment> visibleEvents =
+                                  _selectedTrainerFilterId == null
+                                      ? allEvents
+                                      : allEvents
+                                          .where((e) => e.trainerId ==
+                                              _selectedTrainerFilterId)
+                                          .toList();
                               eventBloc.add(EventDaySelectEvent(
                                   selectedDay: selectedDay,
-                                  appointments: allEvents));
+                                  appointments: visibleEvents));
                               setState(() {
                                 _selectedDay = selectedDay;
                                 _focusedDay = selectedDay;
@@ -220,6 +306,7 @@ class _CalendarPageState extends State<CalendarPage> {
                             },
                             onPageChanged: (focusedDay) {
                               _focusedDay = focusedDay;
+                              _loadAvailabilityForVisibleMonth(focusedDay);
                             },
                             onFormatChanged: (format) {
                               if (_calendarFormat != format) {
@@ -228,9 +315,20 @@ class _CalendarPageState extends State<CalendarPage> {
                                 });
                               }
                             },
-                            eventLoader: (day) => allEvents
-                                .where((event) => isSameDay(event.date, day))
-                                .toList(),
+                            // Show dots only for events matching the current filter (if any)
+                            eventLoader: (day) {
+                              final List<Appointment> visibleEvents =
+                                  _selectedTrainerFilterId == null
+                                      ? allEvents
+                                      : allEvents
+                                          .where((e) => e.trainerId ==
+                                              _selectedTrainerFilterId)
+                                          .toList();
+                              return visibleEvents
+                                  .where((event) => isSameDay(event.date, day))
+                                  .toList();
+                            },
+                            availabilityDays: _availabilityDays,
                           );
 
                         case CalendarErrorState:
@@ -300,10 +398,15 @@ class _CalendarPageState extends State<CalendarPage> {
                             final String title =
                                 _trainerNameById[appointmentModel.trainerId] ??
                                     'Trainer #${appointmentModel.trainerId}';
+                            final String status =
+                                (appointmentModel.status).toLowerCase();
+                            final bool canActOnPending =
+                                isTrainer && status == 'pending';
                             return AppointmentEventTile(
                               title: title,
                               startTime: appointmentModel.startTime,
                               endTime: appointmentModel.endTime,
+                              trailing: _StatusChip(status: status),
                               onTap: () {
                                 if (!mounted) return;
                                 if (isTrainer) {
@@ -320,20 +423,36 @@ class _CalendarPageState extends State<CalendarPage> {
                                   ).then((_) => refreshPage());
                                 }
                               },
-                              onEdit: isTrainer
-                                  ? () {
-                                      eventBloc.add(EventEditButtonClickedEvent(
-                                          appointment: appointmentModel,
-                                          focusedDay: _focusedDay));
-                                    }
-                                  : null,
-                              onDelete: isTrainer
+                              onEdit: canActOnPending
                                   ? () {
                                       calendarBloc.add(
-                                          CalendarDeleteButtonClicked(
-                                              appointment: appointmentModel));
+                                        CalendarStatusChangeRequested(
+                                          appointment: appointmentModel,
+                                          status: 'accepted',
+                                        ),
+                                      );
                                     }
                                   : null,
+                              onDelete: canActOnPending
+                                  ? () {
+                                      calendarBloc.add(
+                                        CalendarStatusChangeRequested(
+                                          appointment: appointmentModel,
+                                          status: 'declined',
+                                        ),
+                                      );
+                                    }
+                                  : null,
+                              editLabel: canActOnPending ? 'Accept' : null,
+                              deleteLabel: canActOnPending ? 'Decline' : null,
+                              editIcon: canActOnPending ? Icons.check : null,
+                              deleteIcon: canActOnPending ? Icons.close : null,
+                              editActionColor:
+                                  canActOnPending ? Colors.green : null,
+                              deleteActionColor:
+                                  canActOnPending ? Colors.orange : null,
+                              actionForegroundColor:
+                                  canActOnPending ? Colors.white : null,
                             );
                           },
                         );
@@ -352,6 +471,58 @@ class _CalendarPageState extends State<CalendarPage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _StatusChip extends StatelessWidget {
+  final String status; // pending | accepted | declined
+  const _StatusChip({required this.status});
+
+  Color _bg(BuildContext context) {
+    switch (status) {
+      case 'accepted':
+        return Colors.green.withOpacity(0.1);
+      case 'declined':
+        return Colors.red.withOpacity(0.1);
+      default:
+        return Colors.orange.withOpacity(0.1);
+    }
+  }
+
+  Color _fg(BuildContext context) {
+    switch (status) {
+      case 'accepted':
+        return Colors.green.shade700;
+      case 'declined':
+        return Colors.red.shade700;
+      default:
+        return Colors.orange.shade800;
+    }
+  }
+
+  String _label() {
+    if (status == 'accepted') return 'Accepted';
+    if (status == 'declined') return 'Declined';
+    return 'Pending';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: _bg(context),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: _fg(context).withOpacity(0.2)),
+      ),
+      child: Text(
+        _label(),
+        style: Theme.of(context)
+            .textTheme
+            .labelMedium
+            ?.copyWith(color: _fg(context), fontWeight: FontWeight.w700),
       ),
     );
   }

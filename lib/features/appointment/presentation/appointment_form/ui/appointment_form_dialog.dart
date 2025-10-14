@@ -19,14 +19,17 @@ import '../bloc/appointment_form_state.dart';
 import 'package:fitness_app/features/appointment/presentation/appointment_form/widgets/trainer_dropdown.dart';
 // Use common text field for date/time with labels
 import 'package:fitness_app/core/widgets/custom_text_form_field.dart';
+import 'package:fitness_app/features/appointment/infrastructure/services/availability_service.dart';
 
 class AppointmentFormDialog extends StatefulWidget {
   final Appointment? appointment;
   final DateTime? focusedDay;
+  final int? preselectedTrainerId;
   const AppointmentFormDialog({
     Key? key,
     this.appointment,
     this.focusedDay,
+    this.preselectedTrainerId,
   }) : super(key: key);
   @override
   State<AppointmentFormDialog> createState() => _AppointmentFormDialogState();
@@ -45,6 +48,23 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
   final _formKey = GlobalKey<FormState>();
   final AppointmentFormBloc formBloc = sl<AppointmentFormBloc>();
   final SharedPreferences sharedPreferences = sl<SharedPreferences>();
+  final AppointmentAvailabilityService _availabilityService =
+      sl<AppointmentAvailabilityService>();
+  List<AvailabilitySlot> _availableSlots = [];
+  bool _loadingSlots = false;
+  bool _didInitialSlotsLoad = false;
+  int? _selectedSlotId;
+
+  void _shiftDay(int deltaDays) {
+    setState(() {
+      _selectedDate = _selectedDate.add(Duration(days: deltaDays));
+      _dateController.text = _dateFmt.format(_selectedDate);
+      _selectedSlotId = null;
+      _startTimeController.text = '';
+      _endTimeController.text = '';
+    });
+    _loadSlots();
+  }
 
   void _initializeDefaults() {
     // Use focusedDay when provided, otherwise default to today
@@ -67,6 +87,7 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
         _selectedDate = pickedDate;
         _dateController.text = _dateFmt.format(_selectedDate);
       });
+      _loadSlots();
     }
   }
 
@@ -128,6 +149,55 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
       _initializeDefaults();
     }
     formBloc.add(const AppointmentFormInitialized());
+    // initial slot load
+    _loadSlots();
+  }
+
+  Future<void> _loadSlots() async {
+    if (_selectedTrainer == null) {
+      setState(() {
+        _availableSlots = [];
+        _loadingSlots = false;
+        _selectedSlotId = null;
+        _startTimeController.text = '';
+        _endTimeController.text = '';
+      });
+      return;
+    }
+    setState(() => _loadingSlots = true);
+    try {
+      final slots = await _availabilityService.listForTrainerOnDate(
+        trainerId: _selectedTrainer!.id,
+        date: _selectedDate,
+      );
+      setState(() {
+        _availableSlots = slots;
+        if (_selectedSlotId != null &&
+            !_availableSlots.any((s) => s.id == _selectedSlotId)) {
+          // Clear selection if it no longer exists
+          _selectedSlotId = null;
+          _startTimeController.text = '';
+          _endTimeController.text = '';
+        }
+      });
+    } finally {
+      if (mounted) setState(() => _loadingSlots = false);
+    }
+  }
+
+  void _applySlot(AvailabilitySlot s) {
+    // Pure assignment; caller wraps with setState
+    _selectedSlotId = s.id;
+    _startTimeController.text = s.startTime;
+    _endTimeController.text = s.endTime;
+    TimeOfDay _toTod(String t) {
+      final p = t.split(':');
+      final h = int.tryParse(p[0]) ?? 0;
+      final m = int.tryParse(p[1]) ?? 0;
+      return TimeOfDay(hour: h, minute: m);
+    }
+    _selectedStartTime = _toTod(s.startTime);
+    _selectedEndTime = _toTod(s.endTime);
   }
 
   @override
@@ -183,6 +253,31 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                   .where((TrainerEntity element) =>
                       element.id == widget.appointment!.trainerId)
                   .first;
+              if (!_didInitialSlotsLoad) {
+                _didInitialSlotsLoad = true;
+                _loadSlots();
+              }
+            } else {
+              // Auto-select first trainer to surface availability immediately
+              if (_selectedTrainer == null && !_didInitialSlotsLoad) {
+                _didInitialSlotsLoad = true;
+                final trainers = successState.syncEntity.data.trainers;
+                TrainerEntity? initial;
+                if (widget.preselectedTrainerId != null) {
+                  initial = trainers
+                      .where((t) => t.id == widget.preselectedTrainerId)
+                      .cast<TrainerEntity?>()
+                      .firstWhere((e) => e != null, orElse: () => null);
+                }
+                initial = initial ?? (trainers.isNotEmpty ? trainers.first : null);
+                if (initial != null) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (!mounted) return;
+                    setState(() => _selectedTrainer = initial);
+                    _loadSlots();
+                  });
+                }
+              }
             }
 
             return Scaffold(
@@ -216,67 +311,138 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                           setState(() {
                             _selectedTrainer = newValue;
                           });
+                          _loadSlots();
                         },
                       ),
                       SizedBox(
                         height: size.height * 0.03,
                       ),
-                      CustomTextFormField(
-                        label: 'Date',
-                        controller: _dateController,
-                        hint: 'Tap to select',
-                        readOnly: true,
-                        onTap: () => _pickDate(context),
-                        suffixIcon: const Icon(Icons.calendar_today,
-                            color: ColorManager.blueGrey),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.03,
-                      ),
-                      // Time section
+                      // Availability list for selected trainer/date
                       Text(
-                        'Time',
+                        'Available Slots',
                         style: getBoldStyle(
                           fontSize: FontSize.s14,
                           color: ColorManager.primary,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 4),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Expanded(
-                            child: CustomTextFormField(
-                              label: 'Start Time',
-                              controller: _startTimeController,
-                              hint: 'Tap to select',
-                              readOnly: true,
-                              onTap: () => _selectStartTime(context),
-                              suffixIcon: const Icon(Icons.schedule,
-                                  color: ColorManager.blueGrey),
-                            ),
+                          IconButton(
+                            tooltip: 'Previous day',
+                            icon: const Icon(Icons.chevron_left),
+                            color: ColorManager.primary,
+                            onPressed: () => _shiftDay(-1),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: CustomTextFormField(
-                              label: 'End Time',
-                              controller: _endTimeController,
-                              hint: 'Tap to select',
-                              readOnly: true,
-                              onTap: () => _selectEndTime(context),
-                              suffixIcon: const Icon(Icons.schedule,
-                                  color: ColorManager.blueGrey),
-                            ),
+                          Text(
+                            _dateFmt.format(_selectedDate),
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
+                          IconButton(
+                            tooltip: 'Next day',
+                            icon: const Icon(Icons.chevron_right),
+                            color: ColorManager.primary,
+                            onPressed: () => _shiftDay(1),
                           ),
                         ],
                       ),
                       const SizedBox(height: 6),
-                      Text(
-                        '24-hour format',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: ColorManager.blueGrey),
-                      ),
+                      if (_selectedSlotId != null)
+                        Center(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.06),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.25),
+                              ),
+                            ),
+                            child: Text(
+                              '${_startTimeController.text} – ${_endTimeController.text}',
+                              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                            ),
+                          ),
+                        )
+                      else if (_availableSlots.isNotEmpty)
+                        Center(
+                          child: Text(
+                            'Tap a slot below to select a time',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withOpacity(0.6),
+                                ),
+                          ),
+                        ),
+                      const SizedBox(height: 8),
+                      if (_selectedTrainer == null)
+                        Text(
+                          'Select a trainer to view availability.',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: ColorManager.blueGrey),
+                        )
+                      else if (_loadingSlots)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8.0),
+                          child: LinearProgressIndicator(),
+                        )
+                      else if (_availableSlots.isEmpty)
+                        Text(
+                          'No availability for this date.',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withOpacity(0.7),
+                              ),
+                        )
+                      else
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: _availableSlots
+                                  .map((s) => ChoiceChip(
+                                        label: Text(
+                                            '${s.startTime} – ${s.endTime}'),
+                                        selected: _selectedSlotId == s.id,
+                                        selectedColor: Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withOpacity(0.15),
+                                        onSelected: (sel) {
+                                          setState(() {
+                                            if (sel) {
+                                              _applySlot(s);
+                                            } else {
+                                              _selectedSlotId = null;
+                                              _startTimeController.text = '';
+                                              _endTimeController.text = '';
+                                            }
+                                          });
+                                        },
+                                      ))
+                              .toList(),
+                        ),
+                      SizedBox(height: size.height * 0.02),
                       SizedBox(
                         height: size.height * 0.03,
                       ),
@@ -349,6 +515,25 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                             return;
                           }
 
+                          // Validate against trainer availability
+                          final ok = await _availabilityService.isWithinAvailability(
+                            trainerId: _selectedTrainer!.id,
+                            date: _selectedDate,
+                            startTime: _startTimeController.text,
+                            endTime: _endTimeController.text,
+                          );
+                          if (!ok) {
+                            Fluttertoast.cancel();
+                            Fluttertoast.showToast(
+                              msg:
+                                  'Selected time is outside trainer availability.',
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: ColorManager.error,
+                            );
+                            return;
+                          }
+
                           if (widget.appointment != null) {
                             final appointmentModel = Appointment(
                               id: widget.appointment!.id,
@@ -358,6 +543,7 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                               trainerId: _selectedTrainer!.id,
                               userId: sharedPreferences.getInt("user_id") ?? 1,
                               remark: _remarksController.text,
+                              status: widget.appointment!.status,
                             );
                             formBloc.add(AppointmentUpdateRequested(
                                 appointment: appointmentModel));
@@ -369,6 +555,7 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                               trainerId: _selectedTrainer!.id,
                               userId: sharedPreferences.getInt("user_id") ?? 1,
                               remark: _remarksController.text,
+                              status: 'pending',
                             );
                             formBloc.add(AppointmentCreateRequested(
                                 appointment: appointmentModel));

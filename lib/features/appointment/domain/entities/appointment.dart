@@ -8,6 +8,8 @@ class Appointment extends Equatable {
   final int trainerId;
   final int userId;
   final String? remark;
+  // pending | accepted | declined
+  final String status;
 
   const Appointment({
     required this.date,
@@ -17,9 +19,10 @@ class Appointment extends Equatable {
     required this.trainerId,
     required this.userId,
     this.remark,
+    this.status = 'pending',
   });
 
   @override
   List<Object?> get props =>
-      [id, date, startTime, endTime, trainerId, userId, remark];
+      [id, date, startTime, endTime, trainerId, userId, remark, status];
 }

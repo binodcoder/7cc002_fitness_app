@@ -68,49 +68,65 @@ class _ChatPageState extends State<ChatPage> {
                 if (state.loading && state.messages.isEmpty) {
                   return const Center(child: CircularProgressIndicator());
                 }
+                final msgs = state.messages;
                 return ListView.builder(
                   reverse: true,
-                  itemCount: state.messages.length,
+                  itemCount: msgs.length,
                   itemBuilder: (context, index) {
-                    final m = state.messages[index];
+                    final m = msgs[index];
                     final isMe = m.authorId == _userId;
-                    return Align(
-                      alignment:
-                          isMe ? Alignment.centerRight : Alignment.centerLeft,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 6),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: isMe
-                              ? scheme.primary
-                              : scheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              m.text,
-                              style: textTheme.bodyMedium?.copyWith(
-                                color:
-                                    isMe ? scheme.onPrimary : scheme.onSurface,
-                              ),
+                    final showHeader = index == 0
+                        ? true
+                        : !_isSameDate(msgs[index].createdAt, msgs[index - 1].createdAt);
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (showHeader) ...[
+                          const SizedBox(height: 8),
+                          _DayHeader(label: _formatDayLabel(m.createdAt)),
+                          const SizedBox(height: 4),
+                        ],
+                        Align(
+                          alignment: isMe
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: isMe
+                                  ? scheme.primary
+                                  : scheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            const SizedBox(height: 2),
-                            Text(
-                              _formatTime(m.createdAt),
-                              style: textTheme.bodySmall?.copyWith(
-                                color: isMe
-                                    ? scheme.onPrimary.withOpacity(0.85)
-                                    : scheme.onSurfaceVariant,
-                                fontSize: 11,
-                              ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  m.text,
+                                  style: textTheme.bodyMedium?.copyWith(
+                                    color: isMe
+                                        ? scheme.onPrimary
+                                        : scheme.onSurface,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  _formatTime(m.createdAt),
+                                  style: textTheme.bodySmall?.copyWith(
+                                    color: isMe
+                                        ? scheme.onPrimary.withOpacity(0.85)
+                                        : scheme.onSurfaceVariant,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     );
                   },
                 );
@@ -155,5 +171,56 @@ class _ChatPageState extends State<ChatPage> {
     final h = local.hour.toString().padLeft(2, '0');
     final m = local.minute.toString().padLeft(2, '0');
     return '$h:$m';
+  }
+  bool _isSameDate(DateTime a, DateTime b) {
+    final al = a.toLocal();
+    final bl = b.toLocal();
+    return al.year == bl.year && al.month == bl.month && al.day == bl.day;
+  }
+
+  String _formatDayLabel(DateTime dt) {
+    final d = dt.toLocal();
+    final now = DateTime.now();
+    DateTime only(DateTime x) => DateTime(x.year, x.month, x.day);
+    final today = only(now);
+    final date = only(d);
+    final diff = date.difference(today).inDays;
+    if (diff == 0) return 'Today';
+    if (diff == -1) return 'Yesterday';
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    final mm = months[date.month - 1];
+    final yyyy = date.year.toString();
+    final dd = date.day.toString().padLeft(2, '0');
+    final sameYear = date.year == today.year;
+    return sameYear ? '$dd $mm' : '$dd $mm $yyyy';
+  }
+}
+
+class _DayHeader extends StatelessWidget {
+  final String label;
+  const _DayHeader({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: scheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: scheme.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
+              ),
+        ),
+      ),
+    );
   }
 }

@@ -92,3 +92,7 @@ class CalendarItemDeletedActionState extends CalendarActionState {
 class CalendarItemsDeletedActionState extends CalendarActionState {
   const CalendarItemsDeletedActionState();
 }
+
+class CalendarItemUpdatedActionState extends CalendarActionState {
+  const CalendarItemUpdatedActionState();
+}

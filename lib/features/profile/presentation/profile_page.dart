@@ -10,6 +10,8 @@ import 'package:fitness_app/core/widgets/custom_text_form_field.dart';
 import 'package:fitness_app/features/profile/domain/entities/user_profile.dart';
 import 'package:fitness_app/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:fitness_app/core/services/image_picker_service.dart';
+import 'package:fitness_app/features/appointment/infrastructure/services/availability_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -31,11 +33,40 @@ class _ProfilePageState extends State<ProfilePage> {
   late final ProfileBloc _bloc;
   final _imagePicker = sl<ImagePickerService>();
   bool _isDialogVisible = false;
+  // Availability (trainer only)
+  DateTime _availDate = DateTime.now();
+  TimeOfDay _availStart = const TimeOfDay(hour: 9, minute: 0);
+  TimeOfDay _availEnd = const TimeOfDay(hour: 17, minute: 0);
+  final _availability = <AvailabilitySlot>[];
+  final _availabilityService = sl<AppointmentAvailabilityService>();
+  final SharedPreferences _prefs = sl<SharedPreferences>();
+
+  String _dow(DateTime d) {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    // DateTime.weekday: Mon=1..Sun=7
+    return days[(d.weekday - 1) % 7];
+  }
+
+  String _fmtHm(String hhmmss) {
+    // display helper for HH:mm:ss → HH:mm
+    final p = hhmmss.split(':');
+    if (p.length < 2) return hhmmss;
+    return '${p[0].padLeft(2, '0')}:${p[1].padLeft(2, '0')}';
+  }
+
+  TimeOfDay _roundTo15(TimeOfDay t) {
+    final total = t.hour * 60 + t.minute;
+    final r = (total / 15).round() * 15;
+    final h = (r ~/ 60) % 24;
+    final m = r % 60;
+    return TimeOfDay(hour: h, minute: m);
+  }
 
   @override
   void initState() {
     super.initState();
     _bloc = sl<ProfileBloc>()..add(const ProfileStarted());
+    _loadAvailability();
   }
 
   @override
@@ -57,6 +88,56 @@ class _ProfilePageState extends State<ProfilePage> {
     _weightCtrl.text = p.weight == 0 ? '' : p.weight.toString();
     _goalCtrl.text = p.goal;
     _photoUrl = p.photoUrl.isEmpty ? null : p.photoUrl;
+  }
+
+  Future<void> _pickAvailDate(BuildContext context) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _availDate,
+      firstDate: DateTime.now().subtract(const Duration(days: 0)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (picked != null) {
+      setState(() => _availDate = picked);
+      await _loadAvailability();
+    }
+  }
+
+  Future<void> _pickAvailStart(BuildContext context) async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _availStart,
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        child: child!,
+      ),
+    );
+    if (picked != null) setState(() => _availStart = _roundTo15(picked));
+  }
+
+  Future<void> _pickAvailEnd(BuildContext context) async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _availEnd,
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        child: child!,
+      ),
+    );
+    if (picked != null) setState(() => _availEnd = _roundTo15(picked));
+  }
+
+  String _fmtTime(TimeOfDay t) =>
+      '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}:00';
+
+  Future<void> _loadAvailability() async {
+    if (_prefs.getString('role') != 'trainer') return;
+    final list = await _availabilityService.listMineOnDate(_availDate);
+    setState(() {
+      _availability
+        ..clear()
+        ..addAll(list);
+    });
   }
 
   String? _normalizeGenderLabel(String value) {
@@ -258,6 +339,256 @@ class _ProfilePageState extends State<ProfilePage> {
                         minLines: 2,
                         maxLines: 4,
                       ),
+                      // Availability section (trainer only)
+                      if (_prefs.getString('role') == 'trainer') ...[
+                        SizedBox(height: AppHeight.h20),
+                        Text('My Availability',
+                            style: Theme.of(context).textTheme.titleMedium),
+                        SizedBox(height: AppHeight.h10),
+                        Card(
+                          elevation: 0.5,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      tooltip: 'Previous day',
+                                      icon: const Icon(Icons.chevron_left),
+                                      onPressed: () async {
+                                        setState(() => _availDate =
+                                            _availDate.subtract(const Duration(days: 1)));
+                                        await _loadAvailability();
+                                      },
+                                    ),
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: () => _pickAvailDate(context),
+                                        child: InputDecorator(
+                                          decoration: const InputDecoration(
+                                            labelText: 'Date',
+                                            border: OutlineInputBorder(),
+                                            isDense: true,
+                                          ),
+                                          child: Text(
+                                            '${_dow(_availDate)}, ${_availDate.year.toString().padLeft(4, '0')}-${_availDate.month.toString().padLeft(2, '0')}-${_availDate.day.toString().padLeft(2, '0')}',
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                      tooltip: 'Next day',
+                                      icon: const Icon(Icons.chevron_right),
+                                      onPressed: () async {
+                                        setState(() => _availDate =
+                                            _availDate.add(const Duration(days: 1)));
+                                        await _loadAvailability();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 14),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: () => _pickAvailStart(context),
+                                        child: InputDecorator(
+                                          decoration: const InputDecoration(
+                                            labelText: 'Start (HH:mm)',
+                                            border: OutlineInputBorder(),
+                                            isDense: true,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              const Icon(Icons.schedule,
+                                                  size: 18),
+                                              const SizedBox(width: 6),
+                                              Text(_fmtTime(_availStart)),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: () => _pickAvailEnd(context),
+                                        child: InputDecorator(
+                                          decoration: const InputDecoration(
+                                            labelText: 'End (HH:mm)',
+                                            border: OutlineInputBorder(),
+                                            isDense: true,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              const Icon(Icons.timelapse,
+                                                  size: 18),
+                                              const SizedBox(width: 6),
+                                              Text(_fmtTime(_availEnd)),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: ElevatedButton.icon(
+                                    onPressed: () async {
+                                      final s = _fmtTime(_availStart);
+                                      final e = _fmtTime(_availEnd);
+                                      Duration parse(String t) {
+                                        final p = t.split(':');
+                                        return Duration(
+                                            hours: int.parse(p[0]),
+                                            minutes: int.parse(p[1]));
+                                      }
+                                      final sd = parse(s);
+                                      final ed = parse(e);
+                                      if (ed <= sd) {
+                                        Fluttertoast.showToast(
+                                          msg:
+                                              'End time must be after start time for availability',
+                                          toastLength: Toast.LENGTH_LONG,
+                                          gravity: ToastGravity.BOTTOM,
+                                          backgroundColor:
+                                              Theme.of(context).colorScheme.error,
+                                        );
+                                        return;
+                                      }
+                                      // Prevent overlapping slots on the same day
+                                      bool overlaps() {
+                                        for (final a in _availability) {
+                                          final ap = a.startTime.split(':');
+                                          final bp = a.endTime.split(':');
+                                          final aStart = Duration(
+                                              hours: int.parse(ap[0]),
+                                              minutes: int.parse(ap[1]));
+                                          final aEnd = Duration(
+                                              hours: int.parse(bp[0]),
+                                              minutes: int.parse(bp[1]));
+                                          final intersect =
+                                              sd < aEnd && ed > aStart;
+                                          if (intersect) return true;
+                                        }
+                                        return false;
+                                      }
+                                      if (overlaps()) {
+                                        Fluttertoast.showToast(
+                                          msg:
+                                              'This time overlaps with an existing slot.',
+                                          toastLength: Toast.LENGTH_LONG,
+                                          gravity: ToastGravity.BOTTOM,
+                                          backgroundColor:
+                                              Theme.of(context).colorScheme.error,
+                                        );
+                                        return;
+                                      }
+                                      await _availabilityService.addSlot(
+                                        date: _availDate,
+                                        startTime: s,
+                                        endTime: e,
+                                      );
+                                      await _loadAvailability();
+                                    },
+                                    icon: const Icon(Icons.add),
+                                    label: const Text('Add Slot'),
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                if (_availability.isEmpty)
+                                  Text(
+                                    'No availability added for this date.',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface
+                                                .withOpacity(0.6)),
+                                  )
+                                else
+                                  ListView.separated(
+                                    itemCount: _availability.length,
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    separatorBuilder: (_, __) => const Divider(
+                                      height: 8,
+                                      thickness: 0.4,
+                                    ),
+                                    itemBuilder: (context, i) {
+                                      final a = _availability[i];
+                                      return Dismissible(
+                                        key: ValueKey('avail_${a.id}'),
+                                        direction: DismissDirection.endToStart,
+                                        background: Container(
+                                          color: Colors.transparent,
+                                        ),
+                                        secondaryBackground: Container(
+                                          alignment: Alignment.centerRight,
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .error
+                                              .withOpacity(0.1),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              Icon(Icons.delete,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .error),
+                                              const SizedBox(width: 6),
+                                              Text(
+                                                'Delete',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelLarge
+                                                    ?.copyWith(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .error,
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        confirmDismiss: (dir) async {
+                                          // Optionally add a confirmation dialog in the future
+                                          return true;
+                                        },
+                                        onDismissed: (_) async {
+                                          await _availabilityService
+                                              .deleteSlot(a.id);
+                                          await _loadAvailability();
+                                        },
+                                        child: ListTile(
+                                          dense: true,
+                                          contentPadding: EdgeInsets.zero,
+                                          leading: const Icon(
+                                              Icons.event_available),
+                                          title: Text(
+                                              '${_fmtHm(a.startTime)} – ${_fmtHm(a.endTime)}'),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
 
                       SizedBox(height: AppHeight.h20),
                       CustomButton(

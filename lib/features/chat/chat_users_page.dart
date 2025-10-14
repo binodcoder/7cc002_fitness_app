@@ -78,6 +78,7 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
                 builder: (context, snapshot) {
                   String lastMessage = '';
                   bool unread = false;
+                  String lastTime = '';
                   if (snapshot.hasData && snapshot.data!.exists) {
                     final data = snapshot.data!.data()!;
                     final lastText = (data['lastMessageText'] as String?) ?? '';
@@ -87,6 +88,7 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
                         (data['lastReadAt_$myId'] as num?)?.toInt() ?? 0;
                     lastMessage = lastText;
                     unread = lastAt > lastRead && lastText.isNotEmpty;
+                    lastTime = _formatHmFromMillis(lastAt);
                   }
 
                   return FutureBuilder<_ProfileInfo>(
@@ -104,6 +106,7 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
                         photoUrl: photoUrl,
                         lastMessage:
                             lastMessage.isNotEmpty ? lastMessage : u.email,
+                        meta: lastTime,
                         unread: unread,
                         onTap: () => _openChatWithName(u, displayName),
                       );
@@ -182,6 +185,7 @@ class _ChatUserTile extends StatelessWidget {
   final String email;
   final String photoUrl;
   final String lastMessage;
+  final String? meta; // e.g., HH:mm for last message time
   final bool unread;
   final VoidCallback onTap;
 
@@ -190,6 +194,7 @@ class _ChatUserTile extends StatelessWidget {
     required this.email,
     required this.photoUrl,
     required this.lastMessage,
+    this.meta,
     required this.unread,
     required this.onTap,
   });
@@ -202,14 +207,32 @@ class _ChatUserTile extends StatelessWidget {
       leading: _buildAvatar(context, scheme),
       title: title,
       subtitle: lastMessage.isNotEmpty ? lastMessage : email,
-      trailing: unread
-          ? Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                color: scheme.error,
-                shape: BoxShape.circle,
-              ),
+      trailing: (meta != null && meta!.isNotEmpty) || unread
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                if (meta != null && meta!.isNotEmpty)
+                  Text(
+                    meta!,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                const SizedBox(height: 6),
+                unread
+                    ? Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: scheme.error,
+                          shape: BoxShape.circle,
+                        ),
+                      )
+                    : Icon(Icons.chevron_right,
+                        size: 18, color: scheme.onSurfaceVariant),
+              ],
             )
           : Icon(Icons.chevron_right, color: scheme.onSurfaceVariant),
       onTap: onTap,
@@ -239,4 +262,12 @@ class _ChatUserTile extends StatelessWidget {
       ),
     );
   }
+}
+
+String _formatHmFromMillis(int millis) {
+  if (millis <= 0) return '';
+  final dt = DateTime.fromMillisecondsSinceEpoch(millis, isUtc: true).toLocal();
+  final h = dt.hour.toString().padLeft(2, '0');
+  final m = dt.minute.toString().padLeft(2, '0');
+  return '$h:$m';
 }

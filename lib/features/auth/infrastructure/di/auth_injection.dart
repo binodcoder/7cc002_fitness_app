@@ -25,12 +25,15 @@ import 'package:fitness_app/features/auth/application/auth/auth_bloc.dart';
 import 'package:fitness_app/core/services/image_picker_service.dart';
 
 void registerAuthInfrastructureDependencies(GetIt sl) {
-  // Repository
+  // Repository registered under both interfaces (same instance)
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoriesImpl(
       authLocalDataSources: sl(),
       authRemoteDataSource: sl(),
     ),
+  );
+  sl.registerLazySingleton<GoogleAuthRepository>(
+    () => sl<AuthRepository>() as GoogleAuthRepository,
   );
 
   // Data sources

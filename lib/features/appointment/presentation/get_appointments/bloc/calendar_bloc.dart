@@ -5,6 +5,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:fitness_app/core/usecases/usecase.dart';
 import '../../../domain/usecases/delete_appointment.dart';
 import '../../../domain/usecases/get_appointments.dart';
+import '../../../domain/usecases/update_appointment.dart';
 import 'calendar_event.dart';
 import 'calendar_state.dart';
 import 'package:fitness_app/core/errors/map_failure_to_message.dart';
@@ -12,10 +13,12 @@ import 'package:fitness_app/core/errors/map_failure_to_message.dart';
 class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   final GetAppointments getAppointments;
   final DeleteAppointment deleteAppointment;
+  final UpdateAppointment updateAppointment;
   List<Appointment> selectedAppointments = [];
   CalendarBloc({
     required this.getAppointments,
     required this.deleteAppointment,
+    required this.updateAppointment,
   }) : super(const CalendarInitialState()) {
     on<CalendarInitialized>(_onInitialized);
     on<CalendarEditButtonClicked>(_onEditButtonClicked);
@@ -24,6 +27,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     on<CalendarAddButtonClicked>(_onAddButtonClicked);
     on<CalendarTileNavigate>(_onTileNavigate);
     on<CalendarDaySelected>(_onDaySelected);
+    on<CalendarStatusChangeRequested>(_onStatusChangeRequested);
   }
 
   FutureOr<void> _onInitialized(
@@ -74,5 +78,26 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         appointments: e.appointments
             .where((event) => isSameDay(event.date, e.selectedDay))
             .toList()));
+  }
+
+  FutureOr<void> _onStatusChangeRequested(CalendarStatusChangeRequested e,
+      Emitter<CalendarState> emit) async {
+    final appt = e.appointment;
+    final updated = Appointment(
+      id: appt.id,
+      date: appt.date,
+      endTime: appt.endTime,
+      startTime: appt.startTime,
+      trainerId: appt.trainerId,
+      userId: appt.userId,
+      remark: appt.remark,
+      status: e.status,
+    );
+    final result = await updateAppointment(updated);
+    result!.fold((failure) {
+      emit(CalendarShowErrorActionState(message: mapFailureToMessage(failure)));
+    }, (r) {
+      emit(const CalendarItemUpdatedActionState());
+    });
   }
 }

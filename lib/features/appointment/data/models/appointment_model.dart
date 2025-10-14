@@ -27,6 +27,7 @@ class AppointmentModel extends Appointment {
     required super.trainerId,
     required super.userId,
     super.remark,
+    super.status = 'pending',
   });
 
   factory AppointmentModel.fromJson(Map<String, dynamic> json) =>
@@ -38,6 +39,7 @@ class AppointmentModel extends Appointment {
         trainerId: json["trainerId"],
         userId: json["userId"],
         remark: json["remark"],
+        status: (json["status"] as String?) ?? 'pending',
       );
 
   factory AppointmentModel.fromEntity(Appointment e) => AppointmentModel(
@@ -48,6 +50,7 @@ class AppointmentModel extends Appointment {
         trainerId: e.trainerId,
         userId: e.userId,
         remark: e.remark,
+        status: e.status,
       );
 
   Map<String, dynamic> toJson() => {
@@ -59,5 +62,6 @@ class AppointmentModel extends Appointment {
         "trainerId": trainerId,
         "userId": userId,
         "remark": remark,
+        "status": status,
       };
 }
