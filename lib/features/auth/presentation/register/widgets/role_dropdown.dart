@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class RoleDropdown extends StatelessWidget {
   final List<String> roles;
   final String selectedRole;

@@ -20,5 +20,6 @@ class Routes {
   static const String chat = '/chat';
   static const String walkList = '/chatList';
   static const String account = '/account';
+  static const String profile = '/profile';
   static const String mainMenu = '/menu';
 }

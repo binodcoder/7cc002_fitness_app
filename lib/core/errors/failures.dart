@@ -19,6 +19,11 @@ class LoginFailure extends Failure {
   List<Object?> get props => [];
 }
 
+class DomainRestrictionFailure extends Failure {
+  @override
+  List<Object?> get props => [];
+}
+
 class InvalidInputFailure extends Failure {
   @override
   List<Object?> get props => [];

@@ -32,12 +32,6 @@ class MainMenuPage extends StatelessWidget {
             trailing: const Icon(Icons.chevron_right),
           ),
           const Divider(height: 1),
-          ListTile(
-            leading: const Icon(Icons.chat_outlined),
-            title: Text(strings.chat),
-            onTap: () => _go(context, Routes.chat),
-            trailing: const Icon(Icons.chevron_right),
-          ),
         ],
       ),
     );

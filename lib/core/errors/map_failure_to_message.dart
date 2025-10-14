@@ -6,8 +6,8 @@ String mapFailureToMessage(Failure failure) {
     ServerFailure() => AppStringsEn.serverFailure,
     CacheFailure() => AppStringsEn.cacheFailure,
     LoginFailure() => AppStringsEn.loginFailure,
+    DomainRestrictionFailure() => AppStringsEn.domainRestriction,
     InvalidInputFailure() => AppStringsEn.invalidInputFailure,
     _ => AppStringsEn.error,
   };
 }
-

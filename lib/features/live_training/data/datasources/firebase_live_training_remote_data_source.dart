@@ -32,6 +32,7 @@ class FirebaseLiveTrainingRemoteDataSource implements LiveTrainingDataSource {
           trainingDate: date,
           startTime: (data['startTime'] as String?) ?? '',
           endTime: (data['endTime'] as String?) ?? '',
+          streamUrl: (data['streamUrl'] as String?),
         );
       }).toList();
     } on FirebaseException {
@@ -56,6 +57,8 @@ class FirebaseLiveTrainingRemoteDataSource implements LiveTrainingDataSource {
         'trainingDate': Timestamp.fromDate(liveTrainingModel.trainingDate),
         'startTime': liveTrainingModel.startTime,
         'endTime': liveTrainingModel.endTime,
+        if (liveTrainingModel.streamUrl != null)
+          'streamUrl': liveTrainingModel.streamUrl,
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
       });
@@ -80,6 +83,7 @@ class FirebaseLiveTrainingRemoteDataSource implements LiveTrainingDataSource {
         'trainingDate': Timestamp.fromDate(liveTrainingModel.trainingDate),
         'startTime': liveTrainingModel.startTime,
         'endTime': liveTrainingModel.endTime,
+        'streamUrl': liveTrainingModel.streamUrl,
         'updatedAt': FieldValue.serverTimestamp(),
       });
       return 1;

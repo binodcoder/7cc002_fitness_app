@@ -44,11 +44,30 @@ class FirebaseChatRemoteDataSource implements ChatRemoteDataSource {
       });
       // Upsert room metadata for listing/unread indicators
       final roomRef = _firestore.collection('chatRooms').doc(message.roomId);
-      await roomRef.set({
+      // Try to extract both user ids from room id pattern: dm_<low>_<high>
+      int? otherUserId;
+      int? authorIdInt;
+      try {
+        final parts = message.roomId.split('_');
+        if (parts.length == 3) {
+          final low = int.tryParse(parts[1]);
+          final high = int.tryParse(parts[2]);
+          authorIdInt = int.tryParse(message.authorId);
+          if (low != null && high != null && authorIdInt != null) {
+            otherUserId = (authorIdInt == low) ? high : low;
+          }
+        }
+      } catch (_) {}
+
+      final data = <String, dynamic>{
         'lastMessageText': message.text,
         'lastMessageAt': message.createdAt.millisecondsSinceEpoch,
         'lastMessageAuthorId': message.authorId,
-      }, SetOptions(merge: true));
+      };
+      if (otherUserId != null) {
+        data['unreadFor'] = FieldValue.arrayUnion([otherUserId]);
+      }
+      await roomRef.set(data, SetOptions(merge: true));
       return 1;
     } catch (_) {
       throw ServerException();
@@ -59,8 +78,10 @@ class FirebaseChatRemoteDataSource implements ChatRemoteDataSource {
   Future<void> markRoomRead(
       {required String roomId, required String userId}) async {
     final roomRef = _firestore.collection('chatRooms').doc(roomId);
+    final uid = int.tryParse(userId);
     await roomRef.set({
       'lastReadAt_$userId': DateTime.now().toUtc().millisecondsSinceEpoch,
+      if (uid != null) 'unreadFor': FieldValue.arrayRemove([uid]),
     }, SetOptions(merge: true));
   }
 }

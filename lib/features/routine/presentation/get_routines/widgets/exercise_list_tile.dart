@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-
 import 'package:fitness_app/core/theme/colour_manager.dart';
-import 'package:fitness_app/features/routine/domain/entities/exercise.dart' as entity;
+import 'package:fitness_app/core/widgets/app_slidable_list_tile.dart';
+import 'package:fitness_app/features/routine/domain/entities/exercise.dart'
+    as entity;
 
 class ExerciseListTile extends StatelessWidget {
   final entity.Exercise exerciseModel;
@@ -16,53 +16,64 @@ class ExerciseListTile extends StatelessWidget {
     required this.onDelete,
   });
 
+  Color _difficultyColor(BuildContext context) {
+    switch (exerciseModel.difficulty.toLowerCase()) {
+      case 'easy':
+        return Colors.green.shade600;
+      case 'medium':
+        return Colors.orange.shade700;
+      case 'hard':
+        return Colors.red.shade700;
+      default:
+        return Theme.of(context).colorScheme.primary;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final scheme = Theme.of(context).colorScheme;
-    return Slidable(
-      endActionPane: ActionPane(
-        extentRatio: 0.46,
-        motion: const ScrollMotion(),
-        children: [
-          SlidableAction(
-            onPressed: (context) => onEdit(),
-            backgroundColor: scheme.primary,
-            foregroundColor: scheme.onPrimary,
-            icon: Icons.edit,
-            label: 'Edit',
+    final diffColor = _difficultyColor(context);
+    // As requested: do not use a leading icon or image
+    return AppSlidableListTile(
+      title: exerciseModel.name,
+      subtitle:
+          '${exerciseModel.equipment} • ${exerciseModel.description}'.trim(),
+      trailing: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 160),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerRight,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: diffColor.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: diffColor.withOpacity(0.3)),
+                ),
+                child: Text(
+                  exerciseModel.difficulty,
+                  overflow: TextOverflow.ellipsis,
+                  style:
+                      TextStyle(color: diffColor, fontWeight: FontWeight.w600),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                exerciseModel.targetMuscleGroups,
+                style: const TextStyle(color: ColorManager.grey),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ],
           ),
-          SlidableAction(
-            onPressed: (context) => onDelete(),
-            backgroundColor: scheme.primary,
-            foregroundColor: scheme.onPrimary,
-            icon: Icons.delete,
-            label: 'Delete',
-          )
-        ],
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: scheme.surface,
-        ),
-        margin: EdgeInsets.all(size.width * 0.02),
-        child: ListTile(
-          title: Text(exerciseModel.name),
-          subtitle: Align(
-            alignment: Alignment.bottomLeft,
-            child: Column(
-              children: [
-                Text(exerciseModel.difficulty),
-                Text(exerciseModel.equipment),
-                Text(exerciseModel.description),
-              ],
-            ),
-          ),
-          trailing: Text(exerciseModel.targetMuscleGroups),
-          isThreeLine: true,
         ),
       ),
+      isThreeLine: true,
+      onEdit: onEdit,
+      onDelete: onDelete,
     );
   }
 }

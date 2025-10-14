@@ -7,6 +7,7 @@ class LiveTraining extends Equatable {
   final DateTime trainingDate;
   final String startTime;
   final String endTime;
+  final String? streamUrl;
 
   const LiveTraining({
     required this.trainerId,
@@ -15,9 +16,9 @@ class LiveTraining extends Equatable {
     required this.trainingDate,
     required this.startTime,
     required this.endTime,
+    this.streamUrl,
   });
 
   @override
-  List<Object?> get props => [trainerId, title, description, trainingDate, startTime, endTime];
+  List<Object?> get props => [trainerId, title, description, trainingDate, startTime, endTime, streamUrl];
 }
-

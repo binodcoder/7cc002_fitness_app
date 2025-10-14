@@ -36,6 +36,7 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
   final TextEditingController _startTimeController = TextEditingController();
   final TextEditingController _endTimeController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _streamUrlController = TextEditingController();
 
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedStartTime = const TimeOfDay(hour: 00, minute: 00);
@@ -122,6 +123,7 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
       _startTimeController.text = widget.liveTraining!.startTime;
       _endTimeController.text = widget.liveTraining!.endTime;
       _descriptionController.text = widget.liveTraining!.description;
+      _streamUrlController.text = widget.liveTraining!.streamUrl ?? '';
       // LiveTrainingAddBloc.add(LiveTrainingAddReadyToUpdateEvent(widget.LiveTrainingModel!));
       liveTrainingAddBloc.add(const LiveTrainingAddInitialEvent());
     } else {
@@ -206,12 +208,17 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                   SizedBox(
                     height: size.height * 0.03,
                   ),
-                  TitleField(controller: _titleController),
-                  CustomTextFormField(
-                    label: 'Date',
-                    controller: _dateController,
-                    hint: 'Tap to select',
-                    readOnly: true,
+              TitleField(controller: _titleController),
+              CustomTextFormField(
+                label: 'Stream URL (optional)',
+                controller: _streamUrlController,
+                hint: 'Paste meeting/stream link',
+              ),
+              CustomTextFormField(
+                label: 'Date',
+                controller: _dateController,
+                hint: 'Tap to select',
+                readOnly: true,
                     onTap: () => selectDate(context),
                     suffixIcon: const Icon(Icons.calendar_today,
                         color: ColorManager.blueGrey),
@@ -338,6 +345,10 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                           trainingDate: selectedDate,
                           startTime: _startTimeController.text,
                           endTime: _endTimeController.text,
+                          streamUrl:
+                              _streamUrlController.text.trim().isEmpty
+                                  ? null
+                                  : _streamUrlController.text.trim(),
                         );
                         liveTrainingAddBloc.add(
                             LiveTrainingAddUpdateButtonPressEvent(
@@ -350,6 +361,10 @@ class AddLiveTrainingDialogState extends State<AddLiveTrainingDialog> {
                           trainingDate: selectedDate,
                           startTime: _startTimeController.text,
                           endTime: _endTimeController.text,
+                          streamUrl:
+                              _streamUrlController.text.trim().isEmpty
+                                  ? null
+                                  : _streamUrlController.text.trim(),
                         );
                         liveTrainingAddBloc.add(
                             LiveTrainingAddSaveButtonPressEvent(

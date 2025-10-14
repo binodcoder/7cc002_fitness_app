@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
@@ -13,8 +11,7 @@ import 'package:fitness_app/core/widgets/main_menu_button.dart';
 import 'package:fitness_app/features/walk/presentation/walk_form/ui/walk_form_page.dart';
 import 'package:fitness_app/features/walk/presentation/walk_list/ui/walk_details_page.dart';
 import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/ui/walk_media.dart';
-import 'package:fitness_app/features/walk/presentation/walk_list/widgets/walk_list_tile.dart';
-
+import 'package:fitness_app/features/walk/presentation/walk_list/widgets/walk_card_tile.dart';
 import '../../walk_list/bloc/walk_list_bloc.dart';
 import '../../walk_list/bloc/walk_list_event.dart';
 import '../../walk_list/bloc/walk_list_state.dart';
@@ -126,44 +123,47 @@ class _WalkListPageState extends State<WalkListPage> {
                 body: ListView.builder(
                   itemCount: successState.walks.length,
                   itemBuilder: (context, index) {
-                    var walk = successState.walks[index];
+                    final walk = successState.walks[index];
                     final bool isJoined = walk.participants
-                        .where((element) =>
-                            element.id == sharedPreferences.getInt("user_id"))
+                        .where(
+                            (p) => p.id == sharedPreferences.getInt("user_id"))
                         .isNotEmpty;
-                    return WalkListTile(
-                      title: walk.startLocation,
-                      subtitle:
-                          "${DateFormat("yMd").format(walk.date)} ${walk.startTime}",
+                    return WalkCardTile(
+                      routeData: walk.routeData,
+                      startLocation: walk.startLocation,
+                      date: walk.date,
+                      startTime: walk.startTime,
+                      participantCount: walk.participants.length,
                       isJoined: isJoined,
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (BuildContext context) => WalkMediaPage(
-                              walkId: successState.walks[index].id!,
+                              walkId: walk.id!,
                             ),
                           ),
                         );
                       },
                       onJoinTap: () {
-                        WalkParticipant walkParticipant = WalkParticipant(
-                          // If not cached yet, pass 0; Firebase DS will resolve current user id
+                        final walkParticipant = WalkParticipant(
                           userId: sharedPreferences.getInt("user_id") ?? 0,
                           walkId: walk.id!,
                         );
                         if (isJoined) {
-                          walkBloc.add(WalkLeaveRequested(
-                              walkParticipant: walkParticipant));
+                          walkBloc.add(
+                            WalkLeaveRequested(
+                                walkParticipant: walkParticipant),
+                          );
                         } else {
-                          walkBloc.add(WalkJoinRequested(
-                              walkParticipant: walkParticipant));
+                          walkBloc.add(
+                            WalkJoinRequested(walkParticipant: walkParticipant),
+                          );
                         }
                       },
                       onEdit: () {
                         walkBloc.add(WalkEditRequested(walk: walk));
                       },
-                      onDelete: () {},
                     );
                   },
                 ),

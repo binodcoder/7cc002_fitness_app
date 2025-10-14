@@ -13,6 +13,16 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
 
   CollectionReference<Map<String, dynamic>> get _usersCol =>
       _firestore.collection('users');
+  CollectionReference<Map<String, dynamic>> get _profilesCol =>
+      _firestore.collection('profiles');
+
+  bool _isAllowedEmail(String? email) {
+    if (email == null || email.isEmpty) return false;
+    final parts = email.split('@');
+    if (parts.length != 2) return false;
+    final domain = parts[1].toLowerCase();
+    return domain == 'wlv.ac.uk' || domain.endsWith('.wlv.ac.uk');
+  }
 
   @override
   Future<UserModel> login(LoginCredentialsModel loginModel) async {
@@ -24,38 +34,55 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
       final user = cred.user;
       if (user == null) throw LoginException();
 
-      final docRef = _usersCol.doc(user.uid);
-      final snap = await docRef.get();
-      if (!snap.exists) {
+      // Enforce institutional email domain restriction
+      final signInEmail = user.email ?? loginModel.email;
+      if (!_isAllowedEmail(signInEmail)) {
+        await _auth.signOut();
+        throw DomainRestrictedException();
+      }
+
+      final userDocRef = _usersCol.doc(user.uid);
+      final userSnap = await userDocRef.get();
+      if (!userSnap.exists) {
         final numericId = DateTime.now().millisecondsSinceEpoch;
-        await docRef.set({
+        await userDocRef.set({
           'id': numericId,
           'email': user.email ?? loginModel.email,
-          'name': '',
-          'age': 0,
-          'gender': '',
-          'institutionEmail': '',
           'role': 'standard',
           'createdAt': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
         });
       } else {
-        final dataNow = snap.data() ?? {};
+        final dataNow = userSnap.data() ?? {};
         if (dataNow['id'] == null) {
-          await docRef.update({'id': DateTime.now().millisecondsSinceEpoch});
+          await userDocRef.update({'id': DateTime.now().millisecondsSinceEpoch});
         }
-        await docRef.update({'updatedAt': FieldValue.serverTimestamp()});
+        await userDocRef.update({'updatedAt': FieldValue.serverTimestamp()});
       }
-      final data = (await docRef.get()).data() ?? {};
+
+      // Ensure profile document exists
+      final profileRef = _profilesCol.doc(user.uid);
+      final profSnap = await profileRef.get();
+      if (!profSnap.exists) {
+        await profileRef.set({
+          'id': user.uid,
+          'name': user.displayName ?? '',
+          'age': 0,
+          'gender': '',
+          'height': 0,
+          'weight': 0,
+          'goal': '',
+          'photoUrl': '',
+          'lastUpdated': FieldValue.serverTimestamp(),
+        });
+      }
+
+      final udata = (await userDocRef.get()).data() ?? {};
       return UserModel(
-        id: (data['id'] as num?)?.toInt(),
-        email: (data['email'] as String?) ?? user.email ?? '',
-        name: (data['name'] as String?) ?? '',
+        id: (udata['id'] as num?)?.toInt(),
+        email: (udata['email'] as String?) ?? user.email ?? loginModel.email,
         password: loginModel.password,
-        age: (data['age'] as num?)?.toInt() ?? 0,
-        gender: (data['gender'] as String?) ?? '',
-        institutionEmail: (data['institutionEmail'] as String?) ?? '',
-        role: (data['role'] as String?) ?? 'standard',
+        role: (udata['role'] as String?) ?? 'standard',
       );
     } on fb.FirebaseAuthException {
       throw LoginException();
@@ -89,34 +116,48 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
       final user = cred.user;
       if (user == null) throw LoginException();
 
-      final docRef = _usersCol.doc(user.uid);
-      final snap = await docRef.get();
-      if (!snap.exists) {
+      // Enforce institutional email domain restriction
+      if (!_isAllowedEmail(user.email)) {
+        await _auth.signOut();
+        throw DomainRestrictedException();
+      }
+
+      final userDocRef = _usersCol.doc(user.uid);
+      final userSnap = await userDocRef.get();
+      if (!userSnap.exists) {
         final numericId = DateTime.now().millisecondsSinceEpoch;
-        await docRef.set({
+        await userDocRef.set({
           'id': numericId,
           'email': user.email ?? '',
-          'name': user.displayName ?? '',
-          'age': 0,
-          'gender': '',
-          'institutionEmail': '',
           'role': 'standard',
           'createdAt': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
         });
       } else {
-        await docRef.update({'updatedAt': FieldValue.serverTimestamp()});
+        await userDocRef.update({'updatedAt': FieldValue.serverTimestamp()});
       }
-      final data = (await docRef.get()).data() ?? {};
+      // Ensure profile document exists
+      final profileRef = _profilesCol.doc(user.uid);
+      final profSnap = await profileRef.get();
+      if (!profSnap.exists) {
+        await profileRef.set({
+          'id': user.uid,
+          'name': user.displayName ?? '',
+          'age': 0,
+          'gender': '',
+          'height': 0,
+          'weight': 0,
+          'goal': '',
+          'photoUrl': '',
+          'lastUpdated': FieldValue.serverTimestamp(),
+        });
+      }
+      final udata = (await userDocRef.get()).data() ?? {};
       return UserModel(
-        id: (data['id'] as num?)?.toInt(),
-        email: (data['email'] as String?) ?? user.email ?? '',
-        name: (data['name'] as String?) ?? user.displayName ?? '',
+        id: (udata['id'] as num?)?.toInt(),
+        email: (udata['email'] as String?) ?? user.email ?? '',
         password: '',
-        age: (data['age'] as num?)?.toInt() ?? 0,
-        gender: (data['gender'] as String?) ?? '',
-        institutionEmail: (data['institutionEmail'] as String?) ?? '',
-        role: (data['role'] as String?) ?? 'standard',
+        role: (udata['role'] as String?) ?? 'standard',
       );
     } on fb.FirebaseAuthException {
       throw LoginException();
@@ -128,6 +169,10 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
   @override
   Future<int> addUser(UserModel userModel) async {
     try {
+      // Enforce institutional email domain restriction on registration
+      if (!_isAllowedEmail(userModel.email)) {
+        throw DomainRestrictedException();
+      }
       final cred = await _auth.createUserWithEmailAndPassword(
         email: userModel.email,
         password: userModel.password,
@@ -137,13 +182,20 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
       await _usersCol.doc(uid).set({
         'id': numericId,
         'email': userModel.email,
-        'name': userModel.name,
-        'age': userModel.age,
-        'gender': userModel.gender,
-        'institutionEmail': userModel.institutionEmail,
         'role': userModel.role,
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+      await _profilesCol.doc(uid).set({
+        'id': uid,
+        'name': '',
+        'age': 0,
+        'gender': '',
+        'height': 0,
+        'weight': 0,
+        'goal': '',
+        'photoUrl': '',
+        'lastUpdated': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
       return 1;
     } on fb.FirebaseAuthException {
@@ -160,10 +212,6 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
       if (uid == null) throw ServerException();
       await _usersCol.doc(uid).set({
         'email': userModel.email,
-        'name': userModel.name,
-        'age': userModel.age,
-        'gender': userModel.gender,
-        'institutionEmail': userModel.institutionEmail,
         'role': userModel.role,
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));

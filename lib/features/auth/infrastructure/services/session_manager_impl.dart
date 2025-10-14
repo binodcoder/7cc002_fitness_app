@@ -11,10 +11,6 @@ class SessionManagerImpl implements SessionManager {
   static const String _userIdKey = 'user_id';
   static const String _userEmailKey = 'user_email';
   static const String _userRoleKey = 'role';
-  static const String _userInstitutionEmailKey = 'institutionEmail';
-  static const String _userNameKey = 'user_name';
-  static const String _userGenderKey = 'user_gender';
-  static const String _userAgeKey = 'user_age';
   static const String _userPasswordKey = 'user_password';
   static const String _onboardingKey = 'seen_onboarding';
 
@@ -28,11 +24,6 @@ class SessionManagerImpl implements SessionManager {
     }
     await _preferences.setString(_userEmailKey, user.email);
     await _preferences.setString(_userRoleKey, user.role);
-    await _preferences.setString(
-        _userInstitutionEmailKey, user.institutionEmail);
-    await _preferences.setString(_userNameKey, user.name);
-    await _preferences.setString(_userGenderKey, user.gender);
-    await _preferences.setInt(_userAgeKey, user.age);
     await _preferences.setString(_userPasswordKey, user.password);
   }
 
@@ -43,30 +34,15 @@ class SessionManagerImpl implements SessionManager {
 
     final email = _preferences.getString(_userEmailKey);
     final role = _preferences.getString(_userRoleKey);
-    final institutionEmail = _preferences.getString(_userInstitutionEmailKey);
-    final name = _preferences.getString(_userNameKey);
-    final gender = _preferences.getString(_userGenderKey);
-    final age = _preferences.getInt(_userAgeKey);
-    final password = _preferences.getString(_userPasswordKey);
-
-    if (email == null ||
-        role == null ||
-        institutionEmail == null ||
-        name == null ||
-        gender == null ||
-        age == null) {
+    final password = _preferences.getString(_userPasswordKey) ?? '';
+    if (email == null || role == null) {
       return null;
     }
-
     return User(
       id: _preferences.getInt(_userIdKey),
       email: email,
+      password: password,
       role: role,
-      institutionEmail: institutionEmail,
-      name: name,
-      gender: gender,
-      age: age,
-      password: password ?? '',
     );
   }
 

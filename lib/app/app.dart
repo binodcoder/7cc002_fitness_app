@@ -11,6 +11,7 @@ import 'package:fitness_app/features/auth/application/auth/auth_state.dart';
 import 'package:fitness_app/features/auth/application/auth/auth_event.dart';
 import 'package:fitness_app/core/navigation/routes.dart';
 import 'package:fitness_app/app/injection_container.dart';
+import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -25,6 +26,14 @@ class MyApp extends StatelessWidget {
             listenWhen: (previous, current) =>
                 previous.status != current.status,
             listener: (context, state) async {
+              // Do not override initial Splash -> Onboarding flow
+              // Let SplashScreen decide routing until onboarding is seen
+              final hasSeenOnboarding =
+                  sl<SessionManager>().hasSeenOnboarding();
+              if (!hasSeenOnboarding) {
+                return;
+              }
+
               final nav = AppRouter.rootNavigatorKey.currentState;
               nav?.popUntil((route) => route.isFirst);
               if (state.status == AuthStatus.unauthenticated) {

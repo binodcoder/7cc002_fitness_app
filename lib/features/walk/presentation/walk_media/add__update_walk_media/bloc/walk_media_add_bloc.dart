@@ -25,6 +25,8 @@ class WalkMediaAddBloc extends Bloc<WalkMediaAddEvent, WalkMediaAddState> {
         addwalkMediaPickFromGalaryButtonPressEvent);
     on<WalkMediaAddPickFromCameraButtonPressEvent>(
         addwalkMediaPickFromCameraButtonPressEvent);
+    on<WalkMediaAddPickVideoButtonPressEvent>(
+        addWalkMediaPickVideoButtonPressEvent);
     on<WalkMediaAddSaveButtonPressEvent>(addWalkMediaSaveButtonPressEvent);
     on<WalkMediaAddUpdateButtonPressEvent>(walkMediaAddUpdateButtonPressEvent);
   }
@@ -92,6 +94,16 @@ class WalkMediaAddBloc extends Bloc<WalkMediaAddEvent, WalkMediaAddState> {
     );
 
     return croppedFile!;
+  }
+
+  FutureOr<void> addWalkMediaPickVideoButtonPressEvent(
+      WalkMediaAddPickVideoButtonPressEvent event,
+      Emitter<WalkMediaAddState> emit) async {
+    final picker = ImagePicker();
+    final XFile? video = await picker.pickVideo(source: ImageSource.gallery);
+    if (video != null) {
+      emit(AddWalkMediaVideoPickedState(videoPath: video.path));
+    }
   }
 
   FutureOr<void> addWalkMediaSaveButtonPressEvent(

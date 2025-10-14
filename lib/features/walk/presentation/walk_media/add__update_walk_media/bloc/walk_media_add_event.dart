@@ -22,6 +22,10 @@ class WalkMediaAddPickFromCameraButtonPressEvent extends WalkMediaAddEvent {
   const WalkMediaAddPickFromCameraButtonPressEvent();
 }
 
+class WalkMediaAddPickVideoButtonPressEvent extends WalkMediaAddEvent {
+  const WalkMediaAddPickVideoButtonPressEvent();
+}
+
 class WalkMediaAddSaveButtonPressEvent extends WalkMediaAddEvent {
   final WalkMedia newWalkMedia;
   const WalkMediaAddSaveButtonPressEvent({required this.newWalkMedia});
@@ -45,4 +49,3 @@ class WalkMediaAddReadyToUpdateEvent extends WalkMediaAddEvent {
   @override
   List<Object?> get props => [walkMedia];
 }
-

@@ -36,7 +36,7 @@ class ChatUsersBloc extends Bloc<ChatUsersEvent, ChatUsersState> {
             .where((u) => u.id != null && u.id != currentId)
             .toList()
           ..sort(
-              (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+              (a, b) => a.email.toLowerCase().compareTo(b.email.toLowerCase()));
         emit(state.copyWith(loading: false, users: filtered, clearError: true));
       },
     );

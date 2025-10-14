@@ -175,15 +175,28 @@ class FirebaseWalkRemoteDataSource implements WalkRemoteDataSource {
           .limit(1)
           .get();
       if (userQs.docs.isNotEmpty) {
-        final u = userQs.docs.first.data();
+        final doc = userQs.docs.first;
+        final u = doc.data();
+        String name = (u['name'] ?? '').toString();
+        String gender = (u['gender'] ?? '').toString();
+        int age = (u['age'] as num?)?.toInt() ?? 0;
+        try {
+          final profile = await _firestore.collection('profiles').doc(doc.id).get();
+          final pdata = profile.data();
+          if (pdata != null) {
+            name = (pdata['name'] ?? name).toString();
+            gender = (pdata['gender'] ?? gender).toString();
+            age = (pdata['age'] as num?)?.toInt() ?? age;
+          }
+        } catch (_) {}
         p = {
           'id': (u['id'] as num?)?.toInt() ?? walkParticipantModel.userId,
-          'name': (u['name'] ?? '').toString(),
+          'name': name,
           'email': (u['email'] ?? '').toString(),
           'password': '',
           'institutionEmail': (u['institutionEmail'] ?? '').toString(),
-          'gender': (u['gender'] ?? '').toString(),
-          'age': (u['age'] as num?)?.toInt() ?? 0,
+          'gender': gender,
+          'age': age,
           'role': (u['role'] ?? '').toString(),
         };
       }

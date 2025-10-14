@@ -1,3 +1,5 @@
+import 'package:fitness_app/core/widgets/main_menu_button.dart';
+import 'package:fitness_app/core/widgets/user_avatar_action.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fitness_app/app/injection_container.dart';
@@ -8,8 +10,6 @@ import 'application/users/chat_users_bloc.dart';
 import 'application/users/chat_users_event.dart';
 import 'application/users/chat_users_state.dart';
 import 'chat_page.dart';
-import 'package:fitness_app/app/app_router.dart';
-import 'package:fitness_app/core/navigation/routes.dart';
 
 class ChatUsersPage extends StatefulWidget {
   const ChatUsersPage({super.key});
@@ -38,17 +38,8 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('People'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            final nav = Navigator.of(context);
-            if (nav.canPop()) {
-              nav.pop();
-            } else {
-              AppRouter.router.go(Routes.routineRoute);
-            }
-          },
-        ),
+        leading: const MainMenuButton(),
+        actions: const [UserAvatarAction()],
       ),
       body: BlocBuilder<ChatUsersBloc, ChatUsersState>(
         bloc: _bloc,
@@ -88,13 +79,14 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
                     if (lastText.isNotEmpty) subtitle = lastText;
                     trailing = unread
                         ? Icon(Icons.brightness_1,
-                            color: Theme.of(context).colorScheme.error, size: 10)
+                            color: Theme.of(context).colorScheme.error,
+                            size: 10)
                         : const Icon(Icons.chevron_right);
                   } else {
                     trailing = const Icon(Icons.chevron_right);
                   }
                   return ListTile(
-                    title: Text(u.name),
+                    title: Text(u.email),
                     subtitle: Text(subtitle,
                         maxLines: 1, overflow: TextOverflow.ellipsis),
                     trailing: trailing,
@@ -118,7 +110,7 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
   void _openChat(entity.User user) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => ChatPage(peerUserId: user.id ?? 0, peerName: user.name),
+        builder: (_) => ChatPage(peerUserId: user.id ?? 0, peerName: user.email),
       ),
     );
   }

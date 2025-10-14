@@ -26,6 +26,7 @@ class LiveTrainingModel extends LiveTraining {
     required super.trainingDate,
     required super.startTime,
     required super.endTime,
+    super.streamUrl,
   });
 
   factory LiveTrainingModel.fromJson(Map<String, dynamic> json) =>
@@ -36,6 +37,7 @@ class LiveTrainingModel extends LiveTraining {
         trainingDate: DateTime.parse(json["trainingDate"]),
         startTime: json["startTime"],
         endTime: json["endTime"],
+        streamUrl: json["streamUrl"],
       );
 
   factory LiveTrainingModel.fromEntity(LiveTraining e) => LiveTrainingModel(
@@ -45,6 +47,7 @@ class LiveTrainingModel extends LiveTraining {
         trainingDate: e.trainingDate,
         startTime: e.startTime,
         endTime: e.endTime,
+        streamUrl: e.streamUrl,
       );
 
   Map<String, dynamic> toJson() => {
@@ -55,5 +58,6 @@ class LiveTrainingModel extends LiveTraining {
             "${trainingDate.year.toString().padLeft(4, '0')}-${trainingDate.month.toString().padLeft(2, '0')}-${trainingDate.day.toString().padLeft(2, '0')}",
         "startTime": startTime,
         "endTime": endTime,
+        if (streamUrl != null) "streamUrl": streamUrl,
       };
 }

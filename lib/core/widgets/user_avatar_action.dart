@@ -11,8 +11,9 @@ class UserAvatarAction extends StatelessWidget {
   Widget build(BuildContext context) {
     final session = sl<SessionManager>();
     final user = session.getCurrentUser();
-    final String initials = (user?.name.trim().isNotEmpty ?? false)
-        ? user!.name.trim()[0].toUpperCase()
+    final email = user?.email ?? '';
+    final String initials = email.isNotEmpty
+        ? email.trim()[0].toUpperCase()
         : '';
     return IconButton(
       onPressed: () => AppRouter.router.push(Routes.account),

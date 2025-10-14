@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
 import 'package:fitness_app/features/appointment/domain/entities/sync.dart';
 

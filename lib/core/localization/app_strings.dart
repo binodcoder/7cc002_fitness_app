@@ -71,6 +71,8 @@ class AppStrings {
       _localizations?.loginFailure ?? AppStringsEn.loginFailure;
   String get invalidInputFailure =>
       _localizations?.invalidInputFailure ?? AppStringsEn.invalidInputFailure;
+  String get domainRestriction =>
+      _localizations?.error ?? AppStringsEn.domainRestriction;
   String get onboardingTitle1 =>
       _localizations?.onboardingTitle1 ?? AppStringsEn.onboardingTitle1;
   String get onboardingTitle2 =>
@@ -133,6 +135,8 @@ class AppStringsEn {
   static const String serverFailure = 'Server Failure';
   static const String cacheFailure = 'Cache Failure';
   static const String loginFailure = 'Invalid Username or Password';
+  static const String domainRestriction =
+      'Access restricted: use your wlv.ac.uk account.';
   static const String invalidInputFailure =
       'Invalid Input - The number must be a positive integer.';
   static const String onboardingTitle1 = 'FITNESS CONTENT';

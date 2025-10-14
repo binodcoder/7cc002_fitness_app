@@ -98,8 +98,9 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                 backgroundColor: ColorManager.primary,
                 child: const Icon(Icons.add),
                 onPressed: () {
-                  walkMediaBloc.add(WalkMediaAddButtonClickedEvent(
-                      successState.walkMediaList.first.id!));
+                  // Pass the current walkId to the add page
+                  walkMediaBloc
+                      .add(WalkMediaAddButtonClickedEvent(widget.walkId));
                 },
               ),
               appBar: AppBar(
@@ -110,9 +111,42 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                 itemCount: successState.walkMediaList.length,
                 itemBuilder: (context, index) {
                   var walkMedia = successState.walkMediaList[index];
+                  final isNetwork = walkMedia.mediaUrl.startsWith('http');
+                  bool isImageUrl(String url) {
+                    final p = url.toLowerCase();
+                    return p.endsWith('.jpg') ||
+                        p.endsWith('.jpeg') ||
+                        p.endsWith('.png') ||
+                        p.endsWith('.gif') ||
+                        p.endsWith('.webp');
+                  }
                   return AppSlidableListTile(
-                    title: walkMedia.mediaUrl,
-                    subtitle: walkMedia.userId.toString(),
+                    title: 'Media #${walkMedia.id ?? (index + 1)}',
+                    subtitle: 'By user ${walkMedia.userId}',
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: SizedBox(
+                        width: 56,
+                        height: 56,
+                        child: isNetwork && isImageUrl(walkMedia.mediaUrl)
+                            ? Image.network(
+                                walkMedia.mediaUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) =>
+                                    const Icon(Icons.broken_image),
+                              )
+                            : Container(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceVariant,
+                                child: Icon(
+                                  isNetwork ? Icons.videocam : Icons.image,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                      ),
+                    ),
                     onTap: () {
                       if (!mounted) return;
                       Navigator.push(

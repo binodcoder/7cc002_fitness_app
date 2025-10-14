@@ -8,7 +8,6 @@ import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/features/routine/presentation/routine_form/ui/routine_form_page.dart';
 import 'package:fitness_app/features/routine/presentation/get_routines/ui/routine_details.dart';
 import 'package:fitness_app/features/routine/presentation/get_routines/widgets/routine_list_tile.dart';
-import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/widgets/user_avatar_action.dart';
 import 'package:fitness_app/core/widgets/main_menu_button.dart';
 
@@ -26,8 +25,14 @@ class RoutinePage extends StatefulWidget {
 class _RoutinePageState extends State<RoutinePage> {
   @override
   void initState() {
-    listBloc.add(const RoutineListInitialEvent());
+    _boot();
     super.initState();
+  }
+
+  Future<void> _boot() async {
+    if (mounted) {
+      listBloc.add(const RoutineListInitialEvent());
+    }
   }
 
   void refreshPage() {
@@ -132,8 +137,10 @@ class _RoutinePageState extends State<RoutinePage> {
                             var routine = successState.routines[index];
                             return RoutineListTile(
                               title: routine.name,
-                              subtitle: routine.description,
-                              trailing: routine.difficulty,
+                              description: routine.description,
+                              difficulty: routine.difficulty,
+                              durationMinutes: routine.duration,
+                              source: routine.source,
                               onTap: () {
                                 Navigator.push(
                                   context,

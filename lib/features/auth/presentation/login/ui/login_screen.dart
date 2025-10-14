@@ -22,6 +22,7 @@ import 'package:fitness_app/features/auth/application/reset_password/reset_passw
 import 'package:fitness_app/features/auth/application/reset_password/reset_password_event.dart';
 import 'package:fitness_app/features/auth/application/reset_password/reset_password_state.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fitness_app/core/localization/app_strings.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -133,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                           gradient: LinearGradient(
                             begin: Alignment.topRight,
                             end: Alignment.bottomLeft,
-                            stops: [0.0, 1.0],
+                            stops: const [0.0, 1.0],
                             colors: [
                               Theme.of(context).colorScheme.primary,
                               Theme.of(context)
@@ -160,7 +161,8 @@ class _LoginPageState extends State<LoginPage> {
                                 "Fitness App",
                                 style: getBoldStyle(
                                   fontSize: FontSize.s30,
-                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
                                 ),
                               ),
                             ),
@@ -195,7 +197,8 @@ class _LoginPageState extends State<LoginPage> {
                                       vertical: AppHeight.h20,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Theme.of(context).colorScheme.surface,
+                                      color:
+                                          Theme.of(context).colorScheme.surface,
                                       borderRadius: BorderRadius.circular(
                                         AppRadius.r20,
                                       ),
@@ -213,7 +216,9 @@ class _LoginPageState extends State<LoginPage> {
                                           "UserName",
                                           style: getBoldStyle(
                                             fontSize: FontSize.s15,
-                                            color: Theme.of(context).colorScheme.primary,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
                                           ),
                                         ),
                                         SizedBox(
@@ -228,7 +233,9 @@ class _LoginPageState extends State<LoginPage> {
                                             onPressed: () {},
                                             icon: Icon(
                                               Icons.person,
-                                              color: Theme.of(context).colorScheme.primary,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
                                               size: FontSize.s20,
                                             ),
                                           ),
@@ -243,7 +250,9 @@ class _LoginPageState extends State<LoginPage> {
                                           "Password",
                                           style: getBoldStyle(
                                             fontSize: FontSize.s15,
-                                            color: Theme.of(context).colorScheme.primary,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
                                           ),
                                         ),
                                         SizedBox(
@@ -259,8 +268,9 @@ class _LoginPageState extends State<LoginPage> {
                                               _passwordVisible
                                                   ? Icons.visibility
                                                   : Icons.visibility_off,
-                                              color:
-                                                  Theme.of(context).colorScheme.primary,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
                                             ),
                                             onPressed: () {
                                               setState(
@@ -298,7 +308,9 @@ class _LoginPageState extends State<LoginPage> {
                                             "Login",
                                             style: getRegularStyle(
                                               fontSize: FontSize.s16,
-                                              color: Theme.of(context).colorScheme.onPrimary,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimary,
                                             ),
                                           ),
                                           onPressed: () {
@@ -313,8 +325,10 @@ class _LoginPageState extends State<LoginPage> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             TextButton(
-                                              onPressed: _showForgotPasswordDialog,
-                                              child: const Text('Forgot Password?'),
+                                              onPressed:
+                                                  _showForgotPasswordDialog,
+                                              child: const Text(
+                                                  'Forgot Password?'),
                                             ),
                                             TextButton(
                                               onPressed: () {
@@ -336,23 +350,31 @@ class _LoginPageState extends State<LoginPage> {
                                           children: [
                                             Expanded(
                                               child: Divider(
-                                                color: Theme.of(context).colorScheme.outlineVariant,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .outlineVariant,
                                                 thickness: 1,
                                               ),
                                             ),
                                             Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: AppWidth.w10),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: AppWidth.w10),
                                               child: Text(
                                                 'Or continue with',
                                                 style: getRegularStyle(
                                                   fontSize: FontSize.s14,
-                                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onSurface
+                                                      .withAlpha(178),
                                                 ),
                                               ),
                                             ),
                                             Expanded(
                                               child: Divider(
-                                                color: Theme.of(context).colorScheme.outlineVariant,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .outlineVariant,
                                                 thickness: 1,
                                               ),
                                             ),
@@ -374,18 +396,22 @@ class _LoginPageState extends State<LoginPage> {
                                           ),
                                           style: OutlinedButton.styleFrom(
                                             backgroundColor: Colors.white,
-                                            side: const BorderSide(color: Color(0xFFDADCE0)),
+                                            side: const BorderSide(
+                                                color: Color(0xFFDADCE0)),
                                             shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(12),
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
                                             ),
                                             padding: EdgeInsets.symmetric(
                                               vertical: AppHeight.h12,
                                               horizontal: AppWidth.w20,
                                             ),
-                                            minimumSize: Size(double.infinity, AppHeight.h50),
+                                            minimumSize: Size(
+                                                double.infinity, AppHeight.h50),
                                           ),
                                           onPressed: () {
-                                            loginBloc.add(const GoogleSignInPressed());
+                                            loginBloc.add(
+                                                const GoogleSignInPressed());
                                           },
                                         ),
                                       ],
@@ -410,9 +436,22 @@ class _LoginPageState extends State<LoginPage> {
 
   _onLogin(LoginBloc loginBloc) async {
     if (formKey.currentState!.validate()) {
+      final email = userNameController.text.trim();
+      final parts = email.split('@');
+      final domain = parts.length == 2 ? parts[1].toLowerCase() : '';
+      final allowed = domain == 'wlv.ac.uk' || domain.endsWith('.wlv.ac.uk');
+      if (!allowed) {
+        Fluttertoast.showToast(
+          msg: AppStringsEn.domainRestriction,
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Theme.of(context).colorScheme.error,
+        );
+        return;
+      }
       // Build the entity from inputs
       final login = LoginCredentials(
-        email: userNameController.text,
+        email: email,
         password: passwordController.text,
       );
       loginBloc.add(LoginButtonPressEvent(login: login));
@@ -475,7 +514,8 @@ class _LoginPageState extends State<LoginPage> {
         return BlocProvider(
           create: (_) => sl<ResetPasswordBloc>(),
           child: BlocConsumer<ResetPasswordBloc, ResetPasswordState>(
-            listenWhen: (p, c) => p.status != c.status || p.errorMessage != c.errorMessage,
+            listenWhen: (p, c) =>
+                p.status != c.status || p.errorMessage != c.errorMessage,
             listener: (context, state) {
               if (state.status == ResetPasswordStatus.success) {
                 Navigator.of(context).pop();
@@ -487,7 +527,8 @@ class _LoginPageState extends State<LoginPage> {
                 );
               } else if (state.status == ResetPasswordStatus.failure) {
                 Fluttertoast.showToast(
-                  msg: state.errorMessage ?? 'Something went wrong. Please try again.',
+                  msg: state.errorMessage ??
+                      'Something went wrong. Please try again.',
                   toastLength: Toast.LENGTH_LONG,
                   gravity: ToastGravity.BOTTOM,
                   backgroundColor: Theme.of(context).colorScheme.error,
@@ -550,7 +591,8 @@ class _LoginPageState extends State<LoginPage> {
                                 msg: 'Invalid email address.',
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.BOTTOM,
-                                backgroundColor: Theme.of(context).colorScheme.error,
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.error,
                               );
                               return;
                             }
@@ -562,8 +604,7 @@ class _LoginPageState extends State<LoginPage> {
                         ? const SizedBox(
                             height: 16,
                             width: 16,
-                            child:
-                                CircularProgressIndicator(strokeWidth: 2),
+                            child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : Text(
                             'Send',

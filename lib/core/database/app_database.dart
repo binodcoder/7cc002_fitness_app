@@ -15,7 +15,7 @@ class AppDatabase {
     final path = join(dbPath, 'fitness.db');
     return openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: (Database db, int version) async {
         // Minimal tables to support current local caching
         await db.execute('''
@@ -40,6 +40,36 @@ class AppDatabase {
             role TEXT
           )
         ''');
+        await db.execute('''
+          CREATE TABLE user_profiles (
+            id TEXT PRIMARY KEY,
+            name TEXT,
+            age INTEGER,
+            gender TEXT,
+            height REAL,
+            weight REAL,
+            goal TEXT,
+            photoUrl TEXT,
+            lastUpdated TEXT
+          )
+        ''');
+      },
+      onUpgrade: (Database db, int oldVersion, int newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute('''
+            CREATE TABLE IF NOT EXISTS user_profiles (
+              id TEXT PRIMARY KEY,
+              name TEXT,
+              age INTEGER,
+              gender TEXT,
+              height REAL,
+              weight REAL,
+              goal TEXT,
+              photoUrl TEXT,
+              lastUpdated TEXT
+            )
+          ''');
+        }
       },
     );
   }

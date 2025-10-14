@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:fitness_app/core/navigation/routes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:fitness_app/core/localization/app_strings.dart';
-import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/features/auth/application/auth/auth_bloc.dart';
 import 'package:fitness_app/features/auth/application/auth/auth_event.dart';
 
@@ -23,6 +23,12 @@ class AccountPage extends StatelessWidget {
             leading: const Icon(Icons.person),
             title: Text(strings.account),
             subtitle: const Text('Manage your profile and preferences'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.badge_outlined),
+            title: const Text('Profile'),
+            subtitle: const Text('View and update your profile'),
+            onTap: () => context.push(Routes.profile),
           ),
           const Divider(height: 1),
           ListTile(

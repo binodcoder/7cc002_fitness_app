@@ -34,6 +34,11 @@ class AddWalkMediaImagePickedFromCameraState extends WalkMediaAddState {
       : super(imagePath: imagePath);
 }
 
+class AddWalkMediaVideoPickedState extends WalkMediaAddState {
+  const AddWalkMediaVideoPickedState({required String videoPath})
+      : super(imagePath: videoPath);
+}
+
 class AddWalkMediaLoadingState extends WalkMediaAddActionState {
   const AddWalkMediaLoadingState();
 }
@@ -49,4 +54,3 @@ class AddWalkMediaUpdatedState extends WalkMediaAddActionState {
 class AddWalkMediaErrorState extends WalkMediaAddActionState {
   const AddWalkMediaErrorState();
 }
-

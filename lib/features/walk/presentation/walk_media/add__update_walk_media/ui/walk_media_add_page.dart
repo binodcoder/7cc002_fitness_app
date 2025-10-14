@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,8 +10,11 @@ import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/font_manager.dart';
 import 'package:fitness_app/core/theme/styles_manager.dart';
 import 'package:fitness_app/core/theme/values_manager.dart';
-import 'package:fitness_app/core/widgets/custom_text_form_field.dart';
 import 'package:fitness_app/core/widgets/custom_button.dart';
+import 'package:firebase_storage/firebase_storage.dart' as fstorage;
+import 'package:firebase_core/firebase_core.dart' as fcore;
+import 'package:fitness_app/firebase_options.dart';
+import 'package:path/path.dart' as p;
 
 import '../bloc/walk_media_add_bloc.dart';
 import '../bloc/walk_media_add_event.dart';
@@ -29,6 +33,9 @@ class WalkMediaAddPage extends StatefulWidget {
 
 class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
   final TextEditingController walkMediaUrlController = TextEditingController();
+  String? _lastUploadedPath;
+  bool _uploading = false;
+  String? _uploadedUrl;
 
   @override
   void initState() {
@@ -71,6 +78,14 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
         }
       },
       builder: (context, state) {
+        // Automatically trigger upload when an imagePath is present
+        if (state.imagePath != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!_uploading && _lastUploadedPath != state.imagePath) {
+              _uploadAndSetUrl(state.imagePath!);
+            }
+          });
+        }
         return Scaffold(
           appBar: AppBar(
             backgroundColor: ColorManager.primary,
@@ -98,16 +113,22 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                       onPickCamera: () => walkMediaAddBloc.add(
                         const WalkMediaAddPickFromCameraButtonPressEvent(),
                       ),
+                      onPickVideo: () => walkMediaAddBloc.add(
+                        const WalkMediaAddPickVideoButtonPressEvent(),
+                      ),
                     ),
+                    if (_uploading) ...[
+                      const SizedBox(height: 12),
+                      const LinearProgressIndicator(),
+                    ],
+                    if (state.imagePath != null || _uploadedUrl != null) ...[
+                      const SizedBox(height: 12),
+                      _MediaPreview(
+                        localPath: state.imagePath,
+                        remoteUrl: _uploadedUrl,
+                      ),
+                    ],
                     SizedBox(height: AppHeight.h10),
-                    CustomTextFormField(
-                      label: 'Media URL',
-                      controller: walkMediaUrlController,
-                      hint: 'description',
-                      validator: (v) =>
-                          (v == null || v.isEmpty) ? '*Required' : null,
-                    ),
-                    SizedBox(height: AppHeight.h30),
                     CustomButton(
                       child: Text(
                         widget.walkMedia == null
@@ -155,6 +176,91 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
           ),
         );
       },
+    );
+  }
+
+  Future<void> _uploadAndSetUrl(String imagePath) async {
+    try {
+      setState(() {
+        _uploading = true;
+        _lastUploadedPath = imagePath;
+      });
+      // Ensure Firebase is initialized (in case REST backend is selected)
+      if (fcore.Firebase.apps.isEmpty) {
+        await fcore.Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+      }
+      final walkId = widget.walkId ?? 0;
+      final file = File(imagePath);
+      final ext = p.extension(imagePath).replaceAll('.', '');
+      final ts = DateTime.now().millisecondsSinceEpoch;
+      final ref = fstorage.FirebaseStorage.instance
+          .ref()
+          .child('walks/$walkId/media_$ts.${ext.isEmpty ? 'jpg' : ext}');
+      final task = await ref.putFile(file);
+      final url = await task.ref.getDownloadURL();
+      if (!mounted) return;
+      setState(() {
+        _uploadedUrl = url;
+        _uploading = false;
+      });
+      walkMediaUrlController.text = url;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Image uploaded')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _uploading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Upload failed')),
+      );
+    }
+  }
+}
+
+bool _isImagePathOrUrl(String pathOrUrl) {
+  final p = pathOrUrl.toLowerCase();
+  return p.endsWith('.jpg') ||
+      p.endsWith('.jpeg') ||
+      p.endsWith('.png') ||
+      p.endsWith('.gif') ||
+      p.endsWith('.webp');
+}
+
+class _MediaPreview extends StatelessWidget {
+  final String? localPath;
+  final String? remoteUrl;
+  const _MediaPreview({required this.localPath, required this.remoteUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    final isRemote = (remoteUrl ?? '').isNotEmpty;
+    final target = isRemote ? remoteUrl! : (localPath ?? '');
+    final isImage = _isImagePathOrUrl(target);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: AspectRatio(
+        aspectRatio: 4 / 3,
+        child: isImage
+            ? (isRemote
+                ? Image.network(
+                    target,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) =>
+                        const Center(child: Icon(Icons.broken_image)),
+                  )
+                : Image.file(
+                    File(target),
+                    fit: BoxFit.cover,
+                  ))
+            : Container(
+                color: Theme.of(context).colorScheme.surfaceVariant,
+                child: const Center(
+                  child: Icon(Icons.videocam, size: 48),
+                ),
+              ),
+      ),
     );
   }
 }

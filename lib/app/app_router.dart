@@ -3,6 +3,7 @@ import 'package:fitness_app/features/walk/presentation/walk_list/ui/walk_list_pa
 import 'package:fitness_app/app/home_scaffold.dart';
 import 'package:fitness_app/features/account/presentation/account_page.dart';
 import 'package:fitness_app/app/main_menu_page.dart';
+import 'package:fitness_app/features/profile/presentation/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -81,6 +82,14 @@ class AppRouter {
               ),
             ],
           ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.chat,
+                builder: (context, state) => const ChatUsersPage(),
+              ),
+            ],
+          ),
         ],
       ),
       // Detail / dialog routes remain outside the shell
@@ -89,16 +98,16 @@ class AppRouter {
         builder: (context, state) => const LiveTrainingPage(),
       ),
       GoRoute(
-        path: Routes.chat,
-        builder: (context, state) => const ChatUsersPage(),
-      ),
-      GoRoute(
         path: Routes.mainMenu,
         builder: (context, state) => const MainMenuPage(),
       ),
       GoRoute(
         path: Routes.account,
         builder: (context, state) => const AccountPage(),
+      ),
+      GoRoute(
+        path: Routes.profile,
+        builder: (context, state) => const ProfilePage(),
       ),
       GoRoute(
         path: Routes.routineDetails,

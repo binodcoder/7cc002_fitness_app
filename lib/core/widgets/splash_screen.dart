@@ -46,11 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (cachedUser == null) {
         const demoUser = User(
           id: 1,
-          age: 25,
           email: 'demo@fit.com',
-          gender: 'unspecified',
-          institutionEmail: 'demo@fit.com',
-          name: 'Demo User',
           password: '',
           role: 'trainer',
         );

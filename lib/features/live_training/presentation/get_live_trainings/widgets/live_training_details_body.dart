@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 
 import 'package:fitness_app/core/theme/colour_manager.dart';
@@ -38,15 +39,31 @@ class LiveTrainingDetailsBody extends StatelessWidget {
               style: TextStyle(fontSize: FontSize.s14),
             ),
           ),
-          SizedBox(height: AppHeight.h20),
-          SizedBox(height: AppHeight.h20),
-          const Align(
+          const SizedBox(height: 8),
+          Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              '',
-              style: TextStyle(fontSize: FontSize.s12),
+              liveTraining.description,
+              style: const TextStyle(fontSize: FontSize.s14),
             ),
-          )
+          ),
+          SizedBox(height: AppHeight.h20),
+          if ((liveTraining.streamUrl ?? '').isNotEmpty) ...[
+            SizedBox(height: AppHeight.h10),
+            ElevatedButton.icon(
+              onPressed: () async {
+                final url = Uri.parse(liveTraining.streamUrl!.trim());
+                if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Failed to open link')),
+                  );
+                }
+              },
+              icon: const Icon(Icons.live_tv),
+              label: const Text('Join Stream'),
+            ),
+          ],
+          SizedBox(height: AppHeight.h20),
         ],
       ),
     );

@@ -14,11 +14,7 @@ class FirebaseChatDirectoryRemoteDataSource
       final data = d.data();
       return entity.User(
         id: (data['id'] as num?)?.toInt(),
-        age: (data['age'] as num?)?.toInt() ?? 0,
         email: (data['email'] as String?) ?? '',
-        gender: (data['gender'] as String?) ?? '',
-        institutionEmail: (data['institutionEmail'] as String?) ?? '',
-        name: (data['name'] as String?) ?? '',
         password: '',
         role: (data['role'] as String?) ?? 'standard',
       );

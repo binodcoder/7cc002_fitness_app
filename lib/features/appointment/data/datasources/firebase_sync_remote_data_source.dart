@@ -13,19 +13,33 @@ class FirebaseSyncRemoteDataSource implements SyncRemoteDataSource {
           .collection('users')
           .where('role', isEqualTo: 'trainer')
           .get();
-      final trainers = qs.docs.map((d) {
+      final trainers = <TrainerModel>[];
+      for (final d in qs.docs) {
         final data = d.data();
-        return TrainerModel(
+        final uid = d.id;
+        String name = '';
+        String gender = '';
+        int age = 0;
+        try {
+          final prof = await _firestore.collection('profiles').doc(uid).get();
+          final p = prof.data();
+          if (p != null) {
+            name = (p['name'] as String?) ?? '';
+            gender = (p['gender'] as String?) ?? '';
+            age = (p['age'] as num?)?.toInt() ?? 0;
+          }
+        } catch (_) {}
+        trainers.add(TrainerModel(
           id: (data['id'] as num?)?.toInt() ?? 0,
-          name: (data['name'] as String?) ?? '',
+          name: name,
           email: (data['email'] as String?) ?? '',
           password: '',
           institutionEmail: (data['institutionEmail'] as String?) ?? '',
-          gender: (data['gender'] as String?) ?? '',
-          age: (data['age'] as num?)?.toInt() ?? 0,
+          gender: gender,
+          age: age,
           role: (data['role'] as String?) ?? 'trainer',
-        );
-      }).toList();
+        ));
+      }
 
       const company = CompanyModel(
         id: 1,

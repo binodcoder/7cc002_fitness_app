@@ -23,7 +23,7 @@ class TimePickerField extends StatelessWidget {
         width: width,
         height: height,
         alignment: Alignment.center,
-        decoration: BoxDecoration(color: scheme.surfaceVariant),
+        decoration: BoxDecoration(color: scheme.surfaceContainerHighest),
         child: TextFormField(
           style: const TextStyle(fontSize: 20),
           textAlign: TextAlign.center,

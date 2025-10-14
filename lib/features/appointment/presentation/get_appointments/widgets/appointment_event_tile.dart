@@ -5,16 +5,16 @@ class AppointmentEventTile extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback onTap;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   const AppointmentEventTile({
     super.key,
     required this.title,
     required this.subtitle,
     required this.onTap,
-    required this.onEdit,
-    required this.onDelete,
+    this.onEdit,
+    this.onDelete,
   });
 
   @override

@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
-
 import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/calendar_bloc.dart';
@@ -19,7 +18,6 @@ import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/widgets/user_avatar_action.dart';
 import 'package:fitness_app/core/widgets/main_menu_button.dart';
-
 import '../../appointment_form/ui/appointment_form_dialog.dart';
 import 'package:fitness_app/features/appointment/domain/usecases/sync.dart';
 import 'package:fitness_app/features/appointment/domain/entities/sync.dart';
@@ -214,112 +212,107 @@ class _CalendarPageState extends State<CalendarPage> {
                           return const SizedBox();
                       }
                     }),
-                isTrainer
-                    ? BlocConsumer<EventBloc, EventState>(
-                        bloc: eventBloc,
-                        listenWhen: (previous, current) =>
-                            current is EventActionState,
-                        buildWhen: (previous, current) =>
-                            current is! EventActionState,
-                        listener: (context, state) {
-                          if (state is EventNavigateToUpdatePageActionState) {
-                            if (!mounted) return;
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    AppointmentFormDialog(
-                                  focusedDay: state.focusedDay,
-                                  appointment: state.appointment,
-                                ),
-                                fullscreenDialog: true,
-                              ),
-                            ).then(
-                              (value) => refreshPage(),
-                            );
-                          }
-                        },
-                        builder: (context, state) {
-                          switch (state.runtimeType) {
-                            case EventLoadingState:
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
+                BlocConsumer<EventBloc, EventState>(
+                  bloc: eventBloc,
+                  listenWhen: (previous, current) =>
+                      current is EventActionState,
+                  buildWhen: (previous, current) =>
+                      current is! EventActionState,
+                  listener: (context, state) {
+                    if (state is EventNavigateToUpdatePageActionState) {
+                      if (!mounted) return;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              AppointmentFormDialog(
+                            focusedDay: state.focusedDay,
+                            appointment: state.appointment,
+                          ),
+                          fullscreenDialog: true,
+                        ),
+                      ).then(
+                        (value) => refreshPage(),
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    switch (state.runtimeType) {
+                      case EventLoadingState:
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
 
-                            case EventDaySelectedState:
-                              final successState =
-                                  state as EventDaySelectedState;
-                              final selectedEvents = [
-                                ...successState.appointments
-                              ]..sort(
-                                  (a, b) => a.startTime.compareTo(b.startTime));
-                              if (selectedEvents.isEmpty) {
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 24.0),
-                                  child: Center(
-                                    child: Text(
-                                      'No appointments for this day.',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium,
+                      case EventDaySelectedState:
+                        final successState = state as EventDaySelectedState;
+                        final selectedEvents = [...successState.appointments]
+                          ..sort((a, b) => a.startTime.compareTo(b.startTime));
+                        if (selectedEvents.isEmpty) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 24.0),
+                            child: Center(
+                              child: Text(
+                                'No appointments for this day.',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ),
+                          );
+                        }
+
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: selectedEvents.length,
+                          itemBuilder: (context, index) {
+                            final Appointment appointmentModel =
+                                selectedEvents[index];
+                            final String title =
+                                _trainerNameById[appointmentModel.trainerId] ??
+                                    'Trainer #${appointmentModel.trainerId}';
+                            return AppointmentEventTile(
+                              title: title,
+                              subtitle:
+                                  "${appointmentModel.startTime} to ${appointmentModel.endTime}",
+                              onTap: () {
+                                if (!mounted) return;
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        AppointmentDetailsPage(
+                                      appointment: appointmentModel,
                                     ),
                                   ),
                                 );
-                              }
-
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: selectedEvents.length,
-                                itemBuilder: (context, index) {
-                                  final Appointment appointmentModel =
-                                      selectedEvents[index];
-                                  final String title = _trainerNameById[
-                                          appointmentModel.trainerId] ??
-                                      'Trainer #${appointmentModel.trainerId}';
-                                  return AppointmentEventTile(
-                                    title: title,
-                                    subtitle:
-                                        "${appointmentModel.startTime} to ${appointmentModel.endTime}",
-                                    onTap: () {
-                                      if (!mounted) return;
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              AppointmentDetailsPage(
-                                            appointment: appointmentModel,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    onEdit: () {
+                              },
+                              onEdit: isTrainer
+                                  ? () {
                                       eventBloc.add(EventEditButtonClickedEvent(
                                           appointment: appointmentModel,
                                           focusedDay: _focusedDay));
-                                    },
-                                    onDelete: () {
+                                    }
+                                  : null,
+                              onDelete: isTrainer
+                                  ? () {
                                       calendarBloc.add(
                                           CalendarDeleteButtonClicked(
                                               appointment: appointmentModel));
-                                    },
-                                  );
-                                },
-                              );
-                            case EventErrorState:
-                              final error = state as EventErrorState;
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 24.0),
-                                child: Center(child: Text(error.message)),
-                              );
-                            default:
-                              return const SizedBox();
-                          }
-                        },
-                      )
-                    : const SizedBox(),
+                                    }
+                                  : null,
+                            );
+                          },
+                        );
+                      case EventErrorState:
+                        final error = state as EventErrorState;
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 24.0),
+                          child: Center(child: Text(error.message)),
+                        );
+                      default:
+                        return const SizedBox();
+                    }
+                  },
+                ),
               ],
             ),
           ),

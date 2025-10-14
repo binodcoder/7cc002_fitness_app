@@ -4,6 +4,7 @@ import 'package:fitness_app/features/chat/infrastructure/di/chat_injection.dart'
 import 'package:fitness_app/features/live_training/infrastructure/di/live_training_injection.dart';
 import 'package:fitness_app/features/routine/infrastructure/di/routine_injection.dart';
 import 'package:fitness_app/features/walk/infrastructure/di/walk_injection.dart';
+import 'package:fitness_app/features/profile/infrastructure/di/profile_injection.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,6 +41,7 @@ Future<void> init() async {
   registerRoutineInfrastructureDependencies(sl, kUseFakeData, kUseFirebaseData);
   registerLiveTrainingInfrastructureDependencies(
       sl, kUseFakeData, kUseFirebaseData);
+  registerProfileInfrastructureDependencies(sl);
 
   // database
   sl.registerSingletonAsync<Database>(() async => await AppDatabase().database);

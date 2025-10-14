@@ -28,6 +28,8 @@ class AuthRepositoriesImpl implements AuthRepository {
       return Left(CacheFailure());
     } on LoginException {
       return Left(LoginFailure());
+    } on DomainRestrictedException {
+      return Left(DomainRestrictionFailure());
     } on ServerException {
       return Left(ServerFailure());
     }
@@ -42,6 +44,8 @@ class AuthRepositoriesImpl implements AuthRepository {
       return Left(CacheFailure());
     } on LoginException {
       return Left(LoginFailure());
+    } on DomainRestrictedException {
+      return Left(DomainRestrictionFailure());
     } on ServerException {
       return Left(ServerFailure());
     }
@@ -53,6 +57,8 @@ class AuthRepositoriesImpl implements AuthRepository {
       final model = UserModel.fromEntity(user);
       int response = await authRemoteDataSource.addUser(model);
       return Right(response);
+    } on DomainRestrictedException {
+      return Left(DomainRestrictionFailure());
     } on ServerException {
       return Left(ServerFailure());
     }

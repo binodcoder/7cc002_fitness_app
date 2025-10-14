@@ -30,7 +30,7 @@ class CustomButton extends StatelessWidget {
             LinearGradient(
               colors: <Color>[
                 scheme.primary,
-                scheme.primary.withAlpha(99),
+                scheme.primary.withAlpha(216),
               ],
             ),
       ),
