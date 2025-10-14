@@ -7,6 +7,6 @@ class GetProfile {
   final ProfileRepository repository;
   GetProfile(this.repository);
 
-  Future<Either<Failure, UserProfile?>> call() => repository.getCurrentProfile();
+  Future<Either<Failure, UserProfile?>> call() =>
+      repository.getCurrentProfile();
 }
-

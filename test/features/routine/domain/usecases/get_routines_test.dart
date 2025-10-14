@@ -2,6 +2,7 @@ import 'package:fitness_app/core/usecases/usecase.dart';
 import 'package:fitness_app/features/routine/data/models/routine_model.dart';
 import 'package:fitness_app/features/routine/domain/repositories/routine_repositories.dart';
 import 'package:fitness_app/features/routine/domain/usecases/get_routines.dart';
+import 'package:fitness_app/features/routine/domain/entities/routine.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:dartz/dartz.dart';
@@ -20,7 +21,6 @@ void main() {
     RoutineModel(
       id: 1,
       description: '',
-      difficulty: '',
       duration: 0,
       name: '',
       source: '',
@@ -38,4 +38,3 @@ void main() {
     },
   );
 }
-

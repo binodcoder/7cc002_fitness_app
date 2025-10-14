@@ -70,8 +70,7 @@ class WalkListBloc extends Bloc<WalkListEvent, WalkListState> {
     final result = await joinWalk(event.walkParticipant);
 
     result!.fold((failure) {
-      emit(WalkListShowErrorActionState(
-          message: mapFailureToMessage(failure)));
+      emit(WalkListShowErrorActionState(message: mapFailureToMessage(failure)));
     }, (result) {
       emit(const WalkJoinedActionState());
     });
@@ -82,8 +81,7 @@ class WalkListBloc extends Bloc<WalkListEvent, WalkListState> {
     final result = await leaveWalk(event.walkParticipant);
 
     result!.fold((failure) {
-      emit(WalkListShowErrorActionState(
-          message: mapFailureToMessage(failure)));
+      emit(WalkListShowErrorActionState(message: mapFailureToMessage(failure)));
     }, (result) {
       emit(const WalkLeftActionState());
     });

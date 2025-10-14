@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/features/auth/application/auth/auth_bloc.dart';
 import 'package:fitness_app/features/auth/application/auth/auth_event.dart';
+import 'package:fitness_app/core/widgets/app_list_tile.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
@@ -17,29 +18,31 @@ class AccountPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(strings.account)),
       body: ListView(
+        padding: const EdgeInsets.only(top: 8, bottom: 12),
         children: [
-          const SizedBox(height: 8),
-          ListTile(
+          AppListTile(
             leading: const Icon(Icons.person),
-            title: Text(strings.account),
-            subtitle: const Text('Manage your profile and preferences'),
+            title: strings.account,
+            subtitle: 'Manage your profile and preferences',
           ),
-          ListTile(
+          AppListTile(
             leading: const Icon(Icons.badge_outlined),
-            title: const Text('Profile'),
-            subtitle: const Text('View and update your profile'),
+            title: 'Profile',
+            subtitle: 'View and update your profile',
+            trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(Routes.profile),
           ),
-          ListTile(
+          AppListTile(
             leading: const Icon(Icons.settings_outlined),
-            title: const Text('Settings'),
-            subtitle: const Text('Units, notifications, and more'),
+            title: 'Settings',
+            subtitle: 'Units, notifications, and more',
+            trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(Routes.settings),
           ),
-          const Divider(height: 1),
-          ListTile(
+          AppListTile(
             leading: Icon(Icons.logout_outlined, color: scheme.error),
-            title: Text(strings.logOut),
+            title: strings.logOut,
+            trailing: Icon(Icons.chevron_right, color: scheme.onSurfaceVariant),
             onTap: () {
               context.read<AuthBloc>().add(const AuthLogoutRequested());
             },

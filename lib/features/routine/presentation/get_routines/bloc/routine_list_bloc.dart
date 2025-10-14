@@ -22,17 +22,19 @@ class RoutineListBloc extends Bloc<RoutineListEvent, RoutineListState> {
     on<RoutineListInitialEvent>(routineInitialEvent);
     on<RoutineListEditButtonClickedEvent>(routineEditButtonClickedEvent);
     on<RoutineListDeleteButtonClickedEvent>(routineDeleteButtonClickedEvent);
-    on<RoutineListDeleteAllButtonClickedEvent>(routineDeleteAllButtonClickedEvent);
+    on<RoutineListDeleteAllButtonClickedEvent>(
+        routineDeleteAllButtonClickedEvent);
     on<RoutineListAddButtonClickedEvent>(routineAddButtonClickedEvent);
     on<RoutineListTileNavigateEvent>(routineTileNavigateEvent);
   }
 
   FutureOr<void> routineInitialEvent(
       RoutineListInitialEvent event, Emitter<RoutineListState> emit) async {
-     emit(const RoutineListLoadingState());
+    emit(const RoutineListLoadingState());
     final routineList = await getRoutines(NoParams());
     routineList!.fold(
-      (failure) => emit(RoutineListErrorState(message: mapFailureToMessage(failure))),
+      (failure) =>
+          emit(RoutineListErrorState(message: mapFailureToMessage(failure))),
       (routines) => emit(RoutineListLoadedSuccessState(routines)),
     );
   }
@@ -43,7 +45,8 @@ class RoutineListBloc extends Bloc<RoutineListEvent, RoutineListState> {
   }
 
   FutureOr<void> routineDeleteButtonClickedEvent(
-      RoutineListDeleteButtonClickedEvent event, Emitter<RoutineListState> emit) async {
+      RoutineListDeleteButtonClickedEvent event,
+      Emitter<RoutineListState> emit) async {
     // await dbHelper.deleteRoutine(event.routine.id);
     // List<RoutineModel> routineList = await dbHelper.getRoutines();
     // emit(RoutineLoadedSuccessState(routineList));

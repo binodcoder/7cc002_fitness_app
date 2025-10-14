@@ -8,4 +8,3 @@ abstract class SessionManager {
   bool hasSeenOnboarding();
   Future<void> setSeenOnboarding(bool value);
 }
-

@@ -49,9 +49,9 @@ class CalendarTileNavigate extends CalendarEvent {
 class CalendarDaySelected extends CalendarEvent {
   final List<Appointment> appointments;
   final DateTime selectedDay;
-  const CalendarDaySelected({required this.selectedDay, required this.appointments});
+  const CalendarDaySelected(
+      {required this.selectedDay, required this.appointments});
 
   @override
   List<Object?> get props => [selectedDay, appointments];
 }
-

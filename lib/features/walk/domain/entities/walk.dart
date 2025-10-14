@@ -20,7 +20,8 @@ class Walk extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, proposerId, routeData, date, startTime, startLocation, participants];
+  List<Object?> get props =>
+      [id, proposerId, routeData, date, startTime, startLocation, participants];
 }
 
 class Participant extends Equatable {
@@ -45,7 +46,8 @@ class Participant extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, name, email, password, institutionEmail, gender, age, role];
+  List<Object?> get props =>
+      [id, name, email, password, institutionEmail, gender, age, role];
 }
 
 class WalkParticipant extends Equatable {
@@ -57,4 +59,3 @@ class WalkParticipant extends Equatable {
   @override
   List<Object?> get props => [userId, walkId];
 }
-

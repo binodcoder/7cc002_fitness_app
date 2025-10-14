@@ -63,4 +63,3 @@ class UserProfile extends Equatable {
   List<Object?> get props =>
       [id, name, age, gender, height, weight, goal, photoUrl, lastUpdated];
 }
-

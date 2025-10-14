@@ -25,6 +25,7 @@ class WalkMediaDetailsBody extends StatelessWidget {
           p.endsWith('.gif') ||
           p.endsWith('.webp');
     }
+
     return Padding(
       padding: const EdgeInsets.all(14.0),
       child: Column(
@@ -59,7 +60,8 @@ class WalkMediaDetailsBody extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () async {
                 final url = Uri.parse(walkMedia.mediaUrl);
-                if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                if (!await launchUrl(url,
+                    mode: LaunchMode.externalApplication)) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Failed to open media')),
                   );
@@ -72,7 +74,8 @@ class WalkMediaDetailsBody extends StatelessWidget {
           SizedBox(height: AppHeight.h20),
           Text(
             'Uploaded by user ${walkMedia.userId}',
-            style: const TextStyle(fontSize: FontSize.s14, color: ColorManager.grey),
+            style: const TextStyle(
+                fontSize: FontSize.s14, color: ColorManager.grey),
           ),
           SizedBox(height: AppHeight.h10),
           Text(

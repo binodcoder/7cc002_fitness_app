@@ -10,4 +10,3 @@ class UpsertProfile {
   Future<Either<Failure, int>> call(UserProfile profile) =>
       repository.upsertProfile(profile);
 }
-

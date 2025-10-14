@@ -14,8 +14,7 @@ class WalkFormBloc extends Bloc<WalkFormEvent, WalkFormState> {
     required this.addWalk,
     required this.updateWalk,
     required this.imagePickerService,
-  })
-      : super(const WalkFormInitial()) {
+  }) : super(const WalkFormInitial()) {
     on<WalkFormInitialized>(walkFormInitialized);
     on<WalkFormReadyToEdit>(walkFormReadyToEdit);
     on<WalkFormPickFromGalleryPressed>(pickFromGalleryPressed);

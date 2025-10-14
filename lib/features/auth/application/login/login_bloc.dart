@@ -11,9 +11,9 @@ import 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final Login _login;
-  final SignInWithGoogle _signInWithGoogle;
+  final SignInWithGoogle? _signInWithGoogle;
 
-  LoginBloc({required Login login, required SignInWithGoogle signInWithGoogle})
+  LoginBloc({required Login login, SignInWithGoogle? signInWithGoogle})
       : _login = login,
         _signInWithGoogle = signInWithGoogle,
         super(const LoginState()) {
@@ -64,13 +64,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     GoogleSignInPressed event,
     Emitter<LoginState> emit,
   ) async {
+    if (_signInWithGoogle == null) {
+      emit(state.copyWith(
+        status: LoginStatus.failure,
+        errorMessage: 'Google sign-in not available',
+        clearUser: true,
+      ));
+      return;
+    }
     emit(state.copyWith(
       status: LoginStatus.loading,
       clearError: true,
       clearUser: true,
     ));
 
-    final result = await _signInWithGoogle(NoParams());
+    final result = await _signInWithGoogle!(NoParams());
     if (result == null) {
       emit(state.copyWith(
         status: LoginStatus.failure,

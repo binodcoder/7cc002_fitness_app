@@ -15,4 +15,3 @@ class UpdateWalkMedia implements UseCase<int, WalkMedia> {
     return await walkMediaRepository.updateWalkMedia(walkMediaModel);
   }
 }
-

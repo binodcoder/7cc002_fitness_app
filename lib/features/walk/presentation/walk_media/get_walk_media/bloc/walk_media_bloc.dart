@@ -48,8 +48,8 @@ class WalkMediaBloc extends Bloc<WalkMediaEvent, WalkMediaState> {
     final result = await deleteWalkMedia(event.walkMedia.id!);
 
     result!.fold((failure) {
-      emit(WalkMediaShowErrorActionState(
-          message: mapFailureToMessage(failure)));
+      emit(
+          WalkMediaShowErrorActionState(message: mapFailureToMessage(failure)));
     }, (response) {
       emit(const WalkMediaItemDeletedActionState());
     });

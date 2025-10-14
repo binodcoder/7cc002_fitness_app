@@ -8,7 +8,10 @@ abstract class AuthRepository {
   Future<Either<Failure, int>>? updateUser(User user);
   Future<Either<Failure, int>>? deleteUser(int userId);
   Future<Either<Failure, User>>? login(LoginCredentials login);
-  Future<Either<Failure, User>>? signInWithGoogle();
   Future<Either<Failure, int>>? logout();
   Future<Either<Failure, int>>? resetPassword(String email);
+}
+
+abstract class GoogleAuthRepository {
+  Future<Either<Failure, User>>? signInWithGoogle();
 }

@@ -7,6 +7,7 @@ import 'package:fitness_app/core/localization/app_strings.dart';
 class AppSlidableListTile extends StatelessWidget {
   final String title;
   final String? subtitle;
+  final Widget? subtitleWidget;
   final VoidCallback? onTap;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
@@ -30,6 +31,7 @@ class AppSlidableListTile extends StatelessWidget {
     super.key,
     required this.title,
     this.subtitle,
+    this.subtitleWidget,
     this.onTap,
     this.onEdit,
     this.onDelete,
@@ -64,8 +66,8 @@ class AppSlidableListTile extends StatelessWidget {
         onTap: onTap,
         leading: leading,
         title: Text(title, style: titleStyle, textScaler: titleScaler),
-        subtitle:
-            subtitle != null ? Text(subtitle!, style: subtitleStyle) : null,
+        subtitle: subtitleWidget ??
+            (subtitle != null ? Text(subtitle!, style: subtitleStyle) : null),
         trailing: trailing,
         isThreeLine: isThreeLine,
       ),

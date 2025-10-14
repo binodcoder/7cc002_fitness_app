@@ -15,4 +15,3 @@ class GetWalkMedia implements UseCase<List<WalkMedia>, NoParams> {
     return await walkMediaRepository.getWalkMedia();
   }
 }
-

@@ -8,11 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:fitness_app/features/appointment/presentation/appointment_form/ui/appointment_form_dialog.dart';
-import 'package:fitness_app/features/appointment/presentation/get_appointments/ui/appointment_details.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/ui/calendar.dart';
 import 'package:fitness_app/features/live_training/presentation/add_update_live_training/ui/add_live_training.dart';
 import 'package:fitness_app/features/live_training/presentation/get_live_trainings/ui/live_training.dart';
-import 'package:fitness_app/features/live_training/presentation/get_live_trainings/ui/live_training_details.dart';
 import 'package:fitness_app/features/auth/presentation/login/ui/login_screen.dart';
 import 'package:fitness_app/features/onboarding/pages/onboarding_screen.dart';
 import 'package:fitness_app/features/auth/presentation/register/ui/register_page.dart';
@@ -122,18 +120,12 @@ class AppRouter {
         path: Routes.addRoutine,
         builder: (context, state) => const RoutineFormPage(),
       ),
-      GoRoute(
-        path: Routes.liveTrainingDetails,
-        builder: (context, state) => const LiveTrainingDetailsPage(),
-      ),
+      // LiveTrainingDetailsPage route removed; details are inline on list page
       GoRoute(
         path: Routes.addLiveTraining,
         builder: (context, state) => const AddLiveTrainingDialog(),
       ),
-      GoRoute(
-        path: Routes.appointmentDetails,
-        builder: (context, state) => const AppointmentDetailsPage(),
-      ),
+      // Removed AppointmentDetailsPage route; details view no longer used
       GoRoute(
         path: Routes.addAppointment,
         builder: (context, state) => const AppointmentFormDialog(),

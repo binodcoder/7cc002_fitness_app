@@ -9,7 +9,7 @@ void main() {
     name: 'Push Up',
     description: 'desc',
     targetMuscleGroups: 'chest',
-    difficulty: 'easy',
+    difficulty: ExerciseDifficulty.easy,
     equipment: 'none',
     imageUrl: 'img',
     videoUrl: 'vid',
@@ -46,7 +46,7 @@ void main() {
       name: 'Push Up',
       description: 'desc',
       targetMuscleGroups: 'chest',
-      difficulty: 'easy',
+      difficulty: ExerciseDifficulty.easy,
       equipment: 'none',
       imageUrl: 'img',
       videoUrl: 'vid',
@@ -55,4 +55,3 @@ void main() {
     expect(model, tModel);
   });
 }
-

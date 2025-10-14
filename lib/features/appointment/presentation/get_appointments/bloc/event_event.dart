@@ -17,7 +17,8 @@ class EventInitialEvent extends EventEvent {
 class EventEditButtonClickedEvent extends EventEvent {
   final DateTime focusedDay;
   final Appointment appointment;
-  const EventEditButtonClickedEvent({required this.appointment, required this.focusedDay});
+  const EventEditButtonClickedEvent(
+      {required this.appointment, required this.focusedDay});
 
   @override
   List<Object?> get props => [appointment, focusedDay];
@@ -50,7 +51,8 @@ class EventTileNavigateEvent extends EventEvent {
 class EventDaySelectEvent extends EventEvent {
   final List<Appointment> appointments;
   final DateTime selectedDay;
-  const EventDaySelectEvent({required this.selectedDay, required this.appointments});
+  const EventDaySelectEvent(
+      {required this.selectedDay, required this.appointments});
 
   @override
   List<Object?> get props => [selectedDay, appointments];

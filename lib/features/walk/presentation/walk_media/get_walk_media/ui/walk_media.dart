@@ -120,6 +120,7 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                         p.endsWith('.gif') ||
                         p.endsWith('.webp');
                   }
+
                   return AppSlidableListTile(
                     title: 'Media #${walkMedia.id ?? (index + 1)}',
                     subtitle: 'By user ${walkMedia.userId}',

@@ -10,6 +10,13 @@ import 'application/users/chat_users_bloc.dart';
 import 'application/users/chat_users_event.dart';
 import 'application/users/chat_users_state.dart';
 import 'chat_page.dart';
+import 'package:fitness_app/core/widgets/app_list_tile.dart';
+
+class _ProfileInfo {
+  final String name;
+  final String photoUrl;
+  const _ProfileInfo({required this.name, required this.photoUrl});
+}
 
 class ChatUsersPage extends StatefulWidget {
   const ChatUsersPage({super.key});
@@ -20,6 +27,10 @@ class ChatUsersPage extends StatefulWidget {
 
 class _ChatUsersPageState extends State<ChatUsersPage> {
   final ChatUsersBloc _bloc = sl<ChatUsersBloc>();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  final Map<String, _ProfileInfo> _profileByEmail = {};
+  final Map<String, Future<_ProfileInfo>> _pendingProfileByEmail = {};
 
   @override
   void initState() {
@@ -54,20 +65,19 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
             return const Center(child: Text('No users found'));
           }
           final myId = sl<SessionManager>().getCurrentUser()?.id ?? 0;
-          return ListView.separated(
+          return ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
             itemCount: state.users.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
             itemBuilder: (context, index) {
               final u = state.users[index];
               final roomId = _roomIdForUsers(myId, u.id ?? 0);
+
               return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                stream: FirebaseFirestore.instance
-                    .collection('chatRooms')
-                    .doc(roomId)
-                    .snapshots(),
+                stream:
+                    _firestore.collection('chatRooms').doc(roomId).snapshots(),
                 builder: (context, snapshot) {
-                  String subtitle = u.email;
-                  Widget? trailing;
+                  String lastMessage = '';
+                  bool unread = false;
                   if (snapshot.hasData && snapshot.data!.exists) {
                     final data = snapshot.data!.data()!;
                     final lastText = (data['lastMessageText'] as String?) ?? '';
@@ -75,22 +85,29 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
                         (data['lastMessageAt'] as num?)?.toInt() ?? 0;
                     final lastRead =
                         (data['lastReadAt_$myId'] as num?)?.toInt() ?? 0;
-                    final unread = lastAt > lastRead && lastText.isNotEmpty;
-                    if (lastText.isNotEmpty) subtitle = lastText;
-                    trailing = unread
-                        ? Icon(Icons.brightness_1,
-                            color: Theme.of(context).colorScheme.error,
-                            size: 10)
-                        : const Icon(Icons.chevron_right);
-                  } else {
-                    trailing = const Icon(Icons.chevron_right);
+                    lastMessage = lastText;
+                    unread = lastAt > lastRead && lastText.isNotEmpty;
                   }
-                  return ListTile(
-                    title: Text(u.email),
-                    subtitle: Text(subtitle,
-                        maxLines: 1, overflow: TextOverflow.ellipsis),
-                    trailing: trailing,
-                    onTap: () => _openChat(u),
+
+                  return FutureBuilder<_ProfileInfo>(
+                    future: _getProfileByEmail(u.email),
+                    builder: (context, profSnap) {
+                      final prof = profSnap.data;
+                      final displayName = (prof?.name.isNotEmpty == true)
+                          ? prof!.name
+                          : u.email;
+                      final photoUrl = prof?.photoUrl ?? '';
+
+                      return _ChatUserTile(
+                        name: displayName,
+                        email: u.email,
+                        photoUrl: photoUrl,
+                        lastMessage:
+                            lastMessage.isNotEmpty ? lastMessage : u.email,
+                        unread: unread,
+                        onTap: () => _openChatWithName(u, displayName),
+                      );
+                    },
                   );
                 },
               );
@@ -108,9 +125,117 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
   }
 
   void _openChat(entity.User user) {
-    Navigator.of(context).push(
+    Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
-        builder: (_) => ChatPage(peerUserId: user.id ?? 0, peerName: user.email),
+        builder: (_) =>
+            ChatPage(peerUserId: user.id ?? 0, peerName: user.email),
+      ),
+    );
+  }
+
+  void _openChatWithName(entity.User user, String name) {
+    Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute(
+        builder: (_) => ChatPage(peerUserId: user.id ?? 0, peerName: name),
+      ),
+    );
+  }
+
+  Future<_ProfileInfo> _getProfileByEmail(String email) async {
+    if (_profileByEmail.containsKey(email)) return _profileByEmail[email]!;
+    final pending = _pendingProfileByEmail[email];
+    if (pending != null) return pending;
+
+    final fut = _loadProfileByEmail(email);
+    _pendingProfileByEmail[email] = fut;
+    final res = await fut;
+    _profileByEmail[email] = res;
+    _pendingProfileByEmail.remove(email);
+    return res;
+  }
+
+  Future<_ProfileInfo> _loadProfileByEmail(String email) async {
+    try {
+      // Find user doc by email to get UID
+      final users = await _firestore
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .limit(1)
+          .get();
+      if (users.docs.isEmpty) {
+        return const _ProfileInfo(name: '', photoUrl: '');
+      }
+      final uid = users.docs.first.id;
+      final prof = await _firestore.collection('profiles').doc(uid).get();
+      final data = prof.data() ?? {};
+      final name = (data['name'] as String?)?.trim() ?? '';
+      final photo = (data['photoUrl'] as String?)?.trim() ?? '';
+      return _ProfileInfo(name: name, photoUrl: photo);
+    } catch (_) {
+      return const _ProfileInfo(name: '', photoUrl: '');
+    }
+  }
+}
+
+class _ChatUserTile extends StatelessWidget {
+  final String name;
+  final String email;
+  final String photoUrl;
+  final String lastMessage;
+  final bool unread;
+  final VoidCallback onTap;
+
+  const _ChatUserTile({
+    required this.name,
+    required this.email,
+    required this.photoUrl,
+    required this.lastMessage,
+    required this.unread,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final title = name.isNotEmpty ? name : email;
+    return AppListTile(
+      leading: _buildAvatar(context, scheme),
+      title: title,
+      subtitle: lastMessage.isNotEmpty ? lastMessage : email,
+      trailing: unread
+          ? Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(
+                color: scheme.error,
+                shape: BoxShape.circle,
+              ),
+            )
+          : Icon(Icons.chevron_right, color: scheme.onSurfaceVariant),
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildAvatar(BuildContext context, ColorScheme scheme) {
+    if (photoUrl.isNotEmpty) {
+      return CircleAvatar(
+        radius: 22,
+        backgroundImage: NetworkImage(photoUrl),
+        backgroundColor: scheme.surfaceVariant,
+      );
+    }
+    final initial = (name.isNotEmpty ? name : email).trim().isNotEmpty
+        ? (name.isNotEmpty ? name : email).trim()[0].toUpperCase()
+        : '?';
+    return CircleAvatar(
+      radius: 22,
+      backgroundColor: scheme.primary.withOpacity(0.15),
+      child: Text(
+        initial,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: scheme.primary,
+              fontWeight: FontWeight.w700,
+            ),
       ),
     );
   }

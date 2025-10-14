@@ -27,7 +27,8 @@ class EventLoadedSuccessState extends EventState {
   final List<Appointment> appointments;
   const EventLoadedSuccessState({required this.appointments});
   EventLoadedSuccessState copyWith({List<Appointment>? appointments}) {
-    return EventLoadedSuccessState(appointments: appointments ?? this.appointments);
+    return EventLoadedSuccessState(
+        appointments: appointments ?? this.appointments);
   }
 
   @override
@@ -58,7 +59,8 @@ class EventNavigateToDetailPageActionState extends EventActionState {
 class EventNavigateToUpdatePageActionState extends EventActionState {
   final Appointment appointment;
   final DateTime focusedDay;
-  const EventNavigateToUpdatePageActionState({required this.appointment, required this.focusedDay});
+  const EventNavigateToUpdatePageActionState(
+      {required this.appointment, required this.focusedDay});
 
   @override
   List<Object?> get props => [appointment, focusedDay];

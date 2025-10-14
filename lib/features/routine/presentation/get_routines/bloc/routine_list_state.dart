@@ -32,15 +32,18 @@ class RoutineListErrorState extends RoutineListState {
   const RoutineListErrorState({required this.message});
 }
 
-class RoutineListNavigateToAddRoutineActionState extends RoutineListActionState {}
+class RoutineListNavigateToAddRoutineActionState
+    extends RoutineListActionState {}
 
-class RoutineListNavigateToDetailPageActionState extends RoutineListActionState {
+class RoutineListNavigateToDetailPageActionState
+    extends RoutineListActionState {
   final Routine routine;
 
   RoutineListNavigateToDetailPageActionState(this.routine);
 }
 
-class RoutineListNavigateToUpdatePageActionState extends RoutineListActionState {
+class RoutineListNavigateToUpdatePageActionState
+    extends RoutineListActionState {
   final Routine routine;
 
   RoutineListNavigateToUpdatePageActionState(this.routine);

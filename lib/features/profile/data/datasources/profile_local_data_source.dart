@@ -31,4 +31,3 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
     );
   }
 }
-

@@ -94,7 +94,8 @@ class _ChatPageState extends State<ChatPage> {
                             Text(
                               m.text,
                               style: textTheme.bodyMedium?.copyWith(
-                                color: isMe ? scheme.onPrimary : scheme.onSurface,
+                                color:
+                                    isMe ? scheme.onPrimary : scheme.onSurface,
                               ),
                             ),
                             const SizedBox(height: 2),

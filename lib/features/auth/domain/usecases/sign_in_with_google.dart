@@ -5,7 +5,7 @@ import 'package:fitness_app/features/auth/domain/entities/user.dart';
 import 'package:fitness_app/features/auth/domain/repositories/auth_repositories.dart';
 
 class SignInWithGoogle implements UseCase<User, NoParams> {
-  final AuthRepository repository;
+  final GoogleAuthRepository repository;
 
   SignInWithGoogle(this.repository);
 
@@ -14,4 +14,3 @@ class SignInWithGoogle implements UseCase<User, NoParams> {
     return await repository.signInWithGoogle();
   }
 }
-

@@ -20,6 +20,6 @@ class Appointment extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, date, startTime, endTime, trainerId, userId, remark];
+  List<Object?> get props =>
+      [id, date, startTime, endTime, trainerId, userId, remark];
 }
-

@@ -11,8 +11,9 @@ class RoutineRemoteDataSourceImpl implements RoutineDataSource {
   RoutineRemoteDataSourceImpl({required this.client});
 
   Future<List<RoutineModel>> _getRoutines(String url) async {
-    final response = await client
-        .get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
+    final response = await client.get(Uri.parse(url), headers: {
+      'Content-Type': 'application/json'
+    }).timeout(const Duration(seconds: 20));
     if (response.statusCode == 200) {
       return routineModelsFromJson(response.body);
     } else {
@@ -21,11 +22,13 @@ class RoutineRemoteDataSourceImpl implements RoutineDataSource {
   }
 
   Future<int> _addRoutine(String url, RoutineModel routineModel) async {
-    final response = await client.post(
-      Uri.parse(url),
-      headers: {'Content-Type': 'application/json'},
-      body: routineModelToJson(routineModel),
-    );
+    final response = await client
+        .post(
+          Uri.parse(url),
+          headers: {'Content-Type': 'application/json'},
+          body: routineModelToJson(routineModel),
+        )
+        .timeout(const Duration(seconds: 20));
     if (response.statusCode == 201) {
       return 1;
     } else {
@@ -34,11 +37,13 @@ class RoutineRemoteDataSourceImpl implements RoutineDataSource {
   }
 
   Future<int> _updateRoutine(String url, RoutineModel routineModel) async {
-    final response = await client.put(
-      Uri.parse(url),
-      headers: {'Content-Type': 'application/json'},
-      body: routineModelToJson(routineModel),
-    );
+    final response = await client
+        .put(
+          Uri.parse(url),
+          headers: {'Content-Type': 'application/json'},
+          body: routineModelToJson(routineModel),
+        )
+        .timeout(const Duration(seconds: 20));
     if (response.statusCode == 200) {
       return 1;
     } else {
@@ -47,8 +52,9 @@ class RoutineRemoteDataSourceImpl implements RoutineDataSource {
   }
 
   Future<int> _deleteRoutine(String url) async {
-    final response = await client
-        .delete(Uri.parse(url), headers: {'Content-Type': 'application/json'});
+    final response = await client.delete(Uri.parse(url), headers: {
+      'Content-Type': 'application/json'
+    }).timeout(const Duration(seconds: 20));
     if (response.statusCode == 200) {
       return 1;
     } else {

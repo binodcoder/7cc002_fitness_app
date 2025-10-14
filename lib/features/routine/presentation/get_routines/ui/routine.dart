@@ -6,8 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/features/routine/presentation/routine_form/ui/routine_form_page.dart';
-import 'package:fitness_app/features/routine/presentation/get_routines/ui/routine_details.dart';
-import 'package:fitness_app/features/routine/presentation/get_routines/widgets/routine_list_tile.dart';
+import 'package:fitness_app/features/routine/presentation/get_routines/widgets/routine_card.dart';
 import 'package:fitness_app/core/widgets/user_avatar_action.dart';
 import 'package:fitness_app/core/widgets/main_menu_button.dart';
 
@@ -62,17 +61,7 @@ class _RoutinePageState extends State<RoutinePage> {
             (value) => refreshPage(),
           );
         } else if (state is RoutineListNavigateToDetailPageActionState) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => RoutineDetailsPage(
-                routine: state.routine,
-              ),
-              fullscreenDialog: true,
-            ),
-          ).then(
-            (value) => refreshPage(),
-          );
+          // No-op: Details are shown inline on the home page now.
         } else if (state is RoutineListNavigateToUpdatePageActionState) {
           Navigator.push(
             context,
@@ -132,33 +121,47 @@ class _RoutinePageState extends State<RoutinePage> {
                           ],
                         )
                       : ListView.builder(
+                          padding: const EdgeInsets.only(bottom: 80),
                           itemCount: successState.routines.length,
                           itemBuilder: (context, index) {
-                            var routine = successState.routines[index];
-                            return RoutineListTile(
-                              title: routine.name,
-                              description: routine.description,
-                              difficulty: routine.difficulty,
-                              durationMinutes: routine.duration,
-                              source: routine.source,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        RoutineDetailsPage(
-                                      routine: routine,
-                                    ),
-                                  ),
+                            final routine = successState.routines[index];
+                            final isTrainer =
+                                sharedPreferences.getString('role') ==
+                                    "trainer";
+                            return RoutineCard(
+                              routine: routine,
+                              onStart: () {
+                                // Placeholder for starting routine flow
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                          Text('Starting ${routine.name}')),
                                 );
                               },
-                              onEdit: () {
-                                listBloc.add(
-                                  RoutineListEditButtonClickedEvent(
-                                      routine: routine),
-                                );
-                              },
-                              onDelete: () {},
+                              onAddExercise: isTrainer
+                                  ? () {
+                                      listBloc.add(
+                                        RoutineListEditButtonClickedEvent(
+                                            routine: routine),
+                                      );
+                                    }
+                                  : null,
+                              onEdit: isTrainer
+                                  ? () {
+                                      listBloc.add(
+                                        RoutineListEditButtonClickedEvent(
+                                            routine: routine),
+                                      );
+                                    }
+                                  : null,
+                              onDelete: isTrainer
+                                  ? () {
+                                      listBloc.add(
+                                        RoutineListDeleteButtonClickedEvent(
+                                            routine: routine),
+                                      );
+                                    }
+                                  : null,
                             );
                           },
                         ),

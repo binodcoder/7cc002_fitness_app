@@ -12,9 +12,8 @@ class UserAvatarAction extends StatelessWidget {
     final session = sl<SessionManager>();
     final user = session.getCurrentUser();
     final email = user?.email ?? '';
-    final String initials = email.isNotEmpty
-        ? email.trim()[0].toUpperCase()
-        : '';
+    final String initials =
+        email.isNotEmpty ? email.trim()[0].toUpperCase() : '';
     return IconButton(
       onPressed: () => AppRouter.router.push(Routes.account),
       icon: CircleAvatar(

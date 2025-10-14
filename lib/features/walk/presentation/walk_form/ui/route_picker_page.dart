@@ -59,7 +59,8 @@ class _RoutePickerPageState extends State<RoutePickerPage> {
 
   Future<void> _initCurrentLocation() async {
     try {
-      final serviceEnabled = await geolocator.Geolocator.isLocationServiceEnabled();
+      final serviceEnabled =
+          await geolocator.Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         // Don't block UI; simply skip centering and keep default.
         return;
@@ -297,8 +298,7 @@ class _RoutePickerPageState extends State<RoutePickerPage> {
                     hintText: 'Search start location',
                     filled: true,
                     fillColor: scheme.surface,
-                    prefixIcon:
-                        Icon(Icons.place, color: scheme.primary),
+                    prefixIcon: Icon(Icons.place, color: scheme.primary),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(24),

@@ -22,11 +22,11 @@ class _ProfilePageState extends State<ProfilePage> {
   final _formKey = GlobalKey<FormState>();
   final _nameCtrl = TextEditingController();
   final _ageCtrl = TextEditingController();
-  final _genderCtrl = TextEditingController();
   final _heightCtrl = TextEditingController();
   final _weightCtrl = TextEditingController();
   final _goalCtrl = TextEditingController();
   String? _photoUrl;
+  String? _selectedGender; // 'Male', 'Female', 'Other', or null
 
   late final ProfileBloc _bloc;
   final _imagePicker = sl<ImagePickerService>();
@@ -42,7 +42,6 @@ class _ProfilePageState extends State<ProfilePage> {
   void dispose() {
     _nameCtrl.dispose();
     _ageCtrl.dispose();
-    _genderCtrl.dispose();
     _heightCtrl.dispose();
     _weightCtrl.dispose();
     _goalCtrl.dispose();
@@ -53,11 +52,22 @@ class _ProfilePageState extends State<ProfilePage> {
   void _fill(UserProfile p) {
     _nameCtrl.text = p.name;
     _ageCtrl.text = p.age == 0 ? '' : p.age.toString();
-    _genderCtrl.text = p.gender;
+    _selectedGender = _normalizeGenderLabel(p.gender);
     _heightCtrl.text = p.height == 0 ? '' : p.height.toString();
     _weightCtrl.text = p.weight == 0 ? '' : p.weight.toString();
     _goalCtrl.text = p.goal;
     _photoUrl = p.photoUrl.isEmpty ? null : p.photoUrl;
+  }
+
+  String? _normalizeGenderLabel(String value) {
+    final v = value.trim().toLowerCase();
+    if (v.isEmpty || v == '-') return null;
+    if (v == 'm' || v == 'male') return 'Male';
+    if (v == 'f' || v == 'female') return 'Female';
+    if (v == 'o' || v == 'other') return 'Other';
+    if (v == 'n' || v == 'prefer not to say') return 'Prefer not to say';
+    // Fallback to capitalized original
+    return value[0].toUpperCase() + value.substring(1);
   }
 
   @override
@@ -177,10 +187,37 @@ class _ProfilePageState extends State<ProfilePage> {
                       SizedBox(height: AppHeight.h10),
 
                       // Gender
-                      CustomTextFormField(
-                        label: 'Gender',
-                        controller: _genderCtrl,
-                        hint: 'Gender',
+                      Text(
+                        'Gender',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      RadioListTile<String>(
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('Male'),
+                        value: 'Male',
+                        groupValue: _selectedGender,
+                        onChanged: (v) => setState(() => _selectedGender = v),
+                      ),
+                      RadioListTile<String>(
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('Female'),
+                        value: 'Female',
+                        groupValue: _selectedGender,
+                        onChanged: (v) => setState(() => _selectedGender = v),
+                      ),
+                      RadioListTile<String>(
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('Other'),
+                        value: 'Other',
+                        groupValue: _selectedGender,
+                        onChanged: (v) => setState(() => _selectedGender = v),
+                      ),
+                      RadioListTile<String>(
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('Prefer not to say'),
+                        value: 'Prefer not to say',
+                        groupValue: _selectedGender,
+                        onChanged: (v) => setState(() => _selectedGender = v),
                       ),
                       SizedBox(height: AppHeight.h10),
 
@@ -224,15 +261,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
                       SizedBox(height: AppHeight.h20),
                       CustomButton(
-                        child: Text(
-                          'Save Profile',
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelLarge
-                              ?.copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary),
-                        ),
                         onPressed: isBusy
                             ? () {}
                             : () async {
@@ -242,7 +270,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 final updated = p.copyWith(
                                   name: _nameCtrl.text.trim(),
                                   age: int.tryParse(_ageCtrl.text.trim()) ?? 0,
-                                  gender: _genderCtrl.text.trim(),
+                                  gender: (_selectedGender ?? '').trim(),
                                   height: double.tryParse(
                                           _heightCtrl.text.trim()) ??
                                       0,
@@ -255,6 +283,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                 );
                                 _bloc.add(ProfileSaved(updated));
                               },
+                        child: Text(
+                          'Save Profile',
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary),
+                        ),
                       ),
                       SizedBox(height: AppHeight.h10),
 

@@ -17,4 +17,3 @@ class ProfileSaved extends ProfileEvent {
   @override
   List<Object?> get props => [profile];
 }
-

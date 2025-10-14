@@ -6,9 +6,12 @@ class WalkMedia extends Equatable {
   final int userId;
   final String mediaUrl;
 
-  const WalkMedia({this.id, required this.walkId, required this.userId, required this.mediaUrl});
+  const WalkMedia(
+      {this.id,
+      required this.walkId,
+      required this.userId,
+      required this.mediaUrl});
 
   @override
   List<Object?> get props => [id, walkId, userId, mediaUrl];
 }
-

@@ -27,4 +27,3 @@ class ResetPasswordState extends Equatable {
   @override
   List<Object?> get props => [status, errorMessage];
 }
-

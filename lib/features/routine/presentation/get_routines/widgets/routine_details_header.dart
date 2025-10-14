@@ -49,10 +49,8 @@ class RoutineDetailsHeader extends StatelessWidget {
           ),
         ],
       ),
-      trailing: Text(
-        routine.difficulty,
-        style: const TextStyle(fontSize: FontSize.s14),
-      ),
+      // No difficulty badge on routine anymore
+      trailing: null,
     );
   }
 }

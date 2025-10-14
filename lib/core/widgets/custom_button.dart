@@ -4,14 +4,14 @@ class CustomButton extends StatelessWidget {
   final Widget child;
   final double width;
   final double height;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Gradient? gradient;
   final BorderRadius borderRadius;
 
   const CustomButton({
     super.key,
     required this.child,
-    required this.onPressed,
+    this.onPressed,
     this.width = double.infinity,
     this.height = 50.0,
     this.gradient,
@@ -21,25 +21,29 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        borderRadius: borderRadius,
-        gradient: gradient ??
-            LinearGradient(
-              colors: <Color>[
-                scheme.primary,
-                scheme.primary.withAlpha(216),
-              ],
-            ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onPressed,
+    final enabled = onPressed != null;
+    return Opacity(
+      opacity: enabled ? 1.0 : 0.5,
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
           borderRadius: borderRadius,
-          child: Center(child: child),
+          gradient: gradient ??
+              LinearGradient(
+                colors: <Color>[
+                  scheme.primary,
+                  scheme.primary.withAlpha(216),
+                ],
+              ),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onPressed,
+            borderRadius: borderRadius,
+            child: Center(child: child),
+          ),
         ),
       ),
     );

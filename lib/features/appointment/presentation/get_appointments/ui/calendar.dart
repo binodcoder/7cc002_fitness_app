@@ -11,7 +11,6 @@ import 'package:fitness_app/features/appointment/presentation/get_appointments/b
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/event_bloc.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/event_event.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/event_state.dart';
-import 'package:fitness_app/features/appointment/presentation/get_appointments/ui/appointment_details.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/widgets/appointment_event_tile.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/widgets/appointment_calendar.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
@@ -85,15 +84,17 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
       child: Scaffold(
         backgroundColor: ColorManager.darkWhite,
-        floatingActionButton: FloatingActionButton(
-          heroTag: 'calendarFab',
-          backgroundColor: ColorManager.primary,
-          child: const Icon(Icons.add),
-          onPressed: () {
-            calendarBloc
-                .add(CalendarAddButtonClicked(selectedDay: _focusedDay));
-          },
-        ),
+        floatingActionButton: isTrainer
+            ? FloatingActionButton(
+                heroTag: 'calendarFab',
+                backgroundColor: ColorManager.primary,
+                child: const Icon(Icons.add),
+                onPressed: () {
+                  calendarBloc
+                      .add(CalendarAddButtonClicked(selectedDay: _focusedDay));
+                },
+              )
+            : null,
         appBar: AppBar(
           backgroundColor: ColorManager.primary,
           title: Text(strings.titleAppointmentLabel),
@@ -110,6 +111,35 @@ class _CalendarPageState extends State<CalendarPage> {
             physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
               children: <Widget>[
+                // Quick actions row
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      OutlinedButton.icon(
+                        icon: const Icon(Icons.today),
+                        label: const Text('Today'),
+                        onPressed: () {
+                          final now = DateTime.now();
+                          setState(() {
+                            _focusedDay = now;
+                            _selectedDay = now;
+                          });
+                          calendarBloc.add(const CalendarInitialized());
+                        },
+                      ),
+                      if (isTrainer)
+                        Text(
+                          'Trainer mode',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: ColorManager.grey),
+                        ),
+                    ],
+                  ),
+                ),
                 BlocConsumer<CalendarBloc, CalendarState>(
                     bloc: calendarBloc,
                     listenWhen: (previous, current) =>
@@ -132,19 +162,23 @@ class _CalendarPageState extends State<CalendarPage> {
                         );
                       } else if (state
                           is CalendarNavigateToDetailPageActionState) {
+                        // Details page no longer required. Ignore or open edit when trainer.
                         if (!mounted) return;
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                AppointmentDetailsPage(
-                              appointment: state.appointment,
+                        final isTrainer =
+                            sharedPreferences.getString('role') == "trainer";
+                        if (isTrainer) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  AppointmentFormDialog(
+                                focusedDay: state.appointment.date,
+                                appointment: state.appointment,
+                              ),
+                              fullscreenDialog: true,
                             ),
-                            fullscreenDialog: true,
-                          ),
-                        ).then(
-                          (value) => refreshPage(),
-                        );
+                          ).then((_) => refreshPage());
+                        }
                       } else if (state
                           is CalendarNavigateToUpdatePageActionState) {
                       } else if (state is CalendarItemDeletedActionState) {
@@ -194,12 +228,9 @@ class _CalendarPageState extends State<CalendarPage> {
                                 });
                               }
                             },
-                            eventLoader: isTrainer
-                                ? (day) => allEvents
-                                    .where(
-                                        (event) => isSameDay(event.date, day))
-                                    .toList()
-                                : null,
+                            eventLoader: (day) => allEvents
+                                .where((event) => isSameDay(event.date, day))
+                                .toList(),
                           );
 
                         case CalendarErrorState:
@@ -271,19 +302,23 @@ class _CalendarPageState extends State<CalendarPage> {
                                     'Trainer #${appointmentModel.trainerId}';
                             return AppointmentEventTile(
                               title: title,
-                              subtitle:
-                                  "${appointmentModel.startTime} to ${appointmentModel.endTime}",
+                              startTime: appointmentModel.startTime,
+                              endTime: appointmentModel.endTime,
                               onTap: () {
                                 if (!mounted) return;
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        AppointmentDetailsPage(
-                                      appointment: appointmentModel,
+                                if (isTrainer) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          AppointmentFormDialog(
+                                        focusedDay: _focusedDay,
+                                        appointment: appointmentModel,
+                                      ),
+                                      fullscreenDialog: true,
                                     ),
-                                  ),
-                                );
+                                  ).then((_) => refreshPage());
+                                }
                               },
                               onEdit: isTrainer
                                   ? () {

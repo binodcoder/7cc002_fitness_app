@@ -87,4 +87,3 @@ class WalkMediaItemSelectedActionState extends WalkMediaActionState {
 class WalkMediaItemsDeletedActionState extends WalkMediaActionState {
   const WalkMediaItemsDeletedActionState();
 }
-

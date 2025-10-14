@@ -1,4 +1,5 @@
 import 'package:fitness_app/features/routine/data/models/routine_model.dart';
+import 'package:fitness_app/features/routine/domain/entities/routine.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'dart:convert';
 import '../../fixtures/fixture_reader.dart';
@@ -8,7 +9,6 @@ void main() {
     id: 37,
     name: 'string',
     description: 'This is for random',
-    difficulty: 'easy',
     duration: 10,
     source: 'pre_loaded',
     exercises: [],
@@ -50,7 +50,6 @@ void main() {
         "id": 37,
         "name": "string",
         "description": "This is for random",
-        "difficulty": "easy",
         "duration": 10,
         "source": "pre_loaded",
         "exercises": []

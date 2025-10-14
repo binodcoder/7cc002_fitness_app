@@ -16,7 +16,8 @@ class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
   WalkMediaRemoteDataSourceImpl({required this.client});
 
   Future<List<WalkMediaModel>> _getWalkMedias(String url) async {
-    final response = await client.get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
+    final response = await client
+        .get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       return walkMediaModelsFromJson(response.body);
     } else {
@@ -25,7 +26,8 @@ class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
   }
 
   Future<List<WalkMediaModel>> _getWalkMediaByWalkId(String url) async {
-    final response = await client.get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
+    final response = await client
+        .get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       return walkMediaModelsFromJson(response.body);
     } else if (response.statusCode == 404) {
@@ -49,7 +51,8 @@ class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
     }
   }
 
-  Future<int> _updateWalkMedia(String url, WalkMediaModel walkMediaModel) async {
+  Future<int> _updateWalkMedia(
+      String url, WalkMediaModel walkMediaModel) async {
     final response = await client.put(
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
@@ -75,7 +78,8 @@ class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
   }
 
   @override
-  Future<List<WalkMediaModel>> getWalkMedias() => _getWalkMedias("https://wlv-c4790072fbf0.herokuapp.com/api/v1/walk-media");
+  Future<List<WalkMediaModel>> getWalkMedias() => _getWalkMedias(
+      "https://wlv-c4790072fbf0.herokuapp.com/api/v1/walk-media");
 
   @override
   Future<int> addWalkMedia(WalkMediaModel walkMediaModel) => _addWalkMedia(
@@ -84,16 +88,18 @@ class WalkMediaRemoteDataSourceImpl implements WalkMediaRemoteDataSource {
       );
 
   @override
-  Future<int> updateWalkMedia(WalkMediaModel walkMediaModel) => _updateWalkMedia(
+  Future<int> updateWalkMedia(WalkMediaModel walkMediaModel) =>
+      _updateWalkMedia(
         "https://wlv-c4790072fbf0.herokuapp.com/api/v1/walk-media/${walkMediaModel.id}",
         walkMediaModel,
       );
 
   @override
-  Future<int> deleteWalkMedia(int userId) => _deleteWalkMedia("https://wlv-c4790072fbf0.herokuapp.com/api/v1/walk-media/$userId");
+  Future<int> deleteWalkMedia(int userId) => _deleteWalkMedia(
+      "https://wlv-c4790072fbf0.herokuapp.com/api/v1/walk-media/$userId");
 
   @override
   Future<List<WalkMediaModel>> getWalkMediaByWalkId(int walkId) =>
-      _getWalkMediaByWalkId("https://wlv-c4790072fbf0.herokuapp.com/api/v1/walk-media/walk-id/$walkId");
+      _getWalkMediaByWalkId(
+          "https://wlv-c4790072fbf0.herokuapp.com/api/v1/walk-media/walk-id/$walkId");
 }
-

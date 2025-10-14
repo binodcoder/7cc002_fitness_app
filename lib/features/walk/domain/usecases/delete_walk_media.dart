@@ -14,4 +14,3 @@ class DeleteWalkMedia implements UseCase<int, int> {
     return await walkMediaRepository.deleteWalkMedia(id);
   }
 }
-

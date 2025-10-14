@@ -22,7 +22,6 @@ void main() {
     id: 1,
     name: 'name',
     description: 'desc',
-    difficulty: 'easy',
     duration: 5,
     source: 'pre_loaded',
     exercises: [],
@@ -90,4 +89,3 @@ void main() {
     });
   });
 }
-

@@ -20,5 +20,13 @@ class LiveTraining extends Equatable {
   });
 
   @override
-  List<Object?> get props => [trainerId, title, description, trainingDate, startTime, endTime, streamUrl];
+  List<Object?> get props => [
+        trainerId,
+        title,
+        description,
+        trainingDate,
+        startTime,
+        endTime,
+        streamUrl
+      ];
 }

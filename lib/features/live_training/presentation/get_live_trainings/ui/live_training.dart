@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/features/live_training/presentation/add_update_live_training/ui/add_live_training.dart';
-import 'package:fitness_app/features/live_training/presentation/get_live_trainings/ui/live_training_details.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/app/app_router.dart';
 import 'package:fitness_app/core/navigation/routes.dart';
-
 import '../bloc/live_training_bloc.dart';
 import '../bloc/live_training_event.dart';
 import '../bloc/live_training_state.dart';
@@ -56,18 +53,7 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
             (value) => refreshPage(),
           );
         } else if (state is LiveTrainingNavigateToDetailPageActionState) {
-          if (!mounted) return;
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => LiveTrainingDetailsPage(
-                liveTraining: state.liveTraining,
-              ),
-              fullscreenDialog: true,
-            ),
-          ).then(
-            (value) => refreshPage(),
-          );
+          // Details navigation removed; keep on list page.
         } else if (state is LiveTrainingNavigateToUpdatePageActionState) {
           if (!mounted) return;
           Navigator.push(
@@ -132,34 +118,33 @@ class _LiveTrainingPageState extends State<LiveTrainingPage> {
               body: ListView.builder(
                 itemCount: successState.liveTrainings.length,
                 itemBuilder: (context, index) {
+                  final bool isTrainer =
+                      sharedPreferences.getString('role') == "trainer";
                   var liveTraining = successState.liveTrainings[index];
                   return LiveTrainingListTile(
                     title: liveTraining.title,
                     subtitle: liveTraining.description,
-                    onTap: () {
-                      if (!mounted) return;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              LiveTrainingDetailsPage(
-                            liveTraining: liveTraining,
-                          ),
-                        ),
-                      );
-                    },
-                    onEdit: () {
-                      liveTrainingBloc.add(
-                        LiveTrainingEditButtonClickedEvent(
-                            liveTraining: liveTraining),
-                      );
-                    },
-                    onDelete: () {
-                      liveTrainingBloc.add(
-                        LiveTrainingDeleteButtonClickedEvent(
-                            liveTraining: liveTraining),
-                      );
-                    },
+                    trainingDate: liveTraining.trainingDate,
+                    startTime: liveTraining.startTime,
+                    endTime: liveTraining.endTime,
+                    streamUrl: liveTraining.streamUrl,
+                    onTap: () {},
+                    onEdit: isTrainer
+                        ? () {
+                            liveTrainingBloc.add(
+                              LiveTrainingEditButtonClickedEvent(
+                                  liveTraining: liveTraining),
+                            );
+                          }
+                        : null,
+                    onDelete: isTrainer
+                        ? () {
+                            liveTrainingBloc.add(
+                              LiveTrainingDeleteButtonClickedEvent(
+                                  liveTraining: liveTraining),
+                            );
+                          }
+                        : null,
                   );
                 },
               ),

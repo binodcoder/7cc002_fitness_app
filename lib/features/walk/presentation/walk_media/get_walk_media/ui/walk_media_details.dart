@@ -42,4 +42,3 @@ class _WalkMediaDetailsPageState extends State<WalkMediaDetailsPage> {
     );
   }
 }
-

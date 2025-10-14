@@ -6,4 +6,3 @@ abstract class ProfileRepository {
   Future<Either<Failure, UserProfile?>> getCurrentProfile();
   Future<Either<Failure, int>> upsertProfile(UserProfile profile);
 }
-

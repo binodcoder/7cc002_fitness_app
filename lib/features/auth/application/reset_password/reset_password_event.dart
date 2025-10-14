@@ -16,4 +16,3 @@ class ResetPasswordSubmitted extends ResetPasswordEvent {
   @override
   List<Object?> get props => [email];
 }
-

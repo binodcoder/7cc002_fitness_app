@@ -65,14 +65,16 @@ class RoutineListTile extends StatelessWidget {
                 child: Text(
                   difficulty,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: diffColor, fontWeight: FontWeight.w600),
+                  style:
+                      TextStyle(color: diffColor, fontWeight: FontWeight.w600),
                 ),
               ),
               const SizedBox(height: 6),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.timer_outlined, size: 16, color: ColorManager.grey),
+                  const Icon(Icons.timer_outlined,
+                      size: 16, color: ColorManager.grey),
                   const SizedBox(width: 4),
                   Text(
                     '$durationMinutes min',

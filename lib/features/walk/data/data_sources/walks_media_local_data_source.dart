@@ -14,4 +14,3 @@ class WalkMediaLocalDataSourceImpl implements WalkMediaLocalDataSource {
   @override
   Future<List<WalkMediaModel>> getWalkMediaByWalkId(int walkId) async => [];
 }
-

@@ -55,7 +55,8 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
       } else {
         final dataNow = userSnap.data() ?? {};
         if (dataNow['id'] == null) {
-          await userDocRef.update({'id': DateTime.now().millisecondsSinceEpoch});
+          await userDocRef
+              .update({'id': DateTime.now().millisecondsSinceEpoch});
         }
         await userDocRef.update({'updatedAt': FieldValue.serverTimestamp()});
       }
@@ -80,8 +81,12 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
       final udata = (await userDocRef.get()).data() ?? {};
       return UserModel(
         id: (udata['id'] as num?)?.toInt(),
+        name: (udata['name'] as String?) ?? (user.displayName ?? ''),
         email: (udata['email'] as String?) ?? user.email ?? loginModel.email,
         password: loginModel.password,
+        institutionEmail: (udata['institutionEmail'] as String?) ?? '',
+        gender: (udata['gender'] as String?) ?? '',
+        age: (udata['age'] as num?)?.toInt() ?? 0,
         role: (udata['role'] as String?) ?? 'standard',
       );
     } on fb.FirebaseAuthException {
@@ -155,8 +160,12 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
       final udata = (await userDocRef.get()).data() ?? {};
       return UserModel(
         id: (udata['id'] as num?)?.toInt(),
+        name: (udata['name'] as String?) ?? (user.displayName ?? ''),
         email: (udata['email'] as String?) ?? user.email ?? '',
         password: '',
+        institutionEmail: (udata['institutionEmail'] as String?) ?? '',
+        gender: (udata['gender'] as String?) ?? '',
+        age: (udata['age'] as num?)?.toInt() ?? 0,
         role: (udata['role'] as String?) ?? 'standard',
       );
     } on fb.FirebaseAuthException {

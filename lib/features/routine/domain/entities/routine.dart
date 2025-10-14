@@ -5,7 +5,6 @@ class Routine extends Equatable {
   final int? id;
   final String name;
   final String description;
-  final String difficulty;
   final int duration;
   final String source;
   final List<Exercise> exercises;
@@ -14,7 +13,6 @@ class Routine extends Equatable {
     this.id,
     required this.name,
     required this.description,
-    required this.difficulty,
     required this.duration,
     required this.source,
     this.exercises = const [],
@@ -22,5 +20,5 @@ class Routine extends Equatable {
 
   @override
   List<Object?> get props =>
-      [id, name, description, difficulty, duration, source, exercises];
+      [id, name, description, duration, source, exercises];
 }

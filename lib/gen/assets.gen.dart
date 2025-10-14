@@ -24,10 +24,12 @@ class $AssetsImagesGen {
   AssetGenImage get appicon => const AssetGenImage('assets/images/appicon.png');
 
   /// File path: assets/images/appicon1.png
-  AssetGenImage get appicon1 => const AssetGenImage('assets/images/appicon1.png');
+  AssetGenImage get appicon1 =>
+      const AssetGenImage('assets/images/appicon1.png');
 
   /// File path: assets/images/appstore.png
-  AssetGenImage get appstore => const AssetGenImage('assets/images/appstore.png');
+  AssetGenImage get appstore =>
+      const AssetGenImage('assets/images/appstore.png');
 
   /// File path: assets/images/exercise.svg
   String get exercise => 'assets/images/exercise.svg';
@@ -84,7 +86,8 @@ class $AssetsImagesGen {
   AssetGenImage get splash => const AssetGenImage('assets/images/splash.png');
 
   /// File path: assets/images/splash_logo.png
-  AssetGenImage get splashLogo => const AssetGenImage('assets/images/splash_logo.png');
+  AssetGenImage get splashLogo =>
+      const AssetGenImage('assets/images/splash_logo.png');
 
   /// List of all assets
   List<dynamic> get values => [

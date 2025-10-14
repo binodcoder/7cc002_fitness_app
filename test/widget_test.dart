@@ -49,6 +49,9 @@ class _FakeAuthRepository implements AuthRepository {
           LoginCredentials loginCredentials) async =>
       Left(ServerFailure());
   @override
+  Future<Either<Failure, user_entity.User>>? signInWithGoogle() async =>
+      Left(ServerFailure());
+  @override
   Future<Either<Failure, int>>? addUser(user_entity.User user) async =>
       const Right(1);
   @override
@@ -80,7 +83,9 @@ void main() {
     }
     if (!di.sl.isRegistered<LoginBloc>()) {
       di.sl.registerFactory<LoginBloc>(
-        () => LoginBloc(login: Login(_FakeAuthRepository())),
+        () => LoginBloc(
+          login: Login(_FakeAuthRepository()),
+        ),
       );
     }
     if (!di.sl.isRegistered<AuthBloc>()) {

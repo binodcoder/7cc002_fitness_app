@@ -183,7 +183,8 @@ class _WalkFormPageState extends State<WalkFormPage> {
                                 contentPadding: EdgeInsets.zero,
                                 dense: true,
                                 leading: Icon(Icons.place,
-                                    color: Theme.of(context).colorScheme.primary),
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
                                 title: const Text('Start'),
                                 subtitle: Text(
                                   startLocationController.text.isEmpty
@@ -199,8 +200,8 @@ class _WalkFormPageState extends State<WalkFormPage> {
                               ListTile(
                                 contentPadding: EdgeInsets.zero,
                                 dense: true,
-                                leading:
-                                    Icon(Icons.flag, color: Theme.of(context).colorScheme.error),
+                                leading: Icon(Icons.flag,
+                                    color: Theme.of(context).colorScheme.error),
                                 title: const Text('End'),
                                 subtitle: Text(
                                   endLocationController.text.isEmpty

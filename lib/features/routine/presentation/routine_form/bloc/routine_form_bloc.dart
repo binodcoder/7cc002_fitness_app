@@ -77,12 +77,20 @@ class RoutineFormBloc extends Bloc<RoutineFormEvent, RoutineFormState> {
       RoutineFormSaveButtonPressEvent event,
       Emitter<RoutineFormState> emit) async {
     emit(const RoutineFormLoadingState());
-    final result = await addRoutine(event.newRoutine);
-    result!.fold((failure) {
+    try {
+      final result = await addRoutine(event.newRoutine);
+      if (result == null) {
+        emit(const RoutineFormErrorState());
+        return;
+      }
+      result.fold((failure) {
+        emit(const RoutineFormErrorState());
+      }, (ok) {
+        emit(const RoutineFormSavedActionState());
+      });
+    } catch (_) {
       emit(const RoutineFormErrorState());
-    }, (result) {
-      emit(const RoutineFormSavedActionState());
-    });
+    }
   }
 
   FutureOr<void> routineAddInitialEvent(
@@ -94,12 +102,20 @@ class RoutineFormBloc extends Bloc<RoutineFormEvent, RoutineFormState> {
       RoutineFormUpdateButtonPressEvent event,
       Emitter<RoutineFormState> emit) async {
     emit(const RoutineFormLoadingState());
-    final result = await updateRoutine(event.updatedRoutine);
-    result!.fold((failure) {
+    try {
+      final result = await updateRoutine(event.updatedRoutine);
+      if (result == null) {
+        emit(const RoutineFormErrorState());
+        return;
+      }
+      result.fold((failure) {
+        emit(const RoutineFormErrorState());
+      }, (ok) {
+        emit(const RoutineFormUpdatedActionState());
+      });
+    } catch (_) {
       emit(const RoutineFormErrorState());
-    }, (result) {
-      emit(const RoutineFormUpdatedActionState());
-    });
+    }
   }
 
   FutureOr<void> routineAddReadyToUpdateEvent(

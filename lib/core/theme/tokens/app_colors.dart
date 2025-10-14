@@ -8,7 +8,8 @@ class AppColors {
   // Primary = healthy green, Secondary = calm blue
   static const Color primary = Color(0xFF16A34A); // green-600
   static const Color darkPrimary = Color(0xFF15803D); // green-700
-  static const Color primaryOpacity70 = Color(0xB316A34A); // 70% alpha of primary
+  static const Color primaryOpacity70 =
+      Color(0xB316A34A); // 70% alpha of primary
 
   static const Color secondary = Color(0xFF2563EB); // blue-600
   static const Color primaryContainer = Color(0xFF22C55E); // green-500

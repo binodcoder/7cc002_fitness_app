@@ -37,4 +37,3 @@ class WalkMediaTileNavigateEvent extends WalkMediaEvent {
   @override
   List<Object?> get props => [walkMedia];
 }
-

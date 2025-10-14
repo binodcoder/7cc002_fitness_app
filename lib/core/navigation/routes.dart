@@ -11,7 +11,6 @@ class Routes {
   static const String routineDetails = '/routineDetails';
   static const String addRoutine = '/addRoutine';
   static const String liveTraining = '/liveTraining';
-  static const String liveTrainingDetails = '/liveTrainingDetails';
   static const String addLiveTraining = '/addLiveTraining';
   static const String call = '/call';
   static const String calendar = '/calendar';

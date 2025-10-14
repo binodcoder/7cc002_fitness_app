@@ -44,4 +44,3 @@ class ImagePickerServiceImpl implements ImagePickerService {
     return _saveImage(bytes);
   }
 }
-

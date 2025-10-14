@@ -28,7 +28,8 @@ class CalendarLoadedSuccessState extends CalendarState {
   const CalendarLoadedSuccessState({required this.appointments});
 
   CalendarLoadedSuccessState copyWith({List<Appointment>? appointments}) {
-    return CalendarLoadedSuccessState(appointments: appointments ?? this.appointments);
+    return CalendarLoadedSuccessState(
+        appointments: appointments ?? this.appointments);
   }
 
   @override
@@ -91,4 +92,3 @@ class CalendarItemDeletedActionState extends CalendarActionState {
 class CalendarItemsDeletedActionState extends CalendarActionState {
   const CalendarItemsDeletedActionState();
 }
-

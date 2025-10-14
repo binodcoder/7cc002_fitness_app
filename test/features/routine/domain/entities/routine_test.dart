@@ -6,7 +6,6 @@ void main() {
     id: 1,
     name: 'n',
     description: 'd',
-    difficulty: 'easy',
     duration: 10,
     source: 's',
   );
@@ -14,7 +13,6 @@ void main() {
     id: 1,
     name: 'n',
     description: 'd',
-    difficulty: 'easy',
     duration: 10,
     source: 's',
   );
@@ -22,7 +20,6 @@ void main() {
     id: 2,
     name: 'n',
     description: 'd',
-    difficulty: 'easy',
     duration: 10,
     source: 's',
   );
@@ -35,4 +32,3 @@ void main() {
     expect(a == c, isFalse);
   });
 }
-

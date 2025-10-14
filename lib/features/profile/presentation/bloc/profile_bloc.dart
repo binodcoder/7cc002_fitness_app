@@ -10,7 +10,8 @@ part 'profile_event.dart';
 part 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
-  ProfileBloc({required GetProfile getProfile, required UpsertProfile upsertProfile})
+  ProfileBloc(
+      {required GetProfile getProfile, required UpsertProfile upsertProfile})
       : _getProfile = getProfile,
         _upsertProfile = upsertProfile,
         super(const ProfileState()) {
@@ -21,7 +22,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final GetProfile _getProfile;
   final UpsertProfile _upsertProfile;
 
-  FutureOr<void> _onStarted(ProfileStarted event, Emitter<ProfileState> emit) async {
+  FutureOr<void> _onStarted(
+      ProfileStarted event, Emitter<ProfileState> emit) async {
     emit(state.copyWith(status: ProfileStatus.loading, clearError: true));
     final res = await _getProfile();
     res.fold(
@@ -37,7 +39,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     );
   }
 
-  FutureOr<void> _onSaved(ProfileSaved event, Emitter<ProfileState> emit) async {
+  FutureOr<void> _onSaved(
+      ProfileSaved event, Emitter<ProfileState> emit) async {
     emit(state.copyWith(status: ProfileStatus.saving, clearError: true));
     final res = await _upsertProfile(event.profile);
     res.fold(
@@ -45,8 +48,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         status: ProfileStatus.failure,
         errorMessage: mapFailureToMessage(failure),
       )),
-      (_) => emit(state.copyWith(status: ProfileStatus.saved, clearError: true)),
+      (_) =>
+          emit(state.copyWith(status: ProfileStatus.saved, clearError: true)),
     );
   }
 }
-

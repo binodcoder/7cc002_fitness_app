@@ -32,4 +32,3 @@ class AppointmentUpdateRequested extends AppointmentFormEvent {
   @override
   List<Object?> get props => [appointment];
 }
-

@@ -108,8 +108,7 @@ class FirebaseWalkRemoteDataSource implements WalkRemoteDataSource {
   Future<int> updateWalk(WalkModel walkModel) async {
     try {
       if (walkModel.id == null) throw ServerException();
-      final qs =
-          await _col.where('id', isEqualTo: walkModel.id).limit(1).get();
+      final qs = await _col.where('id', isEqualTo: walkModel.id).limit(1).get();
       if (qs.docs.isEmpty) throw ServerException();
       await qs.docs.first.reference.update({
         'routeData': walkModel.routeData,
@@ -154,8 +153,8 @@ class FirebaseWalkRemoteDataSource implements WalkRemoteDataSource {
       final ref = qs.docs.first.reference;
       final snap = await ref.get();
       final current = (snap.data()?['participants'] as List?) ?? const [];
-      final already = current.any((e) =>
-          (e is Map && (e['id'] as num?)?.toInt() == participantId));
+      final already = current.any(
+          (e) => (e is Map && (e['id'] as num?)?.toInt() == participantId));
       if (already) return 1;
 
       // Try enrich participant from users collection
@@ -181,7 +180,8 @@ class FirebaseWalkRemoteDataSource implements WalkRemoteDataSource {
         String gender = (u['gender'] ?? '').toString();
         int age = (u['age'] as num?)?.toInt() ?? 0;
         try {
-          final profile = await _firestore.collection('profiles').doc(doc.id).get();
+          final profile =
+              await _firestore.collection('profiles').doc(doc.id).get();
           final pdata = profile.data();
           if (pdata != null) {
             name = (pdata['name'] ?? name).toString();

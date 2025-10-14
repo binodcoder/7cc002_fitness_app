@@ -17,14 +17,14 @@ class ExerciseListTile extends StatelessWidget {
   });
 
   Color _difficultyColor(BuildContext context) {
-    switch (exerciseModel.difficulty.toLowerCase()) {
-      case 'easy':
+    switch (exerciseModel.difficulty) {
+      case entity.ExerciseDifficulty.easy:
         return Colors.green.shade600;
-      case 'medium':
+      case entity.ExerciseDifficulty.medium:
         return Colors.orange.shade700;
-      case 'hard':
+      case entity.ExerciseDifficulty.hard:
         return Colors.red.shade700;
-      default:
+      case entity.ExerciseDifficulty.unknown:
         return Theme.of(context).colorScheme.primary;
     }
   }
@@ -35,8 +35,10 @@ class ExerciseListTile extends StatelessWidget {
     // As requested: do not use a leading icon or image
     return AppSlidableListTile(
       title: exerciseModel.name,
+      titleStyle: Theme.of(context).textTheme.titleMedium,
       subtitle:
           '${exerciseModel.equipment} • ${exerciseModel.description}'.trim(),
+      subtitleStyle: Theme.of(context).textTheme.bodySmall,
       trailing: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 160),
         child: FittedBox(
@@ -54,7 +56,7 @@ class ExerciseListTile extends StatelessWidget {
                   border: Border.all(color: diffColor.withOpacity(0.3)),
                 ),
                 child: Text(
-                  exerciseModel.difficulty,
+                  exerciseModel.difficulty.label,
                   overflow: TextOverflow.ellipsis,
                   style:
                       TextStyle(color: diffColor, fontWeight: FontWeight.w600),

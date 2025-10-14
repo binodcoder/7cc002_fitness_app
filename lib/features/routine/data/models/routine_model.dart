@@ -18,7 +18,6 @@ class RoutineModel extends Routine {
     super.id,
     required super.name,
     required super.description,
-    required super.difficulty,
     required super.duration,
     required super.source,
     List<ExerciseModel> exercises = const [],
@@ -28,7 +27,6 @@ class RoutineModel extends Routine {
         id: json["id"],
         name: json["name"],
         description: json["description"],
-        difficulty: json["difficulty"],
         // Accept numeric duration as int or double in payloads
         duration: (json["duration"] as num).toInt(),
         source: json["source"],
@@ -42,7 +40,6 @@ class RoutineModel extends Routine {
         id: e.id,
         name: e.name,
         description: e.description,
-        difficulty: e.difficulty,
         duration: e.duration,
         source: e.source,
         exercises: e.exercises
@@ -55,7 +52,6 @@ class RoutineModel extends Routine {
         "id": id,
         "name": name,
         "description": description,
-        "difficulty": difficulty,
         "duration": duration,
         "source": source,
         "exercises":

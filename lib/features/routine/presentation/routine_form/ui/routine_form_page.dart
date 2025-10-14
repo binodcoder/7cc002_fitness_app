@@ -14,7 +14,8 @@ import 'package:fitness_app/core/widgets/custom_text_form_field.dart';
 import '../bloc/routine_form_bloc.dart';
 import '../bloc/routine_form_event.dart';
 import '../bloc/routine_form_state.dart';
-import 'package:fitness_app/features/routine/domain/entities/exercise.dart' as entity;
+import 'package:fitness_app/features/routine/domain/entities/exercise.dart'
+    as entity;
 
 class RoutineFormPage extends StatefulWidget {
   const RoutineFormPage({
@@ -31,17 +32,16 @@ class RoutineFormPage extends StatefulWidget {
 class _RoutineFormPageState extends State<RoutineFormPage> {
   final TextEditingController routineNameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController difficultyController = TextEditingController();
   final TextEditingController durationController = TextEditingController();
   final TextEditingController sourceController = TextEditingController();
   final List<_ExerciseItemData> _exerciseItems = [];
+  bool _loadingShown = false;
 
   @override
   void initState() {
     if (widget.routine != null) {
       routineNameController.text = widget.routine!.name;
       descriptionController.text = widget.routine!.description;
-      difficultyController.text = widget.routine!.difficulty;
       durationController.text = widget.routine!.duration.toString();
       sourceController.text = widget.routine!.source;
       // Prefill exercises when editing an existing routine
@@ -62,7 +62,6 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
   void dispose() {
     routineNameController.dispose();
     descriptionController.dispose();
-    difficultyController.dispose();
     durationController.dispose();
     sourceController.dispose();
     for (final e in _exerciseItems) {
@@ -87,20 +86,43 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
       buildWhen: (previous, current) => current is! RoutineFormActionState,
       listener: (context, state) {
         if (state is RoutineFormLoadingState) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return const Center(child: CircularProgressIndicator());
-            },
-          );
+          if (!_loadingShown) {
+            _loadingShown = true;
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return const Center(child: CircularProgressIndicator());
+              },
+            );
+          }
         } else if (state is RoutineFormSavedActionState) {
           if (!mounted) return;
-          Navigator.pop(context);
-          Navigator.pop(context);
+          // Defer pops until after current frame to avoid navigator lock
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            if (_loadingShown &&
+                Navigator.of(context, rootNavigator: true).canPop()) {
+              Navigator.of(context, rootNavigator: true).pop(); // close dialog
+            }
+            _loadingShown = false;
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop(); // close form
+            }
+          });
         } else if (state is RoutineFormUpdatedActionState) {
           if (!mounted) return;
-          Navigator.pop(context);
-          Navigator.pop(context);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            if (_loadingShown &&
+                Navigator.of(context, rootNavigator: true).canPop()) {
+              Navigator.of(context, rootNavigator: true).pop(); // close dialog
+            }
+            _loadingShown = false;
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop(); // close form
+            }
+          });
         } else if (state is RoutineFormErrorState) {
           Fluttertoast.cancel();
           Fluttertoast.showToast(
@@ -110,7 +132,15 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
             backgroundColor: ColorManager.error,
           );
           if (!mounted) return;
-          Navigator.pop(context);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            if (_loadingShown &&
+                Navigator.of(context, rootNavigator: true).canPop()) {
+              Navigator.of(context, rootNavigator: true)
+                  .pop(); // close dialog if open
+            }
+            _loadingShown = false;
+          });
         }
       },
       builder: (context, state) {
@@ -167,13 +197,7 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
                       SizedBox(
                         height: AppHeight.h10,
                       ),
-                      CustomTextFormField(
-                        label: 'Difficulty',
-                        controller: difficultyController,
-                        hint: 'Difficulty',
-                        validator: (v) =>
-                            (v == null || v.isEmpty) ? '*Required' : null,
-                      ),
+                      const SizedBox.shrink(),
                       SizedBox(
                         height: AppHeight.h10,
                       ),
@@ -196,41 +220,43 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
                             (v == null || v.isEmpty) ? '*Required' : null,
                       ),
                       SizedBox(height: AppHeight.h20),
-                      Text(
-                        'Exercises',
-                        style: getRegularStyle(
-                          fontSize: FontSize.s16,
-                          color: ColorManager.black,
+                      if (widget.routine != null) ...[
+                        Text(
+                          'Exercises',
+                          style: getRegularStyle(
+                            fontSize: FontSize.s16,
+                            color: ColorManager.black,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: AppHeight.h10),
-                      if (_exerciseItems.isEmpty)
-                        const Text(
-                          'No exercises added yet. Tap "+ Add Exercise".',
-                          style: TextStyle(color: ColorManager.grey),
+                        SizedBox(height: AppHeight.h10),
+                        if (_exerciseItems.isEmpty)
+                          const Text(
+                            'No exercises added yet. Tap "+ Add Exercise".',
+                            style: TextStyle(color: ColorManager.grey),
+                          ),
+                        for (int i = 0; i < _exerciseItems.length; i++)
+                          _ExerciseFormCard(
+                            key: ValueKey(_exerciseItems[i].key),
+                            index: i,
+                            data: _exerciseItems[i],
+                            onRemove: () {
+                              setState(() => _exerciseItems.removeAt(i));
+                            },
+                          ),
+                        SizedBox(height: AppHeight.h10),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: OutlinedButton.icon(
+                            icon: const Icon(Icons.add),
+                            label: const Text('Add Exercise'),
+                            onPressed: () {
+                              setState(() {
+                                _exerciseItems.add(_ExerciseItemData());
+                              });
+                            },
+                          ),
                         ),
-                      for (int i = 0; i < _exerciseItems.length; i++)
-                        _ExerciseFormCard(
-                          key: ValueKey(_exerciseItems[i].key),
-                          index: i,
-                          data: _exerciseItems[i],
-                          onRemove: () {
-                            setState(() => _exerciseItems.removeAt(i));
-                          },
-                        ),
-                      SizedBox(height: AppHeight.h10),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: OutlinedButton.icon(
-                          icon: const Icon(Icons.add),
-                          label: const Text('Add Exercise'),
-                          onPressed: () {
-                            setState(() {
-                              _exerciseItems.add(_ExerciseItemData());
-                            });
-                          },
-                        ),
-                      ),
+                      ],
                       SizedBox(
                         height: AppHeight.h30,
                       ),
@@ -247,7 +273,7 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
                         onPressed: () async {
                           var routineName = routineNameController.text;
                           var description = descriptionController.text;
-                          var difficulty = difficultyController.text;
+                          // routine difficulty removed
                           var duration = durationController.text;
                           var source = sourceController.text;
                           final exercises =
@@ -258,7 +284,6 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
                                 id: widget.routine!.id,
                                 name: routineName,
                                 description: description,
-                                difficulty: difficulty,
                                 duration: int.parse(duration),
                                 source: source,
                                 exercises: exercises,
@@ -270,7 +295,6 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
                               var newRoutine = Routine(
                                 name: routineName,
                                 description: description,
-                                difficulty: difficulty,
                                 duration: int.parse(duration),
                                 source: source,
                                 exercises: exercises,
@@ -317,7 +341,7 @@ class _ExerciseItemData {
     d.name.text = ex.name;
     d.description.text = ex.description;
     d.targetMuscleGroups.text = ex.targetMuscleGroups;
-    d.difficulty.text = ex.difficulty;
+    d.difficulty.text = ex.difficulty.name;
     d.equipment.text = ex.equipment;
     d.imageUrl.text = ex.imageUrl;
     d.videoUrl.text = ex.videoUrl ?? '';
@@ -331,7 +355,7 @@ class _ExerciseItemData {
       name: name.text.trim(),
       description: description.text.trim(),
       targetMuscleGroups: targetMuscleGroups.text.trim(),
-      difficulty: difficulty.text.trim(),
+      difficulty: entity.ExerciseDifficultyX.fromString(difficulty.text.trim()),
       equipment: equipment.text.trim(),
       imageUrl: imageUrl.text.trim(),
       videoUrl: videoUrl.text.trim().isEmpty ? null : videoUrl.text.trim(),
@@ -366,7 +390,8 @@ class _ExerciseFormCard extends StatelessWidget {
                 Text('Exercise #${index + 1}',
                     style: const TextStyle(fontWeight: FontWeight.w600)),
                 IconButton(
-                  icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                  icon:
+                      const Icon(Icons.delete_outline, color: Colors.redAccent),
                   onPressed: onRemove,
                   tooltip: 'Remove exercise',
                 )
@@ -392,10 +417,32 @@ class _ExerciseFormCard extends StatelessWidget {
               hint: 'e.g. Chest, Triceps',
             ),
             const SizedBox(height: 8),
-            CustomTextFormField(
-              label: 'Difficulty',
-              controller: data.difficulty,
-              hint: 'Easy / Medium / Hard',
+            DropdownButtonFormField<entity.ExerciseDifficulty>(
+              initialValue: (entity.ExerciseDifficultyX.fromString(
+                          data.difficulty.text) ==
+                      entity.ExerciseDifficulty.unknown
+                  ? null
+                  : entity.ExerciseDifficultyX.fromString(
+                      data.difficulty.text)),
+              decoration: const InputDecoration(
+                labelText: 'Difficulty',
+              ),
+              items: const [
+                entity.ExerciseDifficulty.easy,
+                entity.ExerciseDifficulty.medium,
+                entity.ExerciseDifficulty.hard,
+              ]
+                  .map((d) => DropdownMenuItem(
+                        value: d,
+                        child: Text(d.label),
+                      ))
+                  .toList(),
+              onChanged: (val) {
+                if (val != null) {
+                  data.difficulty.text = val.name; // store lowercase
+                }
+              },
+              validator: (val) => val == null ? '*Required' : null,
             ),
             const SizedBox(height: 8),
             CustomTextFormField(

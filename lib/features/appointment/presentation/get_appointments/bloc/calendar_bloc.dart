@@ -64,7 +64,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
   FutureOr<void> _onTileNavigate(
       CalendarTileNavigate event, Emitter<CalendarState> emit) {
-    emit(CalendarNavigateToDetailPageActionState(appointment: event.appointment));
+    emit(CalendarNavigateToDetailPageActionState(
+        appointment: event.appointment));
   }
 
   FutureOr<void> _onDaySelected(
@@ -75,4 +76,3 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
             .toList()));
   }
 }
-

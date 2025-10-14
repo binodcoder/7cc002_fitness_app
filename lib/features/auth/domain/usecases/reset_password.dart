@@ -12,4 +12,3 @@ class ResetPassword implements UseCase<int, String> {
     return await repository.resetPassword(email);
   }
 }
-

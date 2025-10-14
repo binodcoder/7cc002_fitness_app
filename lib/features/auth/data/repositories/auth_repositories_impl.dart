@@ -9,7 +9,7 @@ import 'package:fitness_app/core/errors/failures.dart';
 import 'package:fitness_app/features/auth/domain/repositories/auth_repositories.dart';
 import 'package:fitness_app/features/auth/data/datasources/auth_local_data_sources.dart';
 
-class AuthRepositoriesImpl implements AuthRepository {
+class AuthRepositoriesImpl implements AuthRepository, GoogleAuthRepository {
   final AuthLocalDataSources authLocalDataSources;
   final AuthDataSource authRemoteDataSource;
   AuthRepositoriesImpl({

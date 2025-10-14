@@ -23,7 +23,6 @@ class RoutinesLocalDataSourceImpl implements RoutinesLocalDataSource {
         id: m['id'] as int?,
         name: m['name'] as String,
         description: m['description'] as String,
-        difficulty: m['difficulty'] as String,
         duration: (m['duration'] as num).toInt(),
         source: m['source'] as String,
       );
@@ -38,7 +37,6 @@ class RoutinesLocalDataSourceImpl implements RoutinesLocalDataSource {
         'id': routineModel.id,
         'name': routineModel.name,
         'description': routineModel.description,
-        'difficulty': routineModel.difficulty,
         'duration': routineModel.duration,
         'source': routineModel.source,
       },
@@ -56,7 +54,6 @@ class RoutinesLocalDataSourceImpl implements RoutinesLocalDataSource {
           'id': r.id,
           'name': r.name,
           'description': r.description,
-          'difficulty': r.difficulty,
           'duration': r.duration,
           'source': r.source,
         },

@@ -6,9 +6,11 @@ import 'dart:convert';
 import 'package:fitness_app/features/walk/domain/entities/walk.dart' as entity;
 import 'package:intl/intl.dart';
 
-List<WalkModel> walkModelsFromJson(String str) => List<WalkModel>.from(json.decode(str).map((x) => WalkModel.fromJson(x)));
+List<WalkModel> walkModelsFromJson(String str) =>
+    List<WalkModel>.from(json.decode(str).map((x) => WalkModel.fromJson(x)));
 
-String walkModelsToJson(List<WalkModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String walkModelsToJson(List<WalkModel> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 WalkModel walkModelFromJson(String str) => WalkModel.fromJson(json.decode(str));
 
@@ -33,7 +35,8 @@ class WalkModel extends entity.Walk {
         startTime: json["startTime"],
         startLocation: json["startLocation"],
         participants: json["participants"] != null
-            ? List<ParticipantModel>.from(json["participants"].map((x) => ParticipantModel.fromJson(x)))
+            ? List<ParticipantModel>.from(
+                json["participants"].map((x) => ParticipantModel.fromJson(x)))
             : const [],
       );
 
@@ -44,7 +47,10 @@ class WalkModel extends entity.Walk {
         date: e.date,
         startTime: e.startTime,
         startLocation: e.startLocation,
-        participants: e.participants.map((p) => p is ParticipantModel ? p : ParticipantModel.fromEntity(p)).toList(),
+        participants: e.participants
+            .map((p) =>
+                p is ParticipantModel ? p : ParticipantModel.fromEntity(p))
+            .toList(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -54,7 +60,8 @@ class WalkModel extends entity.Walk {
         "date": DateFormat("yyyy-MM-dd").format(date),
         "startTime": startTime,
         "startLocation": startLocation,
-        "participants": participants.map((x) => (x as ParticipantModel).toJson()).toList(),
+        "participants":
+            participants.map((x) => (x as ParticipantModel).toJson()).toList(),
       };
 }
 
@@ -70,7 +77,8 @@ class ParticipantModel extends entity.Participant {
     required super.role,
   });
 
-  factory ParticipantModel.fromJson(Map<String, dynamic> json) => ParticipantModel(
+  factory ParticipantModel.fromJson(Map<String, dynamic> json) =>
+      ParticipantModel(
         id: json["id"],
         name: json["name"],
         email: json["email"],

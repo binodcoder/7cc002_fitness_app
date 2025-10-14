@@ -62,4 +62,3 @@ class FirebaseProfileRemoteDataSource implements ProfileRemoteDataSource {
     }
   }
 }
-

@@ -14,7 +14,8 @@ class SyncDataEntity extends Equatable {
   final CompanyEntity company;
   final String message;
 
-  const SyncDataEntity({required this.trainers, required this.company, required this.message});
+  const SyncDataEntity(
+      {required this.trainers, required this.company, required this.message});
 
   @override
   List<Object?> get props => [trainers, company, message];
@@ -27,7 +28,12 @@ class CompanyEntity extends Equatable {
   final String phone;
   final String address;
 
-  const CompanyEntity({required this.id, required this.name, required this.email, required this.phone, required this.address});
+  const CompanyEntity(
+      {required this.id,
+      required this.name,
+      required this.email,
+      required this.phone,
+      required this.address});
 
   @override
   List<Object?> get props => [id, name, email, phone, address];
@@ -55,5 +61,6 @@ class TrainerEntity extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, name, email, password, institutionEmail, gender, age, role];
+  List<Object?> get props =>
+      [id, name, email, password, institutionEmail, gender, age, role];
 }

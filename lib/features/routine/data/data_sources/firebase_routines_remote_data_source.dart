@@ -46,7 +46,6 @@ class FirebaseRoutineRemoteDataSourceImpl implements RoutineDataSource {
           id: (data['id'] as num?)?.toInt(),
           name: (data['name'] as String?) ?? '',
           description: (data['description'] as String?) ?? '',
-          difficulty: (data['difficulty'] as String?) ?? '',
           duration: (data['duration'] as num?)?.toInt() ?? 0,
           source: (data['source'] as String?) ?? '',
           exercises: exercises,
@@ -61,14 +60,14 @@ class FirebaseRoutineRemoteDataSourceImpl implements RoutineDataSource {
   Future<int> addRoutine(RoutineModel routineModel) async {
     try {
       final id = routineModel.id ?? DateTime.now().millisecondsSinceEpoch;
-      final exercises = _exerciseMapsFromModels(
-          routineModel.exercises.map((e) => e is ExerciseModel ? e : ExerciseModel.fromEntity(e)).toList());
+      final exercises = _exerciseMapsFromModels(routineModel.exercises
+          .map((e) => e is ExerciseModel ? e : ExerciseModel.fromEntity(e))
+          .toList());
       await _col.add({
         'id': id,
         'ownerUid': _auth.currentUser?.uid,
         'name': routineModel.name,
         'description': routineModel.description,
-        'difficulty': routineModel.difficulty,
         'duration': routineModel.duration,
         'source': routineModel.source,
         'exercises': exercises,
@@ -88,12 +87,12 @@ class FirebaseRoutineRemoteDataSourceImpl implements RoutineDataSource {
       final qs =
           await _col.where('id', isEqualTo: routineModel.id).limit(1).get();
       if (qs.docs.isEmpty) throw ServerException();
-      final exercises = _exerciseMapsFromModels(
-          routineModel.exercises.map((e) => e is ExerciseModel ? e : ExerciseModel.fromEntity(e)).toList());
+      final exercises = _exerciseMapsFromModels(routineModel.exercises
+          .map((e) => e is ExerciseModel ? e : ExerciseModel.fromEntity(e))
+          .toList());
       await qs.docs.first.reference.update({
         'name': routineModel.name,
         'description': routineModel.description,
-        'difficulty': routineModel.difficulty,
         'duration': routineModel.duration,
         'source': routineModel.source,
         'exercises': exercises,

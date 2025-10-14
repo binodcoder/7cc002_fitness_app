@@ -24,14 +24,12 @@ class _InMemoryDB {
         id: 1,
         name: 'Full Body Beginner',
         description: 'A simple full body routine',
-        difficulty: 'Easy',
         duration: 30,
         source: 'App'),
     const Routine(
         id: 2,
         name: 'Upper Body Blast',
         description: 'Focus on arms and chest',
-        difficulty: 'Medium',
         duration: 45,
         source: 'App'),
   ];
@@ -91,7 +89,6 @@ class FakeRoutineRepository implements RoutineRepository {
         id: id,
         name: routine.name,
         description: routine.description,
-        difficulty: routine.difficulty,
         duration: routine.duration,
         source: routine.source));
     return const Right(1);

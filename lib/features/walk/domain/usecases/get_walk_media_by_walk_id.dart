@@ -15,4 +15,3 @@ class GetWalkMediaByWalkId implements UseCase<List<WalkMedia>, int> {
     return await walkMediaRepository.getWalkMediaByWalkId(walkId);
   }
 }
-
