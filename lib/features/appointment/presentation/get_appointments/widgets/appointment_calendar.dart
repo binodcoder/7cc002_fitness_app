@@ -36,7 +36,7 @@ class AppointmentCalendar extends StatelessWidget {
         color: ColorManager.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+          color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 10,
             offset: const Offset(0, 6),
           ),
@@ -129,7 +129,7 @@ class AppointmentCalendar extends StatelessWidget {
                           horizontal: 6, vertical: 2),
                       margin: const EdgeInsets.only(right: 2, bottom: 2),
                       decoration: BoxDecoration(
-                        color: scheme.secondary.withOpacity(0.9),
+                        color: scheme.secondary.withValues(alpha: 0.9),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(

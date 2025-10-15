@@ -42,8 +42,6 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
   final TextEditingController _remarksController = TextEditingController();
   TrainerEntity? _selectedTrainer;
   DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedStartTime = const TimeOfDay(hour: 00, minute: 00);
-  TimeOfDay _selectedEndTime = const TimeOfDay(hour: 00, minute: 00);
   final DateFormat _dateFmt = DateFormat('yyyy-MM-dd');
   final _formKey = GlobalKey<FormState>();
   final AppointmentFormBloc formBloc = sl<AppointmentFormBloc>();
@@ -75,66 +73,10 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
     _endTimeController.text = '';
   }
 
-  void _pickDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now().add(const Duration(days: 3650)),
-    );
-    if (pickedDate != null && pickedDate != _selectedDate) {
-      setState(() {
-        _selectedDate = pickedDate;
-        _dateController.text = _dateFmt.format(_selectedDate);
-      });
-      _loadSlots();
-    }
-  }
+  // Removed legacy date/time pickers; the dialog now uses
+  // availability-based slot selection and normalized inputs.
 
-  Future<void> _selectStartTime(BuildContext context) async {
-    final TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
-        initialTime: _selectedStartTime,
-        builder: (BuildContext context, Widget? child) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-            child: child!,
-          );
-        });
-
-    if (pickedTime != null && pickedTime != _selectedStartTime) {
-      setState(() {
-        _selectedStartTime = pickedTime;
-        _startTimeController.text = _formatTimeOfDay(_selectedStartTime);
-      });
-    }
-  }
-
-  Future<void> _selectEndTime(BuildContext context) async {
-    final TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
-        initialTime: _selectedEndTime,
-        builder: (BuildContext context, Widget? child) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-            child: child!,
-          );
-        });
-
-    if (pickedTime != null && pickedTime != _selectedEndTime) {
-      setState(() {
-        _selectedEndTime = pickedTime;
-        _endTimeController.text = _formatTimeOfDay(_selectedEndTime);
-      });
-    }
-  }
-
-  String _formatTimeOfDay(TimeOfDay timeOfDay) {
-    final hours = timeOfDay.hour.toString().padLeft(2, '0');
-    final minutes = timeOfDay.minute.toString().padLeft(2, '0');
-    const seconds = '00';
-    return '$hours:$minutes:$seconds';
-  }
+  // Legacy time formatting helpers removed; inputs are normalized as HH:mm[:ss]
 
   @override
   void initState() {
@@ -149,8 +91,7 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
       _initializeDefaults();
     }
     formBloc.add(const AppointmentFormInitialized());
-    // initial slot load
-    _loadSlots();
+    // Slots will load after trainer selection is resolved in builder
   }
 
   Future<void> _loadSlots() async {
@@ -190,14 +131,7 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
     _selectedSlotId = s.id;
     _startTimeController.text = s.startTime;
     _endTimeController.text = s.endTime;
-    TimeOfDay _toTod(String t) {
-      final p = t.split(':');
-      final h = int.tryParse(p[0]) ?? 0;
-      final m = int.tryParse(p[1]) ?? 0;
-      return TimeOfDay(hour: h, minute: m);
-    }
-    _selectedStartTime = _toTod(s.startTime);
-    _selectedEndTime = _toTod(s.endTime);
+    // No in-memory TimeOfDay state needed; controllers hold normalized strings
   }
 
   @override
@@ -248,6 +182,8 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
 
           case AppointmentFormLoaded:
             final successState = state as AppointmentFormLoaded;
+            final bool isTrainer =
+                sharedPreferences.getString('role') == 'trainer';
             if (widget.appointment != null) {
               _selectedTrainer = successState.syncEntity.data.trainers
                   .where((TrainerEntity element) =>
@@ -258,18 +194,28 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                 _loadSlots();
               }
             } else {
-              // Auto-select first trainer to surface availability immediately
+              // Auto-select trainer for initial load
               if (_selectedTrainer == null && !_didInitialSlotsLoad) {
                 _didInitialSlotsLoad = true;
                 final trainers = successState.syncEntity.data.trainers;
                 TrainerEntity? initial;
-                if (widget.preselectedTrainerId != null) {
+                if (isTrainer) {
+                  // Pick myself when I am a trainer
+                  final myNumericId =
+                      sharedPreferences.getInt('user_id') ?? 0;
+                  initial = trainers
+                      .where((t) => t.id == myNumericId)
+                      .cast<TrainerEntity?>()
+                      .firstWhere((e) => e != null, orElse: () => null);
+                }
+                if (initial == null && widget.preselectedTrainerId != null) {
                   initial = trainers
                       .where((t) => t.id == widget.preselectedTrainerId)
                       .cast<TrainerEntity?>()
                       .firstWhere((e) => e != null, orElse: () => null);
                 }
-                initial = initial ?? (trainers.isNotEmpty ? trainers.first : null);
+                initial =
+                    initial ?? (trainers.isNotEmpty ? trainers.first : null);
                 if (initial != null) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     if (!mounted) return;
@@ -304,16 +250,34 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                       SizedBox(
                         height: size.height * 0.03,
                       ),
-                      TrainerDropdown(
-                        trainers: successState.syncEntity.data.trainers,
-                        selectedTrainer: _selectedTrainer,
-                        onChanged: (newValue) {
-                          setState(() {
-                            _selectedTrainer = newValue;
-                          });
-                          _loadSlots();
-                        },
-                      ),
+                      // Trainers cannot change trainer; lock to self
+                      if (!(sharedPreferences.getString('role') == 'trainer'))
+                        TrainerDropdown(
+                          trainers: successState.syncEntity.data.trainers,
+                          selectedTrainer: _selectedTrainer,
+                          onChanged: (newValue) {
+                            setState(() {
+                              _selectedTrainer = newValue;
+                            });
+                            _loadSlots();
+                          },
+                        )
+                      else
+                        InputDecorator(
+                          decoration: const InputDecoration(
+                            labelText: 'Trainer',
+                            border: OutlineInputBorder(),
+                          ),
+                          child: Text(
+                            _selectedTrainer?.name.isNotEmpty == true
+                                ? _selectedTrainer!.name
+                                : 'Me',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(color: ColorManager.primary),
+                          ),
+                        ),
                       SizedBox(
                         height: size.height * 0.03,
                       ),
@@ -337,8 +301,12 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                           ),
                           Text(
                             _dateFmt.format(_selectedDate),
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurface,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                   fontWeight: FontWeight.w600,
                                 ),
                           ),
@@ -360,18 +328,21 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                               color: Theme.of(context)
                                   .colorScheme
                                   .primary
-                                  .withOpacity(0.06),
+                                  .withValues(alpha: 0.06),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
                                 color: Theme.of(context)
                                     .colorScheme
                                     .primary
-                                    .withOpacity(0.25),
+                                    .withValues(alpha: 0.25),
                               ),
                             ),
                             child: Text(
                               '${_startTimeController.text} – ${_endTimeController.text}',
-                              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge
+                                  ?.copyWith(
                                     color:
                                         Theme.of(context).colorScheme.primary,
                                     fontWeight: FontWeight.w700,
@@ -383,12 +354,13 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                         Center(
                           child: Text(
                             'Tap a slot below to select a time',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withOpacity(0.6),
-                                ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withValues(alpha: 0.6),
+                                    ),
                           ),
                         ),
                       const SizedBox(height: 8),
@@ -408,38 +380,39 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                       else if (_availableSlots.isEmpty)
                         Text(
                           'No availability for this date.',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurface
-                                    .withOpacity(0.7),
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withValues(alpha: 0.7),
+                                  ),
                         )
                       else
                         Wrap(
                           spacing: 8,
                           runSpacing: 8,
                           children: _availableSlots
-                                  .map((s) => ChoiceChip(
-                                        label: Text(
-                                            '${s.startTime} – ${s.endTime}'),
-                                        selected: _selectedSlotId == s.id,
-                                        selectedColor: Theme.of(context)
-                                            .colorScheme
-                                            .primary
-                                            .withOpacity(0.15),
-                                        onSelected: (sel) {
-                                          setState(() {
-                                            if (sel) {
-                                              _applySlot(s);
-                                            } else {
-                                              _selectedSlotId = null;
-                                              _startTimeController.text = '';
-                                              _endTimeController.text = '';
-                                            }
-                                          });
-                                        },
-                                      ))
+                              .map((s) => ChoiceChip(
+                                    label:
+                                        Text('${s.startTime} – ${s.endTime}'),
+                                    selected: _selectedSlotId == s.id,
+                                    selectedColor: Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withValues(alpha: 0.15),
+                                    onSelected: (sel) {
+                                      setState(() {
+                                        if (sel) {
+                                          _applySlot(s);
+                                        } else {
+                                          _selectedSlotId = null;
+                                          _startTimeController.text = '';
+                                          _endTimeController.text = '';
+                                        }
+                                      });
+                                    },
+                                  ))
                               .toList(),
                         ),
                       SizedBox(height: size.height * 0.02),
@@ -516,7 +489,8 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                           }
 
                           // Validate against trainer availability
-                          final ok = await _availabilityService.isWithinAvailability(
+                          final ok =
+                              await _availabilityService.isWithinAvailability(
                             trainerId: _selectedTrainer!.id,
                             date: _selectedDate,
                             startTime: _startTimeController.text,

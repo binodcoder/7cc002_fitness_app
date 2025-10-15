@@ -11,6 +11,8 @@ import 'application/users/chat_users_event.dart';
 import 'application/users/chat_users_state.dart';
 import 'chat_page.dart';
 import 'package:fitness_app/core/widgets/app_list_tile.dart';
+import 'package:fitness_app/features/profile/infrastructure/services/profile_guard.dart';
+import 'package:fitness_app/features/profile/presentation/profile_page.dart';
 
 class _ProfileInfo {
   final String name;
@@ -108,7 +110,24 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
                             lastMessage.isNotEmpty ? lastMessage : u.email,
                         meta: lastTime,
                         unread: unread,
-                        onTap: () => _openChatWithName(u, displayName),
+                        onTap: () async {
+                          final ok = await sl<ProfileGuardService>().isComplete();
+                          if (!ok) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text(
+                                      'Please complete your profile to send messages.')),
+                            );
+                            Navigator.of(context, rootNavigator: true).push(
+                              MaterialPageRoute(
+                                builder: (_) => const ProfilePage(),
+                              ),
+                            );
+                            return;
+                          }
+                          _openChatWithName(u, displayName);
+                        },
                       );
                     },
                   );
@@ -125,15 +144,6 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
     final low = a <= b ? a : b;
     final high = a <= b ? b : a;
     return 'dm_${low}_$high';
-  }
-
-  void _openChat(entity.User user) {
-    Navigator.of(context, rootNavigator: true).push(
-      MaterialPageRoute(
-        builder: (_) =>
-            ChatPage(peerUserId: user.id ?? 0, peerName: user.email),
-      ),
-    );
   }
 
   void _openChatWithName(entity.User user, String name) {
@@ -244,7 +254,7 @@ class _ChatUserTile extends StatelessWidget {
       return CircleAvatar(
         radius: 22,
         backgroundImage: NetworkImage(photoUrl),
-        backgroundColor: scheme.surfaceVariant,
+        backgroundColor: scheme.surfaceContainerHighest,
       );
     }
     final initial = (name.isNotEmpty ? name : email).trim().isNotEmpty
@@ -252,7 +262,7 @@ class _ChatUserTile extends StatelessWidget {
         : '?';
     return CircleAvatar(
       radius: 22,
-      backgroundColor: scheme.primary.withOpacity(0.15),
+      backgroundColor: scheme.primary.withValues(alpha: 0.15),
       child: Text(
         initial,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(

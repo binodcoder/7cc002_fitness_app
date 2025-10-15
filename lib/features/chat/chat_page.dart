@@ -6,6 +6,8 @@ import 'application/chat/chat_bloc.dart';
 import 'application/chat/chat_event.dart';
 import 'application/chat/chat_state.dart';
 import 'domain/usecases/mark_room_read.dart';
+import 'package:fitness_app/features/profile/infrastructure/services/profile_guard.dart';
+import 'package:fitness_app/features/profile/presentation/profile_page.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key, this.peerUserId, this.peerName, this.fixedRoomId});
@@ -117,7 +119,7 @@ class _ChatPageState extends State<ChatPage> {
                                   _formatTime(m.createdAt),
                                   style: textTheme.bodySmall?.copyWith(
                                     color: isMe
-                                        ? scheme.onPrimary.withOpacity(0.85)
+                                        ? scheme.onPrimary.withValues(alpha: 0.85)
                                         : scheme.onSurfaceVariant,
                                     fontSize: 11,
                                   ),
@@ -150,9 +152,24 @@ class _ChatPageState extends State<ChatPage> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.send),
-                  onPressed: () {
+                  onPressed: () async {
                     final text = _textController.text.trim();
                     if (text.isEmpty) return;
+                    final ok = await sl<ProfileGuardService>().isComplete();
+                    if (!ok) {
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text(
+                                'Please complete your profile to send messages.')),
+                      );
+                      Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(
+                          builder: (_) => const ProfilePage(),
+                        ),
+                      );
+                      return;
+                    }
                     _bloc.add(ChatSendPressed(
                         roomId: _roomId, authorId: _userId, text: text));
                     _textController.clear();

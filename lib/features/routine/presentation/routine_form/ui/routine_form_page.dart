@@ -33,7 +33,6 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
   final TextEditingController routineNameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController durationController = TextEditingController();
-  final TextEditingController sourceController = TextEditingController();
   final List<_ExerciseItemData> _exerciseItems = [];
   bool _loadingShown = false;
 
@@ -43,7 +42,6 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
       routineNameController.text = widget.routine!.name;
       descriptionController.text = widget.routine!.description;
       durationController.text = widget.routine!.duration.toString();
-      sourceController.text = widget.routine!.source;
       // Prefill exercises when editing an existing routine
       for (final ex in widget.routine!.exercises) {
         _exerciseItems.add(_ExerciseItemData.fromEntity(ex));
@@ -63,7 +61,7 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
     routineNameController.dispose();
     descriptionController.dispose();
     durationController.dispose();
-    sourceController.dispose();
+    
     for (final e in _exerciseItems) {
       e.name.dispose();
       e.description.dispose();
@@ -212,13 +210,6 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
                       SizedBox(
                         height: AppHeight.h10,
                       ),
-                      CustomTextFormField(
-                        label: 'Source',
-                        controller: sourceController,
-                        hint: 'Source',
-                        validator: (v) =>
-                            (v == null || v.isEmpty) ? '*Required' : null,
-                      ),
                       SizedBox(height: AppHeight.h20),
                       if (widget.routine != null) ...[
                         Text(
@@ -275,7 +266,6 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
                           var description = descriptionController.text;
                           // routine difficulty removed
                           var duration = durationController.text;
-                          var source = sourceController.text;
                           final exercises =
                               _exerciseItems.map((e) => e.toEntity()).toList();
                           if (routineName.isNotEmpty && duration.isNotEmpty) {
@@ -285,7 +275,7 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
                                 name: routineName,
                                 description: description,
                                 duration: int.parse(duration),
-                                source: source,
+                                source: widget.routine!.source,
                                 exercises: exercises,
                               );
                               routineFormBloc.add(
@@ -296,7 +286,7 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
                                 name: routineName,
                                 description: description,
                                 duration: int.parse(duration),
-                                source: source,
+                                source: '',
                                 exercises: exercises,
                               );
                               routineFormBloc.add(

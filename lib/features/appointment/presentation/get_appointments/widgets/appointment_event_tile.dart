@@ -99,9 +99,9 @@ class _TimeBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: scheme.primary.withOpacity(0.1),
+        color: scheme.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: scheme.primary.withOpacity(0.25)),
+        border: Border.all(color: scheme.primary.withValues(alpha: 0.25)),
       ),
       child: Text(
         time!,

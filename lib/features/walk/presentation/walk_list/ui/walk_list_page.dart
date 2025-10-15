@@ -15,6 +15,8 @@ import 'package:fitness_app/features/walk/presentation/walk_list/widgets/walk_ca
 import '../../walk_list/bloc/walk_list_bloc.dart';
 import '../../walk_list/bloc/walk_list_event.dart';
 import '../../walk_list/bloc/walk_list_state.dart';
+import 'package:fitness_app/features/profile/infrastructure/services/profile_guard.dart';
+import 'package:fitness_app/features/profile/presentation/profile_page.dart';
 
 class WalkListPage extends StatefulWidget {
   const WalkListPage({super.key});
@@ -111,7 +113,25 @@ class _WalkListPageState extends State<WalkListPage> {
                   backgroundColor: ColorManager.primary,
                   child: const Icon(Icons.add),
                   onPressed: () {
-                    walkBloc.add(const WalkCreateRequested());
+                    () async {
+                      final ok = await sl<ProfileGuardService>().isComplete();
+                      if (!ok) {
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text(
+                                  'Please complete your profile to add a walk.')),
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ProfilePage(),
+                          ),
+                        );
+                        return;
+                      }
+                      walkBloc.add(const WalkCreateRequested());
+                    }();
                   },
                 ),
                 appBar: AppBar(
@@ -145,7 +165,23 @@ class _WalkListPageState extends State<WalkListPage> {
                           ),
                         );
                       },
-                      onJoinTap: () {
+                      onJoinTap: () async {
+                        final ok = await sl<ProfileGuardService>().isComplete();
+                        if (!ok) {
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    'Please complete your profile to join a walk.')),
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const ProfilePage(),
+                            ),
+                          );
+                          return;
+                        }
                         final walkParticipant = WalkParticipant(
                           userId: sharedPreferences.getInt("user_id") ?? 0,
                           walkId: walk.id!,

@@ -8,6 +8,7 @@ import 'package:fitness_app/features/profile/domain/repositories/profile_reposit
 import 'package:fitness_app/features/profile/domain/usecases/get_profile.dart';
 import 'package:fitness_app/features/profile/domain/usecases/upsert_profile.dart';
 import 'package:fitness_app/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:fitness_app/features/profile/infrastructure/services/profile_guard.dart';
 
 void registerProfileInfrastructureDependencies(GetIt sl) {
   // Data sources
@@ -34,4 +35,7 @@ void registerProfileInfrastructureDependencies(GetIt sl) {
 
   // Bloc
   sl.registerFactory(() => ProfileBloc(getProfile: sl(), upsertProfile: sl()));
+
+  // Guards
+  sl.registerLazySingleton<ProfileGuardService>(() => ProfileGuardService(sl()));
 }

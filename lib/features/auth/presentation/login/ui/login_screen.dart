@@ -140,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                               Theme.of(context)
                                   .colorScheme
                                   .primary
-                                  .withOpacity(0.85),
+                                      .withValues(alpha: 0.85),
                             ],
                           ),
                         ),

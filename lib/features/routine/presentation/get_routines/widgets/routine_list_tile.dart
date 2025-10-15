@@ -58,9 +58,9 @@ class RoutineListTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: diffColor.withOpacity(0.12),
+              color: diffColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: diffColor.withOpacity(0.3)),
+              border: Border.all(color: diffColor.withValues(alpha: 0.3)),
                 ),
                 child: Text(
                   difficulty,

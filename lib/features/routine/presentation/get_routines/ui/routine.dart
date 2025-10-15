@@ -130,6 +130,7 @@ class _RoutinePageState extends State<RoutinePage> {
                                     "trainer";
                             return RoutineCard(
                               routine: routine,
+                              showOwnerName: !isTrainer,
                               onStart: () {
                                 // Placeholder for starting routine flow
                                 ScaffoldMessenger.of(context).showSnackBar(

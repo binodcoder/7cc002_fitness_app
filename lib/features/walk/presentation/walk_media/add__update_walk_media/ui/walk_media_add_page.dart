@@ -255,7 +255,7 @@ class _MediaPreview extends StatelessWidget {
                     fit: BoxFit.cover,
                   ))
             : Container(
-                color: Theme.of(context).colorScheme.surfaceVariant,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 child: const Center(
                   child: Icon(Icons.videocam, size: 48),
                 ),

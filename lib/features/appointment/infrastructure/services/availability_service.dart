@@ -80,7 +80,7 @@ class AppointmentAvailabilityService {
       );
     }).toList();
     // Ensure predictable ordering by start time even when DB orderBy is unavailable
-    int _cmp(AvailabilitySlot a, AvailabilitySlot b) {
+    int cmp(AvailabilitySlot a, AvailabilitySlot b) {
       int hh(String t) => int.tryParse(t.split(':').first) ?? 0;
       int mm(String t) => int.tryParse(t.split(':').elementAt(1)) ?? 0;
       final ah = hh(a.startTime), am = mm(a.startTime);
@@ -88,7 +88,8 @@ class AppointmentAvailabilityService {
       if (ah != bh) return ah.compareTo(bh);
       return am.compareTo(bm);
     }
-    list.sort(_cmp);
+
+    list.sort(cmp);
     return list;
   }
 
@@ -135,7 +136,7 @@ class AppointmentAvailabilityService {
     List<AvailabilitySlot> slots =
         await listForTrainerOnDate(trainerId: trainerId, date: date);
 
-    Duration _parse(String t) {
+    Duration parse(String t) {
       final parts = t.split(':');
       final h = int.parse(parts[0]);
       final m = int.parse(parts[1]);
@@ -143,13 +144,13 @@ class AppointmentAvailabilityService {
       return Duration(hours: h, minutes: m, seconds: s);
     }
 
-    final sd = _parse(startTime);
-    final ed = _parse(endTime);
+    final sd = parse(startTime);
+    final ed = parse(endTime);
     if (ed <= sd) return false;
 
     for (final s in slots) {
-      final ssd = _parse(s.startTime);
-      final sed = _parse(s.endTime);
+      final ssd = parse(s.startTime);
+      final sed = parse(s.endTime);
       // Allow appointment fully within a slot range
       if (sd >= ssd && ed <= sed) return true;
     }
@@ -184,6 +185,7 @@ class AppointmentAvailabilityService {
         return DateTime.now();
       }
     }
+
     return set.map(parseDk).toSet();
   }
 
@@ -216,6 +218,7 @@ class AppointmentAvailabilityService {
         return DateTime.now();
       }
     }
+
     return set.map(parseDk).toSet();
   }
 }

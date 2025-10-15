@@ -176,8 +176,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         isPassword: true,
                         validator: (v) {
                           if (v == null || v.isEmpty) return '*Required';
-                          if (v != passwordController.text)
+                          if (v != passwordController.text) {
                             return 'Passwords do not match';
+                          }
                           return null;
                         },
                       ),

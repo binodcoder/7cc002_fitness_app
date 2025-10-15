@@ -49,7 +49,7 @@ class WalkMediaDetailsBody extends StatelessWidget {
             Container(
               height: 200,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceVariant,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Center(
@@ -60,8 +60,10 @@ class WalkMediaDetailsBody extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () async {
                 final url = Uri.parse(walkMedia.mediaUrl);
-                if (!await launchUrl(url,
-                    mode: LaunchMode.externalApplication)) {
+                final ok = await launchUrl(url,
+                    mode: LaunchMode.externalApplication);
+                if (!ok) {
+                  if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Failed to open media')),
                   );

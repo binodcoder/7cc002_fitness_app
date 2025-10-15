@@ -255,6 +255,26 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                       SizedBox(height: AppHeight.h20),
+                      // Role (read-only)
+                      Builder(
+                        builder: (context) {
+                          final role = (_prefs.getString('role') ?? 'standard').trim();
+                          String labelFor(String r) {
+                            if (r.toLowerCase() == 'trainer') return 'Trainer';
+                            if (r.isEmpty) return 'Standard';
+                            return r[0].toUpperCase() + r.substring(1);
+                          }
+                          return InputDecorator(
+                            decoration: const InputDecoration(
+                              labelText: 'Role',
+                              border: OutlineInputBorder(),
+                              isDense: true,
+                            ),
+                            child: Text(labelFor(role)),
+                          );
+                        },
+                      ),
+                      SizedBox(height: AppHeight.h10),
 
                       // Name
                       CustomTextFormField(
@@ -513,7 +533,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .onSurface
-                                                .withOpacity(0.6)),
+                                                .withValues(alpha: 0.6)),
                                   )
                                 else
                                   ListView.separated(
@@ -540,7 +560,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           color: Theme.of(context)
                                               .colorScheme
                                               .error
-                                              .withOpacity(0.1),
+                                              .withValues(alpha: 0.1),
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,

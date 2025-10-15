@@ -22,6 +22,8 @@ import 'package:fitness_app/core/localization/app_strings.dart';
 // App-wide router configuration using GoRouter.
 import 'package:fitness_app/core/navigation/routes.dart';
 import 'package:fitness_app/features/settings/presentation/settings_page.dart';
+import 'package:fitness_app/features/admin/presentation/admin_dashboard_page.dart';
+import 'package:fitness_app/features/admin/presentation/admin_manage_users_page.dart';
 
 // Route path constants are defined in core/navigation/routes.dart
 
@@ -111,6 +113,14 @@ class AppRouter {
       GoRoute(
         path: Routes.settings,
         builder: (context, state) => const SettingsPage(),
+      ),
+      GoRoute(
+        path: Routes.admin,
+        builder: (context, state) => const AdminDashboardPage(),
+      ),
+      GoRoute(
+        path: Routes.adminManageUsers,
+        builder: (context, state) => const AdminManageUsersPage(),
       ),
       GoRoute(
         path: Routes.routineDetails,

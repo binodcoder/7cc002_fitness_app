@@ -94,7 +94,7 @@ class _LiveTrainingListTileState extends State<LiveTrainingListTile> {
       }
     }
 
-    Duration? _timeUntilStart() {
+    Duration? timeUntilStart() {
       try {
         final parts = widget.startTime.split(':');
         final start = DateTime(
@@ -112,7 +112,7 @@ class _LiveTrainingListTileState extends State<LiveTrainingListTile> {
       }
     }
 
-    Duration? _timeUntilEnd() {
+    Duration? timeUntilEnd() {
       try {
         final parts = widget.endTime.split(':');
         final end = DateTime(
@@ -130,7 +130,7 @@ class _LiveTrainingListTileState extends State<LiveTrainingListTile> {
       }
     }
 
-    String _fmt(Duration d) {
+    String fmt(Duration d) {
       final dDays = d.inDays;
       final dHours = d.inHours % 24;
       final dMins = d.inMinutes % 60;
@@ -146,7 +146,7 @@ class _LiveTrainingListTileState extends State<LiveTrainingListTile> {
       }
     }
 
-    bool _isEnded() {
+    bool isEnded() {
       try {
         final parts = widget.endTime.split(':');
         final end = DateTime(
@@ -164,22 +164,22 @@ class _LiveTrainingListTileState extends State<LiveTrainingListTile> {
     }
 
     final active = isJoinActive();
-    final ended = _isEnded();
+    final ended = isEnded();
     final beforeStart = !active && !ended;
 
     final canJoinNow = (widget.streamUrl ?? '').trim().isNotEmpty && active;
     final dur = active
-        ? _timeUntilEnd()
+        ? timeUntilEnd()
         : beforeStart
-            ? _timeUntilStart()
+            ? timeUntilStart()
             : null;
     String statusText;
     Color statusColor;
     if (active) {
-      statusText = dur == null ? 'Live' : 'Live · ${_fmt(dur)} left';
+      statusText = dur == null ? 'Live' : 'Live · ${fmt(dur)} left';
       statusColor = scheme.error;
     } else if (beforeStart) {
-      statusText = dur == null ? '' : 'Starts in ${_fmt(dur)}';
+      statusText = dur == null ? '' : 'Starts in ${fmt(dur)}';
       statusColor = scheme.tertiary;
     } else {
       statusText = 'Ended';

@@ -53,8 +53,10 @@ class LiveTrainingDetailsBody extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () async {
                 final url = Uri.parse(liveTraining.streamUrl!.trim());
-                if (!await launchUrl(url,
-                    mode: LaunchMode.externalApplication)) {
+                final ok = await launchUrl(url,
+                    mode: LaunchMode.externalApplication);
+                if (!ok) {
+                  if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Failed to open link')),
                   );

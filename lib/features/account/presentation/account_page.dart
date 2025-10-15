@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fitness_app/core/navigation/routes.dart';
+import 'package:fitness_app/app/injection_container.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/features/auth/application/auth/auth_bloc.dart';
@@ -14,6 +16,8 @@ class AccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final strings = AppStrings.of(context);
     final scheme = Theme.of(context).colorScheme;
+    final prefs = sl<SharedPreferences>();
+    final role = (prefs.getString('role') ?? 'standard').trim();
 
     return Scaffold(
       appBar: AppBar(title: Text(strings.account)),
@@ -25,6 +29,14 @@ class AccountPage extends StatelessWidget {
             title: strings.account,
             subtitle: 'Manage your profile and preferences',
           ),
+          if (role == 'admin')
+            AppListTile(
+              leading: const Icon(Icons.admin_panel_settings_outlined),
+              title: 'Admin Dashboard',
+              subtitle: 'Manage users and view all data',
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(Routes.admin),
+            ),
           AppListTile(
             leading: const Icon(Icons.badge_outlined),
             title: 'Profile',

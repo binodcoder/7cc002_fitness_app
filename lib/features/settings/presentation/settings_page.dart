@@ -39,7 +39,7 @@ class SettingsPage extends StatelessWidget {
                             DropdownButtonFormField<String>(
                               decoration:
                                   const InputDecoration(labelText: 'Distance'),
-                              value: state.distanceUnit,
+                              initialValue: state.distanceUnit,
                               items: const [
                                 DropdownMenuItem(
                                     value: 'km',
@@ -54,7 +54,7 @@ class SettingsPage extends StatelessWidget {
                             DropdownButtonFormField<String>(
                               decoration:
                                   const InputDecoration(labelText: 'Weight'),
-                              value: state.weightUnit,
+                              initialValue: state.weightUnit,
                               items: const [
                                 DropdownMenuItem(
                                     value: 'kg', child: Text('Kilograms (kg)')),
@@ -90,9 +90,9 @@ class SettingsPage extends StatelessWidget {
                     SizedBox(height: AppHeight.h20),
                     Text('About', style: textTheme.titleLarge),
                     SizedBox(height: AppHeight.h10),
-                    Card(
+                    const Card(
                       child: Column(
-                        children: const [
+                        children: [
                           ListTile(
                             leading: Icon(Icons.privacy_tip_outlined),
                             title: Text('Privacy policy'),

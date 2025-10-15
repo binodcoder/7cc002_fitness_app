@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,6 +22,8 @@ import '../../appointment_form/ui/appointment_form_dialog.dart';
 import 'package:fitness_app/features/appointment/domain/usecases/sync.dart';
 import 'package:fitness_app/features/appointment/domain/entities/sync.dart';
 import 'package:fitness_app/features/appointment/infrastructure/services/availability_service.dart';
+import 'package:fitness_app/features/profile/infrastructure/services/profile_guard.dart';
+import 'package:fitness_app/features/profile/presentation/profile_page.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({Key? key}) : super(key: key);
@@ -36,6 +39,7 @@ class _CalendarPageState extends State<CalendarPage> {
   final Sync _sync = sl<Sync>();
   final AppointmentAvailabilityService availabilityService =
       sl<AppointmentAvailabilityService>();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -69,6 +73,8 @@ class _CalendarPageState extends State<CalendarPage> {
   DateTime _focusedDay = DateTime.now();
   final SharedPreferences sharedPreferences = sl<SharedPreferences>();
   Map<int, String> _trainerNameById = {};
+  final Map<int, String> _clientNameById = {};
+  final Map<int, Future<String>> _pendingClientNameById = {};
   Set<DateTime> _availabilityDays = {};
   int? _selectedTrainerFilterId;
 
@@ -77,6 +83,48 @@ class _CalendarPageState extends State<CalendarPage> {
     calendarBloc.close();
     eventBloc.close();
     super.dispose();
+  }
+
+  Future<String> _getClientDisplayById(int userId) async {
+    if (userId == 0) return 'User #0';
+    final cached = _clientNameById[userId];
+    if (cached != null && cached.isNotEmpty) return cached;
+    final pending = _pendingClientNameById[userId];
+    if (pending != null) return pending;
+
+    Future<String> loader() async {
+      try {
+        final users = await _firestore
+            .collection('users')
+            .where('id', isEqualTo: userId)
+            .limit(1)
+            .get();
+        if (users.docs.isEmpty) return 'User #$userId';
+        final doc = users.docs.first;
+        final uid = doc.id;
+        final email = (doc.data()['email'] as String?)?.trim() ?? '';
+        try {
+          final prof = await _firestore.collection('profiles').doc(uid).get();
+          final data = prof.data();
+          final name = (data?['name'] as String?)?.trim() ?? '';
+          final display = name.isNotEmpty ? name : (email.isNotEmpty ? email : 'User #$userId');
+          _clientNameById[userId] = display;
+          return display;
+        } catch (_) {
+          final display = email.isNotEmpty ? email : 'User #$userId';
+          _clientNameById[userId] = display;
+          return display;
+        }
+      } catch (_) {
+        return 'User #$userId';
+      } finally {
+        _pendingClientNameById.remove(userId);
+      }
+    }
+
+    final fut = loader();
+    _pendingClientNameById[userId] = fut;
+    return fut;
   }
 
   DateTime _monthStart(DateTime d) => DateTime(d.year, d.month, 1);
@@ -210,9 +258,26 @@ class _CalendarPageState extends State<CalendarPage> {
                         current is CalendarActionState,
                     buildWhen: (previous, current) =>
                         current is! CalendarActionState,
-                    listener: (context, state) {
+                    listener: (context, state) async {
                       if (state is CalendarNavigateToAddActionState) {
-                        if (!mounted) return;
+                        final canProceed =
+                            await sl<ProfileGuardService>().isComplete();
+                        if (!context.mounted) return;
+                        if (!canProceed) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    'Please complete your profile to book appointments.')),
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const ProfilePage(),
+                            ),
+                          );
+                          return;
+                        }
+                        if (!context.mounted) return;
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -223,9 +288,7 @@ class _CalendarPageState extends State<CalendarPage> {
                             ),
                             fullscreenDialog: true,
                           ),
-                        ).then(
-                          (value) => refreshPage(),
-                        );
+                        ).then((_) => refreshPage());
                       } else if (state
                           is CalendarNavigateToDetailPageActionState) {
                         // Details page no longer required. Ignore or open edit when trainer.
@@ -402,58 +465,84 @@ class _CalendarPageState extends State<CalendarPage> {
                                 (appointmentModel.status).toLowerCase();
                             final bool canActOnPending =
                                 isTrainer && status == 'pending';
-                            return AppointmentEventTile(
-                              title: title,
-                              startTime: appointmentModel.startTime,
-                              endTime: appointmentModel.endTime,
-                              trailing: _StatusChip(status: status),
-                              onTap: () {
-                                if (!mounted) return;
-                                if (isTrainer) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          AppointmentFormDialog(
-                                        focusedDay: _focusedDay,
-                                        appointment: appointmentModel,
-                                      ),
-                                      fullscreenDialog: true,
-                                    ),
-                                  ).then((_) => refreshPage());
-                                }
-                              },
-                              onEdit: canActOnPending
-                                  ? () {
-                                      calendarBloc.add(
-                                        CalendarStatusChangeRequested(
-                                          appointment: appointmentModel,
-                                          status: 'accepted',
+                            if (isTrainer) {
+                              return FutureBuilder<String>(
+                                future: _getClientDisplayById(
+                                    appointmentModel.userId),
+                                builder: (context, snap) {
+                                  final display = snap.data ??
+                                      'User #${appointmentModel.userId}';
+                                  return AppointmentEventTile(
+                                    title: display,
+                                    startTime: appointmentModel.startTime,
+                                    endTime: appointmentModel.endTime,
+                                    trailing: _StatusChip(status: status),
+                                    onTap: () {
+                                      if (!mounted) return;
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              AppointmentFormDialog(
+                                            focusedDay: _focusedDay,
+                                            appointment: appointmentModel,
+                                          ),
+                                          fullscreenDialog: true,
                                         ),
-                                      );
-                                    }
-                                  : null,
-                              onDelete: canActOnPending
-                                  ? () {
-                                      calendarBloc.add(
-                                        CalendarStatusChangeRequested(
-                                          appointment: appointmentModel,
-                                          status: 'declined',
-                                        ),
-                                      );
-                                    }
-                                  : null,
-                              editLabel: canActOnPending ? 'Accept' : null,
-                              deleteLabel: canActOnPending ? 'Decline' : null,
-                              editIcon: canActOnPending ? Icons.check : null,
-                              deleteIcon: canActOnPending ? Icons.close : null,
-                              editActionColor:
-                                  canActOnPending ? Colors.green : null,
-                              deleteActionColor:
-                                  canActOnPending ? Colors.orange : null,
-                              actionForegroundColor:
-                                  canActOnPending ? Colors.white : null,
-                            );
+                                      ).then((_) => refreshPage());
+                                    },
+                                    onEdit: canActOnPending
+                                        ? () {
+                                            calendarBloc.add(
+                                              CalendarStatusChangeRequested(
+                                                appointment: appointmentModel,
+                                                status: 'accepted',
+                                              ),
+                                            );
+                                          }
+                                        : null,
+                                    onDelete: canActOnPending
+                                        ? () {
+                                            calendarBloc.add(
+                                              CalendarStatusChangeRequested(
+                                                appointment: appointmentModel,
+                                                status: 'declined',
+                                              ),
+                                            );
+                                          }
+                                        : null,
+                                    editLabel:
+                                        canActOnPending ? 'Accept' : null,
+                                    deleteLabel:
+                                        canActOnPending ? 'Decline' : null,
+                                    editIcon:
+                                        canActOnPending ? Icons.check : null,
+                                    deleteIcon:
+                                        canActOnPending ? Icons.close : null,
+                                    editActionColor:
+                                        canActOnPending ? Colors.green : null,
+                                    deleteActionColor:
+                                        canActOnPending ? Colors.orange : null,
+                                    actionForegroundColor: canActOnPending
+                                        ? Colors.white
+                                        : null,
+                                  );
+                                },
+                              );
+                            } else {
+                              return AppointmentEventTile(
+                                title: title,
+                                startTime: appointmentModel.startTime,
+                                endTime: appointmentModel.endTime,
+                                trailing: _StatusChip(status: status),
+                                onTap: () {
+                                  if (!mounted) return;
+                                  // Non-trainer: no action on tap
+                                },
+                                onEdit: null,
+                                onDelete: null,
+                              );
+                            }
                           },
                         );
                       case EventErrorState:
@@ -483,11 +572,11 @@ class _StatusChip extends StatelessWidget {
   Color _bg(BuildContext context) {
     switch (status) {
       case 'accepted':
-        return Colors.green.withOpacity(0.1);
+        return Colors.green.withValues(alpha: 0.1);
       case 'declined':
-        return Colors.red.withOpacity(0.1);
+        return Colors.red.withValues(alpha: 0.1);
       default:
-        return Colors.orange.withOpacity(0.1);
+        return Colors.orange.withValues(alpha: 0.1);
     }
   }
 
@@ -515,7 +604,7 @@ class _StatusChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: _bg(context),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: _fg(context).withOpacity(0.2)),
+        border: Border.all(color: _fg(context).withValues(alpha: 0.2)),
       ),
       child: Text(
         _label(),

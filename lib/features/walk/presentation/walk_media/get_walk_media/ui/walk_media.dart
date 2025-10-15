@@ -139,7 +139,7 @@ class _WalkMediaPageState extends State<WalkMediaPage> {
                             : Container(
                                 color: Theme.of(context)
                                     .colorScheme
-                                    .surfaceVariant,
+                                    .surfaceContainerHighest,
                                 child: Icon(
                                   isNetwork ? Icons.videocam : Icons.image,
                                   color:

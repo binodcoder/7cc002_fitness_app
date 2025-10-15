@@ -5,7 +5,6 @@ import 'package:http/testing.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/features/routine/data/models/routine_model.dart';
 import 'package:fitness_app/features/routine/data/data_sources/routines_remote_data_source.dart';
-import 'package:fitness_app/features/routine/domain/entities/routine.dart';
 
 void main() {
   group('RoutineRemoteDataSource', () {
