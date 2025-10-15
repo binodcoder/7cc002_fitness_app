@@ -6,6 +6,9 @@ class AppointmentEventTile extends StatelessWidget {
   final String? subtitle;
   final String? startTime;
   final String? endTime;
+  final String? trainerName;
+  final String? clientName;
+  final String? remarks;
   final VoidCallback onTap;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
@@ -24,6 +27,9 @@ class AppointmentEventTile extends StatelessWidget {
     this.subtitle,
     this.startTime,
     this.endTime,
+    this.trainerName,
+    this.clientName,
+    this.remarks,
     required this.onTap,
     this.onEdit,
     this.onDelete,
@@ -43,10 +49,21 @@ class AppointmentEventTile extends StatelessWidget {
     final startHM = _formatHM(startTime);
     final endHM = _formatHM(endTime);
     final computedSubtitle = subtitle ?? _buildSubtitle(startHM, endHM);
+
+    // Build a richer details widget when we have extra info
+    final details = _buildDetailsWidget(
+      context: context,
+      startHM: startHM,
+      endHM: endHM,
+      trainer: trainerName,
+      client: clientName,
+      remarks: remarks,
+    );
     return AppSlidableListTile(
       title: title,
       titleStyle: theme.textTheme.titleMedium,
-      subtitle: computedSubtitle,
+      subtitle: details == null ? computedSubtitle : null,
+      subtitleWidget: details,
       subtitleStyle: theme.textTheme.bodySmall,
       leading: _TimeBadge(time: startHM),
       trailing: trailing,
@@ -67,6 +84,51 @@ class AppointmentEventTile extends StatelessWidget {
     if (start == null && end == null) return null;
     if (start != null && end != null) return '$start – $end';
     return start ?? end;
+  }
+
+  Widget? _buildDetailsWidget({
+    required BuildContext context,
+    String? startHM,
+    String? endHM,
+    String? trainer,
+    String? client,
+    String? remarks,
+  }) {
+    final rows = <Widget>[];
+    final textStyle = Theme.of(context).textTheme.bodySmall;
+
+    final line = (IconData icon, String text) => Padding(
+          padding: const EdgeInsets.only(top: 2.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, size: 14, color: Theme.of(context).hintColor),
+              const SizedBox(width: 6),
+              Expanded(child: Text(text, style: textStyle)),
+            ],
+          ),
+        );
+
+    final timeText = _buildSubtitle(startHM, endHM);
+    if (timeText != null && timeText.isNotEmpty) {
+      rows.add(line(Icons.schedule, timeText));
+    }
+    if (trainer != null && trainer.trim().isNotEmpty) {
+      rows.add(line(Icons.person_outline, 'Trainer: ${trainer.trim()}'));
+    }
+    if (client != null && client.trim().isNotEmpty) {
+      rows.add(line(Icons.account_circle_outlined, 'Client: ${client.trim()}'));
+    }
+    if (remarks != null && remarks.trim().isNotEmpty) {
+      rows.add(line(Icons.notes_outlined, remarks.trim()));
+    }
+
+    if (rows.isEmpty) return null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: rows,
+    );
   }
 
   // Normalize to HH:mm if input like HH:mm:ss or H:m or HH:mm

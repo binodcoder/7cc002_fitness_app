@@ -15,8 +15,16 @@ class TrackingTextInput extends StatefulWidget {
     this.onTextChanged,
     this.hint,
     required this.isObscured,
-    required this.icon,
     required this.textEditingController,
+    this.keyboardType,
+    this.textInputAction,
+    this.autofillHints,
+    this.validator,
+    this.onFieldSubmitted,
+    this.prefix,
+    this.suffix,
+    this.focusNode,
+    this.enabled,
   }) : super(key: key);
 
   final CaretMoved? onCaretMoved;
@@ -24,8 +32,17 @@ class TrackingTextInput extends StatefulWidget {
   final String? hint;
 
   final bool isObscured;
-  final IconButton icon;
   final TextEditingController textEditingController;
+
+  final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  final Iterable<String>? autofillHints;
+  final FormFieldValidator<String>? validator;
+  final ValueChanged<String>? onFieldSubmitted;
+  final Widget? prefix;
+  final Widget? suffix;
+  final FocusNode? focusNode;
+  final bool? enabled;
 
   @override
   State<TrackingTextInput> createState() => _TrackingTextInputState();
@@ -55,14 +72,26 @@ class _TrackingTextInputState extends State<TrackingTextInput> {
   }
 
   @override
+  void dispose() {
+    _debounceTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: AppHeight.h20),
       child: TextFormField(
         key: _fieldKey,
+        focusNode: widget.focusNode,
         controller: widget.textEditingController,
         obscureText: widget.isObscured,
-        validator: (value) {
+        keyboardType: widget.keyboardType,
+        textInputAction: widget.textInputAction,
+        autofillHints: widget.autofillHints,
+        onFieldSubmitted: widget.onFieldSubmitted,
+        enabled: widget.enabled,
+        validator: widget.validator ?? (value) {
           if (value == null || value.isEmpty) {
             return '*Required';
           }
@@ -70,7 +99,8 @@ class _TrackingTextInputState extends State<TrackingTextInput> {
         },
         decoration: InputDecoration(
           hintText: widget.hint,
-          suffixIcon: widget.icon,
+          prefixIcon: widget.prefix,
+          suffixIcon: widget.suffix,
           fillColor: ColorManager.redWhite,
           border: OutlineInputBorder(
             borderSide: BorderSide.none,

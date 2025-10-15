@@ -50,6 +50,11 @@ class FirebaseAppointmentRemoteDataSource implements AppointmentDataSource {
   Future<int> addAppointment(AppointmentModel appointmentModel) async {
     try {
       final uid = _uidOrThrow();
+      // Disallow admins from creating/booking appointments at the data layer
+      final role = await _currentUserRole();
+      if (role == 'admin') {
+        throw ServerException();
+      }
       final id = appointmentModel.id ?? DateTime.now().millisecondsSinceEpoch;
       final numericUserId = appointmentModel.userId == 0
           ? await _currentUserNumericId()

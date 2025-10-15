@@ -9,6 +9,8 @@ import 'package:fitness_app/features/routine/presentation/routine_form/ui/routin
 import 'package:fitness_app/features/routine/presentation/get_routines/widgets/routine_card.dart';
 import 'package:fitness_app/core/widgets/user_avatar_action.dart';
 import 'package:fitness_app/core/widgets/main_menu_button.dart';
+import 'package:fitness_app/features/profile/infrastructure/services/profile_guard.dart';
+import 'package:fitness_app/features/profile/presentation/profile_page.dart';
 
 import '../bloc/routine_list_bloc.dart';
 import '../bloc/routine_list_event.dart';
@@ -93,17 +95,39 @@ class _RoutinePageState extends State<RoutinePage> {
                 statusBarColor: Colors.transparent,
               ),
               child: Scaffold(
-                floatingActionButton: sharedPreferences.getString('role') ==
-                        "trainer"
-                    ? FloatingActionButton(
-                        heroTag: 'routineFab',
-                        child: const Icon(Icons.add),
-                        onPressed: () {
-                          listBloc
-                              .add(const RoutineListAddButtonClickedEvent());
-                        },
-                      )
-                    : null,
+                floatingActionButton:
+                    sharedPreferences.getString('role') == "trainer"
+                        ? FloatingActionButton(
+                            heroTag: 'routineFab',
+                            child: const Icon(Icons.add),
+                            onPressed: () {
+                              () async {
+                                final ok = await sl<ProfileGuardService>()
+                                    .isComplete();
+                                if (!ok) {
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Please complete your profile to add a routine.',
+                                      ),
+                                    ),
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const ProfilePage(),
+                                    ),
+                                  );
+                                  return;
+                                }
+                                listBloc.add(
+                                  const RoutineListAddButtonClickedEvent(),
+                                );
+                              }();
+                            },
+                          )
+                        : null,
                 appBar: AppBar(
                   title: Text(strings.titleRoutineLabel),
                   leading: const MainMenuButton(),

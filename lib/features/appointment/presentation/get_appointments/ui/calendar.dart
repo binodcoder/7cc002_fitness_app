@@ -77,6 +77,7 @@ class _CalendarPageState extends State<CalendarPage> {
   final Map<int, Future<String>> _pendingClientNameById = {};
   Set<DateTime> _availabilityDays = {};
   int? _selectedTrainerFilterId;
+  String? _availabilityToken;
 
   @override
   void dispose() {
@@ -135,15 +136,30 @@ class _CalendarPageState extends State<CalendarPage> {
       final start = _monthStart(focus).subtract(const Duration(days: 7));
       final end = _monthEnd(focus).add(const Duration(days: 7));
       Set<DateTime> set;
-      if (_selectedTrainerFilterId != null) {
+      // Respect explicit filter; otherwise, when in trainer mode, default to own availability
+      final role = sharedPreferences.getString('role');
+      final int? trainerIdToUse = _selectedTrainerFilterId ??
+          ((role == 'trainer')
+              ? (sharedPreferences.getInt('user_id') ?? 0)
+              : null);
+      final token = '${trainerIdToUse ?? 0}|${start.millisecondsSinceEpoch}|${end.millisecondsSinceEpoch}';
+      _availabilityToken = token;
+      if (trainerIdToUse != null && trainerIdToUse > 0) {
         set = await availabilityService.listAvailableDatesInRangeForTrainer(
-            trainerId: _selectedTrainerFilterId!, start: start, end: end);
+          trainerId: trainerIdToUse,
+          start: start,
+          end: end,
+        );
       } else {
-        set =
-            await availabilityService.listAvailableDatesInRange(start: start, end: end);
+        set = await availabilityService.listAvailableDatesInRange(
+          start: start,
+          end: end,
+        );
       }
       if (!mounted) return;
-      setState(() => _availabilityDays = set);
+      if (_availabilityToken == token) {
+        setState(() => _availabilityDays = set);
+      }
     } catch (_) {}
   }
 
@@ -152,6 +168,7 @@ class _CalendarPageState extends State<CalendarPage> {
     final strings = AppStrings.of(context);
 
     final isTrainer = sharedPreferences.getString('role') == "trainer";
+    final isAdmin = sharedPreferences.getString('role') == "admin";
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
@@ -159,7 +176,7 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
       child: Scaffold(
         backgroundColor: ColorManager.darkWhite,
-        floatingActionButton: !isTrainer
+        floatingActionButton: !(isTrainer || isAdmin)
             ? FloatingActionButton(
                 heroTag: 'calendarFab',
                 backgroundColor: ColorManager.primary,
@@ -260,6 +277,18 @@ class _CalendarPageState extends State<CalendarPage> {
                         current is! CalendarActionState,
                     listener: (context, state) async {
                       if (state is CalendarNavigateToAddActionState) {
+                        // Block admins from booking appointments
+                        final isAdmin =
+                            sharedPreferences.getString('role') == "admin";
+                        if (isAdmin) {
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    'Admins cannot book appointments.')),
+                          );
+                          return;
+                        }
                         final canProceed =
                             await sl<ProfileGuardService>().isComplete();
                         if (!context.mounted) return;
@@ -333,13 +362,16 @@ class _CalendarPageState extends State<CalendarPage> {
                               state as CalendarLoadedSuccessState;
                           final List<Appointment> allEvents =
                               successState.appointments;
-                          // Apply trainer filter (if any) to visible events
+                          // Apply trainer filter (dropdown) or default to self when in trainer mode
+                          final int? trainerIdForView = _selectedTrainerFilterId ??
+                              ((sharedPreferences.getString('role') == 'trainer')
+                                  ? (sharedPreferences.getInt('user_id') ?? 0)
+                                  : null);
                           final List<Appointment> visibleEvents =
-                              _selectedTrainerFilterId == null
+                              (trainerIdForView == null || trainerIdForView == 0)
                                   ? allEvents
                                   : allEvents
-                                      .where((e) =>
-                                          e.trainerId == _selectedTrainerFilterId)
+                                      .where((e) => e.trainerId == trainerIdForView)
                                       .toList();
                           eventBloc.add(EventDaySelectEvent(
                               selectedDay: _focusedDay,
@@ -351,13 +383,16 @@ class _CalendarPageState extends State<CalendarPage> {
                             selectedDay: _selectedDay,
                             calendarFormat: _calendarFormat,
                             onDaySelected: (selectedDay, focusedDay) {
-                              // Respect trainer filter when switching days
+                              // Respect trainer filter (or trainer mode default) when switching days
+                              final int? trainerIdForView = _selectedTrainerFilterId ??
+                                  ((sharedPreferences.getString('role') == 'trainer')
+                                      ? (sharedPreferences.getInt('user_id') ?? 0)
+                                      : null);
                               final List<Appointment> visibleEvents =
-                                  _selectedTrainerFilterId == null
+                                  (trainerIdForView == null || trainerIdForView == 0)
                                       ? allEvents
                                       : allEvents
-                                          .where((e) => e.trainerId ==
-                                              _selectedTrainerFilterId)
+                                          .where((e) => e.trainerId == trainerIdForView)
                                           .toList();
                               eventBloc.add(EventDaySelectEvent(
                                   selectedDay: selectedDay,
@@ -380,12 +415,15 @@ class _CalendarPageState extends State<CalendarPage> {
                             },
                             // Show dots only for events matching the current filter (if any)
                             eventLoader: (day) {
+                              final int? trainerIdForView = _selectedTrainerFilterId ??
+                                  ((sharedPreferences.getString('role') == 'trainer')
+                                      ? (sharedPreferences.getInt('user_id') ?? 0)
+                                      : null);
                               final List<Appointment> visibleEvents =
-                                  _selectedTrainerFilterId == null
+                                  (trainerIdForView == null || trainerIdForView == 0)
                                       ? allEvents
                                       : allEvents
-                                          .where((e) => e.trainerId ==
-                                              _selectedTrainerFilterId)
+                                          .where((e) => e.trainerId == trainerIdForView)
                                           .toList();
                               return visibleEvents
                                   .where((event) => isSameDay(event.date, day))
@@ -476,6 +514,11 @@ class _CalendarPageState extends State<CalendarPage> {
                                     title: display,
                                     startTime: appointmentModel.startTime,
                                     endTime: appointmentModel.endTime,
+                                    trainerName: _trainerNameById[
+                                            appointmentModel.trainerId] ??
+                                        'Trainer #${appointmentModel.trainerId}',
+                                    clientName: display,
+                                    remarks: appointmentModel.remark ?? '',
                                     trailing: _StatusChip(status: status),
                                     onTap: () {
                                       if (!mounted) return;
@@ -534,6 +577,9 @@ class _CalendarPageState extends State<CalendarPage> {
                                 title: title,
                                 startTime: appointmentModel.startTime,
                                 endTime: appointmentModel.endTime,
+                                trainerName: title,
+                                clientName: 'Me',
+                                remarks: appointmentModel.remark ?? '',
                                 trailing: _StatusChip(status: status),
                                 onTap: () {
                                   if (!mounted) return;

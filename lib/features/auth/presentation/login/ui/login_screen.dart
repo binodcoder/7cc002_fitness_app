@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -17,11 +16,15 @@ import 'package:fitness_app/features/auth/application/auth/auth_bloc.dart';
 import 'package:fitness_app/features/auth/application/auth/auth_event.dart';
 import '../widgets/bear_log_in_controller.dart';
 import 'package:fitness_app/core/widgets/custom_button.dart';
-import '../widgets/tracking_text_input.dart';
+import '../widgets/login_header.dart';
+import '../widgets/auth_form_card.dart';
+import '../widgets/username_field.dart';
+import '../widgets/password_field.dart';
+import '../widgets/or_divider.dart';
+import '../widgets/google_sign_in_button.dart';
 import 'package:fitness_app/features/auth/application/reset_password/reset_password_bloc.dart';
 import 'package:fitness_app/features/auth/application/reset_password/reset_password_event.dart';
 import 'package:fitness_app/features/auth/application/reset_password/reset_password_state.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 
 class LoginPage extends StatefulWidget {
@@ -60,9 +63,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
-    EdgeInsets devicePadding = MediaQuery.of(context).padding;
+    // MediaQuery size if needed later
 
     return BlocConsumer<LoginBloc, LoginState>(
       bloc: loginBloc,
@@ -147,280 +148,102 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Positioned.fill(
-                      child: SingleChildScrollView(
-                        padding: EdgeInsets.only(
+                      child: SafeArea(
+                        child: SingleChildScrollView(
+                          padding: EdgeInsets.only(
                             left: AppWidth.w20,
                             right: AppWidth.w20,
-                            top: devicePadding.top + AppHeight.h50),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Center(
-                              child: Text(
-                                "Fitness App",
-                                style: getBoldStyle(
-                                  fontSize: FontSize.s30,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              height: size.height * 0.2,
-                              padding: EdgeInsets.only(
-                                  left: AppWidth.w30, right: AppWidth.w30),
-                              child: FlareActor(
-                                "assets/images/Teddy.flr",
-                                shouldClip: false,
-                                alignment: Alignment.bottomCenter,
-                                fit: BoxFit.contain,
-                                controller: bearLogInController,
-                              ),
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surface,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(AppRadius.r25),
-                                ),
-                              ),
-                              child: Form(
-                                key: formKey,
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: AppWidth.w20,
-                                  ),
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: AppWidth.w20,
-                                      vertical: AppHeight.h20,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color:
-                                          Theme.of(context).colorScheme.surface,
-                                      borderRadius: BorderRadius.circular(
-                                        AppRadius.r20,
+                            top: AppHeight.h50,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              LoginHeader(controller: bearLogInController),
+                              AuthFormCard(
+                                child: Form(
+                                  key: formKey,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      UsernameField(
+                                        controller: userNameController,
+                                        bearController: bearLogInController,
+                                        onCaretChanged: (caret) {
+                                          caretView = caret;
+                                        },
                                       ),
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          height: AppHeight.h10,
-                                        ),
-                                        Text(
-                                          "UserName",
-                                          style: getBoldStyle(
-                                            fontSize: FontSize.s15,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: AppHeight.h8,
-                                        ),
-                                        TrackingTextInput(
-                                          hint: "UserName",
-                                          textEditingController:
-                                              userNameController,
-                                          isObscured: false,
-                                          icon: IconButton(
-                                            onPressed: () {},
-                                            icon: Icon(
-                                              Icons.person,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                              size: FontSize.s20,
-                                            ),
-                                          ),
-                                          onCaretMoved: (Offset? caret) {
-                                            caretView = caret;
-                                            bearLogInController
-                                                .coverEyes(caret == null);
-                                            bearLogInController.lookAt(caret);
-                                          },
-                                        ),
-                                        Text(
-                                          "Password",
-                                          style: getBoldStyle(
-                                            fontSize: FontSize.s15,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: AppHeight.h8,
-                                        ),
-                                        TrackingTextInput(
-                                          hint: "Password",
-                                          isObscured: !_passwordVisible,
-                                          textEditingController:
-                                              passwordController,
-                                          icon: IconButton(
-                                            icon: Icon(
-                                              _passwordVisible
-                                                  ? Icons.visibility
-                                                  : Icons.visibility_off,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                            ),
-                                            onPressed: () {
-                                              setState(
-                                                () {
-                                                  _passwordVisible =
-                                                      !_passwordVisible;
-                                                  if (_passwordVisible ==
-                                                          true &&
-                                                      caretView != null) {
-                                                    bearLogInController
-                                                        .coverEyes(
-                                                            caretView == null);
-                                                    bearLogInController
-                                                        .lookAt(caretView);
-                                                  }
-                                                },
-                                              );
-                                            },
-                                          ),
-                                          onCaretMoved: (Offset? caret) {
-                                            if (_passwordVisible == false) {
-                                              bearLogInController
-                                                  .coverEyes(caret != null);
-                                              bearLogInController.lookAt(null);
-                                            } else {
+                                      PasswordField(
+                                        controller: passwordController,
+                                        isVisible: _passwordVisible,
+                                        bearController: bearLogInController,
+                                        usernameCaret: caretView,
+                                        onToggleVisibility: () {
+                                          setState(() {
+                                            _passwordVisible = !_passwordVisible;
+                                            if (_passwordVisible &&
+                                                caretView != null) {
                                               bearLogInController
                                                   .coverEyes(caretView == null);
                                               bearLogInController
                                                   .lookAt(caretView);
                                             }
-                                          },
-                                        ),
-                                        CustomButton(
-                                          child: Text(
-                                            "Login",
-                                            style: getRegularStyle(
-                                              fontSize: FontSize.s16,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onPrimary,
-                                            ),
+                                          });
+                                        },
+                                      ),
+                                      CustomButton(
+                                        child: Text(
+                                          'Login',
+                                          style: getRegularStyle(
+                                            fontSize: FontSize.s16,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary,
                                           ),
-                                          onPressed: () {
-                                            _onLogin(loginBloc);
-                                          },
                                         ),
-                                        SizedBox(
-                                          height: AppHeight.h16,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            TextButton(
-                                              onPressed:
-                                                  _showForgotPasswordDialog,
-                                              child: const Text(
-                                                  'Forgot Password?'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const RegisterPage(),
-                                                  ),
-                                                );
-                                              },
-                                              child: const Text('Register'),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: AppHeight.h10),
-                                        // Divider with text: Or continue with
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Divider(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .outlineVariant,
-                                                thickness: 1,
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: AppWidth.w10),
-                                              child: Text(
-                                                'Or continue with',
-                                                style: getRegularStyle(
-                                                  fontSize: FontSize.s14,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .onSurface
-                                                      .withAlpha(178),
+                                        onPressed: () {
+                                          _onLogin(loginBloc);
+                                        },
+                                      ),
+                                      SizedBox(height: AppHeight.h16),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          TextButton(
+                                            onPressed:
+                                                _showForgotPasswordDialog,
+                                            child:
+                                                const Text('Forgot Password?'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const RegisterPage(),
                                                 ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Divider(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .outlineVariant,
-                                                thickness: 1,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: AppHeight.h10),
-                                        OutlinedButton.icon(
-                                          icon: const FaIcon(
-                                            FontAwesomeIcons.google,
-                                            size: 20,
-                                            color: Color(0xFF4285F4),
+                                              );
+                                            },
+                                            child: const Text('Register'),
                                           ),
-                                          label: Text(
-                                            'Sign in with Google',
-                                            style: getRegularStyle(
-                                              fontSize: FontSize.s16,
-                                              color: const Color(0xFF3C4043),
-                                            ),
-                                          ),
-                                          style: OutlinedButton.styleFrom(
-                                            backgroundColor: Colors.white,
-                                            side: const BorderSide(
-                                                color: Color(0xFFDADCE0)),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
-                                            padding: EdgeInsets.symmetric(
-                                              vertical: AppHeight.h12,
-                                              horizontal: AppWidth.w20,
-                                            ),
-                                            minimumSize: Size(
-                                                double.infinity, AppHeight.h50),
-                                          ),
-                                          onPressed: () {
-                                            loginBloc.add(
-                                                const GoogleSignInPressed());
-                                          },
-                                        ),
-                                      ],
-                                    ),
+                                        ],
+                                      ),
+                                      const OrDivider(),
+                                      GoogleSignInButton(
+                                        onPressed: () {
+                                          loginBloc
+                                              .add(const GoogleSignInPressed());
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

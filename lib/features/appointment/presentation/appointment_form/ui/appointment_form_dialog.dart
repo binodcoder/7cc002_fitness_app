@@ -438,6 +438,17 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                           ),
                         ),
                         onPressed: () async {
+                          // Prevent admins from creating/booking appointments
+                          if (sharedPreferences.getString('role') == 'admin') {
+                            Fluttertoast.cancel();
+                            Fluttertoast.showToast(
+                              msg: 'Admins cannot create appointments.',
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: ColorManager.error,
+                            );
+                            return;
+                          }
                           final errors = <String>[];
                           if (_selectedTrainer == null) {
                             errors.add('Please select a trainer.');

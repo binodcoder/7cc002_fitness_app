@@ -198,27 +198,58 @@ class AppointmentAvailabilityService {
     final startKey = key(start);
     final endKey = key(end);
 
-    final qs = await _col
-        .where('trainerId', isEqualTo: trainerId)
-        .where('dateKey', isGreaterThanOrEqualTo: startKey)
-        .where('dateKey', isLessThanOrEqualTo: endKey)
-        .get();
-    final set = <String>{};
-    for (final d in qs.docs) {
-      final m = d.data();
-      final dk = (m['dateKey'] as String?) ?? '';
-      if (dk.isNotEmpty) set.add(dk);
-    }
-
-    DateTime parseDk(String dk) {
-      try {
-        final p = dk.split('-');
-        return DateTime(int.parse(p[0]), int.parse(p[1]), int.parse(p[2]));
-      } catch (_) {
-        return DateTime.now();
+    try {
+      // Preferred: composite query by trainerId + dateKey range
+      final qs = await _col
+          .where('trainerId', isEqualTo: trainerId)
+          .where('dateKey', isGreaterThanOrEqualTo: startKey)
+          .where('dateKey', isLessThanOrEqualTo: endKey)
+          .get();
+      final set = <String>{};
+      for (final d in qs.docs) {
+        final m = d.data();
+        final dk = (m['dateKey'] as String?) ?? '';
+        if (dk.isNotEmpty) set.add(dk);
       }
+      DateTime parseDk(String dk) {
+        try {
+          final p = dk.split('-');
+          return DateTime(int.parse(p[0]), int.parse(p[1]), int.parse(p[2]));
+        } catch (_) {
+          return DateTime.now();
+        }
+      }
+      return set.map(parseDk).toSet();
+    } on FirebaseException catch (e) {
+      // Fallback when composite index is missing: query by date range only,
+      // then filter by trainerId client-side.
+      if (e.code == 'failed-precondition') {
+        final qs = await _col
+            .where('dateKey', isGreaterThanOrEqualTo: startKey)
+            .where('dateKey', isLessThanOrEqualTo: endKey)
+            .get();
+        final set = <String>{};
+        for (final d in qs.docs) {
+          final m = d.data();
+          final tid = (m['trainerId'] as num?)?.toInt() ?? -1;
+          if (tid != trainerId) continue;
+          final dk = (m['dateKey'] as String?) ?? '';
+          if (dk.isNotEmpty) set.add(dk);
+        }
+        DateTime parseDk(String dk) {
+          try {
+            final p = dk.split('-');
+            return DateTime(int.parse(p[0]), int.parse(p[1]), int.parse(p[2]));
+          } catch (_) {
+            return DateTime.now();
+          }
+        }
+        return set.map(parseDk).toSet();
+      }
+      if (e.code == 'permission-denied') {
+        return <DateTime>{};
+      }
+      rethrow;
     }
-
-    return set.map(parseDk).toSet();
   }
 }
