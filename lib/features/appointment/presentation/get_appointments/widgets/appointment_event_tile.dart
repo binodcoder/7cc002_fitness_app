@@ -65,7 +65,6 @@ class AppointmentEventTile extends StatelessWidget {
       subtitle: details == null ? computedSubtitle : null,
       subtitleWidget: details,
       subtitleStyle: theme.textTheme.bodySmall,
-      leading: _TimeBadge(time: startHM),
       trailing: trailing,
       onTap: onTap,
       onEdit: onEdit,
@@ -147,31 +146,5 @@ class AppointmentEventTile extends StatelessWidget {
     final hh = h.toString().padLeft(2, '0');
     final mm = mnt.toString().padLeft(2, '0');
     return '$hh:$mm';
-  }
-}
-
-class _TimeBadge extends StatelessWidget {
-  final String? time;
-  const _TimeBadge({this.time});
-
-  @override
-  Widget build(BuildContext context) {
-    if (time == null || time!.trim().isEmpty) return const SizedBox.shrink();
-    final scheme = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: scheme.primary.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: scheme.primary.withValues(alpha: 0.25)),
-      ),
-      child: Text(
-        time!,
-        style: Theme.of(context)
-            .textTheme
-            .labelMedium
-            ?.copyWith(color: scheme.primary, fontWeight: FontWeight.w700),
-      ),
-    );
   }
 }

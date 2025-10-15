@@ -13,12 +13,10 @@ import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/theme/font_manager.dart';
 import 'package:fitness_app/core/theme/styles_manager.dart';
 
-import 'package:fitness_app/core/widgets/custom_button.dart';
 import '../bloc/appointment_form_bloc.dart';
 import '../bloc/appointment_form_state.dart';
 import 'package:fitness_app/features/appointment/presentation/appointment_form/widgets/trainer_dropdown.dart';
 // Use common text field for date/time with labels
-import 'package:fitness_app/core/widgets/custom_text_form_field.dart';
 import 'package:fitness_app/features/appointment/infrastructure/services/availability_service.dart';
 
 class AppointmentFormDialog extends StatefulWidget {
@@ -52,6 +50,82 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
   bool _loadingSlots = false;
   bool _didInitialSlotsLoad = false;
   int? _selectedSlotId;
+  bool _suppressLoadingOverlay =
+      false; // avoid full-screen spinner on incremental saves
+
+  Future<bool> _timesAreInOrder() {
+    try {
+      final st = _startTimeController.text.trim();
+      final et = _endTimeController.text.trim();
+      if (st.isEmpty || et.isEmpty) return Future.value(false);
+      Duration parse(String t) {
+        final parts = t.split(':');
+        final h = int.parse(parts[0]);
+        final m = int.parse(parts[1]);
+        final s = parts.length > 2 ? int.parse(parts[2]) : 0;
+        return Duration(hours: h, minutes: m, seconds: s);
+      }
+
+      final sd = parse(st);
+      final ed = parse(et);
+      return Future.value(ed > sd);
+    } catch (_) {
+      return Future.value(false);
+    }
+  }
+
+  bool _hasMinimumFields() {
+    return _selectedTrainer != null &&
+        _dateController.text.trim().isNotEmpty &&
+        _startTimeController.text.trim().isNotEmpty &&
+        _endTimeController.text.trim().isNotEmpty;
+  }
+
+  Future<void> _saveIncremental() async {
+    // Only proceed if required fields are present
+    if (!_hasMinimumFields()) return;
+    if (!await _timesAreInOrder()) {
+      Fluttertoast.showToast(
+        msg: 'End time must be after start time.',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: ColorManager.error,
+      );
+      return;
+    }
+    // Validate against trainer availability
+    final ok = await _availabilityService.isWithinAvailability(
+      trainerId: _selectedTrainer!.id,
+      date: _selectedDate,
+      startTime: _startTimeController.text,
+      endTime: _endTimeController.text,
+    );
+    if (!ok) {
+      Fluttertoast.showToast(
+        msg: 'Selected time is outside trainer availability.',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: ColorManager.error,
+      );
+      return;
+    }
+    _suppressLoadingOverlay = true;
+    final model = Appointment(
+      id: widget.appointment?.id,
+      date: _selectedDate,
+      endTime: _endTimeController.text,
+      startTime: _startTimeController.text,
+      trainerId: _selectedTrainer!.id,
+      userId: sharedPreferences.getInt("user_id") ?? 1,
+      remark: _remarksController.text,
+      status: widget.appointment?.status ?? 'pending',
+    );
+    if (widget.appointment != null) {
+      formBloc.add(AppointmentUpdateRequested(appointment: model));
+    } else {
+      formBloc.add(AppointmentCreateRequested(appointment: model));
+    }
+  }
 
   void _shiftDay(int deltaDays) {
     setState(() {
@@ -134,6 +208,8 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
     // No in-memory TimeOfDay state needed; controllers hold normalized strings
   }
 
+  // (text editor class is defined below the widget class)
+
   @override
   void dispose() {
     _dateController.dispose();
@@ -151,17 +227,28 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
     return BlocConsumer<AppointmentFormBloc, AppointmentFormState>(
       bloc: formBloc,
       listenWhen: (previous, current) => current is AppointmentFormActionState,
-      buildWhen: (previous, current) => current is! AppointmentFormActionState,
+      buildWhen: (previous, current) {
+        if (_suppressLoadingOverlay && current is AppointmentFormLoading) {
+          return false; // keep UI, avoid full-screen spinner on incremental save
+        }
+        return current is! AppointmentFormActionState;
+      },
       listener: (context, state) {
-        if (state is AppointmentFormLoading) {
-        } else if (state is AppointmentCreateSuccess) {
-          if (!mounted) return;
-          Navigator.pop(context);
-        } else if (state is AppointmentUpdateSuccess) {
-          if (!mounted) return;
-          Navigator.pop(context);
-          Navigator.pop(context);
+        if (state is AppointmentCreateSuccess ||
+            state is AppointmentUpdateSuccess) {
+          if (_suppressLoadingOverlay) {
+            _suppressLoadingOverlay = false;
+            Fluttertoast.showToast(
+              msg: 'Saved',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+            );
+          } else {
+            if (!mounted) return;
+            Navigator.pop(context);
+          }
         } else if (state is AppointmentFormError) {
+          _suppressLoadingOverlay = false;
           Fluttertoast.cancel();
           Fluttertoast.showToast(
             msg: state.message,
@@ -201,8 +288,7 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                 TrainerEntity? initial;
                 if (isTrainer) {
                   // Pick myself when I am a trainer
-                  final myNumericId =
-                      sharedPreferences.getInt('user_id') ?? 0;
+                  final myNumericId = sharedPreferences.getInt('user_id') ?? 0;
                   initial = trainers
                       .where((t) => t.id == myNumericId)
                       .cast<TrainerEntity?>()
@@ -411,142 +497,52 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
                                           _endTimeController.text = '';
                                         }
                                       });
+                                      if (sel) {
+                                        _saveIncremental();
+                                      }
                                     },
                                   ))
                               .toList(),
                         ),
                       SizedBox(height: size.height * 0.02),
-                      SizedBox(
-                        height: size.height * 0.03,
-                      ),
-                      CustomTextFormField(
-                        label: 'Remarks',
-                        controller: _remarksController,
-                        hint: 'Enter remarks',
-                        minLines: 3,
-                        maxLines: 5,
-                      ),
-                      SizedBox(
-                        height: size.height * 0.03,
-                      ),
-                      CustomButton(
-                        child: Text(
-                          strings.save,
-                          style: getRegularStyle(
-                            fontSize: FontSize.s16,
-                            color: ColorManager.white,
-                          ),
+                      SizedBox(height: size.height * 0.01),
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('Remarks'),
+                        subtitle: Text(
+                          _remarksController.text.trim().isEmpty
+                              ? 'Tap to add remarks'
+                              : _remarksController.text.trim(),
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        onPressed: () async {
-                          // Prevent admins from creating/booking appointments
-                          if (sharedPreferences.getString('role') == 'admin') {
-                            Fluttertoast.cancel();
-                            Fluttertoast.showToast(
-                              msg: 'Admins cannot create appointments.',
-                              toastLength: Toast.LENGTH_LONG,
-                              gravity: ToastGravity.BOTTOM,
-                              backgroundColor: ColorManager.error,
-                            );
-                            return;
-                          }
-                          final errors = <String>[];
-                          if (_selectedTrainer == null) {
-                            errors.add('Please select a trainer.');
-                          }
-                          if (_dateController.text.trim().isEmpty) {
-                            errors.add('Please select a date.');
-                          }
-                          if (_startTimeController.text.trim().isEmpty ||
-                              _endTimeController.text.trim().isEmpty) {
-                            errors.add('Please select start and end time.');
-                          }
-
-                          bool isTimeOrderValid() {
-                            try {
-                              final st = _startTimeController.text.trim();
-                              final et = _endTimeController.text.trim();
-                              if (st.isEmpty || et.isEmpty) return false;
-                              Duration parse(String t) {
-                                final parts = t.split(':');
-                                final h = int.parse(parts[0]);
-                                final m = int.parse(parts[1]);
-                                final s =
-                                    parts.length > 2 ? int.parse(parts[2]) : 0;
-                                return Duration(
-                                    hours: h, minutes: m, seconds: s);
-                              }
-
-                              final sd = parse(st);
-                              final ed = parse(et);
-                              return ed > sd;
-                            } catch (_) {
-                              return false;
-                            }
-                          }
-
-                          if (!isTimeOrderValid()) {
-                            errors.add('End time must be after start time.');
-                          }
-
-                          if (errors.isNotEmpty) {
-                            Fluttertoast.cancel();
-                            Fluttertoast.showToast(
-                              msg: errors.first,
-                              toastLength: Toast.LENGTH_LONG,
-                              gravity: ToastGravity.BOTTOM,
-                              backgroundColor: ColorManager.error,
-                            );
-                            return;
-                          }
-
-                          // Validate against trainer availability
-                          final ok =
-                              await _availabilityService.isWithinAvailability(
-                            trainerId: _selectedTrainer!.id,
-                            date: _selectedDate,
-                            startTime: _startTimeController.text,
-                            endTime: _endTimeController.text,
+                        trailing: Icon(
+                          _remarksController.text.trim().isEmpty
+                              ? Icons.add
+                              : Icons.edit,
+                        ),
+                        onTap: () async {
+                          final v = await Navigator.of(context).push<String>(
+                            MaterialPageRoute(
+                              fullscreenDialog: true,
+                              builder: (_) => _TextEditPage(
+                                title: 'Remarks',
+                                initial: _remarksController.text,
+                                minLines: 3,
+                                maxLines: 5,
+                              ),
+                            ),
                           );
-                          if (!ok) {
-                            Fluttertoast.cancel();
-                            Fluttertoast.showToast(
-                              msg:
-                                  'Selected time is outside trainer availability.',
-                              toastLength: Toast.LENGTH_LONG,
-                              gravity: ToastGravity.BOTTOM,
-                              backgroundColor: ColorManager.error,
-                            );
-                            return;
-                          }
-
-                          if (widget.appointment != null) {
-                            final appointmentModel = Appointment(
-                              id: widget.appointment!.id,
-                              date: _selectedDate,
-                              endTime: _endTimeController.text,
-                              startTime: _startTimeController.text,
-                              trainerId: _selectedTrainer!.id,
-                              userId: sharedPreferences.getInt("user_id") ?? 1,
-                              remark: _remarksController.text,
-                              status: widget.appointment!.status,
-                            );
-                            formBloc.add(AppointmentUpdateRequested(
-                                appointment: appointmentModel));
-                          } else {
-                            final appointmentModel = Appointment(
-                              date: _selectedDate,
-                              endTime: _endTimeController.text,
-                              startTime: _startTimeController.text,
-                              trainerId: _selectedTrainer!.id,
-                              userId: sharedPreferences.getInt("user_id") ?? 1,
-                              remark: _remarksController.text,
-                              status: 'pending',
-                            );
-                            formBloc.add(AppointmentCreateRequested(
-                                appointment: appointmentModel));
+                          if (v != null) {
+                            setState(() => _remarksController.text = v.trim());
+                            await _saveIncremental();
                           }
                         },
                       ),
+                      SizedBox(
+                        height: size.height * 0.03,
+                      ),
+                      // Removed bottom Save button; changes persist incrementally
                       const SizedBox(height: 10),
                     ],
                   ),
@@ -560,6 +556,79 @@ class _AppointmentFormDialogState extends State<AppointmentFormDialog> {
             return const SizedBox();
         }
       },
+    );
+  }
+}
+
+class _TextEditPage extends StatefulWidget {
+  final String title;
+  final String initial;
+  final int minLines;
+  final int maxLines;
+  const _TextEditPage({
+    required this.title,
+    required this.initial,
+    this.minLines = 1,
+    this.maxLines = 1,
+  });
+
+  @override
+  State<_TextEditPage> createState() => _TextEditPageState();
+}
+
+class _TextEditPageState extends State<_TextEditPage> {
+  late final TextEditingController _ctrl =
+      TextEditingController(text: widget.initial);
+  String? _error;
+
+  void _save() {
+    // No heavy validation for remarks; ensure not null
+    final text = _ctrl.text.trim();
+    if (widget.maxLines > 1 && text.isEmpty) {
+      setState(() => _error = null);
+    }
+    Navigator.of(context).pop<String>(text);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final fc = Theme.of(context).appBarTheme.foregroundColor ??
+        Theme.of(context).colorScheme.onSurface;
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: TextButton(
+          style: TextButton.styleFrom(foregroundColor: fc),
+          onPressed: () => Navigator.of(context).maybePop(),
+          child: const Text('Cancel'),
+        ),
+        title: Text(widget.title),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: fc),
+            onPressed: _save,
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: TextField(
+            controller: _ctrl,
+            minLines: widget.minLines,
+            maxLines: widget.maxLines,
+            autofocus: true,
+            decoration: InputDecoration(
+              labelText: widget.title,
+              border: const OutlineInputBorder(),
+              isDense: true,
+              errorText: _error,
+            ),
+            onSubmitted: (_) => _save(),
+          ),
+        ),
+      ),
     );
   }
 }

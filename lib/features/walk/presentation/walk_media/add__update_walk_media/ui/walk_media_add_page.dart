@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:fitness_app/features/walk/domain/entities/walk_media.dart';
 import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
@@ -15,11 +15,9 @@ import 'package:firebase_storage/firebase_storage.dart' as fstorage;
 import 'package:firebase_core/firebase_core.dart' as fcore;
 import 'package:fitness_app/firebase_options.dart';
 import 'package:path/path.dart' as p;
-
 import '../bloc/walk_media_add_bloc.dart';
 import '../bloc/walk_media_add_event.dart';
 import '../bloc/walk_media_add_state.dart';
-import '../widgets/image_picker_buttons.dart';
 
 class WalkMediaAddPage extends StatefulWidget {
   const WalkMediaAddPage({super.key, this.walkMedia, this.walkId});
@@ -46,7 +44,16 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
     } else {
       walkMediaAddBloc.add(const WalkMediaAddInitialEvent());
     }
+    walkMediaUrlController.addListener(() {
+      if (mounted) setState(() {});
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    walkMediaUrlController.dispose();
+    super.dispose();
   }
 
   final WalkMediaAddBloc walkMediaAddBloc = sl<WalkMediaAddBloc>();
@@ -78,14 +85,7 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
         }
       },
       builder: (context, state) {
-        // Automatically trigger upload when an imagePath is present
-        if (state.imagePath != null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!_uploading && _lastUploadedPath != state.imagePath) {
-              _uploadAndSetUrl(state.imagePath!);
-            }
-          });
-        }
+        // For now, we don't auto-upload; users paste a URL manually.
         return Scaffold(
           appBar: AppBar(
             backgroundColor: ColorManager.primary,
@@ -106,27 +106,51 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: AppHeight.h30),
-                    ImagePickerButtons(
-                      onPickGallery: () => walkMediaAddBloc.add(
-                        const WalkMediaAddPickFromGalaryButtonPressEvent(),
-                      ),
-                      onPickCamera: () => walkMediaAddBloc.add(
-                        const WalkMediaAddPickFromCameraButtonPressEvent(),
-                      ),
-                      onPickVideo: () => walkMediaAddBloc.add(
-                        const WalkMediaAddPickVideoButtonPressEvent(),
+                    // Users provide a URL directly for now.
+                    Text(
+                      'Paste image or video URL',
+                      style: getRegularStyle(
+                        fontSize: FontSize.s16,
+                        color: ColorManager.black,
                       ),
                     ),
-                    if (_uploading) ...[
-                      const SizedBox(height: 12),
-                      const LinearProgressIndicator(),
-                    ],
-                    if (state.imagePath != null || _uploadedUrl != null) ...[
-                      const SizedBox(height: 12),
-                      _MediaPreview(
-                        localPath: state.imagePath,
-                        remoteUrl: _uploadedUrl,
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: walkMediaUrlController,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        hintText: 'https://...jpg',
+                        labelText: 'Media URL',
+                        suffixIcon: IconButton(
+                          tooltip: 'Paste from clipboard',
+                          icon: const Icon(Icons.paste),
+                          onPressed: () async {
+                            final data =
+                                await Clipboard.getData(Clipboard.kTextPlain);
+                            final text = data?.text?.trim();
+                            if (text != null && text.isNotEmpty) {
+                              if (mounted) {
+                                setState(() {
+                                  walkMediaUrlController.text = text;
+                                });
+                              }
+                            }
+                          },
+                        ),
                       ),
+                      keyboardType: TextInputType.url,
+                      textInputAction: TextInputAction.done,
+                    ),
+                    const SizedBox(height: 12),
+                    if ((walkMediaUrlController.text).isNotEmpty ||
+                        _uploadedUrl != null) ...[
+                      _MediaPreview(
+                        localPath: null,
+                        remoteUrl: walkMediaUrlController.text.isNotEmpty
+                            ? walkMediaUrlController.text
+                            : _uploadedUrl,
+                      ),
+                      const SizedBox(height: 12),
                     ],
                     SizedBox(height: AppHeight.h10),
                     CustomButton(
@@ -141,7 +165,7 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                       ),
                       onPressed: () async {
                         var walkId = widget.walkId;
-                        var userId = sharedPreferences.getInt("user_id");
+                        var userId = sharedPreferences.getInt("user_id") ?? 0;
                         var mediaUrl = walkMediaUrlController.text;
 
                         if (mediaUrl.isNotEmpty) {
@@ -149,7 +173,7 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                             var updatedWalkMedia = WalkMedia(
                               id: widget.walkMedia!.id,
                               walkId: walkId!,
-                              userId: userId!,
+                              userId: userId,
                               mediaUrl: mediaUrl,
                             );
                             walkMediaAddBloc.add(
@@ -158,7 +182,7 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                           } else {
                             var newWalkMedia = WalkMedia(
                               walkId: walkId!,
-                              userId: userId!,
+                              userId: userId,
                               mediaUrl: mediaUrl,
                             );
                             walkMediaAddBloc.add(

@@ -10,7 +10,6 @@ import 'package:fitness_app/core/widgets/user_avatar_action.dart';
 import 'package:fitness_app/core/widgets/main_menu_button.dart';
 import 'package:fitness_app/features/walk/presentation/walk_form/ui/walk_form_page.dart';
 import 'package:fitness_app/features/walk/presentation/walk_list/ui/walk_details_page.dart';
-import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/ui/walk_media.dart';
 import 'package:fitness_app/features/walk/presentation/walk_list/widgets/walk_card_tile.dart';
 import '../../walk_list/bloc/walk_list_bloc.dart';
 import '../../walk_list/bloc/walk_list_event.dart';
@@ -47,26 +46,18 @@ class _WalkListPageState extends State<WalkListPage> {
       listenWhen: (previous, current) => current is WalkListActionState,
       buildWhen: (previous, current) => current is! WalkListActionState,
       listener: (context, state) {
-        if (state is WalkNavigateToCreateActionState) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => const WalkFormPage(),
-              fullscreenDialog: true,
-            ),
-          ).then(
-            (value) => refreshPage(),
-          );
-        } else if (state is WalkNavigateToDetailsActionState) {
-          Navigator.push(
-            context,
+        if (state is WalkNavigateToDetailsActionState) {
+          // Push on root navigator to hide bottom nav bar
+          Navigator.of(context, rootNavigator: true)
+              .push(
             MaterialPageRoute(
               builder: (BuildContext context) => WalkDetailsPage(
                 walk: state.walk,
               ),
               fullscreenDialog: true,
             ),
-          ).then(
+          )
+              .then(
             (value) => refreshPage(),
           );
         } else if (state is WalkNavigateToEditActionState) {
@@ -108,32 +99,6 @@ class _WalkListPageState extends State<WalkListPage> {
               ),
               child: Scaffold(
                 backgroundColor: ColorManager.darkWhite,
-                floatingActionButton: FloatingActionButton(
-                  heroTag: 'walkFab',
-                  backgroundColor: ColorManager.primary,
-                  child: const Icon(Icons.add),
-                  onPressed: () {
-                    () async {
-                      final ok = await sl<ProfileGuardService>().isComplete();
-                      if (!ok) {
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text(
-                                  'Please complete your profile to add a walk.')),
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const ProfilePage(),
-                          ),
-                        );
-                        return;
-                      }
-                      walkBloc.add(const WalkCreateRequested());
-                    }();
-                  },
-                ),
                 appBar: AppBar(
                   backgroundColor: ColorManager.primary,
                   title: Text(strings.titleWalkLabel),
@@ -156,14 +121,8 @@ class _WalkListPageState extends State<WalkListPage> {
                       participantCount: walk.participants.length,
                       isJoined: isJoined,
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => WalkMediaPage(
-                              walkId: walk.id!,
-                            ),
-                          ),
-                        );
+                        // Navigate to details page via BLoC action for consistency
+                        walkBloc.add(WalkDetailsRequested(walk: walk));
                       },
                       onJoinTap: () async {
                         final ok = await sl<ProfileGuardService>().isComplete();

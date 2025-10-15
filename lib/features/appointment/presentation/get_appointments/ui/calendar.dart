@@ -18,12 +18,12 @@ import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
 import 'package:fitness_app/core/widgets/user_avatar_action.dart';
 import 'package:fitness_app/core/widgets/main_menu_button.dart';
-import '../../appointment_form/ui/appointment_form_dialog.dart';
+import 'package:fitness_app/app/app_router.dart';
+import 'package:fitness_app/core/navigation/routes.dart';
 import 'package:fitness_app/features/appointment/domain/usecases/sync.dart';
 import 'package:fitness_app/features/appointment/domain/entities/sync.dart';
 import 'package:fitness_app/features/appointment/infrastructure/services/availability_service.dart';
 import 'package:fitness_app/features/profile/infrastructure/services/profile_guard.dart';
-import 'package:fitness_app/features/profile/presentation/profile_page.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({Key? key}) : super(key: key);
@@ -108,7 +108,9 @@ class _CalendarPageState extends State<CalendarPage> {
           final prof = await _firestore.collection('profiles').doc(uid).get();
           final data = prof.data();
           final name = (data?['name'] as String?)?.trim() ?? '';
-          final display = name.isNotEmpty ? name : (email.isNotEmpty ? email : 'User #$userId');
+          final display = name.isNotEmpty
+              ? name
+              : (email.isNotEmpty ? email : 'User #$userId');
           _clientNameById[userId] = display;
           return display;
         } catch (_) {
@@ -142,7 +144,8 @@ class _CalendarPageState extends State<CalendarPage> {
           ((role == 'trainer')
               ? (sharedPreferences.getInt('user_id') ?? 0)
               : null);
-      final token = '${trainerIdToUse ?? 0}|${start.millisecondsSinceEpoch}|${end.millisecondsSinceEpoch}';
+      final token =
+          '${trainerIdToUse ?? 0}|${start.millisecondsSinceEpoch}|${end.millisecondsSinceEpoch}';
       _availabilityToken = token;
       if (trainerIdToUse != null && trainerIdToUse > 0) {
         set = await availabilityService.listAvailableDatesInRangeForTrainer(
@@ -242,13 +245,13 @@ class _CalendarPageState extends State<CalendarPage> {
                                     value: null,
                                     child: Text('All trainers'),
                                   ),
-                                  ..._trainerNameById.entries.map((e) =>
-                                      DropdownMenuItem<int?>(
-                                        value: e.key,
-                                        child: Text(e.value.isEmpty
-                                            ? 'Trainer #${e.key}'
-                                            : e.value),
-                                      )),
+                                  ..._trainerNameById.entries
+                                      .map((e) => DropdownMenuItem<int?>(
+                                            value: e.key,
+                                            child: Text(e.value.isEmpty
+                                                ? 'Trainer #${e.key}'
+                                                : e.value),
+                                          )),
                                 ],
                                 onChanged: (v) {
                                   setState(() => _selectedTrainerFilterId = v);
@@ -284,8 +287,8 @@ class _CalendarPageState extends State<CalendarPage> {
                           if (!context.mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content: Text(
-                                    'Admins cannot book appointments.')),
+                                content:
+                                    Text('Admins cannot book appointments.')),
                           );
                           return;
                         }
@@ -298,25 +301,16 @@ class _CalendarPageState extends State<CalendarPage> {
                                 content: Text(
                                     'Please complete your profile to book appointments.')),
                           );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const ProfilePage(),
-                            ),
-                          );
+                          AppRouter.router.push(Routes.profile);
                           return;
                         }
                         if (!context.mounted) return;
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                AppointmentFormDialog(
-                              focusedDay: state.focusedDay,
-                              preselectedTrainerId: _selectedTrainerFilterId,
-                            ),
-                            fullscreenDialog: true,
-                          ),
+                        AppRouter.router.push(
+                          Routes.addAppointment,
+                          extra: {
+                            'focusedDay': state.focusedDay,
+                            'preselectedTrainerId': _selectedTrainerFilterId,
+                          },
                         ).then((_) => refreshPage());
                       } else if (state
                           is CalendarNavigateToDetailPageActionState) {
@@ -325,16 +319,12 @@ class _CalendarPageState extends State<CalendarPage> {
                         final isTrainer =
                             sharedPreferences.getString('role') == "trainer";
                         if (isTrainer) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  AppointmentFormDialog(
-                                focusedDay: state.appointment.date,
-                                appointment: state.appointment,
-                              ),
-                              fullscreenDialog: true,
-                            ),
+                          AppRouter.router.push(
+                            Routes.addAppointment,
+                            extra: {
+                              'focusedDay': state.appointment.date,
+                              'appointment': state.appointment,
+                            },
                           ).then((_) => refreshPage());
                         }
                       } else if (state
@@ -363,15 +353,20 @@ class _CalendarPageState extends State<CalendarPage> {
                           final List<Appointment> allEvents =
                               successState.appointments;
                           // Apply trainer filter (dropdown) or default to self when in trainer mode
-                          final int? trainerIdForView = _selectedTrainerFilterId ??
-                              ((sharedPreferences.getString('role') == 'trainer')
-                                  ? (sharedPreferences.getInt('user_id') ?? 0)
-                                  : null);
+                          final int? trainerIdForView =
+                              _selectedTrainerFilterId ??
+                                  ((sharedPreferences.getString('role') ==
+                                          'trainer')
+                                      ? (sharedPreferences.getInt('user_id') ??
+                                          0)
+                                      : null);
                           final List<Appointment> visibleEvents =
-                              (trainerIdForView == null || trainerIdForView == 0)
+                              (trainerIdForView == null ||
+                                      trainerIdForView == 0)
                                   ? allEvents
                                   : allEvents
-                                      .where((e) => e.trainerId == trainerIdForView)
+                                      .where((e) =>
+                                          e.trainerId == trainerIdForView)
                                       .toList();
                           eventBloc.add(EventDaySelectEvent(
                               selectedDay: _focusedDay,
@@ -384,15 +379,21 @@ class _CalendarPageState extends State<CalendarPage> {
                             calendarFormat: _calendarFormat,
                             onDaySelected: (selectedDay, focusedDay) {
                               // Respect trainer filter (or trainer mode default) when switching days
-                              final int? trainerIdForView = _selectedTrainerFilterId ??
-                                  ((sharedPreferences.getString('role') == 'trainer')
-                                      ? (sharedPreferences.getInt('user_id') ?? 0)
-                                      : null);
+                              final int? trainerIdForView =
+                                  _selectedTrainerFilterId ??
+                                      ((sharedPreferences.getString('role') ==
+                                              'trainer')
+                                          ? (sharedPreferences
+                                                  .getInt('user_id') ??
+                                              0)
+                                          : null);
                               final List<Appointment> visibleEvents =
-                                  (trainerIdForView == null || trainerIdForView == 0)
+                                  (trainerIdForView == null ||
+                                          trainerIdForView == 0)
                                       ? allEvents
                                       : allEvents
-                                          .where((e) => e.trainerId == trainerIdForView)
+                                          .where((e) =>
+                                              e.trainerId == trainerIdForView)
                                           .toList();
                               eventBloc.add(EventDaySelectEvent(
                                   selectedDay: selectedDay,
@@ -415,15 +416,21 @@ class _CalendarPageState extends State<CalendarPage> {
                             },
                             // Show dots only for events matching the current filter (if any)
                             eventLoader: (day) {
-                              final int? trainerIdForView = _selectedTrainerFilterId ??
-                                  ((sharedPreferences.getString('role') == 'trainer')
-                                      ? (sharedPreferences.getInt('user_id') ?? 0)
-                                      : null);
+                              final int? trainerIdForView =
+                                  _selectedTrainerFilterId ??
+                                      ((sharedPreferences.getString('role') ==
+                                              'trainer')
+                                          ? (sharedPreferences
+                                                  .getInt('user_id') ??
+                                              0)
+                                          : null);
                               final List<Appointment> visibleEvents =
-                                  (trainerIdForView == null || trainerIdForView == 0)
+                                  (trainerIdForView == null ||
+                                          trainerIdForView == 0)
                                       ? allEvents
                                       : allEvents
-                                          .where((e) => e.trainerId == trainerIdForView)
+                                          .where((e) =>
+                                              e.trainerId == trainerIdForView)
                                           .toList();
                               return visibleEvents
                                   .where((event) => isSameDay(event.date, day))
@@ -451,16 +458,12 @@ class _CalendarPageState extends State<CalendarPage> {
                   listener: (context, state) {
                     if (state is EventNavigateToUpdatePageActionState) {
                       if (!mounted) return;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              AppointmentFormDialog(
-                            focusedDay: state.focusedDay,
-                            appointment: state.appointment,
-                          ),
-                          fullscreenDialog: true,
-                        ),
+                      AppRouter.router.push(
+                        Routes.addAppointment,
+                        extra: {
+                          'focusedDay': state.focusedDay,
+                          'appointment': state.appointment,
+                        },
                       ).then(
                         (value) => refreshPage(),
                       );
@@ -522,16 +525,12 @@ class _CalendarPageState extends State<CalendarPage> {
                                     trailing: _StatusChip(status: status),
                                     onTap: () {
                                       if (!mounted) return;
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              AppointmentFormDialog(
-                                            focusedDay: _focusedDay,
-                                            appointment: appointmentModel,
-                                          ),
-                                          fullscreenDialog: true,
-                                        ),
+                                      AppRouter.router.push(
+                                        Routes.addAppointment,
+                                        extra: {
+                                          'focusedDay': _focusedDay,
+                                          'appointment': appointmentModel,
+                                        },
                                       ).then((_) => refreshPage());
                                     },
                                     onEdit: canActOnPending
@@ -566,9 +565,8 @@ class _CalendarPageState extends State<CalendarPage> {
                                         canActOnPending ? Colors.green : null,
                                     deleteActionColor:
                                         canActOnPending ? Colors.orange : null,
-                                    actionForegroundColor: canActOnPending
-                                        ? Colors.white
-                                        : null,
+                                    actionForegroundColor:
+                                        canActOnPending ? Colors.white : null,
                                   );
                                 },
                               );

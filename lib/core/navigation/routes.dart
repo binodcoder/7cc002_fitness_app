@@ -18,6 +18,9 @@ class Routes {
   static const String addAppointment = '/addAppointment';
   static const String chat = '/chat';
   static const String walkList = '/chatList';
+  static const String walkForm = '/walk/form';
+  static const String walkDetails = '/walk/details';
+  static const String walkMedia = '/walk/media';
   static const String account = '/account';
   static const String profile = '/profile';
   static const String mainMenu = '/menu';

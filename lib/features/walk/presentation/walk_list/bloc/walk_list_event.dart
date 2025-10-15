@@ -34,9 +34,6 @@ class WalkDeleteAllRequested extends WalkListEvent {
   const WalkDeleteAllRequested();
 }
 
-class WalkCreateRequested extends WalkListEvent {
-  const WalkCreateRequested();
-}
 
 class WalkJoinRequested extends WalkListEvent {
   final WalkParticipant walkParticipant;

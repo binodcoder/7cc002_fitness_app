@@ -14,9 +14,10 @@ class WalkCardTile extends StatelessWidget {
   final bool isJoined;
   final int participantCount;
   final VoidCallback onTap;
-  final VoidCallback onJoinTap;
-  final VoidCallback?
-      onEdit; // reserved if needed by slidable actions in future
+  final VoidCallback? onJoinTap;
+  final bool showJoinButton;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   const WalkCardTile({
     super.key,
@@ -27,8 +28,10 @@ class WalkCardTile extends StatelessWidget {
     required this.isJoined,
     required this.participantCount,
     required this.onTap,
-    required this.onJoinTap,
+    this.onJoinTap,
+    this.showJoinButton = true,
     this.onEdit,
+    this.onDelete,
   });
 
   @override
@@ -114,21 +117,40 @@ class WalkCardTile extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        SizedBox(
-                          width: buttonWidth,
-                          height: 36,
-                          child: CustomButton(
-                            onPressed: onJoinTap,
-                            borderRadius: BorderRadius.circular(18),
-                            child: Text(
-                              isJoined ? 'Leave' : 'Join',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge
-                                  ?.copyWith(color: Colors.white),
+                        if (showJoinButton && onJoinTap != null)
+                          SizedBox(
+                            width: buttonWidth,
+                            height: 36,
+                            child: CustomButton(
+                              onPressed: onJoinTap,
+                              borderRadius: BorderRadius.circular(18),
+                              child: Text(
+                                isJoined ? 'Leave' : 'Join',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    ?.copyWith(color: Colors.white),
+                              ),
                             ),
+                          )
+                        else if (onEdit != null || onDelete != null)
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (onEdit != null)
+                                IconButton(
+                                  tooltip: 'Edit',
+                                  icon: const Icon(Icons.edit_outlined),
+                                  onPressed: onEdit,
+                                ),
+                              if (onDelete != null)
+                                IconButton(
+                                  tooltip: 'Delete',
+                                  onPressed: onDelete,
+                                  icon: const Icon(Icons.delete_outline),
+                                ),
+                            ],
                           ),
-                        ),
                       ],
                     );
                   }),

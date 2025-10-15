@@ -3,6 +3,7 @@ import 'package:fitness_app/features/walk/data/data_sources/firebase_walks_remot
 import 'package:fitness_app/features/walk/data/data_sources/walks_local_data_source.dart';
 import 'package:fitness_app/features/walk/data/data_sources/walks_media_local_data_source.dart';
 import 'package:fitness_app/features/walk/data/data_sources/walks_media_remote_data_source.dart';
+import 'package:fitness_app/features/walk/data/data_sources/firebase_walks_media_remote_data_source.dart';
 import 'package:fitness_app/features/walk/data/data_sources/walks_remote_data_source.dart';
 import 'package:fitness_app/features/walk/data/repositories/walk_media_repository_impl.dart';
 import 'package:fitness_app/features/walk/data/repositories/walk_repository_impl.dart';
@@ -72,8 +73,9 @@ void registerWalkInfrastructureDependencies(
           networkInfo: sl(),
         ));
 
-  sl.registerLazySingleton<WalkMediaRemoteDataSource>(
-      () => WalkMediaRemoteDataSourceImpl(client: sl()));
+  sl.registerLazySingleton<WalkMediaRemoteDataSource>(() => kUseFirebaseData
+      ? FirebaseWalkMediaRemoteDataSource()
+      : WalkMediaRemoteDataSourceImpl(client: sl()));
   sl.registerLazySingleton<WalkMediaLocalDataSource>(
       () => WalkMediaLocalDataSourceImpl());
 }

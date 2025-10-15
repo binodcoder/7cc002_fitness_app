@@ -8,6 +8,7 @@ import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/features/auth/application/auth/auth_bloc.dart';
 import 'package:fitness_app/features/auth/application/auth/auth_event.dart';
 import 'package:fitness_app/core/widgets/app_list_tile.dart';
+import 'package:fitness_app/features/walk/presentation/walk_list/ui/my_walks_page.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
@@ -43,6 +44,21 @@ class AccountPage extends StatelessWidget {
             subtitle: 'View and update your profile',
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(Routes.profile),
+          ),
+          AppListTile(
+            leading: const Icon(Icons.directions_walk_outlined),
+            title: 'My Walks',
+            subtitle: 'Create, edit, and delete your walks',
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const MyWalksPage(),
+                  fullscreenDialog: true,
+                ),
+              );
+            },
           ),
           AppListTile(
             leading: const Icon(Icons.settings_outlined),

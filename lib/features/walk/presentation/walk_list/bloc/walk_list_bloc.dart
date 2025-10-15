@@ -26,7 +26,6 @@ class WalkListBloc extends Bloc<WalkListEvent, WalkListState> {
     on<WalkEditRequested>(walkEditRequested);
     on<WalkDeleteRequested>(walkDeleteRequested);
     on<WalkDeleteAllRequested>(walkDeleteAllRequested);
-    on<WalkCreateRequested>(walkCreateRequested);
     on<WalkDetailsRequested>(walkDetailsRequested);
     on<WalkJoinRequested>(walkJoinRequested);
     on<WalkLeaveRequested>(walkLeaveRequested);
@@ -50,15 +49,24 @@ class WalkListBloc extends Bloc<WalkListEvent, WalkListState> {
   }
 
   FutureOr<void> walkDeleteRequested(
-      WalkDeleteRequested event, Emitter<WalkListState> emit) async {}
+      WalkDeleteRequested event, Emitter<WalkListState> emit) async {
+    final id = event.walk.id;
+    if (id == null) return;
+    final res = await deleteWalk(id);
+    await res?.fold((failure) async {
+      emit(WalkListShowErrorActionState(message: mapFailureToMessage(failure)));
+    }, (ok) async {
+      final walkListResult = await getWalks(NoParams());
+      walkListResult!.fold((failure) {
+        emit(WalkListError(message: mapFailureToMessage(failure)));
+      }, (walks) {
+        emit(WalkListLoaded(walks: walks));
+      });
+    });
+  }
 
   FutureOr<void> walkDeleteAllRequested(
       WalkDeleteAllRequested event, Emitter<WalkListState> emit) async {}
-
-  FutureOr<void> walkCreateRequested(
-      WalkCreateRequested event, Emitter<WalkListState> emit) {
-    emit(const WalkNavigateToCreateActionState());
-  }
 
   FutureOr<void> walkDetailsRequested(
       WalkDetailsRequested event, Emitter<WalkListState> emit) {

@@ -50,9 +50,6 @@ class WalkListShowErrorActionState extends WalkListActionState {
   List<Object?> get props => [message];
 }
 
-class WalkNavigateToCreateActionState extends WalkListActionState {
-  const WalkNavigateToCreateActionState();
-}
 
 class WalkNavigateToDetailsActionState extends WalkListActionState {
   final Walk walk;

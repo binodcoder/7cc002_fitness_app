@@ -1,13 +1,18 @@
 import 'package:fitness_app/features/chat/chat_users_page.dart';
+import 'package:fitness_app/features/walk/domain/entities/walk.dart';
+import 'package:fitness_app/features/walk/presentation/walk_form/ui/walk_form_page.dart';
+import 'package:fitness_app/features/walk/presentation/walk_list/ui/walk_details_page.dart';
 import 'package:fitness_app/features/walk/presentation/walk_list/ui/walk_list_page.dart';
 import 'package:fitness_app/app/home_scaffold.dart';
 import 'package:fitness_app/features/account/presentation/account_page.dart';
 import 'package:fitness_app/app/main_menu_page.dart';
 import 'package:fitness_app/features/profile/presentation/profile_page.dart';
+import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/ui/walk_media.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:fitness_app/features/appointment/presentation/appointment_form/ui/appointment_form_dialog.dart';
+import 'package:fitness_app/features/appointment/domain/entities/appointment.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/ui/calendar.dart';
 import 'package:fitness_app/features/live_training/presentation/add_update_live_training/ui/add_live_training.dart';
 import 'package:fitness_app/features/live_training/presentation/get_live_trainings/ui/live_training.dart';
@@ -138,7 +143,48 @@ class AppRouter {
       // Removed AppointmentDetailsPage route; details view no longer used
       GoRoute(
         path: Routes.addAppointment,
-        builder: (context, state) => const AppointmentFormDialog(),
+        builder: (context, state) {
+          final extra = state.extra;
+          Appointment? appointment;
+          DateTime? focusedDay;
+          int? preselectedTrainerId;
+          if (extra is Map) {
+            final m = extra as Map;
+            final a = m['appointment'];
+            final d = m['focusedDay'];
+            final t = m['preselectedTrainerId'];
+            if (a is Appointment) appointment = a;
+            if (d is DateTime) focusedDay = d;
+            if (t is int) preselectedTrainerId = t;
+          }
+          return AppointmentFormDialog(
+            appointment: appointment,
+            focusedDay: focusedDay,
+            preselectedTrainerId: preselectedTrainerId,
+          );
+        },
+      ),
+      // Walk related pages
+      GoRoute(
+        path: Routes.walkForm,
+        builder: (context, state) {
+          final walk = state.extra is Walk ? state.extra as Walk : null;
+          return WalkFormPage(walk: walk);
+        },
+      ),
+      GoRoute(
+        path: Routes.walkDetails,
+        builder: (context, state) {
+          final walk = state.extra is Walk ? state.extra as Walk : null;
+          return WalkDetailsPage(walk: walk);
+        },
+      ),
+      GoRoute(
+        path: Routes.walkMedia,
+        builder: (context, state) {
+          final id = state.extra is int ? state.extra as int : 0;
+          return WalkMediaPage(walkId: id);
+        },
       ),
     ],
     errorBuilder: (context, state) => const _RouteNotFoundView(),
