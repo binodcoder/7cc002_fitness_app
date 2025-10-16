@@ -123,7 +123,7 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
     routineNameController.dispose();
     descriptionController.dispose();
     durationController.dispose();
-    
+
     for (final e in _exerciseItems) {
       e.name.dispose();
       e.description.dispose();
@@ -238,8 +238,9 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
                             title: 'Routine Name',
                             initial: routineNameController.text,
                             keyboardType: TextInputType.name,
-                            validator: (t) =>
-                                (t == null || t.trim().isEmpty) ? 'Required' : null,
+                            validator: (t) => (t == null || t.trim().isEmpty)
+                                ? 'Required'
+                                : null,
                           );
                           if (v != null) {
                             setState(() => routineNameController.text = v);
@@ -271,8 +272,9 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
                             initial: descriptionController.text,
                             minLines: 3,
                             maxLines: 5,
-                            validator: (t) =>
-                                (t == null || t.trim().isEmpty) ? 'Required' : null,
+                            validator: (t) => (t == null || t.trim().isEmpty)
+                                ? 'Required'
+                                : null,
                           );
                           if (v != null) {
                             setState(() => descriptionController.text = v);
@@ -354,7 +356,11 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
                                     : _exerciseItems[i].name.text.trim(),
                               ),
                               subtitle: Text(
-                                _exerciseItems[i].description.text.trim().isEmpty
+                                _exerciseItems[i]
+                                        .description
+                                        .text
+                                        .trim()
+                                        .isEmpty
                                     ? 'Tap to edit'
                                     : _exerciseItems[i].description.text.trim(),
                                 maxLines: 2,
@@ -370,7 +376,8 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
                                 tooltip: 'Remove exercise',
                               ),
                               onTap: () async {
-                                final changed = await Navigator.of(context).push<bool>(
+                                final changed =
+                                    await Navigator.of(context).push<bool>(
                                   MaterialPageRoute(
                                     fullscreenDialog: true,
                                     builder: (_) => _ExerciseEditPage(
@@ -395,7 +402,8 @@ class _RoutineFormPageState extends State<RoutineFormPage> {
                             onPressed: () async {
                               final item = _ExerciseItemData();
                               _exerciseItems.add(item);
-                              final changed = await Navigator.of(context).push<bool>(
+                              final changed =
+                                  await Navigator.of(context).push<bool>(
                                 MaterialPageRoute(
                                   fullscreenDialog: true,
                                   builder: (_) => _ExerciseEditPage(
@@ -478,7 +486,6 @@ class _ExerciseFormCard extends StatelessWidget {
   final VoidCallback onRemove;
 
   const _ExerciseFormCard({
-    super.key,
     required this.index,
     required this.data,
     required this.onRemove,
@@ -693,8 +700,8 @@ class _DifficultyEditPageState extends State<_DifficultyEditPage> {
         actions: [
           TextButton(
             style: TextButton.styleFrom(foregroundColor: fc),
-            onPressed: () => Navigator.of(context)
-                .pop<String>(_selected?.name ?? ''),
+            onPressed: () =>
+                Navigator.of(context).pop<String>(_selected?.name ?? ''),
             child: const Text('Save'),
           )
         ],
@@ -768,126 +775,145 @@ class _ExerciseEditPageState extends State<_ExerciseEditPage> {
     final v = await Navigator.of(context).push<String>(
       MaterialPageRoute(
         fullscreenDialog: true,
-        builder: (_) => _DifficultyEditPage(initial: widget.data.difficulty.text),
+        builder: (_) =>
+            _DifficultyEditPage(initial: widget.data.difficulty.text),
       ),
     );
-    if (v != null) setState(() {
-      widget.data.difficulty.text = v;
-      _dirty = true;
-    });
+    if (v != null) {
+      setState(() {
+        widget.data.difficulty.text = v;
+        _dirty = true;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        Navigator.of(context).pop<bool>(_dirty);
-        return false;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Exercise #${widget.index}'),
-        ),
-        body: ListView(
-          padding: EdgeInsets.symmetric(horizontal: AppWidth.w30, vertical: 12),
-          children: [
-          ListTile(
-            title: const Text('Name'),
-            subtitle: Text(
-                widget.data.name.text.trim().isEmpty ? 'Add name' : widget.data.name.text.trim()),
-            trailing: Icon(
-              widget.data.name.text.trim().isEmpty ? Icons.add : Icons.edit,
-            ),
-            onTap: () => _editText(title: 'Name', target: widget.data.name),
+        onWillPop: () async {
+          Navigator.of(context).pop<bool>(_dirty);
+          return false;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('Exercise #${widget.index}'),
           ),
-          const Divider(height: 8),
-          ListTile(
-            title: const Text('Description'),
-            subtitle: Text(
-              widget.data.description.text.trim().isEmpty
-                  ? 'Add description'
-                  : widget.data.description.text.trim(),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-            trailing: Icon(
-              widget.data.description.text.trim().isEmpty ? Icons.add : Icons.edit,
-            ),
-            onTap: () => _editText(
-              title: 'Description',
-              target: widget.data.description,
-              minLines: 3,
-              maxLines: 5,
-            ),
+          body: ListView(
+            padding:
+                EdgeInsets.symmetric(horizontal: AppWidth.w30, vertical: 12),
+            children: [
+              ListTile(
+                title: const Text('Name'),
+                subtitle: Text(widget.data.name.text.trim().isEmpty
+                    ? 'Add name'
+                    : widget.data.name.text.trim()),
+                trailing: Icon(
+                  widget.data.name.text.trim().isEmpty ? Icons.add : Icons.edit,
+                ),
+                onTap: () => _editText(title: 'Name', target: widget.data.name),
+              ),
+              const Divider(height: 8),
+              ListTile(
+                title: const Text('Description'),
+                subtitle: Text(
+                  widget.data.description.text.trim().isEmpty
+                      ? 'Add description'
+                      : widget.data.description.text.trim(),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                trailing: Icon(
+                  widget.data.description.text.trim().isEmpty
+                      ? Icons.add
+                      : Icons.edit,
+                ),
+                onTap: () => _editText(
+                  title: 'Description',
+                  target: widget.data.description,
+                  minLines: 3,
+                  maxLines: 5,
+                ),
+              ),
+              const Divider(height: 8),
+              ListTile(
+                title: const Text('Target Muscle Groups'),
+                subtitle: Text(
+                    widget.data.targetMuscleGroups.text.trim().isEmpty
+                        ? 'Add target muscle groups'
+                        : widget.data.targetMuscleGroups.text.trim()),
+                trailing: Icon(
+                  widget.data.targetMuscleGroups.text.trim().isEmpty
+                      ? Icons.add
+                      : Icons.edit,
+                ),
+                onTap: () => _editText(
+                  title: 'Target Muscle Groups',
+                  target: widget.data.targetMuscleGroups,
+                ),
+              ),
+              const Divider(height: 8),
+              ListTile(
+                title: const Text('Difficulty'),
+                subtitle: Text(widget.data.difficulty.text.isEmpty
+                    ? 'Select'
+                    : entity.ExerciseDifficultyX.fromString(
+                            widget.data.difficulty.text)
+                        .label),
+                trailing: Icon(
+                  widget.data.difficulty.text.isEmpty ? Icons.add : Icons.edit,
+                ),
+                onTap: _editDifficulty,
+              ),
+              const Divider(height: 8),
+              ListTile(
+                title: const Text('Equipment'),
+                subtitle: Text(widget.data.equipment.text.trim().isEmpty
+                    ? 'Add equipment'
+                    : widget.data.equipment.text.trim()),
+                trailing: Icon(
+                  widget.data.equipment.text.trim().isEmpty
+                      ? Icons.add
+                      : Icons.edit,
+                ),
+                onTap: () => _editText(
+                    title: 'Equipment', target: widget.data.equipment),
+              ),
+              const Divider(height: 8),
+              ListTile(
+                title: const Text('Image URL'),
+                subtitle: Text(widget.data.imageUrl.text.trim().isEmpty
+                    ? 'Add image URL'
+                    : widget.data.imageUrl.text.trim()),
+                trailing: Icon(
+                  widget.data.imageUrl.text.trim().isEmpty
+                      ? Icons.add
+                      : Icons.edit,
+                ),
+                onTap: () => _editText(
+                  title: 'Image URL',
+                  target: widget.data.imageUrl,
+                  keyboardType: TextInputType.url,
+                ),
+              ),
+              const Divider(height: 8),
+              ListTile(
+                title: const Text('Video URL'),
+                subtitle: Text(widget.data.videoUrl.text.trim().isEmpty
+                    ? 'Add video URL'
+                    : widget.data.videoUrl.text.trim()),
+                trailing: Icon(
+                  widget.data.videoUrl.text.trim().isEmpty
+                      ? Icons.add
+                      : Icons.edit,
+                ),
+                onTap: () => _editText(
+                  title: 'Video URL',
+                  target: widget.data.videoUrl,
+                  keyboardType: TextInputType.url,
+                ),
+              ),
+            ],
           ),
-          const Divider(height: 8),
-          ListTile(
-            title: const Text('Target Muscle Groups'),
-            subtitle: Text(widget.data.targetMuscleGroups.text.trim().isEmpty
-                ? 'Add target muscle groups'
-                : widget.data.targetMuscleGroups.text.trim()),
-            trailing: Icon(
-              widget.data.targetMuscleGroups.text.trim().isEmpty ? Icons.add : Icons.edit,
-            ),
-            onTap: () => _editText(
-              title: 'Target Muscle Groups',
-              target: widget.data.targetMuscleGroups,
-            ),
-          ),
-          const Divider(height: 8),
-          ListTile(
-            title: const Text('Difficulty'),
-            subtitle: Text(widget.data.difficulty.text.isEmpty
-                ? 'Select'
-                : entity.ExerciseDifficultyX.fromString(widget.data.difficulty.text).label),
-            trailing: Icon(
-              widget.data.difficulty.text.isEmpty ? Icons.add : Icons.edit,
-            ),
-            onTap: _editDifficulty,
-          ),
-          const Divider(height: 8),
-          ListTile(
-            title: const Text('Equipment'),
-            subtitle: Text(widget.data.equipment.text.trim().isEmpty
-                ? 'Add equipment'
-                : widget.data.equipment.text.trim()),
-            trailing: Icon(
-              widget.data.equipment.text.trim().isEmpty ? Icons.add : Icons.edit,
-            ),
-            onTap: () => _editText(title: 'Equipment', target: widget.data.equipment),
-          ),
-          const Divider(height: 8),
-          ListTile(
-            title: const Text('Image URL'),
-            subtitle: Text(widget.data.imageUrl.text.trim().isEmpty
-                ? 'Add image URL'
-                : widget.data.imageUrl.text.trim()),
-            trailing: Icon(
-              widget.data.imageUrl.text.trim().isEmpty ? Icons.add : Icons.edit,
-            ),
-            onTap: () => _editText(
-              title: 'Image URL',
-              target: widget.data.imageUrl,
-              keyboardType: TextInputType.url,
-            ),
-          ),
-          const Divider(height: 8),
-          ListTile(
-            title: const Text('Video URL'),
-            subtitle: Text(widget.data.videoUrl.text.trim().isEmpty
-                ? 'Add video URL'
-                : widget.data.videoUrl.text.trim()),
-            trailing: Icon(
-              widget.data.videoUrl.text.trim().isEmpty ? Icons.add : Icons.edit,
-            ),
-            onTap: () => _editText(
-              title: 'Video URL',
-              target: widget.data.videoUrl,
-              keyboardType: TextInputType.url,
-            ),
-          ),
-        ],
-      ),
-    ));
+        ));
   }
 }

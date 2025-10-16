@@ -9,10 +9,10 @@ import 'package:fitness_app/core/theme/values_manager.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 import 'package:fitness_app/features/walk/presentation/walk_form/widgets/route_preview.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/bloc/walk_media_bloc.dart';
-import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/bloc/walk_media_state.dart';
-import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/ui/walk_media_details.dart';
-import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/ui/walk_media.dart';
+import 'package:fitness_app/features/walk/presentation/walk_media/walk_media_list/bloc/walk_media_bloc.dart';
+import 'package:fitness_app/features/walk/presentation/walk_media/walk_media_list/bloc/walk_media_state.dart';
+import 'package:fitness_app/features/walk/presentation/walk_media/walk_media_list/ui/walk_media_details.dart';
+import 'package:fitness_app/features/walk/presentation/walk_media/walk_media_list/ui/walk_media.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk_media.dart';
 
 class WalkDetailsBody extends StatelessWidget {
@@ -35,7 +35,8 @@ class WalkDetailsBody extends StatelessWidget {
     final scheme = theme.colorScheme;
 
     final dt = _formatDateTime(walk.date, walk.startTime);
-    final title = _routeTitleFromJsonOrFallback(walk.routeData, walk.startLocation);
+    final title =
+        _routeTitleFromJsonOrFallback(walk.routeData, walk.startLocation);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -80,7 +81,8 @@ class WalkDetailsBody extends StatelessWidget {
             children: [
               _chip(context, Icons.event, dt.dateLabel, scheme.primary),
               _chip(context, Icons.schedule, dt.timeLabel, scheme.secondary),
-              _chip(context, Icons.pin_drop, walk.startLocation, scheme.tertiary),
+              _chip(
+                  context, Icons.pin_drop, walk.startLocation, scheme.tertiary),
             ],
           ),
 
@@ -107,8 +109,7 @@ class WalkDetailsBody extends StatelessWidget {
           const SizedBox(height: 12),
           if (participants.isEmpty)
             Text('No one has joined yet. Be the first!',
-                style:
-                    theme.textTheme.bodyMedium?.copyWith(color: Colors.grey))
+                style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey))
           else
             _ParticipantsList(participants: participants),
 
@@ -123,7 +124,8 @@ class WalkDetailsBody extends StatelessWidget {
       final m = jsonDecode(data) as Map<String, dynamic>;
       final s = (m['start'] as Map<String, dynamic>?)?['name']?.toString();
       final e = (m['end'] as Map<String, dynamic>?)?['name']?.toString();
-      if (s != null && e != null && s.isNotEmpty && e.isNotEmpty) return '$s → $e';
+      if (s != null && e != null && s.isNotEmpty && e.isNotEmpty)
+        return '$s → $e';
       if (s != null && s.isNotEmpty) return s;
       if (e != null && e.isNotEmpty) return e;
     } catch (_) {}
@@ -263,7 +265,8 @@ class _MediaBanner extends StatelessWidget {
           return _placeholder();
         }
         if (state is WalkMediaLoadedSuccessState) {
-          final media = state.walkMediaList; // show all; let Image.network fail gracefully
+          final media = state
+              .walkMediaList; // show all; let Image.network fail gracefully
           if (media.isNotEmpty) return _buildMediaList(context, media);
           return _emptyBanner(context);
         }
@@ -291,10 +294,10 @@ class _MediaBanner extends StatelessWidget {
         color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Center(
+      child: const Center(
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
+          children: [
             Icon(Icons.photo_outlined),
             SizedBox(width: 8),
             Text('No photos yet'),
@@ -386,8 +389,7 @@ class _BannerItem extends StatelessWidget {
             imageUrl,
             fit: BoxFit.cover,
             errorBuilder: (_, __, ___) => Container(
-              color:
-                  Theme.of(context).colorScheme.surfaceContainerHighest,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               child: const Center(child: Icon(Icons.broken_image)),
             ),
           ),

@@ -9,9 +9,9 @@ import 'package:fitness_app/features/walk/domain/usecases/join_walk.dart';
 import 'package:fitness_app/features/walk/domain/usecases/leave_walk.dart';
 import 'package:fitness_app/features/walk/presentation/walk_list/widgets/walk_details_body.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/bloc/walk_media_bloc.dart';
-import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/bloc/walk_media_event.dart';
-import 'package:fitness_app/features/walk/presentation/walk_media/add__update_walk_media/ui/walk_media_add_page.dart';
+import 'package:fitness_app/features/walk/presentation/walk_media/walk_media_list/bloc/walk_media_bloc.dart';
+import 'package:fitness_app/features/walk/presentation/walk_media/walk_media_list/bloc/walk_media_event.dart';
+import 'package:fitness_app/features/walk/presentation/walk_media/walk_media_form/ui/walk_media_form_page.dart';
 
 class WalkDetailsPage extends StatefulWidget {
   const WalkDetailsPage({
@@ -35,7 +35,8 @@ class _WalkDetailsPageState extends State<WalkDetailsPage> {
   @override
   void initState() {
     _walk = widget.walk!;
-    _participants = List<Participant>.from(widget.walk?.participants ?? const []);
+    _participants =
+        List<Participant>.from(widget.walk?.participants ?? const []);
     _prefs = sl<SharedPreferences>();
     _mediaBloc = sl<WalkMediaBloc>();
     if (_walk.id != null) {
@@ -194,8 +195,7 @@ class _WalkDetailsPageState extends State<WalkDetailsPage> {
 
   void _showError(String msg) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(msg)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   Future<void> _onAddMedia() async {

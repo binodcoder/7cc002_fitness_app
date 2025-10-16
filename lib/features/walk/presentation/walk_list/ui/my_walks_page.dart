@@ -55,10 +55,12 @@ class _MyWalksPageState extends State<MyWalksPage> {
         }
         if (state is WalkListError) {
           return Scaffold(
-              appBar: const _MyAppBar(), body: Center(child: Text(state.message)));
+              appBar: const _MyAppBar(),
+              body: Center(child: Text(state.message)));
         }
         final walks = (state is WalkListLoaded) ? state.walks : <Walk>[];
-        final myWalks = walks.where((w) => w.proposerId == _currentUserId).toList();
+        final myWalks =
+            walks.where((w) => w.proposerId == _currentUserId).toList();
 
         return AnnotatedRegion<SystemUiOverlayStyle>(
           value: const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
@@ -168,12 +170,12 @@ class _EmptyState extends StatelessWidget {
   const _EmptyState();
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Icon(Icons.directions_walk, size: 56, color: Colors.grey),
             SizedBox(height: 12),
             Text('No walks yet'),
@@ -187,4 +189,3 @@ class _EmptyState extends StatelessWidget {
     );
   }
 }
-

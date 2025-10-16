@@ -96,7 +96,7 @@ class AppointmentEventTile extends StatelessWidget {
     final rows = <Widget>[];
     final textStyle = Theme.of(context).textTheme.bodySmall;
 
-    final line = (IconData icon, String text) => Padding(
+    Padding line(IconData icon, String text) => Padding(
           padding: const EdgeInsets.only(top: 2.0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -15,9 +15,9 @@ import 'package:firebase_storage/firebase_storage.dart' as fstorage;
 import 'package:firebase_core/firebase_core.dart' as fcore;
 import 'package:fitness_app/firebase_options.dart';
 import 'package:path/path.dart' as p;
-import '../bloc/walk_media_add_bloc.dart';
-import '../bloc/walk_media_add_event.dart';
-import '../bloc/walk_media_add_state.dart';
+import '../bloc/walk_media_form_bloc.dart';
+import '../bloc/walk_media_form_event.dart';
+import '../bloc/walk_media_form_state.dart';
 
 class WalkMediaAddPage extends StatefulWidget {
   const WalkMediaAddPage({super.key, this.walkMedia, this.walkId});

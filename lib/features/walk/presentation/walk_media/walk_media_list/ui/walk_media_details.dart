@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:fitness_app/features/walk/domain/entities/walk_media.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
-import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/widgets/walk_media_details_body.dart';
+import 'package:fitness_app/features/walk/presentation/walk_media/walk_media_list/widgets/walk_media_details_body.dart';
 
 class WalkMediaDetailsPage extends StatefulWidget {
   const WalkMediaDetailsPage({

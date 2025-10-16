@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
-import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/ui/walk_media_details.dart';
+import 'package:fitness_app/features/walk/presentation/walk_media/walk_media_list/ui/walk_media_details.dart';
 
-import '../../add__update_walk_media/ui/walk_media_add_page.dart';
+import '../../walk_media_form/ui/walk_media_form_page.dart';
 import '../bloc/walk_media_bloc.dart';
 import '../bloc/walk_media_event.dart';
 import '../bloc/walk_media_state.dart';

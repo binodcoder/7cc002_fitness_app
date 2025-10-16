@@ -846,7 +846,7 @@ class _MyAvailabilityDialogState extends State<MyAvailabilityDialog> {
                               isDense: true,
                             ),
                             child: Text(
-                                '${DateFormat('EEE, MMM d').format(_availDate)}'),
+                                DateFormat('EEE, MMM d').format(_availDate)),
                           ),
                         ),
                       ),
@@ -910,7 +910,7 @@ class _MyAvailabilityDialogState extends State<MyAvailabilityDialog> {
                     children: [
                       Expanded(
                         child: DropdownButtonFormField<int>(
-                          value: _slotDurationMinutes,
+                          initialValue: _slotDurationMinutes,
                           decoration: const InputDecoration(
                             labelText: 'Duration',
                             border: OutlineInputBorder(),

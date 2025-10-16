@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/bloc/walk_media_event.dart';
-import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/bloc/walk_media_state.dart';
+import 'package:fitness_app/features/walk/presentation/walk_media/walk_media_list/bloc/walk_media_event.dart';
+import 'package:fitness_app/features/walk/presentation/walk_media/walk_media_list/bloc/walk_media_state.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk_media.dart';
 import 'package:fitness_app/features/walk/domain/usecases/delete_walk_media.dart';
 import 'package:fitness_app/features/walk/domain/usecases/get_walk_media.dart';

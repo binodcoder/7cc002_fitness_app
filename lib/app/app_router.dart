@@ -7,7 +7,7 @@ import 'package:fitness_app/app/home_scaffold.dart';
 import 'package:fitness_app/features/account/presentation/account_page.dart';
 import 'package:fitness_app/app/main_menu_page.dart';
 import 'package:fitness_app/features/profile/presentation/profile_page.dart';
-import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/ui/walk_media.dart';
+import 'package:fitness_app/features/walk/presentation/walk_media/walk_media_list/ui/walk_media.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -149,7 +149,7 @@ class AppRouter {
           DateTime? focusedDay;
           int? preselectedTrainerId;
           if (extra is Map) {
-            final m = extra as Map;
+            final m = extra;
             final a = m['appointment'];
             final d = m['focusedDay'];
             final t = m['preselectedTrainerId'];

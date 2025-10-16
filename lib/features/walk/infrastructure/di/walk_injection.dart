@@ -22,8 +22,8 @@ import 'package:fitness_app/features/walk/domain/usecases/update_walk.dart';
 import 'package:fitness_app/features/walk/domain/usecases/update_walk_media.dart';
 import 'package:fitness_app/features/walk/presentation/walk_form/bloc/walk_form_bloc.dart';
 import 'package:fitness_app/features/walk/presentation/walk_list/bloc/walk_list_bloc.dart';
-import 'package:fitness_app/features/walk/presentation/walk_media/add__update_walk_media/bloc/walk_media_add_bloc.dart';
-import 'package:fitness_app/features/walk/presentation/walk_media/get_walk_media/bloc/walk_media_bloc.dart';
+import 'package:fitness_app/features/walk/presentation/walk_media/walk_media_form/bloc/walk_media_form_bloc.dart';
+import 'package:fitness_app/features/walk/presentation/walk_media/walk_media_list/bloc/walk_media_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 void registerWalkInfrastructureDependencies(
