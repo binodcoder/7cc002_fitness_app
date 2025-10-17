@@ -1,4 +1,4 @@
-import 'package:fitness_app/features/auth/data/models/user_model.dart';
+import 'package:fitness_app/core/models/user_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 abstract class AuthLocalDataSources {

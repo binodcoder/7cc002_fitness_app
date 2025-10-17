@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:fitness_app/features/auth/domain/entities/user.dart';
+import 'package:fitness_app/core/entities/user.dart';
 
 enum LoginStatus { initial, loading, success, failure }
 

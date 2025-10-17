@@ -5,7 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/features/auth/data/datasources/auth_data_source.dart';
 import 'package:fitness_app/features/auth/data/models/login_credentials_model.dart';
-import 'package:fitness_app/features/auth/data/models/user_model.dart';
+import 'package:fitness_app/core/models/user_model.dart';
 
 class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
   fb.FirebaseAuth get _auth => fb.FirebaseAuth.instance;

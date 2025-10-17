@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fitness_app/features/auth/domain/entities/user.dart' as entity;
+import 'package:fitness_app/core/entities/user.dart' as entity;
 
 import 'chat_directory_remote_data_source.dart';
 

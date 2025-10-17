@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:fitness_app/core/errors/failures.dart';
 import 'package:fitness_app/features/auth/domain/entities/login_credentials.dart';
-import 'package:fitness_app/features/auth/domain/entities/user.dart';
+import 'package:fitness_app/core/entities/user.dart';
 
 abstract class AuthRepository {
   Future<Either<Failure, int>>? addUser(User user);

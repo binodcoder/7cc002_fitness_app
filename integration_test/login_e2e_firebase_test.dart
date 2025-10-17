@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -6,7 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'package:fitness_app/app/app.dart';
 import 'package:fitness_app/app/injection_container.dart' as di;
-import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
+import 'package:fitness_app/core/services/session_manager.dart';
 import 'package:fitness_app/firebase_options.dart';
 
 // Pass valid credentials at runtime via:
@@ -43,7 +42,8 @@ void main() {
 
     // Init Firebase and DI (mirrors main() boot sequence).
     WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
     await di.init();
     await di.sl<SessionManager>().setSeenOnboarding(true);
 

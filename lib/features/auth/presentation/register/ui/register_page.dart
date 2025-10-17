@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:fitness_app/features/auth/domain/entities/user.dart';
+import 'package:fitness_app/core/entities/user.dart';
 import 'package:fitness_app/app/injection_container.dart';
 // Colors are sourced from Theme.of(context).colorScheme
 import 'package:fitness_app/core/theme/values_manager.dart';

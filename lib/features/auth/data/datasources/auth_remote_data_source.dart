@@ -2,7 +2,7 @@ import 'package:fitness_app/features/auth/data/datasources/auth_data_source.dart
 import 'package:fitness_app/features/auth/data/models/login_credentials_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:fitness_app/core/errors/exceptions.dart';
-import 'package:fitness_app/features/auth/data/models/user_model.dart';
+import 'package:fitness_app/core/models/user_model.dart';
 
 class AuthRemoteDataSourceImpl implements AuthDataSource {
   final http.Client client;

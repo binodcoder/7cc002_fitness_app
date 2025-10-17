@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
+import 'package:fitness_app/core/services/session_manager.dart';
 import 'package:fitness_app/app/injection_container.dart';
 import 'application/chat/chat_bloc.dart';
 import 'application/chat/chat_event.dart';

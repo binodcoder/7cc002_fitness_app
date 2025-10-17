@@ -219,6 +219,7 @@ class AppointmentAvailabilityService {
           return DateTime.now();
         }
       }
+
       return set.map(parseDk).toSet();
     } on FirebaseException catch (e) {
       // Fallback when composite index is missing: query by date range only,
@@ -244,6 +245,7 @@ class AppointmentAvailabilityService {
             return DateTime.now();
           }
         }
+
         return set.map(parseDk).toSet();
       }
       if (e.code == 'permission-denied') {

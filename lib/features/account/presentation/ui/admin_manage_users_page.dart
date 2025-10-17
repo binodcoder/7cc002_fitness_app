@@ -1,6 +1,6 @@
 import 'package:fitness_app/app/injection_container.dart';
-import 'package:fitness_app/features/admin/presentation/cubit/admin_cubit.dart';
-import 'package:fitness_app/features/admin/presentation/cubit/admin_state.dart';
+import 'package:fitness_app/features/account/presentation/cubit/admin_cubit.dart';
+import 'package:fitness_app/features/account/presentation/cubit/admin_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -50,25 +50,24 @@ class _AdminManageUsersPageState extends State<AdminManageUsersPage> {
                         onChanged: (val) async {
                           if (val == null) return;
                           try {
-                            //todo: call updateUser method of cubit
                             await context.read<AdminCubit>().updateUser(
                                   users[i].id!,
                                   val,
                                 );
-                            // if (mounted) {
-                            //   ScaffoldMessenger.of(context).showSnackBar(
-                            //     SnackBar(
-                            //         content: Text('Updated role to "$val"')),
-                            //   );
-                            // }
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text('Updated role to "$val"')),
+                              );
+                            }
                           } catch (e) {
-                            // if (mounted) {
-                            //   ScaffoldMessenger.of(context).showSnackBar(
-                            //     SnackBar(
-                            //         content: Text(
-                            //             'Failed to update role: ${e.toString()}')),
-                            //   );
-                            // }
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(
+                                        'Failed to update role: ${e.toString()}')),
+                              );
+                            }
                           }
                         },
                       ),

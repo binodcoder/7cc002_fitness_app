@@ -1,5 +1,5 @@
-import 'package:fitness_app/features/auth/domain/entities/user.dart';
-import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
+import 'package:fitness_app/core/entities/user.dart';
+import 'package:fitness_app/core/services/session_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionManagerImpl implements SessionManager {

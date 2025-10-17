@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'package:fitness_app/features/admin/domain/usecases/get_users.dart';
-import 'package:fitness_app/features/admin/domain/usecases/update_user.dart';
-import 'package:fitness_app/features/admin/presentation/cubit/admin_state.dart';
-import 'package:fitness_app/features/auth/domain/entities/user.dart';
+import 'package:fitness_app/features/account/domain/usecases/get_users.dart';
+import 'package:fitness_app/features/account/domain/usecases/update_user.dart';
+import 'package:fitness_app/features/account/presentation/cubit/admin_state.dart';
+import 'package:fitness_app/core/entities/user.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AdminCubit extends Cubit<AdminState> {

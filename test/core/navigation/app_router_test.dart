@@ -9,9 +9,8 @@ import 'package:fitness_app/core/widgets/splash_screen.dart';
 import 'package:fitness_app/features/auth/presentation/login/ui/login_screen.dart';
 import 'package:fitness_app/features/onboarding/pages/onboarding_screen.dart';
 import 'package:go_router/go_router.dart';
-import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
-import 'package:fitness_app/features/auth/domain/entities/user.dart'
-    as user_entity;
+import 'package:fitness_app/core/services/session_manager.dart';
+import 'package:fitness_app/core/entities/user.dart' as user_entity;
 
 class _FakeSessionManager implements SessionManager {
   bool seenOnboarding = false;

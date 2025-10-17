@@ -17,7 +17,7 @@ import '../bloc/appointment_form_bloc.dart';
 import '../bloc/appointment_form_state.dart';
 import 'package:fitness_app/features/appointment/presentation/appointment_form/widgets/trainer_dropdown.dart';
 // Use common text field for date/time with labels
-import 'package:fitness_app/features/appointment/infrastructure/services/availability_service.dart';
+import 'package:fitness_app/core/services/availability_service.dart';
 
 class AppointmentFormDialog extends StatefulWidget {
   final Appointment? appointment;

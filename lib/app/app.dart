@@ -11,7 +11,7 @@ import 'package:fitness_app/features/auth/application/auth/auth_state.dart';
 import 'package:fitness_app/features/auth/application/auth/auth_event.dart';
 import 'package:fitness_app/core/navigation/routes.dart';
 import 'package:fitness_app/app/injection_container.dart';
-import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
+import 'package:fitness_app/core/services/session_manager.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

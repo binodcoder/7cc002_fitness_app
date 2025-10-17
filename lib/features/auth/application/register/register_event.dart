@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:fitness_app/features/auth/domain/entities/user.dart';
+import 'package:fitness_app/core/entities/user.dart';
 
 @immutable
 abstract class RegisterEvent extends Equatable {

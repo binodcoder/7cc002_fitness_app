@@ -6,7 +6,7 @@ import 'package:fitness_app/features/walk/presentation/walk_list/ui/my_walks_pag
 import 'package:fitness_app/features/walk/presentation/walk_list/ui/walk_details_page.dart';
 import 'package:fitness_app/features/walk/presentation/walk_list/ui/walk_list_page.dart';
 import 'package:fitness_app/features/home/presentation/home_scaffold/ui/home_scaffold.dart';
-import 'package:fitness_app/features/account/presentation/account_page.dart';
+import 'package:fitness_app/features/account/presentation/ui/account_page.dart';
 import 'package:fitness_app/app/main_menu_page.dart';
 import 'package:fitness_app/features/profile/presentation/profile_page.dart';
 import 'package:fitness_app/features/walk/presentation/walk_media/walk_media_list/ui/walk_media.dart';
@@ -29,8 +29,8 @@ import 'package:fitness_app/core/localization/app_strings.dart';
 // App-wide router configuration using GoRouter.
 import 'package:fitness_app/core/navigation/routes.dart';
 import 'package:fitness_app/features/settings/presentation/settings_page.dart';
-import 'package:fitness_app/features/admin/presentation/ui/admin_dashboard_page.dart';
-import 'package:fitness_app/features/admin/presentation/ui/admin_manage_users_page.dart';
+import 'package:fitness_app/features/account/presentation/ui/admin_dashboard_page.dart';
+import 'package:fitness_app/features/account/presentation/ui/admin_manage_users_page.dart';
 
 // Route path constants are defined in core/navigation/routes.dart
 

@@ -22,7 +22,7 @@ import 'package:fitness_app/app/app_router.dart';
 import 'package:fitness_app/core/navigation/routes.dart';
 import 'package:fitness_app/features/appointment/domain/usecases/sync.dart';
 import 'package:fitness_app/features/appointment/domain/entities/sync.dart';
-import 'package:fitness_app/features/appointment/infrastructure/services/availability_service.dart';
+import 'package:fitness_app/core/services/availability_service.dart';
 import 'package:fitness_app/features/profile/infrastructure/services/profile_guard.dart';
 
 class CalendarPage extends StatefulWidget {

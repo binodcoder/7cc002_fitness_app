@@ -1,4 +1,4 @@
-import 'package:fitness_app/features/admin/domain/repository/admin_repository.dart';
+import 'package:fitness_app/features/account/domain/repository/admin_repository.dart';
 
 class UpdateUser {
   UpdateUser(this.adminRepository);

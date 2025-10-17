@@ -5,7 +5,7 @@ import 'package:http/testing.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:fitness_app/features/auth/data/models/login_credentials_model.dart';
-import 'package:fitness_app/features/auth/data/models/user_model.dart';
+import 'package:fitness_app/core/models/user_model.dart';
 
 void main() {
   group('AuthRemoteDataSource', () {

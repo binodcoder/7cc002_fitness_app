@@ -1,4 +1,5 @@
-import 'package:fitness_app/features/admin/admin_injection.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fitness_app/features/account/admin_injection.dart';
 import 'package:fitness_app/features/appointment/infrastructure/di/appointment_injection.dart';
 import 'package:fitness_app/features/auth/infrastructure/di/auth_injection.dart';
 import 'package:fitness_app/features/chat/infrastructure/di/chat_injection.dart';
@@ -21,7 +22,7 @@ import '../core/database/app_database.dart';
 import '../features/appointment/domain/repositories/sync_repositories.dart';
 import '../features/appointment/domain/usecases/sync.dart';
 import '../core/services/image_picker_service.dart';
-import '../features/auth/domain/services/session_manager.dart';
+import '../core/services/session_manager.dart';
 import '../features/auth/infrastructure/services/session_manager_impl.dart';
 import '../core/config/backend_config.dart';
 
@@ -71,4 +72,5 @@ Future<void> init() async {
   sl.registerLazySingleton(() => http.Client());
   sl.registerLazySingleton(() => InternetConnectionChecker());
   sl.registerLazySingleton<ImagePickerService>(() => ImagePickerServiceImpl());
+  sl.registerLazySingleton(() => FirebaseFirestore.instance);
 }

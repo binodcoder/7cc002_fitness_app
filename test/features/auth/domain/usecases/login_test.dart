@@ -1,7 +1,7 @@
 import 'package:fitness_app/features/auth/data/models/login_credentials_model.dart';
 import 'package:fitness_app/features/auth/domain/repositories/auth_repositories.dart';
 import 'package:fitness_app/features/auth/domain/usecases/login.dart';
-import 'package:fitness_app/features/auth/data/models/user_model.dart';
+import 'package:fitness_app/core/models/user_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:dartz/dartz.dart';

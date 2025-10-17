@@ -8,7 +8,7 @@ import 'package:fitness_app/core/theme/values_manager.dart';
 import 'package:fitness_app/features/profile/domain/entities/user_profile.dart';
 import 'package:fitness_app/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:fitness_app/core/services/image_picker_service.dart';
-import 'package:fitness_app/features/appointment/infrastructure/services/availability_service.dart';
+import 'package:fitness_app/core/services/availability_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {

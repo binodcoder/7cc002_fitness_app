@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:fitness_app/features/auth/domain/entities/user.dart' as entity;
+import 'package:fitness_app/core/entities/user.dart' as entity;
 
 UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
 

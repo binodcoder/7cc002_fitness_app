@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:fitness_app/core/errors/failures.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/features/auth/domain/entities/login_credentials.dart';
-import 'package:fitness_app/features/auth/domain/entities/user.dart';
+import 'package:fitness_app/core/entities/user.dart';
 import 'package:fitness_app/features/auth/domain/repositories/auth_repositories.dart';
 import 'package:fitness_app/features/auth/domain/usecases/login.dart';
 import 'package:fitness_app/features/auth/application/login/login_bloc.dart';

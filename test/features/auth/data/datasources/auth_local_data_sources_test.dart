@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:fitness_app/core/database/app_database.dart';
 import 'package:fitness_app/features/auth/data/datasources/auth_local_data_sources.dart';
-import 'package:fitness_app/features/auth/data/models/user_model.dart';
+import 'package:fitness_app/core/models/user_model.dart';
 
 void main() {
   setUpAll(() {

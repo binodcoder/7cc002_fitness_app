@@ -14,9 +14,8 @@ import 'package:fitness_app/features/auth/application/login/login_bloc.dart';
 import 'package:fitness_app/features/auth/domain/usecases/login.dart';
 import 'package:fitness_app/features/auth/domain/repositories/auth_repositories.dart';
 import 'package:fitness_app/features/auth/domain/entities/login_credentials.dart';
-import 'package:fitness_app/features/auth/domain/entities/user.dart'
-    as user_entity;
-import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
+import 'package:fitness_app/core/entities/user.dart' as user_entity;
+import 'package:fitness_app/core/services/session_manager.dart';
 import 'package:dartz/dartz.dart';
 import 'package:fitness_app/core/errors/failures.dart';
 import 'package:fitness_app/app/app.dart';

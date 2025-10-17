@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:fitness_app/core/errors/map_failure_to_message.dart';
-import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
+import 'package:fitness_app/core/services/session_manager.dart';
 import 'package:fitness_app/core/usecases/usecase.dart';
 import 'package:fitness_app/features/auth/domain/usecases/logout.dart';
 

@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/core/errors/failures.dart';
-import 'package:fitness_app/features/auth/domain/entities/user.dart';
+import 'package:fitness_app/core/entities/user.dart';
 import '../../domain/repositories/chat_directory_repository.dart';
 import '../datasources/chat_directory_remote_data_source.dart';
 

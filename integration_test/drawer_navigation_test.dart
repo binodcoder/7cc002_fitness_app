@@ -4,7 +4,7 @@ import 'package:integration_test/integration_test.dart';
 
 import 'package:fitness_app/app/app.dart';
 import 'package:fitness_app/app/injection_container.dart' as di;
-import 'package:fitness_app/features/auth/domain/services/session_manager.dart';
+import 'package:fitness_app/core/services/session_manager.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();

@@ -12,7 +12,7 @@ import 'package:fitness_app/features/appointment/presentation/appointment_form/b
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/calendar_bloc.dart';
 import 'package:fitness_app/features/appointment/presentation/get_appointments/bloc/event_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:fitness_app/features/appointment/infrastructure/services/availability_service.dart';
+import 'package:fitness_app/core/services/availability_service.dart';
 
 void registerAppointmentInfrastructureDependencies(
     GetIt sl, bool kUseFakeData, bool kUseFirebaseData) {
