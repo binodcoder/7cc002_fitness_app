@@ -1,9 +1,11 @@
 import 'package:fitness_app/features/chat/chat_users_page.dart';
+import 'package:fitness_app/features/home/domain/entities/routine.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 import 'package:fitness_app/features/walk/presentation/walk_form/ui/walk_form_page.dart';
+import 'package:fitness_app/features/walk/presentation/walk_list/ui/my_walks_page.dart';
 import 'package:fitness_app/features/walk/presentation/walk_list/ui/walk_details_page.dart';
 import 'package:fitness_app/features/walk/presentation/walk_list/ui/walk_list_page.dart';
-import 'package:fitness_app/app/home_scaffold.dart';
+import 'package:fitness_app/features/home/presentation/home_scaffold/ui/home_scaffold.dart';
 import 'package:fitness_app/features/account/presentation/account_page.dart';
 import 'package:fitness_app/app/main_menu_page.dart';
 import 'package:fitness_app/features/profile/presentation/profile_page.dart';
@@ -19,16 +21,16 @@ import 'package:fitness_app/features/live_training/presentation/get_live_trainin
 import 'package:fitness_app/features/auth/presentation/login/ui/login_screen.dart';
 import 'package:fitness_app/features/onboarding/pages/onboarding_screen.dart';
 import 'package:fitness_app/features/auth/presentation/register/ui/register_page.dart';
-import 'package:fitness_app/features/routine/presentation/routine_form/ui/routine_form_page.dart';
-import 'package:fitness_app/features/routine/presentation/get_routines/ui/routine.dart';
-import 'package:fitness_app/features/routine/presentation/get_routines/ui/routine_details.dart';
+import 'package:fitness_app/features/home/presentation/routine_form/ui/routine_form_page.dart';
+import 'package:fitness_app/features/home/presentation/routines/ui/routine_list_page.dart';
+import 'package:fitness_app/features/home/presentation/routines/ui/routine_details.dart';
 import 'package:fitness_app/core/widgets/splash_screen.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 // App-wide router configuration using GoRouter.
 import 'package:fitness_app/core/navigation/routes.dart';
 import 'package:fitness_app/features/settings/presentation/settings_page.dart';
-import 'package:fitness_app/features/admin/presentation/admin_dashboard_page.dart';
-import 'package:fitness_app/features/admin/presentation/admin_manage_users_page.dart';
+import 'package:fitness_app/features/admin/presentation/ui/admin_dashboard_page.dart';
+import 'package:fitness_app/features/admin/presentation/ui/admin_manage_users_page.dart';
 
 // Route path constants are defined in core/navigation/routes.dart
 
@@ -68,7 +70,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: Routes.routineRoute,
-                builder: (context, state) => const RoutinePage(),
+                builder: (context, state) => const RoutineListPage(),
               ),
             ],
           ),
@@ -131,10 +133,26 @@ class AppRouter {
         path: Routes.routineDetails,
         builder: (context, state) => const RoutineDetailsPage(),
       ),
+
       GoRoute(
-        path: Routes.addRoutine,
-        builder: (context, state) => const RoutineFormPage(),
+        path: Routes.routineForm,
+        pageBuilder: (context, state) => const MaterialPage(
+          fullscreenDialog: true,
+          child: RoutineFormPage(),
+        ),
       ),
+
+      GoRoute(
+          path: Routes.updateRoutineForm,
+          pageBuilder: (context, state) {
+            final extra =
+                state.extra is Routine ? state.extra as Routine : null;
+            return MaterialPage(
+              fullscreenDialog: true,
+              child: RoutineFormPage(routine: extra),
+            );
+          }),
+
       // LiveTrainingDetailsPage route removed; details are inline on list page
       GoRoute(
         path: Routes.addLiveTraining,
@@ -172,6 +190,14 @@ class AppRouter {
           return WalkFormPage(walk: walk);
         },
       ),
+
+      GoRoute(
+        path: Routes.myWalks,
+        builder: (context, state) {
+          return const MyWalksPage();
+        },
+      ),
+
       GoRoute(
         path: Routes.walkDetails,
         builder: (context, state) {

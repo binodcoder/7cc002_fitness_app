@@ -3,12 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:fitness_app/core/errors/failures.dart';
-import 'package:fitness_app/features/routine/domain/entities/routine.dart';
-import 'package:fitness_app/features/routine/domain/usecases/add_routine.dart';
-import 'package:fitness_app/features/routine/domain/usecases/update_routine.dart';
-import 'package:fitness_app/features/routine/presentation/routine_form/bloc/routine_form_bloc.dart';
-import 'package:fitness_app/features/routine/presentation/routine_form/bloc/routine_form_event.dart';
-import 'package:fitness_app/features/routine/presentation/routine_form/bloc/routine_form_state.dart';
+import 'package:fitness_app/features/home/domain/entities/routine.dart';
+import 'package:fitness_app/features/home/domain/usecases/add_routine.dart';
+import 'package:fitness_app/features/home/domain/usecases/update_routine.dart';
+import 'package:fitness_app/features/home/presentation/routine_form/bloc/routine_form_bloc.dart';
+import 'package:fitness_app/features/home/presentation/routine_form/bloc/routine_form_event.dart';
+import 'package:fitness_app/features/home/presentation/routine_form/bloc/routine_form_state.dart';
 
 import 'routine_form_bloc_test.mocks.dart';
 
@@ -30,7 +30,8 @@ void main() {
   setUp(() {
     mockAddRoutine = MockAddRoutine();
     mockUpdateRoutine = MockUpdateRoutine();
-    bloc = RoutineFormBloc(addRoutine: mockAddRoutine, updateRoutine: mockUpdateRoutine);
+    bloc = RoutineFormBloc(
+        addRoutine: mockAddRoutine, updateRoutine: mockUpdateRoutine);
   });
 
   test('initial state is RoutineFormInitialState', () {
@@ -51,7 +52,8 @@ void main() {
     });
 
     test('emits [Loading, Error] on failure', () async {
-      when(mockAddRoutine(tRoutine)).thenAnswer((_) async => Left(ServerFailure()));
+      when(mockAddRoutine(tRoutine))
+          .thenAnswer((_) async => Left(ServerFailure()));
 
       final expected = [
         const RoutineFormLoadingState(),
@@ -73,11 +75,13 @@ void main() {
       ];
       expectLater(bloc.stream, emitsInOrder(expected));
 
-      bloc.add(const RoutineFormUpdateButtonPressEvent(updatedRoutine: tRoutine));
+      bloc.add(
+          const RoutineFormUpdateButtonPressEvent(updatedRoutine: tRoutine));
     });
 
     test('emits [Loading, Error] on failure', () async {
-      when(mockUpdateRoutine(tRoutine)).thenAnswer((_) async => Left(ServerFailure()));
+      when(mockUpdateRoutine(tRoutine))
+          .thenAnswer((_) async => Left(ServerFailure()));
 
       final expected = [
         const RoutineFormLoadingState(),
@@ -85,7 +89,8 @@ void main() {
       ];
       expectLater(bloc.stream, emitsInOrder(expected));
 
-      bloc.add(const RoutineFormUpdateButtonPressEvent(updatedRoutine: tRoutine));
+      bloc.add(
+          const RoutineFormUpdateButtonPressEvent(updatedRoutine: tRoutine));
     });
   });
 }

@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart';
 import 'package:fitness_app/core/errors/failures.dart';
-import 'package:fitness_app/features/routine/domain/entities/routine.dart';
-import 'package:fitness_app/features/routine/domain/usecases/delete_routine.dart';
-import 'package:fitness_app/features/routine/domain/usecases/get_routines.dart';
-import 'package:fitness_app/features/routine/presentation/get_routines/bloc/routine_list_bloc.dart';
-import 'package:fitness_app/features/routine/presentation/get_routines/bloc/routine_list_event.dart';
-import 'package:fitness_app/features/routine/presentation/get_routines/bloc/routine_list_state.dart';
+import 'package:fitness_app/features/home/domain/entities/routine.dart';
+import 'package:fitness_app/features/home/domain/usecases/delete_routine.dart';
+import 'package:fitness_app/features/home/domain/usecases/get_routines.dart';
+import 'package:fitness_app/features/home/presentation/routines/bloc/routine_list_bloc.dart';
+import 'package:fitness_app/features/home/presentation/routines/bloc/routine_list_event.dart';
+import 'package:fitness_app/features/home/presentation/routines/bloc/routine_list_state.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';

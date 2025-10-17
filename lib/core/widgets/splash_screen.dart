@@ -45,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
       final cachedUser = sessionManager.getCurrentUser();
       if (cachedUser == null) {
         const demoUser = User(
-          id: 1,
+          id: 0,
           email: 'demo@fit.com',
           password: '',
           role: 'trainer',

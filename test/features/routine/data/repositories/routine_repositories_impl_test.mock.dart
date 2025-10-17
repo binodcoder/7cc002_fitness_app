@@ -4,10 +4,9 @@
 
 import 'dart:async' as i4;
 import 'package:fitness_app/core/network/network_info.dart' as i3;
-import 'package:fitness_app/features/routine/data/data_sources/routines_remote_data_source.dart'
+import 'package:fitness_app/features/home/data/data_sources/home_rest_data_source.dart'
     as i5;
-import 'package:fitness_app/features/routine/data/models/routine_model.dart'
-    as i2;
+import 'package:fitness_app/features/home/data/models/routine_model.dart' as i2;
 import 'package:mockito/mockito.dart' as i1;
 
 // ignore_for_file: avoid_redundant_argument_values

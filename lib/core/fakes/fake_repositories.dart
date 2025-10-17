@@ -7,8 +7,8 @@ import 'package:fitness_app/features/appointment/domain/repositories/appointment
 import 'package:fitness_app/features/appointment/domain/repositories/sync_repositories.dart';
 import 'package:fitness_app/features/live_training/domain/entities/live_training.dart';
 import 'package:fitness_app/features/live_training/domain/repositories/live_training_repositories.dart';
-import 'package:fitness_app/features/routine/domain/entities/routine.dart';
-import 'package:fitness_app/features/routine/domain/repositories/routine_repositories.dart';
+import 'package:fitness_app/features/home/domain/entities/routine.dart';
+import 'package:fitness_app/features/home/domain/repositories/home_repositories.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 import 'package:fitness_app/features/walk/domain/repositories/walk_repositories.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk_media.dart';
@@ -73,7 +73,7 @@ class _InMemoryDB {
   ];
 }
 
-class FakeRoutineRepository implements RoutineRepository {
+class FakeRoutineRepository implements HomeRepository {
   final _db = _InMemoryDB();
   @override
   Future<Either<Failure, List<Routine>>>? getRoutines() async =>
@@ -105,6 +105,12 @@ class FakeRoutineRepository implements RoutineRepository {
   Future<Either<Failure, int>>? deleteRoutine(int routineId) async {
     _db.routines.removeWhere((r) => r.id == routineId);
     return const Right(1);
+  }
+
+  @override
+  Stream<int> getUnreadCount(int userId) {
+    // TODO: implement getUnreadCount
+    throw UnimplementedError();
   }
 }
 

@@ -80,7 +80,7 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
 
       final udata = (await userDocRef.get()).data() ?? {};
       return UserModel(
-        id: (udata['id'] as num?)?.toInt(),
+        id: (udata['id'] as num?)?.toInt() ?? 0,
         name: (udata['name'] as String?) ?? (user.displayName ?? ''),
         email: (udata['email'] as String?) ?? user.email ?? loginModel.email,
         password: loginModel.password,
@@ -159,7 +159,7 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
       }
       final udata = (await userDocRef.get()).data() ?? {};
       return UserModel(
-        id: (udata['id'] as num?)?.toInt(),
+        id: (udata['id'] as num?)?.toInt() ?? 0,
         name: (udata['name'] as String?) ?? (user.displayName ?? ''),
         email: (udata['email'] as String?) ?? user.email ?? '',
         password: '',

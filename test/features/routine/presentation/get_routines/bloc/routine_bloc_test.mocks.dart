@@ -6,11 +6,10 @@ import 'dart:async' as i5;
 import 'package:dartz/dartz.dart' as i3;
 import 'package:fitness_app/core/errors/failures.dart' as i6;
 import 'package:fitness_app/core/usecases/usecase.dart' as i8;
-import 'package:fitness_app/features/routine/domain/entities/routine.dart'
-    as i7;
-import 'package:fitness_app/features/routine/domain/usecases/delete_routine.dart'
+import 'package:fitness_app/features/home/domain/entities/routine.dart' as i7;
+import 'package:fitness_app/features/home/domain/usecases/delete_routine.dart'
     as i4;
-import 'package:fitness_app/features/routine/domain/usecases/get_routines.dart'
+import 'package:fitness_app/features/home/domain/usecases/get_routines.dart'
     as i2;
 import 'package:mockito/mockito.dart' as i1;
 

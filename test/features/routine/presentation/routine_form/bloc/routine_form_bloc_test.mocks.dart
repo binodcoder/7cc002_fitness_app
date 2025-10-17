@@ -3,11 +3,10 @@ import 'dart:async' as i3;
 import 'package:dartz/dartz.dart' as i2;
 import 'package:mockito/mockito.dart' as i1;
 import 'package:fitness_app/core/errors/failures.dart' as i4;
-import 'package:fitness_app/features/routine/domain/entities/routine.dart'
-    as i5;
-import 'package:fitness_app/features/routine/domain/usecases/add_routine.dart'
+import 'package:fitness_app/features/home/domain/entities/routine.dart' as i5;
+import 'package:fitness_app/features/home/domain/usecases/add_routine.dart'
     as i6;
-import 'package:fitness_app/features/routine/domain/usecases/update_routine.dart'
+import 'package:fitness_app/features/home/domain/usecases/update_routine.dart'
     as i7;
 
 class _FakeEither_0<L, R> extends i1.Fake implements i2.Either<L, R> {}

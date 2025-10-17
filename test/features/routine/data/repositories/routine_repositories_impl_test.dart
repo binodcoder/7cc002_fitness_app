@@ -2,17 +2,17 @@ import 'package:dartz/dartz.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
 import 'package:fitness_app/core/errors/failures.dart';
 import 'package:fitness_app/core/network/network_info.dart';
-import 'package:fitness_app/features/routine/data/data_sources/routines_local_data_source.dart';
-import 'package:fitness_app/features/routine/data/data_sources/routines_remote_data_source.dart';
-import 'package:fitness_app/features/routine/data/models/routine_model.dart';
-import 'package:fitness_app/features/routine/data/repositories/routine_repository_impl.dart';
+import 'package:fitness_app/features/home/data/data_sources/home_local_data_source.dart';
+import 'package:fitness_app/features/home/data/data_sources/home_rest_data_source.dart';
+import 'package:fitness_app/features/home/data/models/routine_model.dart';
+import 'package:fitness_app/features/home/data/repositories/home_repository_impl.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'routine_repositories_impl_test.mock.dart';
 
-class FakeRoutinesLocalDataSource implements RoutinesLocalDataSource {
+class FakeRoutinesLocalDataSource implements HomeLocalDataSource {
   List<RoutineModel> _items = const [];
 
   @override
@@ -48,7 +48,7 @@ class FakeRoutinesLocalDataSource implements RoutinesLocalDataSource {
       onMissingStub: OnMissingStub.returnDefault),
 ])
 void main() {
-  late RoutineRepositoryImpl repository;
+  late HomeRepositoryImpl repository;
   late MockRoutinesRemoteDataSource mockRemoteDataSource;
   late FakeRoutinesLocalDataSource mockLocalDataSource;
   late MockNetworkInfo mockNetworkInfo;
@@ -57,9 +57,9 @@ void main() {
     mockRemoteDataSource = MockRoutinesRemoteDataSource();
     mockLocalDataSource = FakeRoutinesLocalDataSource();
     mockNetworkInfo = MockNetworkInfo();
-    repository = RoutineRepositoryImpl(
-      routineRemoteDataSource: mockRemoteDataSource,
-      routineLocalDataSource: mockLocalDataSource,
+    repository = HomeRepositoryImpl(
+      homeRemoteDataSource: mockRemoteDataSource,
+      homeLocalDataSource: mockLocalDataSource,
       networkInfo: mockNetworkInfo,
     );
   });

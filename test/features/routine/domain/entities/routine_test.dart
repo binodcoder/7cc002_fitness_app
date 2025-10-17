@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fitness_app/features/routine/domain/entities/routine.dart';
+import 'package:fitness_app/features/home/domain/entities/routine.dart';
 
 void main() {
   const a = Routine(

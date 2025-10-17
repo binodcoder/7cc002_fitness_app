@@ -1,11 +1,11 @@
-import 'package:fitness_app/features/routine/data/models/routine_model.dart';
-import 'package:fitness_app/features/routine/domain/repositories/routine_repositories.dart';
-import 'package:fitness_app/features/routine/domain/usecases/delete_routine.dart';
+import 'package:fitness_app/features/home/data/models/routine_model.dart';
+import 'package:fitness_app/features/home/domain/repositories/home_repositories.dart';
+import 'package:fitness_app/features/home/domain/usecases/delete_routine.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:dartz/dartz.dart';
 
-class MockRoutineRepository extends Mock implements RoutineRepository {}
+class MockRoutineRepository extends Mock implements HomeRepository {}
 
 void main() {
   late DeleteRoutine usecase;

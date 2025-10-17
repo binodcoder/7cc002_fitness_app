@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
-import 'package:fitness_app/features/routine/data/models/routine_model.dart';
-import 'package:fitness_app/features/routine/data/data_sources/routines_remote_data_source.dart';
+import 'package:fitness_app/features/home/data/models/routine_model.dart';
+import 'package:fitness_app/features/home/data/data_sources/home_rest_data_source.dart';
 
 void main() {
   group('RoutineRemoteDataSource', () {
@@ -26,7 +26,7 @@ void main() {
           headers: {'content-type': 'application/json'},
         );
       });
-      final ds = RoutineRemoteDataSourceImpl(client: client);
+      final ds = HomeRestDataSourceImpl(client: client);
       final result = await ds.getRoutines();
       expect(result, isA<List<RoutineModel>>());
       expect(result.length, 1);
@@ -35,7 +35,7 @@ void main() {
 
     test('getRoutines throws on non-200', () async {
       final client = MockClient((request) async => http.Response('oops', 500));
-      final ds = RoutineRemoteDataSourceImpl(client: client);
+      final ds = HomeRestDataSourceImpl(client: client);
       expect(() => ds.getRoutines(), throwsA(isA<ServerException>()));
     });
 
@@ -44,7 +44,7 @@ void main() {
         expect(request.method, equals('POST'));
         return http.Response('', 201);
       });
-      final ds = RoutineRemoteDataSourceImpl(client: client);
+      final ds = HomeRestDataSourceImpl(client: client);
       const model = RoutineModel(
         id: 1,
         name: 'A',
@@ -58,7 +58,7 @@ void main() {
 
     test('addRoutine throws on non-201', () async {
       final client = MockClient((request) async => http.Response('', 400));
-      final ds = RoutineRemoteDataSourceImpl(client: client);
+      final ds = HomeRestDataSourceImpl(client: client);
       const model = RoutineModel(
         id: 1,
         name: 'A',
@@ -74,7 +74,7 @@ void main() {
         expect(request.method, equals('PUT'));
         return http.Response('', 200);
       });
-      final ds = RoutineRemoteDataSourceImpl(client: client);
+      final ds = HomeRestDataSourceImpl(client: client);
       const model = RoutineModel(
         id: 1,
         name: 'A',
@@ -88,7 +88,7 @@ void main() {
 
     test('updateRoutine throws on non-200', () async {
       final client = MockClient((request) async => http.Response('', 500));
-      final ds = RoutineRemoteDataSourceImpl(client: client);
+      final ds = HomeRestDataSourceImpl(client: client);
       const model = RoutineModel(
         id: 1,
         name: 'A',
@@ -104,14 +104,14 @@ void main() {
         expect(request.method, equals('DELETE'));
         return http.Response('', 200);
       });
-      final ds = RoutineRemoteDataSourceImpl(client: client);
+      final ds = HomeRestDataSourceImpl(client: client);
       final result = await ds.deleteRoutine(1);
       expect(result, 1);
     });
 
     test('deleteRoutine throws on non-200', () async {
       final client = MockClient((request) async => http.Response('', 404));
-      final ds = RoutineRemoteDataSourceImpl(client: client);
+      final ds = HomeRestDataSourceImpl(client: client);
       expect(() => ds.deleteRoutine(1), throwsA(isA<ServerException>()));
     });
   });

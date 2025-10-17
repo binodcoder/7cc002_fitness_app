@@ -111,7 +111,8 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
                         meta: lastTime,
                         unread: unread,
                         onTap: () async {
-                          final ok = await sl<ProfileGuardService>().isComplete();
+                          final ok =
+                              await sl<ProfileGuardService>().isComplete();
                           if (!ok) {
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(

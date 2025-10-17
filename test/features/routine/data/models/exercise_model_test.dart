@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fitness_app/features/routine/data/models/exercise_model.dart';
-import 'package:fitness_app/features/routine/domain/entities/exercise.dart';
+import 'package:fitness_app/features/home/data/models/exercise_model.dart';
+import 'package:fitness_app/features/home/domain/entities/exercise.dart';
 
 void main() {
   const tModel = ExerciseModel(
@@ -36,7 +36,8 @@ void main() {
 
   test('toJson returns proper map', () {
     final jsonResult = tModel.toJson();
-    final reparsed = ExerciseModel.fromJson(json.decode(json.encode(jsonResult)));
+    final reparsed =
+        ExerciseModel.fromJson(json.decode(json.encode(jsonResult)));
     expect(reparsed, tModel);
   });
 

@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'dart:convert';
 import 'package:intl/intl.dart';
-
 import 'package:fitness_app/core/theme/colour_manager.dart';
-import 'package:fitness_app/core/theme/font_manager.dart';
-import 'package:fitness_app/core/theme/values_manager.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 import 'package:fitness_app/features/walk/presentation/walk_form/widgets/route_preview.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -124,8 +120,9 @@ class WalkDetailsBody extends StatelessWidget {
       final m = jsonDecode(data) as Map<String, dynamic>;
       final s = (m['start'] as Map<String, dynamic>?)?['name']?.toString();
       final e = (m['end'] as Map<String, dynamic>?)?['name']?.toString();
-      if (s != null && e != null && s.isNotEmpty && e.isNotEmpty)
+      if (s != null && e != null && s.isNotEmpty && e.isNotEmpty) {
         return '$s → $e';
+      }
       if (s != null && s.isNotEmpty) return s;
       if (e != null && e.isNotEmpty) return e;
     } catch (_) {}

@@ -9,7 +9,8 @@ class Routes {
   static const String mainRoute = '/main';
   static const String routineRoute = '/routine';
   static const String routineDetails = '/routineDetails';
-  static const String addRoutine = '/addRoutine';
+  static const String routineForm = '/routineForm';
+  static const String updateRoutineForm = '/updateRoutineForm';
   static const String liveTraining = '/liveTraining';
   static const String addLiveTraining = '/addLiveTraining';
   static const String call = '/call';
@@ -18,9 +19,11 @@ class Routes {
   static const String addAppointment = '/addAppointment';
   static const String chat = '/chat';
   static const String walkList = '/chatList';
+  static const String myWalks = '/myWalks';
   static const String walkForm = '/walk/form';
   static const String walkDetails = '/walk/details';
   static const String walkMedia = '/walk/media';
+
   static const String account = '/account';
   static const String profile = '/profile';
   static const String mainMenu = '/menu';

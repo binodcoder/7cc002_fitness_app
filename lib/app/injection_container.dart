@@ -1,8 +1,9 @@
+import 'package:fitness_app/features/admin/admin_injection.dart';
 import 'package:fitness_app/features/appointment/infrastructure/di/appointment_injection.dart';
 import 'package:fitness_app/features/auth/infrastructure/di/auth_injection.dart';
 import 'package:fitness_app/features/chat/infrastructure/di/chat_injection.dart';
 import 'package:fitness_app/features/live_training/infrastructure/di/live_training_injection.dart';
-import 'package:fitness_app/features/routine/infrastructure/di/routine_injection.dart';
+import 'package:fitness_app/features/home/infrastructure/di/home_injection.dart';
 import 'package:fitness_app/features/walk/infrastructure/di/walk_injection.dart';
 import 'package:fitness_app/features/profile/infrastructure/di/profile_injection.dart';
 import 'package:get_it/get_it.dart';
@@ -42,6 +43,7 @@ Future<void> init() async {
   registerLiveTrainingInfrastructureDependencies(
       sl, kUseFakeData, kUseFirebaseData);
   registerProfileInfrastructureDependencies(sl);
+  registerAdminDependencies(sl);
 
   // database
   sl.registerSingletonAsync<Database>(() async => await AppDatabase().database);

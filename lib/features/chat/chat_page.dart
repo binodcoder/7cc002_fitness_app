@@ -79,7 +79,8 @@ class _ChatPageState extends State<ChatPage> {
                     final isMe = m.authorId == _userId;
                     final showHeader = index == 0
                         ? true
-                        : !_isSameDate(msgs[index].createdAt, msgs[index - 1].createdAt);
+                        : !_isSameDate(
+                            msgs[index].createdAt, msgs[index - 1].createdAt);
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -119,7 +120,8 @@ class _ChatPageState extends State<ChatPage> {
                                   _formatTime(m.createdAt),
                                   style: textTheme.bodySmall?.copyWith(
                                     color: isMe
-                                        ? scheme.onPrimary.withValues(alpha: 0.85)
+                                        ? scheme.onPrimary
+                                            .withValues(alpha: 0.85)
                                         : scheme.onSurfaceVariant,
                                     fontSize: 11,
                                   ),
@@ -189,6 +191,7 @@ class _ChatPageState extends State<ChatPage> {
     final m = local.minute.toString().padLeft(2, '0');
     return '$h:$m';
   }
+
   bool _isSameDate(DateTime a, DateTime b) {
     final al = a.toLocal();
     final bl = b.toLocal();
@@ -205,8 +208,18 @@ class _ChatPageState extends State<ChatPage> {
     if (diff == 0) return 'Today';
     if (diff == -1) return 'Yesterday';
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
     ];
     final mm = months[date.month - 1];
     final yyyy = date.year.toString();
