@@ -29,10 +29,15 @@ import 'package:get_it/get_it.dart';
 void registerWalkInfrastructureDependencies(
     GetIt sl, bool kUseFakeData, bool kUseFirebaseData) {
   //walk
-  sl.registerFactory(() => WalkListBloc(
-      getWalks: sl(), deleteWalk: sl(), joinWalk: sl(), leaveWalk: sl()));
-  sl.registerFactory(() =>
-      WalkFormBloc(addWalk: sl(), updateWalk: sl(), imagePickerService: sl()));
+  sl.registerLazySingleton<WalkRemoteDataSource>(() => kUseFirebaseData
+      ? FirebaseWalkRemoteDataSource()
+      : WalkRemoteDataSourceImpl(client: sl()));
+  sl.registerLazySingleton<WalksLocalDataSource>(() => WalksLocalDataSourceImpl());
+
+  sl.registerLazySingleton<WalkRepository>(() => kUseFakeData
+      ? FakeWalkRepository()
+      : WalkRepositoryImpl(
+          walkLocalDataSource: sl(), walkRemoteDataSource: sl(), networkInfo: sl()));
 
   sl.registerLazySingleton(() => GetWalks(sl()));
   sl.registerLazySingleton(() => DeleteWalk(sl()));
@@ -40,42 +45,29 @@ void registerWalkInfrastructureDependencies(
   sl.registerLazySingleton(() => UpdateWalk(sl()));
   sl.registerLazySingleton(() => JoinWalk(sl()));
   sl.registerLazySingleton(() => LeaveWalk(sl()));
-  sl.registerLazySingleton<WalkRepository>(() => kUseFakeData
-      ? FakeWalkRepository()
-      : WalkRepositoryImpl(
-          walkLocalDataSource: sl(),
-          walkRemoteDataSource: sl(),
-          networkInfo: sl(),
-        ));
-
-  sl.registerLazySingleton<WalkRemoteDataSource>(() => kUseFirebaseData
-      ? FirebaseWalkRemoteDataSource()
-      : WalkRemoteDataSourceImpl(client: sl()));
-  sl.registerLazySingleton<WalksLocalDataSource>(
-      () => WalksLocalDataSourceImpl());
+  sl.registerFactory(() =>
+      WalkListBloc(getWalks: sl(), deleteWalk: sl(), joinWalk: sl(), leaveWalk: sl()));
+  sl.registerFactory(
+      () => WalkFormBloc(addWalk: sl(), updateWalk: sl(), imagePickerService: sl()));
 
   //walk-media
-  sl.registerFactory(() => WalkMediaBloc(
-      getWalkMedia: sl(), getWalkMediaByWalkId: sl(), deleteWalkMedia: sl()));
-  sl.registerFactory(
-      () => WalkMediaAddBloc(addWalkMedia: sl(), updateWalkMedia: sl()));
-
-  sl.registerLazySingleton(() => GetWalkMedia(sl()));
-  sl.registerLazySingleton(() => DeleteWalkMedia(sl()));
-  sl.registerLazySingleton(() => UpdateWalkMedia(sl()));
-  sl.registerLazySingleton(() => AddWalkMedia(sl()));
-  sl.registerLazySingleton(() => GetWalkMediaByWalkId(sl()));
-  sl.registerLazySingleton<WalkMediaRepository>(() => kUseFakeData
-      ? FakeWalkMediaRepository()
-      : WalkMediaRepositoryImpl(
-          walkMediaLocalDataSource: sl(),
-          walkMediaRemoteDataSource: sl(),
-          networkInfo: sl(),
-        ));
-
   sl.registerLazySingleton<WalkMediaRemoteDataSource>(() => kUseFirebaseData
       ? FirebaseWalkMediaRemoteDataSource()
       : WalkMediaRemoteDataSourceImpl(client: sl()));
   sl.registerLazySingleton<WalkMediaLocalDataSource>(
       () => WalkMediaLocalDataSourceImpl());
+  sl.registerLazySingleton<WalkMediaRepository>(() => kUseFakeData
+      ? FakeWalkMediaRepository()
+      : WalkMediaRepositoryImpl(
+          walkMediaLocalDataSource: sl(),
+          walkMediaRemoteDataSource: sl(),
+          networkInfo: sl()));
+  sl.registerLazySingleton(() => GetWalkMedia(sl()));
+  sl.registerLazySingleton(() => DeleteWalkMedia(sl()));
+  sl.registerLazySingleton(() => UpdateWalkMedia(sl()));
+  sl.registerLazySingleton(() => AddWalkMedia(sl()));
+  sl.registerLazySingleton(() => GetWalkMediaByWalkId(sl()));
+  sl.registerFactory(() => WalkMediaBloc(
+      getWalkMedia: sl(), getWalkMediaByWalkId: sl(), deleteWalkMedia: sl()));
+  sl.registerFactory(() => WalkMediaAddBloc(addWalkMedia: sl(), updateWalkMedia: sl()));
 }

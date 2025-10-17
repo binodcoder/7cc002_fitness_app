@@ -5,8 +5,7 @@ class ChatState extends Equatable {
   final bool loading;
   final List<ChatMessage> messages;
   final String? errorMessage;
-  const ChatState(
-      {this.loading = false, this.messages = const [], this.errorMessage});
+  const ChatState({this.loading = false, this.messages = const [], this.errorMessage});
 
   ChatState copyWith(
       {bool? loading,

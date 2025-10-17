@@ -7,10 +7,12 @@ import 'package:fitness_app/features/account/presentation/cubit/admin_cubit.dart
 import 'package:get_it/get_it.dart';
 
 void registerAdminDependencies(GetIt sl) {
-  sl.registerLazySingleton(() => FirebaseDataSource(firestore: sl()));
+  sl.registerLazySingleton<FirebaseDataSource>(
+      () => FirebaseDataSource(firestore: sl()));
   sl.registerLazySingleton<AdminRepository>(
       () => AdminRepositoryImpl(firebaseDataSource: sl()));
-  sl.registerLazySingleton(() => GetUsers(sl()));
-  sl.registerLazySingleton(() => UpdateUser(sl()));
-  sl.registerFactory(() => AdminCubit(getUsers: sl(), updateUser: sl()));
+  sl.registerLazySingleton<GetUsers>(() => GetUsers(sl()));
+  sl.registerLazySingleton<UpdateUser>(() => UpdateUser(sl()));
+  sl.registerFactory<AdminCubit>(
+      () => AdminCubit(getUsers: sl(), updateUser: sl()));
 }

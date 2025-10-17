@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fitness_app/features/account/admin_injection.dart';
-import 'package:fitness_app/features/appointment/infrastructure/di/appointment_injection.dart';
+import 'package:fitness_app/core/services/availability_service.dart';
+import 'package:fitness_app/core/services/profile_guard_service.dart';
+import 'package:fitness_app/features/account/di/admin_injection.dart';
+import 'package:fitness_app/features/appointment/di/appointment_injection.dart';
 import 'package:fitness_app/features/auth/infrastructure/di/auth_injection.dart';
 import 'package:fitness_app/features/chat/infrastructure/di/chat_injection.dart';
 import 'package:fitness_app/features/live_training/infrastructure/di/live_training_injection.dart';
 import 'package:fitness_app/features/home/infrastructure/di/home_injection.dart';
+import 'package:fitness_app/features/profile/infrastructure/services/profile_guard.dart';
 import 'package:fitness_app/features/walk/infrastructure/di/walk_injection.dart';
 import 'package:fitness_app/features/profile/infrastructure/di/profile_injection.dart';
 import 'package:get_it/get_it.dart';
@@ -36,13 +39,11 @@ Future<void> init() async {
 
   registerAuthInfrastructureDependencies(sl);
   registerChatInfrastructureDependencies(sl, kUseFirebaseData);
-  registerAppointmentInfrastructureDependencies(
-      sl, kUseFakeData, kUseFirebaseData);
+  registerAppointmentInfrastructureDependencies(sl, kUseFakeData, kUseFirebaseData);
 
   registerWalkInfrastructureDependencies(sl, kUseFakeData, kUseFirebaseData);
   registerRoutineInfrastructureDependencies(sl, kUseFakeData, kUseFirebaseData);
-  registerLiveTrainingInfrastructureDependencies(
-      sl, kUseFakeData, kUseFirebaseData);
+  registerLiveTrainingInfrastructureDependencies(sl, kUseFakeData, kUseFirebaseData);
   registerProfileInfrastructureDependencies(sl);
   registerAdminDependencies(sl);
 
@@ -73,4 +74,10 @@ Future<void> init() async {
   sl.registerLazySingleton(() => InternetConnectionChecker());
   sl.registerLazySingleton<ImagePickerService>(() => ImagePickerServiceImpl());
   sl.registerLazySingleton(() => FirebaseFirestore.instance);
+  // Availability service for trainer slots
+  sl.registerLazySingleton<AppointmentAvailabilityService>(
+      () => AppointmentAvailabilityService());
+
+  // Guards
+  sl.registerLazySingleton<ProfileGuardService>(() => ProfileGuardServiceImpl(sl()));
 }

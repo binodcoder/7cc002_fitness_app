@@ -15,26 +15,24 @@ import 'package:get_it/get_it.dart';
 
 void registerLiveTrainingInfrastructureDependencies(
     GetIt sl, bool kUseFakeData, bool kUseFirebaseData) {
-  //live-training
-
-  sl.registerFactory(() =>
-      LiveTrainingAddBloc(addLiveTraining: sl(), updateLiveTraining: sl()));
-  sl.registerFactory(
-      () => LiveTrainingBloc(getLiveTrainings: sl(), deleteLiveTraining: sl()));
-  sl.registerLazySingleton(() => GetLiveTrainings(sl()));
-  sl.registerLazySingleton(() => DeleteLiveTraining(sl()));
-  sl.registerLazySingleton(() => AddLiveTraining(sl()));
-  sl.registerLazySingleton(() => UpdateLiveTraining(sl()));
-  sl.registerLazySingleton<LiveTrainingRepository>(() => kUseFakeData
-      ? FakeLiveTrainingRepository()
-      : LiveTrainingRepositoryImpl(
-          liveTrainingLocalDataSource: sl(),
-          liveTrainingRemoteDataSource: sl(),
-          networkInfo: sl(),
-        ));
   sl.registerLazySingleton<LiveTrainingLocalDataSource>(
       () => LiveTrainingLocalDataSourceImpl());
   sl.registerLazySingleton<LiveTrainingDataSource>(() => kUseFirebaseData
       ? FirebaseLiveTrainingRemoteDataSource()
       : LiveTrainingRemoteDataSourceImpl(client: sl()));
+  sl.registerLazySingleton<LiveTrainingRepository>(() => kUseFakeData
+      ? FakeLiveTrainingRepository()
+      : LiveTrainingRepositoryImpl(
+          liveTrainingLocalDataSource: sl(),
+          liveTrainingRemoteDataSource: sl(),
+          networkInfo: sl()));
+
+  sl.registerLazySingleton(() => GetLiveTrainings(sl()));
+  sl.registerLazySingleton(() => DeleteLiveTraining(sl()));
+  sl.registerLazySingleton(() => AddLiveTraining(sl()));
+  sl.registerLazySingleton(() => UpdateLiveTraining(sl()));
+  sl.registerFactory(
+      () => LiveTrainingAddBloc(addLiveTraining: sl(), updateLiveTraining: sl()));
+  sl.registerFactory(
+      () => LiveTrainingBloc(getLiveTrainings: sl(), deleteLiveTraining: sl()));
 }

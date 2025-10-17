@@ -1,3 +1,4 @@
+import 'package:fitness_app/core/services/profile_guard_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fitness_app/core/services/session_manager.dart';
@@ -6,7 +7,6 @@ import 'application/chat/chat_bloc.dart';
 import 'application/chat/chat_event.dart';
 import 'application/chat/chat_state.dart';
 import 'domain/usecases/mark_room_read.dart';
-import 'package:fitness_app/features/profile/infrastructure/services/profile_guard.dart';
 import 'package:fitness_app/features/profile/presentation/profile_page.dart';
 
 class ChatPage extends StatefulWidget {
@@ -79,8 +79,7 @@ class _ChatPageState extends State<ChatPage> {
                     final isMe = m.authorId == _userId;
                     final showHeader = index == 0
                         ? true
-                        : !_isSameDate(
-                            msgs[index].createdAt, msgs[index - 1].createdAt);
+                        : !_isSameDate(msgs[index].createdAt, msgs[index - 1].createdAt);
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -90,18 +89,15 @@ class _ChatPageState extends State<ChatPage> {
                           const SizedBox(height: 4),
                         ],
                         Align(
-                          alignment: isMe
-                              ? Alignment.centerRight
-                              : Alignment.centerLeft,
+                          alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
                           child: Container(
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
+                            margin:
+                                const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             decoration: BoxDecoration(
-                              color: isMe
-                                  ? scheme.primary
-                                  : scheme.surfaceContainerHighest,
+                              color:
+                                  isMe ? scheme.primary : scheme.surfaceContainerHighest,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Column(
@@ -110,9 +106,7 @@ class _ChatPageState extends State<ChatPage> {
                                 Text(
                                   m.text,
                                   style: textTheme.bodyMedium?.copyWith(
-                                    color: isMe
-                                        ? scheme.onPrimary
-                                        : scheme.onSurface,
+                                    color: isMe ? scheme.onPrimary : scheme.onSurface,
                                   ),
                                 ),
                                 const SizedBox(height: 6),
@@ -120,8 +114,7 @@ class _ChatPageState extends State<ChatPage> {
                                   _formatTime(m.createdAt),
                                   style: textTheme.bodySmall?.copyWith(
                                     color: isMe
-                                        ? scheme.onPrimary
-                                            .withValues(alpha: 0.85)
+                                        ? scheme.onPrimary.withValues(alpha: 0.85)
                                         : scheme.onSurfaceVariant,
                                     fontSize: 11,
                                   ),
@@ -162,8 +155,8 @@ class _ChatPageState extends State<ChatPage> {
                       if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                            content: Text(
-                                'Please complete your profile to send messages.')),
+                            content:
+                                Text('Please complete your profile to send messages.')),
                       );
                       Navigator.of(context, rootNavigator: true).push(
                         MaterialPageRoute(
@@ -172,8 +165,8 @@ class _ChatPageState extends State<ChatPage> {
                       );
                       return;
                     }
-                    _bloc.add(ChatSendPressed(
-                        roomId: _roomId, authorId: _userId, text: text));
+                    _bloc.add(
+                        ChatSendPressed(roomId: _roomId, authorId: _userId, text: text));
                     _textController.clear();
                   },
                 ),

@@ -17,26 +17,23 @@ import 'package:fitness_app/features/chat/domain/usecases/stream_messages.dart';
 import 'package:get_it/get_it.dart';
 
 void registerChatInfrastructureDependencies(GetIt sl, bool kUseFirebaseData) {
-  // chat
-  sl.registerFactory(() => ChatBloc(streamMessages: sl(), sendMessage: sl()));
-  sl.registerFactory(
-      () => ChatUsersBloc(getChatUsers: sl(), sessionManager: sl()));
+  sl.registerLazySingleton<ChatDirectoryRemoteDataSource>(() => kUseFirebaseData
+      ? FirebaseChatDirectoryRemoteDataSource()
+      : NoopChatDirectoryRemoteDataSource());
 
-  // chat
+  sl.registerLazySingleton<ChatRemoteDataSource>(() =>
+      kUseFirebaseData ? FirebaseChatRemoteDataSource() : NoopChatRemoteDataSource());
+
+  sl.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(remote: sl()));
+
+  sl.registerLazySingleton<ChatDirectoryRepository>(
+      () => ChatDirectoryRepositoryImpl(remote: sl()));
+
   sl.registerLazySingleton(() => StreamMessages(sl()));
   sl.registerLazySingleton(() => SendMessage(sl()));
   sl.registerLazySingleton(() => MarkRoomRead(sl()));
   sl.registerLazySingleton(() => GetChatUsers(sl()));
 
-  // chat repos and sources
-  sl.registerLazySingleton<ChatRepository>(
-      () => ChatRepositoryImpl(remote: sl()));
-  sl.registerLazySingleton<ChatRemoteDataSource>(() => kUseFirebaseData
-      ? FirebaseChatRemoteDataSource()
-      : NoopChatRemoteDataSource());
-  sl.registerLazySingleton<ChatDirectoryRepository>(
-      () => ChatDirectoryRepositoryImpl(remote: sl()));
-  sl.registerLazySingleton<ChatDirectoryRemoteDataSource>(() => kUseFirebaseData
-      ? FirebaseChatDirectoryRemoteDataSource()
-      : NoopChatDirectoryRemoteDataSource());
+  sl.registerFactory(() => ChatBloc(streamMessages: sl(), sendMessage: sl()));
+  sl.registerFactory(() => ChatUsersBloc(getChatUsers: sl(), sessionManager: sl()));
 }

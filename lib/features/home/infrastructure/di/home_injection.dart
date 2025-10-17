@@ -17,30 +17,24 @@ import 'package:get_it/get_it.dart';
 
 void registerRoutineInfrastructureDependencies(
     GetIt sl, bool kUseFakeData, bool kUseFirebaseData) {
-  //routines
+  sl.registerLazySingleton<HomeLocalDataSource>(() => RoutinesLocalDataSourceImpl(sl()));
 
-  sl.registerFactory(
-      () => RoutineFormBloc(addRoutine: sl(), updateRoutine: sl()));
-  sl.registerFactory(
-      () => RoutineListBloc(getRoutines: sl(), deleteRoutine: sl()));
-  sl.registerFactory(
-      () => HomeScaffoldCubit(getUnreadCount: sl(), sessionManager: sl()));
+  sl.registerLazySingleton<HomeRemoteDataSource>(() => kUseFirebaseData
+      ? HomeFirebaseDataSourceImpl()
+      : HomeRestDataSourceImpl(client: sl()));
+
+  sl.registerLazySingleton<HomeRepository>(() => kUseFakeData
+      ? FakeRoutineRepository()
+      : HomeRepositoryImpl(
+          homeLocalDataSource: sl(), homeRemoteDataSource: sl(), networkInfo: sl()));
+
   sl.registerLazySingleton(() => GetRoutines(sl()));
   sl.registerLazySingleton(() => DeleteRoutine(sl()));
   sl.registerLazySingleton(() => AddRoutine(sl()));
   sl.registerLazySingleton(() => UpdateRoutine(sl()));
   sl.registerLazySingleton(() => GetUnreadCount(sl()));
-  sl.registerLazySingleton<HomeRepository>(() => kUseFakeData
-      ? FakeRoutineRepository()
-      : HomeRepositoryImpl(
-          homeLocalDataSource: sl(),
-          homeRemoteDataSource: sl(),
-          networkInfo: sl(),
-        ));
-  sl.registerLazySingleton<HomeLocalDataSource>(
-      () => RoutinesLocalDataSourceImpl(sl()));
 
-  sl.registerLazySingleton<HomeRemoteDataSource>(() => kUseFirebaseData
-      ? HomeFirebaseDataSourceImpl()
-      : HomeRestDataSourceImpl(client: sl()));
+  sl.registerFactory(() => RoutineFormBloc(addRoutine: sl(), updateRoutine: sl()));
+  sl.registerFactory(() => RoutineListBloc(getRoutines: sl(), deleteRoutine: sl()));
+  sl.registerFactory(() => HomeScaffoldCubit(getUnreadCount: sl(), sessionManager: sl()));
 }

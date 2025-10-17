@@ -22,10 +22,15 @@ import 'package:fitness_app/features/auth/application/reset_password/reset_passw
 import 'package:fitness_app/features/auth/application/register/register_bloc.dart';
 import 'package:fitness_app/features/auth/application/auth/auth_bloc.dart';
 
-import 'package:fitness_app/core/services/image_picker_service.dart';
-
 void registerAuthInfrastructureDependencies(GetIt sl) {
-  // Repository registered under both interfaces (same instance)
+  // Data sources
+  sl.registerLazySingleton<AuthLocalDataSources>(
+      () => AuthLocalDataSourcesImpl(db: sl<Database>()));
+  sl.registerLazySingleton<AuthDataSource>(() => BackendConfig.isFirebase
+      ? FirebaseAuthRemoteDataSourceImpl()
+      : AuthRemoteDataSourceImpl(client: sl<http.Client>()));
+
+  // Repositories
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoriesImpl(
       authLocalDataSources: sl(),
@@ -35,13 +40,6 @@ void registerAuthInfrastructureDependencies(GetIt sl) {
   sl.registerLazySingleton<GoogleAuthRepository>(
     () => sl<AuthRepository>() as GoogleAuthRepository,
   );
-
-  // Data sources
-  sl.registerLazySingleton<AuthLocalDataSources>(
-      () => AuthLocalDataSourcesImpl(db: sl<Database>()));
-  sl.registerLazySingleton<AuthDataSource>(() => BackendConfig.isFirebase
-      ? FirebaseAuthRemoteDataSourceImpl()
-      : AuthRemoteDataSourceImpl(client: sl<http.Client>()));
 
   // Use cases
   sl.registerLazySingleton(() => Login(sl()));
@@ -56,11 +54,6 @@ void registerAuthInfrastructureDependencies(GetIt sl) {
   sl.registerFactory(() => LoginBloc(login: sl(), signInWithGoogle: sl()));
   sl.registerFactory(() => ResetPasswordBloc(resetPassword: sl()));
   sl.registerFactory(() => AuthBloc(logout: sl(), sessionManager: sl()));
-  sl.registerFactory(() => RegisterBloc(
-        addUser: sl(),
-        updateUser: sl(),
-        imagePickerService: sl<ImagePickerService>(),
-      ));
-
-  // Note: SessionManager & SharedPreferences are registered in root DI
+  sl.registerFactory(
+      () => RegisterBloc(addUser: sl(), updateUser: sl(), imagePickerService: sl()));
 }

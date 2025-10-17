@@ -1,6 +1,7 @@
 import 'package:fitness_app/app/app_router.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
 import 'package:fitness_app/core/navigation/routes.dart';
+import 'package:fitness_app/core/services/profile_guard_service.dart';
 import 'package:fitness_app/core/widgets/main_menu_button.dart';
 import 'package:fitness_app/core/widgets/user_avatar_action.dart';
 import 'package:fitness_app/features/home/presentation/routines/bloc/routine_list_bloc.dart';
@@ -8,7 +9,6 @@ import 'package:fitness_app/features/home/presentation/routines/bloc/routine_lis
 import 'package:fitness_app/features/home/presentation/routines/bloc/routine_list_state.dart';
 import 'package:fitness_app/features/home/presentation/routines/widgets/empty_list_view.dart';
 import 'package:fitness_app/features/home/presentation/routines/widgets/routine_card.dart';
-import 'package:fitness_app/features/profile/infrastructure/services/profile_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -1,3 +1,5 @@
+import 'package:fitness_app/core/navigation/routes.dart';
+import 'package:fitness_app/core/services/profile_guard_service.dart';
 import 'package:fitness_app/core/widgets/main_menu_button.dart';
 import 'package:fitness_app/core/widgets/user_avatar_action.dart';
 import 'package:flutter/material.dart';
@@ -6,13 +8,12 @@ import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/core/entities/user.dart' as entity;
 import 'package:fitness_app/core/services/session_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 import 'application/users/chat_users_bloc.dart';
 import 'application/users/chat_users_event.dart';
 import 'application/users/chat_users_state.dart';
 import 'chat_page.dart';
 import 'package:fitness_app/core/widgets/app_list_tile.dart';
-import 'package:fitness_app/features/profile/infrastructure/services/profile_guard.dart';
-import 'package:fitness_app/features/profile/presentation/profile_page.dart';
 
 class _ProfileInfo {
   final String name;
@@ -75,8 +76,7 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
               final roomId = _roomIdForUsers(myId, u.id ?? 0);
 
               return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                stream:
-                    _firestore.collection('chatRooms').doc(roomId).snapshots(),
+                stream: _firestore.collection('chatRooms').doc(roomId).snapshots(),
                 builder: (context, snapshot) {
                   String lastMessage = '';
                   bool unread = false;
@@ -84,10 +84,8 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
                   if (snapshot.hasData && snapshot.data!.exists) {
                     final data = snapshot.data!.data()!;
                     final lastText = (data['lastMessageText'] as String?) ?? '';
-                    final lastAt =
-                        (data['lastMessageAt'] as num?)?.toInt() ?? 0;
-                    final lastRead =
-                        (data['lastReadAt_$myId'] as num?)?.toInt() ?? 0;
+                    final lastAt = (data['lastMessageAt'] as num?)?.toInt() ?? 0;
+                    final lastRead = (data['lastReadAt_$myId'] as num?)?.toInt() ?? 0;
                     lastMessage = lastText;
                     unread = lastAt > lastRead && lastText.isNotEmpty;
                     lastTime = _formatHmFromMillis(lastAt);
@@ -97,22 +95,19 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
                     future: _getProfileByEmail(u.email),
                     builder: (context, profSnap) {
                       final prof = profSnap.data;
-                      final displayName = (prof?.name.isNotEmpty == true)
-                          ? prof!.name
-                          : u.email;
+                      final displayName =
+                          (prof?.name.isNotEmpty == true) ? prof!.name : u.email;
                       final photoUrl = prof?.photoUrl ?? '';
 
                       return _ChatUserTile(
                         name: displayName,
                         email: u.email,
                         photoUrl: photoUrl,
-                        lastMessage:
-                            lastMessage.isNotEmpty ? lastMessage : u.email,
+                        lastMessage: lastMessage.isNotEmpty ? lastMessage : u.email,
                         meta: lastTime,
                         unread: unread,
                         onTap: () async {
-                          final ok =
-                              await sl<ProfileGuardService>().isComplete();
+                          final ok = await sl<ProfileGuardService>().isComplete();
                           if (!ok) {
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -120,11 +115,14 @@ class _ChatUsersPageState extends State<ChatUsersPage> {
                                   content: Text(
                                       'Please complete your profile to send messages.')),
                             );
-                            Navigator.of(context, rootNavigator: true).push(
-                              MaterialPageRoute(
-                                builder: (_) => const ProfilePage(),
-                              ),
-                            );
+                            // Navigator.of(context, rootNavigator: true).push(
+                            //   MaterialPageRoute(
+                            //     builder: (_) => const ProfilePage(),
+                            //   ),
+                            // );
+
+                            GoRouter.of(context).push(Routes.profile);
+
                             return;
                           }
                           _openChatWithName(u, displayName);
@@ -241,8 +239,7 @@ class _ChatUserTile extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                       )
-                    : Icon(Icons.chevron_right,
-                        size: 18, color: scheme.onSurfaceVariant),
+                    : Icon(Icons.chevron_right, size: 18, color: scheme.onSurfaceVariant),
               ],
             )
           : Icon(Icons.chevron_right, color: scheme.onSurfaceVariant),

@@ -1,3 +1,4 @@
+import 'package:fitness_app/core/services/profile_guard_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +15,6 @@ import 'package:fitness_app/features/walk/presentation/walk_list/widgets/walk_ca
 import '../../walk_list/bloc/walk_list_bloc.dart';
 import '../../walk_list/bloc/walk_list_event.dart';
 import '../../walk_list/bloc/walk_list_state.dart';
-import 'package:fitness_app/features/profile/infrastructure/services/profile_guard.dart';
 import 'package:fitness_app/features/profile/presentation/profile_page.dart';
 
 class WalkListPage extends StatefulWidget {
@@ -50,16 +50,16 @@ class _WalkListPageState extends State<WalkListPage> {
           // Push on root navigator to hide bottom nav bar
           Navigator.of(context, rootNavigator: true)
               .push(
-            MaterialPageRoute(
-              builder: (BuildContext context) => WalkDetailsPage(
-                walk: state.walk,
-              ),
-              fullscreenDialog: true,
-            ),
-          )
+                MaterialPageRoute(
+                  builder: (BuildContext context) => WalkDetailsPage(
+                    walk: state.walk,
+                  ),
+                  fullscreenDialog: true,
+                ),
+              )
               .then(
-            (value) => refreshPage(),
-          );
+                (value) => refreshPage(),
+              );
         } else if (state is WalkNavigateToEditActionState) {
           Navigator.push(
             context,
@@ -110,8 +110,7 @@ class _WalkListPageState extends State<WalkListPage> {
                   itemBuilder: (context, index) {
                     final walk = successState.walks[index];
                     final bool isJoined = walk.participants
-                        .where(
-                            (p) => p.id == sharedPreferences.getInt("user_id"))
+                        .where((p) => p.id == sharedPreferences.getInt("user_id"))
                         .isNotEmpty;
                     return WalkCardTile(
                       routeData: walk.routeData,
@@ -130,8 +129,8 @@ class _WalkListPageState extends State<WalkListPage> {
                           if (!context.mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content: Text(
-                                    'Please complete your profile to join a walk.')),
+                                content:
+                                    Text('Please complete your profile to join a walk.')),
                           );
                           Navigator.push(
                             context,
@@ -147,8 +146,7 @@ class _WalkListPageState extends State<WalkListPage> {
                         );
                         if (isJoined) {
                           walkBloc.add(
-                            WalkLeaveRequested(
-                                walkParticipant: walkParticipant),
+                            WalkLeaveRequested(walkParticipant: walkParticipant),
                           );
                         } else {
                           walkBloc.add(

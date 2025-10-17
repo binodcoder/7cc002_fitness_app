@@ -1,5 +1,6 @@
 import 'package:fitness_app/app/app_router.dart';
 import 'package:fitness_app/core/navigation/routes.dart';
+import 'package:fitness_app/core/services/profile_guard_service.dart';
 import 'package:fitness_app/features/home/presentation/routines/widgets/routine_list_error_view.dart';
 import 'package:fitness_app/features/home/presentation/routines/widgets/routine_list_loading_view.dart';
 import 'package:fitness_app/features/home/presentation/routines/widgets/routine_list_success_view.dart';
@@ -8,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/core/localization/app_strings.dart';
-import 'package:fitness_app/features/profile/infrastructure/services/profile_guard.dart';
 import '../bloc/routine_list_bloc.dart';
 import '../bloc/routine_list_event.dart';
 import '../bloc/routine_list_state.dart';

@@ -39,8 +39,7 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
   void initState() {
     if (widget.walkMedia != null) {
       walkMediaUrlController.text = widget.walkMedia!.mediaUrl;
-      walkMediaAddBloc
-          .add(WalkMediaAddReadyToUpdateEvent(walkMedia: widget.walkMedia!));
+      walkMediaAddBloc.add(WalkMediaAddReadyToUpdateEvent(walkMedia: widget.walkMedia!));
     } else {
       walkMediaAddBloc.add(const WalkMediaAddInitialEvent());
     }
@@ -125,8 +124,7 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                           tooltip: 'Paste from clipboard',
                           icon: const Icon(Icons.paste),
                           onPressed: () async {
-                            final data =
-                                await Clipboard.getData(Clipboard.kTextPlain);
+                            final data = await Clipboard.getData(Clipboard.kTextPlain);
                             final text = data?.text?.trim();
                             if (text != null && text.isNotEmpty) {
                               if (mounted) {
@@ -176,18 +174,16 @@ class _WalkMediaAddPageState extends State<WalkMediaAddPage> {
                               userId: userId,
                               mediaUrl: mediaUrl,
                             );
-                            walkMediaAddBloc.add(
-                                WalkMediaAddUpdateButtonPressEvent(
-                                    updatedWalkMedia: updatedWalkMedia));
+                            walkMediaAddBloc.add(WalkMediaAddUpdateButtonPressEvent(
+                                updatedWalkMedia: updatedWalkMedia));
                           } else {
                             var newWalkMedia = WalkMedia(
                               walkId: walkId!,
                               userId: userId,
                               mediaUrl: mediaUrl,
                             );
-                            walkMediaAddBloc.add(
-                                WalkMediaAddSaveButtonPressEvent(
-                                    newWalkMedia: newWalkMedia));
+                            walkMediaAddBloc.add(WalkMediaAddSaveButtonPressEvent(
+                                newWalkMedia: newWalkMedia));
                           }
                         }
                       },

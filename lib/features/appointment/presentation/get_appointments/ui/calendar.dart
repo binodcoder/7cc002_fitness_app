@@ -1,3 +1,4 @@
+import 'package:fitness_app/core/services/profile_guard_service.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
@@ -23,7 +24,6 @@ import 'package:fitness_app/core/navigation/routes.dart';
 import 'package:fitness_app/features/appointment/domain/usecases/sync.dart';
 import 'package:fitness_app/features/appointment/domain/entities/sync.dart';
 import 'package:fitness_app/core/services/availability_service.dart';
-import 'package:fitness_app/features/profile/infrastructure/services/profile_guard.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({Key? key}) : super(key: key);
@@ -108,9 +108,8 @@ class _CalendarPageState extends State<CalendarPage> {
           final prof = await _firestore.collection('profiles').doc(uid).get();
           final data = prof.data();
           final name = (data?['name'] as String?)?.trim() ?? '';
-          final display = name.isNotEmpty
-              ? name
-              : (email.isNotEmpty ? email : 'User #$userId');
+          final display =
+              name.isNotEmpty ? name : (email.isNotEmpty ? email : 'User #$userId');
           _clientNameById[userId] = display;
           return display;
         } catch (_) {
@@ -141,9 +140,7 @@ class _CalendarPageState extends State<CalendarPage> {
       // Respect explicit filter; otherwise, when in trainer mode, default to own availability
       final role = sharedPreferences.getString('role');
       final int? trainerIdToUse = _selectedTrainerFilterId ??
-          ((role == 'trainer')
-              ? (sharedPreferences.getInt('user_id') ?? 0)
-              : null);
+          ((role == 'trainer') ? (sharedPreferences.getInt('user_id') ?? 0) : null);
       final token =
           '${trainerIdToUse ?? 0}|${start.millisecondsSinceEpoch}|${end.millisecondsSinceEpoch}';
       _availabilityToken = token;
@@ -185,8 +182,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 backgroundColor: ColorManager.primary,
                 child: const Icon(Icons.add),
                 onPressed: () {
-                  calendarBloc
-                      .add(CalendarAddButtonClicked(selectedDay: _focusedDay));
+                  calendarBloc.add(CalendarAddButtonClicked(selectedDay: _focusedDay));
                 },
               )
             : null,
@@ -232,8 +228,8 @@ class _CalendarPageState extends State<CalendarPage> {
                               labelText: 'Filter by trainer',
                               border: OutlineInputBorder(),
                               isDense: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 8),
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             ),
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<int?>(
@@ -274,26 +270,21 @@ class _CalendarPageState extends State<CalendarPage> {
                 ),
                 BlocConsumer<CalendarBloc, CalendarState>(
                     bloc: calendarBloc,
-                    listenWhen: (previous, current) =>
-                        current is CalendarActionState,
-                    buildWhen: (previous, current) =>
-                        current is! CalendarActionState,
+                    listenWhen: (previous, current) => current is CalendarActionState,
+                    buildWhen: (previous, current) => current is! CalendarActionState,
                     listener: (context, state) async {
                       if (state is CalendarNavigateToAddActionState) {
                         // Block admins from booking appointments
-                        final isAdmin =
-                            sharedPreferences.getString('role') == "admin";
+                        final isAdmin = sharedPreferences.getString('role') == "admin";
                         if (isAdmin) {
                           if (!context.mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content:
-                                    Text('Admins cannot book appointments.')),
+                                content: Text('Admins cannot book appointments.')),
                           );
                           return;
                         }
-                        final canProceed =
-                            await sl<ProfileGuardService>().isComplete();
+                        final canProceed = await sl<ProfileGuardService>().isComplete();
                         if (!context.mounted) return;
                         if (!canProceed) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -312,8 +303,7 @@ class _CalendarPageState extends State<CalendarPage> {
                             'preselectedTrainerId': _selectedTrainerFilterId,
                           },
                         ).then((_) => refreshPage());
-                      } else if (state
-                          is CalendarNavigateToDetailPageActionState) {
+                      } else if (state is CalendarNavigateToDetailPageActionState) {
                         // Details page no longer required. Ignore or open edit when trainer.
                         if (!mounted) return;
                         final isTrainer =
@@ -327,8 +317,7 @@ class _CalendarPageState extends State<CalendarPage> {
                             },
                           ).then((_) => refreshPage());
                         }
-                      } else if (state
-                          is CalendarNavigateToUpdatePageActionState) {
+                      } else if (state is CalendarNavigateToUpdatePageActionState) {
                       } else if (state is CalendarItemDeletedActionState) {
                         calendarBloc.add(const CalendarInitialized());
                       } else if (state is CalendarItemUpdatedActionState) {
@@ -348,29 +337,21 @@ class _CalendarPageState extends State<CalendarPage> {
                           );
 
                         case CalendarLoadedSuccessState:
-                          final successState =
-                              state as CalendarLoadedSuccessState;
-                          final List<Appointment> allEvents =
-                              successState.appointments;
+                          final successState = state as CalendarLoadedSuccessState;
+                          final List<Appointment> allEvents = successState.appointments;
                           // Apply trainer filter (dropdown) or default to self when in trainer mode
-                          final int? trainerIdForView =
-                              _selectedTrainerFilterId ??
-                                  ((sharedPreferences.getString('role') ==
-                                          'trainer')
-                                      ? (sharedPreferences.getInt('user_id') ??
-                                          0)
-                                      : null);
+                          final int? trainerIdForView = _selectedTrainerFilterId ??
+                              ((sharedPreferences.getString('role') == 'trainer')
+                                  ? (sharedPreferences.getInt('user_id') ?? 0)
+                                  : null);
                           final List<Appointment> visibleEvents =
-                              (trainerIdForView == null ||
-                                      trainerIdForView == 0)
+                              (trainerIdForView == null || trainerIdForView == 0)
                                   ? allEvents
                                   : allEvents
-                                      .where((e) =>
-                                          e.trainerId == trainerIdForView)
+                                      .where((e) => e.trainerId == trainerIdForView)
                                       .toList();
                           eventBloc.add(EventDaySelectEvent(
-                              selectedDay: _focusedDay,
-                              appointments: visibleEvents));
+                              selectedDay: _focusedDay, appointments: visibleEvents));
                           // Load availability around the current page focus
                           _loadAvailabilityForVisibleMonth(_focusedDay);
                           return AppointmentCalendar(
@@ -379,25 +360,18 @@ class _CalendarPageState extends State<CalendarPage> {
                             calendarFormat: _calendarFormat,
                             onDaySelected: (selectedDay, focusedDay) {
                               // Respect trainer filter (or trainer mode default) when switching days
-                              final int? trainerIdForView =
-                                  _selectedTrainerFilterId ??
-                                      ((sharedPreferences.getString('role') ==
-                                              'trainer')
-                                          ? (sharedPreferences
-                                                  .getInt('user_id') ??
-                                              0)
-                                          : null);
+                              final int? trainerIdForView = _selectedTrainerFilterId ??
+                                  ((sharedPreferences.getString('role') == 'trainer')
+                                      ? (sharedPreferences.getInt('user_id') ?? 0)
+                                      : null);
                               final List<Appointment> visibleEvents =
-                                  (trainerIdForView == null ||
-                                          trainerIdForView == 0)
+                                  (trainerIdForView == null || trainerIdForView == 0)
                                       ? allEvents
                                       : allEvents
-                                          .where((e) =>
-                                              e.trainerId == trainerIdForView)
+                                          .where((e) => e.trainerId == trainerIdForView)
                                           .toList();
                               eventBloc.add(EventDaySelectEvent(
-                                  selectedDay: selectedDay,
-                                  appointments: visibleEvents));
+                                  selectedDay: selectedDay, appointments: visibleEvents));
                               setState(() {
                                 _selectedDay = selectedDay;
                                 _focusedDay = selectedDay;
@@ -416,21 +390,15 @@ class _CalendarPageState extends State<CalendarPage> {
                             },
                             // Show dots only for events matching the current filter (if any)
                             eventLoader: (day) {
-                              final int? trainerIdForView =
-                                  _selectedTrainerFilterId ??
-                                      ((sharedPreferences.getString('role') ==
-                                              'trainer')
-                                          ? (sharedPreferences
-                                                  .getInt('user_id') ??
-                                              0)
-                                          : null);
+                              final int? trainerIdForView = _selectedTrainerFilterId ??
+                                  ((sharedPreferences.getString('role') == 'trainer')
+                                      ? (sharedPreferences.getInt('user_id') ?? 0)
+                                      : null);
                               final List<Appointment> visibleEvents =
-                                  (trainerIdForView == null ||
-                                          trainerIdForView == 0)
+                                  (trainerIdForView == null || trainerIdForView == 0)
                                       ? allEvents
                                       : allEvents
-                                          .where((e) =>
-                                              e.trainerId == trainerIdForView)
+                                          .where((e) => e.trainerId == trainerIdForView)
                                           .toList();
                               return visibleEvents
                                   .where((event) => isSameDay(event.date, day))
@@ -451,10 +419,8 @@ class _CalendarPageState extends State<CalendarPage> {
                     }),
                 BlocConsumer<EventBloc, EventState>(
                   bloc: eventBloc,
-                  listenWhen: (previous, current) =>
-                      current is EventActionState,
-                  buildWhen: (previous, current) =>
-                      current is! EventActionState,
+                  listenWhen: (previous, current) => current is EventActionState,
+                  buildWhen: (previous, current) => current is! EventActionState,
                   listener: (context, state) {
                     if (state is EventNavigateToUpdatePageActionState) {
                       if (!mounted) return;
@@ -497,29 +463,25 @@ class _CalendarPageState extends State<CalendarPage> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: selectedEvents.length,
                           itemBuilder: (context, index) {
-                            final Appointment appointmentModel =
-                                selectedEvents[index];
+                            final Appointment appointmentModel = selectedEvents[index];
                             final String title =
                                 _trainerNameById[appointmentModel.trainerId] ??
                                     'Trainer #${appointmentModel.trainerId}';
-                            final String status =
-                                (appointmentModel.status).toLowerCase();
-                            final bool canActOnPending =
-                                isTrainer && status == 'pending';
+                            final String status = (appointmentModel.status).toLowerCase();
+                            final bool canActOnPending = isTrainer && status == 'pending';
                             if (isTrainer) {
                               return FutureBuilder<String>(
-                                future: _getClientDisplayById(
-                                    appointmentModel.userId),
+                                future: _getClientDisplayById(appointmentModel.userId),
                                 builder: (context, snap) {
-                                  final display = snap.data ??
-                                      'User #${appointmentModel.userId}';
+                                  final display =
+                                      snap.data ?? 'User #${appointmentModel.userId}';
                                   return AppointmentEventTile(
                                     title: display,
                                     startTime: appointmentModel.startTime,
                                     endTime: appointmentModel.endTime,
-                                    trainerName: _trainerNameById[
-                                            appointmentModel.trainerId] ??
-                                        'Trainer #${appointmentModel.trainerId}',
+                                    trainerName:
+                                        _trainerNameById[appointmentModel.trainerId] ??
+                                            'Trainer #${appointmentModel.trainerId}',
                                     clientName: display,
                                     remarks: appointmentModel.remark ?? '',
                                     trailing: _StatusChip(status: status),
@@ -553,14 +515,10 @@ class _CalendarPageState extends State<CalendarPage> {
                                             );
                                           }
                                         : null,
-                                    editLabel:
-                                        canActOnPending ? 'Accept' : null,
-                                    deleteLabel:
-                                        canActOnPending ? 'Decline' : null,
-                                    editIcon:
-                                        canActOnPending ? Icons.check : null,
-                                    deleteIcon:
-                                        canActOnPending ? Icons.close : null,
+                                    editLabel: canActOnPending ? 'Accept' : null,
+                                    deleteLabel: canActOnPending ? 'Decline' : null,
+                                    editIcon: canActOnPending ? Icons.check : null,
+                                    deleteIcon: canActOnPending ? Icons.close : null,
                                     editActionColor:
                                         canActOnPending ? Colors.green : null,
                                     deleteActionColor:

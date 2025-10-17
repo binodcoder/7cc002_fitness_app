@@ -31,8 +31,7 @@ class WalkDetailsBody extends StatelessWidget {
     final scheme = theme.colorScheme;
 
     final dt = _formatDateTime(walk.date, walk.startTime);
-    final title =
-        _routeTitleFromJsonOrFallback(walk.routeData, walk.startLocation);
+    final title = _routeTitleFromJsonOrFallback(walk.routeData, walk.startLocation);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -77,8 +76,7 @@ class WalkDetailsBody extends StatelessWidget {
             children: [
               _chip(context, Icons.event, dt.dateLabel, scheme.primary),
               _chip(context, Icons.schedule, dt.timeLabel, scheme.secondary),
-              _chip(
-                  context, Icons.pin_drop, walk.startLocation, scheme.tertiary),
+              _chip(context, Icons.pin_drop, walk.startLocation, scheme.tertiary),
             ],
           ),
 
@@ -90,13 +88,13 @@ class WalkDetailsBody extends StatelessWidget {
               const Icon(Icons.person, color: ColorManager.primary),
               const SizedBox(width: 8),
               Text('Proposed by $proposerName',
-                  style: theme.textTheme.bodyLarge
-                      ?.copyWith(fontWeight: FontWeight.w600)),
+                  style:
+                      theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
             ],
           ),
 
           const SizedBox(height: 16),
-          Divider(color: theme.dividerColor.withOpacity(0.3)),
+          Divider(color: theme.dividerColor.withAlpha(76)),
           const SizedBox(height: 16),
 
           // Participants section
@@ -154,8 +152,7 @@ class WalkDetailsBody extends StatelessWidget {
 
     final timeLabel = t != null
         ? _formatTime(t)
-        : DateFormat('h:mm a')
-            .format(DateTime(date.year, date.month, date.day));
+        : DateFormat('h:mm a').format(DateTime(date.year, date.month, date.day));
 
     return _NiceDateTime(dateLabel: dateLabel, timeLabel: timeLabel);
   }
@@ -178,10 +175,7 @@ class WalkDetailsBody extends StatelessWidget {
           Icon(icon, size: 16, color: color),
           const SizedBox(width: 6),
           Text(text,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: color)),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: color)),
         ],
       ),
     );
@@ -262,8 +256,8 @@ class _MediaBanner extends StatelessWidget {
           return _placeholder();
         }
         if (state is WalkMediaLoadedSuccessState) {
-          final media = state
-              .walkMediaList; // show all; let Image.network fail gracefully
+          final media =
+              state.walkMediaList; // show all; let Image.network fail gracefully
           if (media.isNotEmpty) return _buildMediaList(context, media);
           return _emptyBanner(context);
         }

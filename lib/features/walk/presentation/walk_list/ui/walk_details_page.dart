@@ -1,10 +1,10 @@
+import 'package:fitness_app/core/services/profile_guard_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:fitness_app/app/injection_container.dart';
 import 'package:fitness_app/features/walk/domain/entities/walk.dart';
 import 'package:fitness_app/core/theme/colour_manager.dart';
-import 'package:fitness_app/features/profile/infrastructure/services/profile_guard.dart';
 import 'package:fitness_app/features/walk/domain/usecases/join_walk.dart';
 import 'package:fitness_app/features/walk/domain/usecases/leave_walk.dart';
 import 'package:fitness_app/features/walk/presentation/walk_list/widgets/walk_details_body.dart';
@@ -35,8 +35,7 @@ class _WalkDetailsPageState extends State<WalkDetailsPage> {
   @override
   void initState() {
     _walk = widget.walk!;
-    _participants =
-        List<Participant>.from(widget.walk?.participants ?? const []);
+    _participants = List<Participant>.from(widget.walk?.participants ?? const []);
     _prefs = sl<SharedPreferences>();
     _mediaBloc = sl<WalkMediaBloc>();
     if (_walk.id != null) {
