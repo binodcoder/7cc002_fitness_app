@@ -3,11 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
-import 'package:fitness_app/features/auth/data/datasources/auth_data_source.dart';
+import 'package:fitness_app/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:fitness_app/features/auth/data/models/login_credentials_model.dart';
 import 'package:fitness_app/core/models/user_model.dart';
 
-class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
+class FirebaseAuthDataSourceImpl implements AuthRemoteDataSource {
   fb.FirebaseAuth get _auth => fb.FirebaseAuth.instance;
   FirebaseFirestore get _firestore => FirebaseFirestore.instance;
 
@@ -55,8 +55,7 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
       } else {
         final dataNow = userSnap.data() ?? {};
         if (dataNow['id'] == null) {
-          await userDocRef
-              .update({'id': DateTime.now().millisecondsSinceEpoch});
+          await userDocRef.update({'id': DateTime.now().millisecondsSinceEpoch});
         }
         await userDocRef.update({'updatedAt': FieldValue.serverTimestamp()});
       }
@@ -109,8 +108,7 @@ class FirebaseAuthRemoteDataSourceImpl implements AuthDataSource {
         if (googleUser == null) {
           throw LoginException();
         }
-        final GoogleSignInAuthentication googleAuth =
-            await googleUser.authentication;
+        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
         final fb.OAuthCredential credential = fb.GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,

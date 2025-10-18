@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:fitness_app/features/auth/data/datasources/auth_data_source.dart';
+import 'package:fitness_app/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:fitness_app/features/auth/data/models/login_credentials_model.dart';
 import 'package:fitness_app/core/models/user_model.dart';
 import 'package:fitness_app/features/auth/domain/entities/login_credentials.dart';
@@ -11,15 +11,14 @@ import 'package:fitness_app/features/auth/data/datasources/auth_local_data_sourc
 
 class AuthRepositoriesImpl implements AuthRepository, GoogleAuthRepository {
   final AuthLocalDataSources authLocalDataSources;
-  final AuthDataSource authRemoteDataSource;
+  final AuthRemoteDataSource authRemoteDataSource;
   AuthRepositoriesImpl({
     required this.authLocalDataSources,
     required this.authRemoteDataSource,
   });
 
   @override
-  Future<Either<Failure, User>>? login(
-      LoginCredentials loginCredentials) async {
+  Future<Either<Failure, User>>? login(LoginCredentials loginCredentials) async {
     try {
       final model = LoginCredentialsModel.fromEntity(loginCredentials);
       UserModel response = await authRemoteDataSource.login(model);

@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:fitness_app/core/errors/exceptions.dart';
-import 'package:fitness_app/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:fitness_app/features/auth/data/datasources/rest_auth_data_source.dart';
 import 'package:fitness_app/features/auth/data/models/login_credentials_model.dart';
 import 'package:fitness_app/core/models/user_model.dart';
 
@@ -26,25 +26,22 @@ void main() {
           headers: {'content-type': 'application/json'},
         );
       });
-      final ds = AuthRemoteDataSourceImpl(client: client);
-      final res = await ds
-          .login(const LoginCredentialsModel(email: 'e', password: 'p'));
+      final ds = RestAuthDataSourceImpl(client: client);
+      final res = await ds.login(const LoginCredentialsModel(email: 'e', password: 'p'));
       expect(res, isA<UserModel>());
       expect(res.email, 'e');
     });
 
     test('login throws LoginException on non-200', () async {
       final client = MockClient((request) async => http.Response('no', 401));
-      final ds = AuthRemoteDataSourceImpl(client: client);
-      expect(
-          () =>
-              ds.login(const LoginCredentialsModel(email: 'e', password: 'p')),
+      final ds = RestAuthDataSourceImpl(client: client);
+      expect(() => ds.login(const LoginCredentialsModel(email: 'e', password: 'p')),
           throwsA(isA<LoginException>()));
     });
 
     test('addUser returns 1 on 201', () async {
       final client = MockClient((request) async => http.Response('', 201));
-      final ds = AuthRemoteDataSourceImpl(client: client);
+      final ds = RestAuthDataSourceImpl(client: client);
       final res = await ds.addUser(const UserModel(
         name: 'n',
         email: 'e',
@@ -59,7 +56,7 @@ void main() {
 
     test('addUser throws ServerException on non-201', () async {
       final client = MockClient((request) async => http.Response('', 400));
-      final ds = AuthRemoteDataSourceImpl(client: client);
+      final ds = RestAuthDataSourceImpl(client: client);
       expect(
         () => ds.addUser(const UserModel(
           name: 'n',
@@ -76,7 +73,7 @@ void main() {
 
     test('updateUser returns 1 on 201', () async {
       final client = MockClient((request) async => http.Response('', 201));
-      final ds = AuthRemoteDataSourceImpl(client: client);
+      final ds = RestAuthDataSourceImpl(client: client);
       final res = await ds.updateUser(const UserModel(
         id: 1,
         name: 'n',
@@ -92,7 +89,7 @@ void main() {
 
     test('deleteUser returns 1 on 201', () async {
       final client = MockClient((request) async => http.Response('', 201));
-      final ds = AuthRemoteDataSourceImpl(client: client);
+      final ds = RestAuthDataSourceImpl(client: client);
       final res = await ds.deleteUser(1);
       expect(res, 1);
     });
